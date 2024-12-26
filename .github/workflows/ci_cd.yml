@@ -1,4 +1,4 @@
-name: Buid and Test
+name: Build and Test
 on:
    workflow_run:
      workflows: ["Code Quality and Linting"]
