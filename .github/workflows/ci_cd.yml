@@ -47,4 +47,4 @@ jobs:
             - name: Build backend with Maven
               run: |
                 cd ./backend_PharmaPulse
-                ./mvnw clean install
+                ./mvnw clean install -Dspring.profiles.active=test
