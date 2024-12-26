@@ -1,0 +1,40 @@
+name:  Code Quality and Linting
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+      - 'feature/**'
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      -name: Checkout latest code
+      uses: actions/checkout@v4
+
+      # Frontend Linting with ESLint
+      -name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+      -name: Install frontend dependencies
+      run: |
+        cd ./frontend_PharmaPulse
+        npm install
+      -name: Lint frontend code
+      run: |
+        cd ./frontend_PharmaPulse
+        npm run lint:ci
+            
+      # Backend Linting with Checkstyle
+      -name: Setup Java JDK21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven

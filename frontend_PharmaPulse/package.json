@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
+    "lint:ci":"eslint .",
     "preview": "vite preview",
     "prepare": "husky"
   },
