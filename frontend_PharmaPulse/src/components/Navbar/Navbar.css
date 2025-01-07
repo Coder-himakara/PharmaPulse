@@ -1,0 +1,131 @@
+/* Reset default body and HTML styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2d6a6c; /* Teal color */
+    padding: 10px 20px;
+    color: white;
+    font-family: Arial, sans-serif;
+    width: 100%; /* Spread across the whole page */
+    box-sizing: border-box;
+    position: fixed; /* Stick to the top of the page */
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Logo container */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo .logo {
+    height: 40px; /* Adjust the logo size */
+    margin-right: 10px;
+}
+
+.navbar-logo span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Profile section */
+.navbar-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+/* User name and role styling */
+.user-name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.user-role {
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* Dropdown menu container */
+.dropdown {
+    position: relative;
+}
+
+/* Dropdown button styling */
+.dropdown-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+/* Hover effect for dropdown button */
+.dropdown-btn:hover {
+    color: #c3e4e5;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 150px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* Dropdown menu links */
+.dropdown-menu a {
+    display: flex;
+    align-items: center; /* Ensure the icon and text align */
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Hover effect for menu items */
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Show dropdown menu on hover */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Icon styling inside dropdown menu */
+.dropdown-item-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px; /* Space between the image and the text */
+}
+
+/* Main content to avoid overlapping the navbar */
+main {
+    margin-top: 70px; /* Adjust to match navbar height */
+    padding: 20px;
+    background: #f9f9f9;
+    min-height: calc(100vh - 70px); /* Adjust for full page layout */
+}

@@ -1,0 +1,46 @@
+/* General styling for the sidebar */
+.sidebar {
+    height: calc(100vh - 60px); /* Full viewport height minus the navbar */
+    width: 250px; /* Sidebar width */
+    background-color: #E6F6F6; /* Light color as per the code */
+    position: fixed; /* Fixed position on the left */
+    top: 60px; /* Space for the navbar */
+    left: 0;
+    padding-top: 20px; /* Optional, add some padding if needed */
+    z-index: 10; /* Ensure sidebar is above other elements */
+  }
+  
+  /* Styling for sidebar menu */
+  .sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar-menu li {
+    padding: 15px;
+    border-bottom: 1px solid #ddd; /* Subtle separation between items */
+  }
+  
+  .sidebar-menu a {
+    text-decoration: none;
+    color: #333; /* Text color */
+    font-size: 16px;
+  }
+  
+  .sidebar-menu a:hover {
+    color: #007BFF; /* Change color on hover */
+  }
+  
+  /* Make space at the bottom for the footer */
+  body {
+    margin-bottom: 60px; /* Space for footer */
+  }
+  
+  /* Adjust content if sidebar overlaps */
+  .main-content {
+    margin-left: 250px; /* Shift content to the right to avoid overlap with sidebar */
+    padding: 20px;
+    min-height: calc(100vh - 120px); /* Ensures content area takes full height minus navbar and footer */
+  }
+  
