@@ -1,13 +1,14 @@
 name: Build and Test
 on:
    workflow_run:
-     workflows: ["Code Quality and Linting"]
+     workflows: ["Deployment Code Quality and Linting"]
      types:
        - completed
+     branches:
+       - main
 
 jobs:
     build:
-        if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref == 'refs/heads/main' }}
         runs-on: ubuntu-latest
         steps:
             # Step 1: Checkout latest code

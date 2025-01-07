@@ -1,11 +1,13 @@
-name:  Deployment Code Quality and Linting
+name: Feature branch Code Quality and Linting
 on:
   push:
-    branches:
-      - main
+    branches:     
+      - 'feature/**'
+      - 'bugfix/**'
   pull_request:
     branches:
-      - main
+      - 'feature/**'
+      - 'bugfix/**'
 
 jobs:
   quality-check:
