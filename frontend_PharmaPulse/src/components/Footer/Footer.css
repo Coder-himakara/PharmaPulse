@@ -1,0 +1,26 @@
+.footer {
+  background-color: #c1ddc1;
+  color: #5e5959;
+  padding: 10px 0;
+  position: 100%;
+  width: 1440px;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+
+  .footer-logo {
+    width: 30px;
+    height: 25.65px;
+    margin: 5px 30px;
+  }
+
+  .footer-left {
+    text-align: left;
+    margin: 5px 10px;
+  }
+
+  .footer-right {
+    text-align: right;
+    margin: 5px 30px;
+  }
+}
