@@ -1,28 +1,43 @@
-//import React from 'react';
-import './Sidebar.css'; // Import the CSS file for styling
+import "./Sidebar.css";
 
-function Sidebar() {
+const Sidebar = () => {
   return (
-    <div className='sidebar'>
-      <ul className='sidebar-menu'>
-        <li>
-          <a href='#dashboard'>Dashboard</a>
-        </li>
-        <li>
-          <a href='#profile'>Profile</a>
-        </li>
-        <li>
-          <a href='#settings'>Settings</a>
-        </li>
-        <li>
-          <a href='#help'>Help</a>
-        </li>
-        <li>
-          <a href='#logout'>Logout</a>
-        </li>
-      </ul>
-    </div>
+    <aside className="sidebar">
+      <div className="sidebar-section">
+        <h2>Products</h2>
+        <ul>
+          <li>
+            <a href="">Add Products</a>
+          </li>
+          <li>
+            <a href="">Products Info</a>
+          </li>
+        </ul>
+      </div>
+      <div className="sidebar-section">
+        <h2>Suppliers</h2>
+        <ul>
+          <li>
+            <a href="">Add Suppliers</a>
+          </li>
+          <li>
+            <a href="">Suppliers Info</a>
+          </li>
+        </ul>
+      </div>
+      <div className="sidebar-section">
+        <h2>Customers</h2>
+        <ul>
+          <li>
+            <a href="">Add Customers</a>
+          </li>
+          <li>
+            <a href="">Customers Info</a>
+          </li>
+        </ul>
+      </div>
+    </aside>
   );
-}
+};
 
 export default Sidebar;

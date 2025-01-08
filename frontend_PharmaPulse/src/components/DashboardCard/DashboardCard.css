@@ -1,0 +1,76 @@
+/* Global Reset */
+/* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}*/
+
+/* Ensuring the whole page takes full height and width */
+html, body {
+    height: 100%;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #e6f6f6;
+}
+
+/* Styling for the dashboard card */
+.dashboard-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 60%;
+    max-width: 1200px; /* Limit max width for larger screens */
+    margin: 0 auto; /* Center the card horizontally */
+    padding: 2rem;
+    box-sizing: border-box;
+    border-radius: 8px;
+    color: #e6f6f6;
+  
+    
+}
+
+/* Styling for the dashboard body with centering */
+.dashboard-body {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    flex: 1;
+    padding: 5rem;
+    border-radius: 8px;
+    text-align: center; /* Center text */
+    color:  black;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-card {
+        padding: 1rem;
+        border-radius: 6px;
+    }
+
+    .dashboard-body {
+        padding: 0.5rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-card {
+        padding: 0.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+}

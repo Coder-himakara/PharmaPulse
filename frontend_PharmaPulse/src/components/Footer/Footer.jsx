@@ -1,14 +1,20 @@
-//import React from 'react';
-import './Footer.css'; // Import the CSS file for styling
+import "./Footer.css";
+import logo from "../../assets/Logo.jpg";
 
-function Footer() {
+const Footer = () => {
   return (
-    <footer className='footer'>
-      <div className='footer-content'>
-        <p>&copy; 2025 PharmaPulse. All Rights Reserved.</p>
+    <footer className="footer">
+      <div className="footer-content">
+        <div className="footer-logo">
+          <img src={logo} alt="Logo" className="logo" />
+        </div>
+        <div className="footer-left">
+          <p>&copy; A &amp; K Agencies PharmaPulse. All Rights Reserved.</p>
+        </div>
+        <div className="footer-right">Developed by: Team PharmaPulse</div>
       </div>
     </footer>
   );
-}
+};
 
 export default Footer;
