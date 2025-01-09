@@ -1,1 +1,1 @@
-npx lint-staged
+cd frontend_PharmaPulse && npx lint-staged
