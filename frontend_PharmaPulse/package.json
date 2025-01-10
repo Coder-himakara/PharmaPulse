@@ -8,17 +8,14 @@
     "build": "vite build",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "lint:ci":"eslint .",
+    "lint:ci": "eslint .",
     "preview": "vite preview",
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
-    ],
-    "*.css": [
-      "stylelint --fix"
-    ]
+    "*.{js,jsx}": "eslint --fix",
+    "*.{js,jsx,ts,tsx,md,html,css}": "prettier --write",
+    "*.css": "stylelint"
   },
   "dependencies": {
     "react": "^18.3.1",
