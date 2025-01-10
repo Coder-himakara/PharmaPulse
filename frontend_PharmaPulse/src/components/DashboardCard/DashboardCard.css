@@ -1,40 +1,10 @@
 .dashboard-card {
-  background-color: #e6f6f6; /* Light gray color */
+  background-color: #e6f6f6;
   position: absolute;
-  top: 100px; /* Adjust to match the bottom of the navbar */
-  bottom: 70px; /* Adjust to match the top of the footer */
-  left: 250px; /* Adjust to match the right of the sidebar */
-  right: 0; /* Extend to the right edge */
-  padding: 20px; /* Optional: add some padding inside the card */
+  top: 100px;
+  bottom: 70px;
+  left: 250px;
+  right: 0;
+  padding: 20px;
   box-sizing: border-box;
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 1200px) {
-  .dashboard-card {
-    left: 200px; /* Adjust for smaller screens */
-    right: 20px; /* Ensure it doesn't touch the edge */
-  }
-}
-
-@media (max-width: 992px) {
-  .dashboard-card {
-    left: 50px; /* Decrease space from the sidebar */
-    right: 20px; /* Adjust for smaller screens */
-  }
-}
-
-@media (max-width: 768px) {
-  .dashboard-card {
-    left: 0; /* No left margin for smaller screens */
-    right: 0; /* Extend fully to the right edge */
-    top: 80px; /* Adjust for smaller screens */
-    bottom: 50px; /* Adjust for smaller screens */
-  }
-}
-
-@media (max-width: 576px) {
-  .dashboard-card {
-    padding: 15px; /* Reduce padding for mobile view */
-  }
 }
