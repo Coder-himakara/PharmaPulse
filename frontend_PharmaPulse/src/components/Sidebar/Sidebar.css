@@ -55,3 +55,9 @@
   background-color: #1abc9c;
   color: white;
 }
+
+/* Active Link Styling */
+.sidebar-section a.active {
+  background-color: #2d6a6c;
+  color: white;
+}

@@ -1,19 +1,12 @@
-import Footer from "./components/Footer/Footer";
-import Sidebar from "./components/Sidebar/Sidebar";
-import Navbar from "./components/Navbar/Navbar";
-import DashboardCard from "./components/DashboardCard/DashboardCard";
+import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
 
 import "./App.css";
-//import "./Responsiveness/Responsive.css";
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <Sidebar />
-      <Footer />
-      <DashboardCard />
-    </>
+    <div className="App">
+      <EmployeeDashboard />
+    </div>
   );
 }
 

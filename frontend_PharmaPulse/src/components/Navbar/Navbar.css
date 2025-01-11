@@ -11,7 +11,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2d6a6c;
+  background-color: #1a5353;
   padding: 10px 20px;
   color: white;
   font-family: Seravek, sans-serif;
@@ -30,7 +30,7 @@ body {
 }
 
 .navbar-logo .logo {
-  height: 40px;
+  height: 50px;
   margin-right: 10px;
 }
 
