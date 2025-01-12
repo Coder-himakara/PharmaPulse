@@ -1,12 +1,12 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import react from 'eslint-plugin-react'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
+import js from '@eslint/js';
+import globals from 'globals';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
 import prettier from 'eslint-plugin-prettier';
 
 export default [
-  { ignores: ['dist','node_modules'] },
+  { ignores: ['dist', 'node_modules'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -35,7 +35,10 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
-      'prettier/prettier': ['warn', { semi: true, singleQuote: true, jsxSingleQuote: true, printWidth: 80 }],
+      'prettier/prettier': [
+        'warn',
+        { semi: true, singleQuote: true, jsxSingleQuote: true, printWidth: 80 },
+      ],
     },
   },
-]
+];

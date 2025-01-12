@@ -1,10 +1,10 @@
-import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
+import EmployeeDashboard from './pages/EmployeeDashboard/EmployeeDashboard';
 
-import "./App.css";
+import './App.css';
 
 function App() {
   return (
-    <div className="App">
+    <div className='App'>
       <EmployeeDashboard />
     </div>
   );

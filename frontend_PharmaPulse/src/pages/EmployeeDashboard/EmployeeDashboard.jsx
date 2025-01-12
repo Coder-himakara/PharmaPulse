@@ -1,12 +1,12 @@
-import { useState } from "react";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import DashboardCard from "../../components/DashboardCard/DashboardCard";
-import AddProductsForm from "../../components/Forms/Products/AddProductsForm";
-import AddSuppliersForm from "../../components/Forms/Suppliers/AddSuppliersForm";
-import AddCustomersForm from "../../components/Forms/Customers/AddCustomersForm";
-import ProductsInfoTable from "../../components/Tables/Products/ProductsInfoTable";
-import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../../components/Footer/Footer";
+import { useState } from 'react';
+import Sidebar from '../../components/Sidebar/Sidebar';
+import DashboardCard from '../../components/DashboardCard/DashboardCard';
+import AddProductsForm from '../../components/Forms/Products/AddProductsForm';
+import AddSuppliersForm from '../../components/Forms/Suppliers/AddSuppliersForm';
+import AddCustomersForm from '../../components/Forms/Customers/AddCustomersForm';
+import ProductsInfoTable from '../../components/Tables/Products/ProductsInfoTable';
+import Navbar from '../../components/Navbar/Navbar';
+import Footer from '../../components/Footer/Footer';
 
 const EmployeeDashboard = () => {
   const [selectedSection, setSelectedSection] = useState(null);
@@ -33,10 +33,10 @@ const EmployeeDashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className='dashboard-container'>
       <Navbar />
       <Sidebar onSelect={handleSelect} activeLink={activeLink} />
-      <div className="dashboard-content">
+      <div className='dashboard-content'>
         <DashboardCard
           content={
             sectionComponents[selectedSection] || (

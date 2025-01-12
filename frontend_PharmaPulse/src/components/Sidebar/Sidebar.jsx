@@ -1,19 +1,20 @@
-import "./Sidebar.css";
+import './Sidebar.css';
+import PropTypes from 'prop-types';
 
 const Sidebar = ({ onSelect, activeLink }) => {
   return (
-    <aside className="sidebar">
-      <div className="sidebar-section">
+    <aside className='sidebar'>
+      <div className='sidebar-section'>
         <h2>Products</h2>
         <ul>
           <li>
             <a
-              href="#"
-              onClick={() => onSelect("addProduct")}
+              href='#'
+              onClick={() => onSelect('addProduct')}
               className={
-                activeLink === "addProduct"
-                  ? "sidebar-link active"
-                  : "sidebar-link"
+                activeLink === 'addProduct'
+                  ? 'sidebar-link active'
+                  : 'sidebar-link'
               }
             >
               Add Products
@@ -21,12 +22,12 @@ const Sidebar = ({ onSelect, activeLink }) => {
           </li>
           <li>
             <a
-              href="#"
-              onClick={() => onSelect("productsInfo")}
+              href='#'
+              onClick={() => onSelect('productsInfo')}
               className={
-                activeLink === "productsInfo"
-                  ? "sidebar-link active"
-                  : "sidebar-link"
+                activeLink === 'productsInfo'
+                  ? 'sidebar-link active'
+                  : 'sidebar-link'
               }
             >
               Products Info
@@ -34,17 +35,17 @@ const Sidebar = ({ onSelect, activeLink }) => {
           </li>
         </ul>
       </div>
-      <div className="sidebar-section">
+      <div className='sidebar-section'>
         <h2>Suppliers</h2>
         <ul>
           <li>
             <a
-              href="#"
-              onClick={() => onSelect("addSupplier")}
+              href='#'
+              onClick={() => onSelect('addSupplier')}
               className={
-                activeLink === "addSupplier"
-                  ? "sidebar-link active"
-                  : "sidebar-link"
+                activeLink === 'addSupplier'
+                  ? 'sidebar-link active'
+                  : 'sidebar-link'
               }
             >
               Add Suppliers
@@ -52,12 +53,12 @@ const Sidebar = ({ onSelect, activeLink }) => {
           </li>
           <li>
             <a
-              href="#"
-              onClick={() => onSelect("suppliersInfo")}
+              href='#'
+              onClick={() => onSelect('suppliersInfo')}
               className={
-                activeLink === "suppliersInfo"
-                  ? "sidebar-link active"
-                  : "sidebar-link"
+                activeLink === 'suppliersInfo'
+                  ? 'sidebar-link active'
+                  : 'sidebar-link'
               }
             >
               Suppliers Info
@@ -65,17 +66,17 @@ const Sidebar = ({ onSelect, activeLink }) => {
           </li>
         </ul>
       </div>
-      <div className="sidebar-section">
+      <div className='sidebar-section'>
         <h2>Customers</h2>
         <ul>
           <li>
             <a
-              href="#"
-              onClick={() => onSelect("addCustomer")}
+              href='#'
+              onClick={() => onSelect('addCustomer')}
               className={
-                activeLink === "addCustomer"
-                  ? "sidebar-link active"
-                  : "sidebar-link"
+                activeLink === 'addCustomer'
+                  ? 'sidebar-link active'
+                  : 'sidebar-link'
               }
             >
               Add Customers
@@ -83,12 +84,12 @@ const Sidebar = ({ onSelect, activeLink }) => {
           </li>
           <li>
             <a
-              href="#"
-              onClick={() => onSelect("customersInfo")}
+              href='#'
+              onClick={() => onSelect('customersInfo')}
               className={
-                activeLink === "customersInfo"
-                  ? "sidebar-link active"
-                  : "sidebar-link"
+                activeLink === 'customersInfo'
+                  ? 'sidebar-link active'
+                  : 'sidebar-link'
               }
             >
               Customers Info
@@ -98,6 +99,11 @@ const Sidebar = ({ onSelect, activeLink }) => {
       </div>
     </aside>
   );
+};
+
+Sidebar.propTypes = {
+  onSelect: PropTypes.func.isRequired, // Assuming onSelect is a function
+  activeLink: PropTypes.string.isRequired, // Assuming activeLink is a string
 };
 
 export default Sidebar;
