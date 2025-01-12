@@ -7,6 +7,7 @@
   margin-bottom: 20px;
   padding-bottom: 20px;
   height: 100%; /* Allow height to adjust */
+  position: relative; /* Needed for positioning the close button */
 }
 
 /* Header Section */
@@ -14,15 +15,34 @@
   background-color: #1a5353;
   color: white;
   padding: 15px;
-  text-align: center;
+  text-align: left;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   margin: 0;
+  position: relative; /* To position the close button */
 }
 
 .products-header h1 {
-  margin: 0;
+  margin: 3px;
+  padding: 3px;
   font-size: 24px;
+}
+
+/* Close Button Styling */
+.close-button {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%); /* This will vertically center the button */
+  background: none;
+  color: white;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #f1f1f1;
 }
 
 /* Title and Search Bar Section */

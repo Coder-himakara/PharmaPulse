@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './AddCustomersForm.css';
 import PropTypes from 'prop-types';
 
-const AddCustomersForm = ({ onClose }) => {
+const AddCustomersForm = ({ onClose, onAddCustomer }) => {
   const [formData, setFormData] = useState({
     customerName: '',
     customerId: '',
@@ -39,7 +39,10 @@ const AddCustomersForm = ({ onClose }) => {
     setErrorMessage(''); // Clear errors
     setSuccessMessage('Customer added successfully!');
 
-    console.log('Customer added:', formData);
+    // Pass the new product data to the parent
+    if (onAddCustomer) {
+      onAddCustomer(formData);
+    }
 
     // Clear the form after a delay
     setTimeout(() => {
@@ -144,6 +147,7 @@ const AddCustomersForm = ({ onClose }) => {
 
 AddCustomersForm.propTypes = {
   onClose: PropTypes.func.isRequired, // This ensures onClose is a function and is required
+  onAddCustomer: PropTypes.func.isRequired,
 };
 
 export default AddCustomersForm;

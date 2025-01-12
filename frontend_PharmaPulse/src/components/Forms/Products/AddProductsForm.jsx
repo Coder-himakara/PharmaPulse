@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './AddProductsForm.css';
 import PropTypes from 'prop-types';
 
-const AddProductsForm = ({ onClose }) => {
+const AddProductsForm = ({ onClose, onAddProduct }) => {
   const [formData, setFormData] = useState({
     productName: '',
     productId: '',
@@ -38,7 +38,10 @@ const AddProductsForm = ({ onClose }) => {
     setErrorMessage(''); // Clear errors
     setSuccessMessage('Product added successfully!');
 
-    console.log('Product added:', formData);
+    // Pass the new product data to the parent
+    if (onAddProduct) {
+      onAddProduct(formData);
+    }
 
     // Clear the form after a delay
     setTimeout(() => {
@@ -185,6 +188,7 @@ const AddProductsForm = ({ onClose }) => {
 
 AddProductsForm.propTypes = {
   onClose: PropTypes.func.isRequired,
+  onAddProduct: PropTypes.func.isRequired,
 };
 
 export default AddProductsForm;

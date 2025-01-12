@@ -1,16 +1,23 @@
 import { useState } from 'react';
+
+import Navbar from '../../components/Navbar/Navbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
+import Footer from '../../components/Footer/Footer';
+
 import AddProductsForm from '../../components/Forms/Products/AddProductsForm';
 import AddSuppliersForm from '../../components/Forms/Suppliers/AddSuppliersForm';
 import AddCustomersForm from '../../components/Forms/Customers/AddCustomersForm';
 import ProductsInfoTable from '../../components/Tables/Products/ProductsInfoTable';
-import Navbar from '../../components/Navbar/Navbar';
-import Footer from '../../components/Footer/Footer';
+import SuppliersInfoTable from '../../components/Tables/Suppliers/SuppliersInfoTable';
+import CustomersInfoTable from '../../components/Tables/Customers/CustomersInfoTable';
 
 const EmployeeDashboard = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [activeLink, setActiveLink] = useState(null); // Track active link
+  const [products, setProducts] = useState([]); // State to hold the products
+  const [suppliers, setSuppliers] = useState([]);
+  const [customers, setCustomers] = useState([]);
 
   const handleSelect = (section) => {
     setSelectedSection(section);
@@ -22,14 +29,32 @@ const EmployeeDashboard = () => {
     setActiveLink(null);
   };
 
+  const addProduct = (product) => {
+    setProducts((prevProducts) => [...prevProducts, product]);
+  };
+
+  const addSupplier = (supplier) => {
+    setSuppliers((prevSuppliers) => [...prevSuppliers, supplier]);
+  };
+
+  const addCustomer = (customer) => {
+    setCustomers((prevCustomers) => [...prevCustomers, customer]);
+  };
+
   // Section mapping for dynamic rendering
   const sectionComponents = {
-    addProduct: <AddProductsForm onClose={handleCloseForm} />,
-    productsInfo: <ProductsInfoTable />,
-    addSupplier: <AddSuppliersForm onClose={handleCloseForm} />,
-    suppliersInfo: <h2>Suppliers Info (Under Construction)</h2>,
-    addCustomer: <AddCustomersForm onClose={handleCloseForm} />,
-    customersInfo: <h2>Customers Info (Under Construction)</h2>,
+    addProduct: (
+      <AddProductsForm onClose={handleCloseForm} onAddProduct={addProduct} />
+    ),
+    productsInfo: <ProductsInfoTable products={products} />,
+    addSupplier: (
+      <AddSuppliersForm onClose={handleCloseForm} onAddSupplier={addSupplier} />
+    ),
+    suppliersInfo: <SuppliersInfoTable suppliers={suppliers} />,
+    addCustomer: (
+      <AddCustomersForm onClose={handleCloseForm} onAddCustomer={addCustomer} />
+    ),
+    customersInfo: <CustomersInfoTable customers={customers} />,
   };
 
   return (
