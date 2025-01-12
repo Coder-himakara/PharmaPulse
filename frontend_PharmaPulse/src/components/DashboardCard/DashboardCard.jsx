@@ -10,7 +10,7 @@ const DashboardCard = ({ content }) => {
 };
 
 DashboardCard.propTypes = {
-  content: PropTypes.string.isRequired, // Ensure 'content' is a string and required
+  content: PropTypes.string.isRequired,
 };
 
 export default DashboardCard;

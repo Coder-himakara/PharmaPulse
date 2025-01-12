@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './AddProductsForm.css';
+import './Forms.css';
 import PropTypes from 'prop-types';
 
 const AddProductsForm = ({ onClose, onAddProduct }) => {
@@ -65,7 +65,7 @@ const AddProductsForm = ({ onClose, onAddProduct }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='add-product-form'>
+    <form onSubmit={handleSubmit} className='add-item-form'>
       <h2>Add Products</h2>
 
       {errorMessage && <p className='error-message'>{errorMessage}</p>}

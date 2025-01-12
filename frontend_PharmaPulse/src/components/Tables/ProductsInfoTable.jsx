@@ -1,4 +1,4 @@
-import './ProductsInfoTable.css';
+import './Tables.css';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -38,15 +38,15 @@ const ProductsInfoTable = ({ products }) => {
   if (!isVisible) return null; // If not visible, render nothing
 
   return (
-    <div className='products-container'>
-      <div className='products-header'>
+    <div className='items-container'>
+      <div className='items-header'>
         <h1>Products Management</h1>
         <button className='close-button' onClick={handleClose}>
           X
         </button>
       </div>
 
-      <div className='products-title-search'>
+      <div className='items-title-search'>
         <h2>Products</h2>
         <div className='search-container'>
           <input
@@ -65,8 +65,8 @@ const ProductsInfoTable = ({ products }) => {
         </div>
       )}
 
-      <div className='products-table-container'>
-        <table className='products-table'>
+      <div className='items-table-container'>
+        <table className='items-table'>
           <thead>
             <tr>
               <th>#</th>
@@ -81,7 +81,7 @@ const ProductsInfoTable = ({ products }) => {
               </th>
               <th>Unit Price (Rs.)</th>
               <th>Wholesale Price (Rs.)</th>
-              <th>Action</th> {/* Added Action column */}
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -100,7 +100,6 @@ const ProductsInfoTable = ({ products }) => {
                 <td>
                   <button className='edit-button'>Edit</button>
                 </td>{' '}
-                {/* Edit button in Action column */}
               </tr>
             ))}
           </tbody>

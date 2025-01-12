@@ -5,17 +5,17 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import Footer from '../../components/Footer/Footer';
 
-import AddProductsForm from '../../components/Forms/Products/AddProductsForm';
-import AddSuppliersForm from '../../components/Forms/Suppliers/AddSuppliersForm';
-import AddCustomersForm from '../../components/Forms/Customers/AddCustomersForm';
-import ProductsInfoTable from '../../components/Tables/Products/ProductsInfoTable';
-import SuppliersInfoTable from '../../components/Tables/Suppliers/SuppliersInfoTable';
-import CustomersInfoTable from '../../components/Tables/Customers/CustomersInfoTable';
+import AddProductsForm from '../../components/Forms/AddProductsForm';
+import AddSuppliersForm from '../../components/Forms/AddSuppliersForm';
+import AddCustomersForm from '../../components/Forms/AddCustomersForm';
+import ProductsInfoTable from '../../components/Tables/ProductsInfoTable';
+import SuppliersInfoTable from '../../components/Tables/SuppliersInfoTable';
+import CustomersInfoTable from '../../components/Tables/CustomersInfoTable';
 
 const EmployeeDashboard = () => {
   const [selectedSection, setSelectedSection] = useState(null);
-  const [activeLink, setActiveLink] = useState(null); // Track active link
-  const [products, setProducts] = useState([]); // State to hold the products
+  const [activeLink, setActiveLink] = useState(null);
+  const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [customers, setCustomers] = useState([]);
 
@@ -25,7 +25,7 @@ const EmployeeDashboard = () => {
   };
 
   const handleCloseForm = () => {
-    setSelectedSection(null); // Clear the selected section to hide the form
+    setSelectedSection(null);
     setActiveLink(null);
   };
 
@@ -41,7 +41,6 @@ const EmployeeDashboard = () => {
     setCustomers((prevCustomers) => [...prevCustomers, customer]);
   };
 
-  // Section mapping for dynamic rendering
   const sectionComponents = {
     addProduct: (
       <AddProductsForm onClose={handleCloseForm} onAddProduct={addProduct} />

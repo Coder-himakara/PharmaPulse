@@ -1,5 +1,4 @@
-/* Overall Form Styling */
-.add-customer-form {
+.add-item-form {
   display: flex;
   flex-direction: column;
   max-width: 500px;
@@ -11,8 +10,7 @@
   font-family: Seravek, sans-serif;
 }
 
-/* Header Styling */
-.add-customer-form h2 {
+.add-item-form h2 {
   text-align: center;
   background-color: #1a5353;
   color: white;
@@ -21,7 +19,6 @@
   margin: -20px -20px 20px -20px;
 }
 
-/* Form Group Styling */
 .form-group {
   display: flex;
   justify-content: space-between;
@@ -36,16 +33,13 @@
   margin-right: 10px;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   flex: 2;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
-}
-
-.form-group input[type="number"] {
-  border: 1px solid red;
 }
 
 .form-group input[type="date"] {
@@ -54,7 +48,10 @@
   color: #333;
 }
 
-/* Button Container Styling */
+.form-group input[type="number"] {
+  border: 1px solid red;
+}
+
 .button-container {
   display: flex;
   justify-content: center;
@@ -62,8 +59,7 @@
   margin-top: 20px;
 }
 
-/* Button Styling */
-.add-customer-form button {
+.add-item-form button {
   padding: 10px 20px;
   background-color: #2a4d69;
   color: white;
@@ -74,11 +70,10 @@
   transition: background-color 0.3s ease;
 }
 
-.add-customer-form button:hover {
+.add-item-form button:hover {
   background-color: #00796b;
 }
 
-/* Error and Success Messages */
 .error-message {
   color: #991919;
   font-size: 16px;

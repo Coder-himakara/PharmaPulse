@@ -1,17 +1,15 @@
-/* Container for the entire component */
-.products-container {
+.items-container {
   font-family: Seravek, sans-serif;
   border-radius: 8px;
   background-color: #e6eef3;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   padding-bottom: 20px;
-  height: 100%; /* Allow height to adjust */
-  position: relative; /* Needed for positioning the close button */
+  height: 100%;
+  position: relative;
 }
 
-/* Header Section */
-.products-header {
+.items-header {
   background-color: #1a5353;
   color: white;
   padding: 15px;
@@ -19,21 +17,20 @@
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   margin: 0;
-  position: relative; /* To position the close button */
+  position: relative;
 }
 
-.products-header h1 {
+.items-header h1 {
   margin: 3px;
   padding: 3px;
   font-size: 24px;
 }
 
-/* Close Button Styling */
 .close-button {
   position: absolute;
   top: 50%;
   right: 10px;
-  transform: translateY(-50%); /* This will vertically center the button */
+  transform: translateY(-50%);
   background: none;
   color: white;
   border: none;
@@ -45,8 +42,7 @@
   color: #f1f1f1;
 }
 
-/* Title and Search Bar Section */
-.products-title-search {
+.items-title-search {
   margin: 10px;
   padding: 10px;
   display: flex;
@@ -54,7 +50,7 @@
   align-items: center;
 }
 
-.products-title-search h2 {
+.items-title-search h2 {
   font-size: 22px;
   font-weight: bold;
   color: #1a5353;
@@ -72,35 +68,34 @@
   width: 400px;
 }
 
-/* Table Container */
-.products-table-container {
+.items-table-container {
   margin: 10px;
   padding: 10px;
 }
 
-.products-table {
+.items-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.products-table th,
-.products-table td {
+.items-table th,
+.items-table td {
   border: 1px solid #bfb6b6;
   padding: 10px;
   text-align: center;
 }
 
-.products-table th {
+.items-table th {
   background-color: #ffb24d;
   color: #5e5757;
   font-size: 14px;
 }
 
-.products-table tbody tr {
+.items-table tbody tr {
   background-color: #c6dceb;
 }
 
-.products-table tbody tr:hover {
+.items-table tbody tr:hover {
   background-color: #dce4e9;
 }
 
@@ -118,7 +113,6 @@
   background-color: #15375c;
 }
 
-/* Error Message Styling */
 .error-message {
   color: #991919;
   font-size: 16px;
@@ -127,14 +121,12 @@
   font-weight: bold;
 }
 
-/* Style for the sortable column */
 .sortable {
   cursor: pointer;
   text-decoration: underline;
   font-weight: bold;
 }
 
-/* Optional: Add some styling for the sort arrows */
 .sortable:hover {
   color: #1a5353;
 }

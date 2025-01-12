@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './AddCustomersForm.css';
+import './Forms.css';
 import PropTypes from 'prop-types';
 
 const AddCustomersForm = ({ onClose, onAddCustomer }) => {
@@ -39,7 +39,7 @@ const AddCustomersForm = ({ onClose, onAddCustomer }) => {
     setErrorMessage(''); // Clear errors
     setSuccessMessage('Customer added successfully!');
 
-    // Pass the new product data to the parent
+    // Pass the new customer data to the parent
     if (onAddCustomer) {
       onAddCustomer(formData);
     }
@@ -63,7 +63,7 @@ const AddCustomersForm = ({ onClose, onAddCustomer }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='add-customer-form'>
+    <form onSubmit={handleSubmit} className='add-item-form'>
       <h2>Add Customers</h2>
 
       {errorMessage && <p className='error-message'>{errorMessage}</p>}
@@ -146,7 +146,7 @@ const AddCustomersForm = ({ onClose, onAddCustomer }) => {
 };
 
 AddCustomersForm.propTypes = {
-  onClose: PropTypes.func.isRequired, // This ensures onClose is a function and is required
+  onClose: PropTypes.func.isRequired,
   onAddCustomer: PropTypes.func.isRequired,
 };
 

@@ -102,8 +102,8 @@ const Sidebar = ({ onSelect, activeLink }) => {
 };
 
 Sidebar.propTypes = {
-  onSelect: PropTypes.func.isRequired, // Assuming onSelect is a function
-  activeLink: PropTypes.string.isRequired, // Assuming activeLink is a string
+  onSelect: PropTypes.func.isRequired,
+  activeLink: PropTypes.string.isRequired,
 };
 
 export default Sidebar;

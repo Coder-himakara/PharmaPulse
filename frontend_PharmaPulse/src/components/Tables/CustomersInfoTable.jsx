@@ -1,4 +1,4 @@
-import './CustomersInfoTable.css';
+import './Tables.css';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -11,7 +11,7 @@ const CustomersInfoTable = ({ customers }) => {
     customer.customerName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  // Sort products based on expireDate
+  // Sort customers based on dateOfConnected
   const sortedCustomers = filteredCustomers.sort((a, b) => {
     const dateA = new Date(a.dateOfConnected);
     const dateB = new Date(b.dateOfConnected);
@@ -30,7 +30,7 @@ const CustomersInfoTable = ({ customers }) => {
     );
   };
 
-  // Toggle visibility of products container
+  // Toggle visibility of customers container
   const handleClose = () => {
     setIsVisible(false);
   };
@@ -38,15 +38,15 @@ const CustomersInfoTable = ({ customers }) => {
   if (!isVisible) return null; // If not visible, render nothing
 
   return (
-    <div className='customers-container'>
-      <div className='customers-header'>
+    <div className='items-container'>
+      <div className='items-header'>
         <h1>Customers Management</h1>
         <button className='close-button' onClick={handleClose}>
           X
         </button>
       </div>
 
-      <div className='customers-title-search'>
+      <div className='items-title-search'>
         <h2>Customers</h2>
         <div className='search-container'>
           <input
@@ -65,8 +65,8 @@ const CustomersInfoTable = ({ customers }) => {
         </div>
       )}
 
-      <div className='customers-table-container'>
-        <table className='customers-table'>
+      <div className='items-table-container'>
+        <table className='items-table'>
           <thead>
             <tr>
               <th>#</th>
@@ -78,7 +78,7 @@ const CustomersInfoTable = ({ customers }) => {
               <th onClick={toggleSort} className='sortable'>
                 Date of Connected {sortDirection === 'asc' ? '▲' : '▼'}
               </th>
-              <th>Action</th> {/* Added Action column */}
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
