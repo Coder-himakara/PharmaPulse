@@ -4,6 +4,7 @@ import DashboardCard from "../../components/DashboardCard/DashboardCard";
 import AddProductsForm from "../../components/Forms/Products/AddProductsForm";
 import AddSuppliersForm from "../../components/Forms/Suppliers/AddSuppliersForm";
 import AddCustomersForm from "../../components/Forms/Customers/AddCustomersForm";
+import ProductsInfoTable from "../../components/Tables/Products/ProductsInfoTable";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 
@@ -24,7 +25,7 @@ const EmployeeDashboard = () => {
   // Section mapping for dynamic rendering
   const sectionComponents = {
     addProduct: <AddProductsForm onClose={handleCloseForm} />,
-    productsInfo: <h2>Products Info (Under Construction)</h2>,
+    productsInfo: <ProductsInfoTable />,
     addSupplier: <AddSuppliersForm onClose={handleCloseForm} />,
     suppliersInfo: <h2>Suppliers Info (Under Construction)</h2>,
     addCustomer: <AddCustomersForm onClose={handleCloseForm} />,
