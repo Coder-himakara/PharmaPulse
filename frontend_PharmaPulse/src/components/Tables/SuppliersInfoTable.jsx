@@ -2,40 +2,32 @@ import './Tables.css';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const SuppliersInfoTable = ({ suppliers }) => {
+const SuppliersInfoTable = ({ suppliers, onEdit }) => {
   const [search, setSearch] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc'); // Ascending by default
-  const [isVisible, setIsVisible] = useState(true); // To control the visibility of the container
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [isVisible, setIsVisible] = useState(true);
 
   const filteredSuppliers = suppliers.filter((supplier) =>
     supplier.supplierName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  // Sort suppliers based on dateOfConnected
   const sortedSuppliers = filteredSuppliers.sort((a, b) => {
     const dateA = new Date(a.dateOfConnected);
     const dateB = new Date(b.dateOfConnected);
-
-    if (sortDirection === 'asc') {
-      return dateA - dateB; // Ascending order
-    } else {
-      return dateB - dateA; // Descending order
-    }
+    return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
-  // Toggle sort direction
   const toggleSort = () => {
     setSortDirection((prevDirection) =>
       prevDirection === 'asc' ? 'desc' : 'asc',
     );
   };
 
-  // Toggle visibility of suppliers container
   const handleClose = () => {
     setIsVisible(false);
   };
 
-  if (!isVisible) return null; // If not visible, render nothing
+  if (!isVisible) return null;
 
   return (
     <div className='items-container'>
@@ -92,7 +84,12 @@ const SuppliersInfoTable = ({ suppliers }) => {
                 <td>{supplier.email}</td>
                 <td>{supplier.dateOfConnected}</td>
                 <td>
-                  <button className='edit-button'>Edit</button>
+                  <button
+                    className='edit-button'
+                    onClick={() => onEdit(supplier)}
+                  >
+                    Edit
+                  </button>
                 </td>{' '}
               </tr>
             ))}
@@ -114,6 +111,7 @@ SuppliersInfoTable.propTypes = {
       dateOfConnected: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  onEdit: PropTypes.func.isRequired,
 };
 
 export default SuppliersInfoTable;
