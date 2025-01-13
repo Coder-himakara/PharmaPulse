@@ -2,40 +2,32 @@ import './Tables.css';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const ProductsInfoTable = ({ products }) => {
+const ProductsInfoTable = ({ products, onEdit }) => {
   const [search, setSearch] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc'); // Ascending by default
-  const [isVisible, setIsVisible] = useState(true); // To control the visibility of the container
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [isVisible, setIsVisible] = useState(true);
 
   const filteredProducts = products.filter((product) =>
     product.productName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  // Sort products based on expireDate
   const sortedProducts = filteredProducts.sort((a, b) => {
     const dateA = new Date(a.expireDate);
     const dateB = new Date(b.expireDate);
-
-    if (sortDirection === 'asc') {
-      return dateA - dateB; // Ascending order
-    } else {
-      return dateB - dateA; // Descending order
-    }
+    return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
-  // Toggle sort direction
   const toggleSort = () => {
     setSortDirection((prevDirection) =>
       prevDirection === 'asc' ? 'desc' : 'asc',
     );
   };
 
-  // Toggle visibility of products container
   const handleClose = () => {
     setIsVisible(false);
   };
 
-  if (!isVisible) return null; // If not visible, render nothing
+  if (!isVisible) return null;
 
   return (
     <div className='items-container'>
@@ -98,8 +90,13 @@ const ProductsInfoTable = ({ products }) => {
                 <td>{product.unitPrice}</td>
                 <td>{product.wholesalePrice}</td>
                 <td>
-                  <button className='edit-button'>Edit</button>
-                </td>{' '}
+                  <button
+                    className='edit-button'
+                    onClick={() => onEdit(product)}
+                  >
+                    Edit
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -123,6 +120,7 @@ ProductsInfoTable.propTypes = {
       wholesalePrice: PropTypes.number.isRequired,
     }),
   ).isRequired,
+  onEdit: PropTypes.func.isRequired,
 };
 
 export default ProductsInfoTable;

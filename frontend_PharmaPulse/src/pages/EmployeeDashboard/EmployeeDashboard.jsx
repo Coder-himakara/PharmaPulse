@@ -11,49 +11,77 @@ import AddCustomersForm from '../../components/Forms/AddCustomersForm';
 import ProductsInfoTable from '../../components/Tables/ProductsInfoTable';
 import SuppliersInfoTable from '../../components/Tables/SuppliersInfoTable';
 import CustomersInfoTable from '../../components/Tables/CustomersInfoTable';
+import EditProductsForm from '../../components/Forms/EditProductsForm';
 
 const EmployeeDashboard = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [activeLink, setActiveLink] = useState(null);
   const [products, setProducts] = useState([]);
-  const [suppliers, setSuppliers] = useState([]);
-  const [customers, setCustomers] = useState([]);
+  const [productToEdit, setProductToEdit] = useState(null);
 
   const handleSelect = (section) => {
     setSelectedSection(section);
     setActiveLink(section);
   };
 
+  const handleCancelEditProduct = () => {
+    setSelectedSection('productsInfo'); // Navigate to ProductsInfoTable
+    setActiveLink(null);
+    setProductToEdit(null);
+  };
+
   const handleCloseForm = () => {
     setSelectedSection(null);
     setActiveLink(null);
+    setProductToEdit(null);
   };
 
   const addProduct = (product) => {
     setProducts((prevProducts) => [...prevProducts, product]);
   };
 
-  const addSupplier = (supplier) => {
-    setSuppliers((prevSuppliers) => [...prevSuppliers, supplier]);
+  const updateProduct = (updatedProduct) => {
+    // Directly update the product in the list
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.productId === updatedProduct.productId
+          ? updatedProduct
+          : product,
+      ),
+    );
+    setSelectedSection('productsInfo');
   };
 
-  const addCustomer = (customer) => {
-    setCustomers((prevCustomers) => [...prevCustomers, customer]);
+  const handleEditProduct = (product) => {
+    setProductToEdit(product); // Set the product to edit
+    setSelectedSection('editProduct'); // Set the section to editProduct to show EditProductsForm
   };
 
   const sectionComponents = {
     addProduct: (
       <AddProductsForm onClose={handleCloseForm} onAddProduct={addProduct} />
     ),
-    productsInfo: <ProductsInfoTable products={products} />,
+    productsInfo: (
+      <ProductsInfoTable
+        products={products}
+        onEdit={handleEditProduct} // Pass handleEditProduct as the onEdit prop
+      />
+    ),
+    editProduct: (
+      <EditProductsForm
+        product={productToEdit}
+        onClose={handleCancelEditProduct}
+        onUpdateProduct={updateProduct}
+      />
+    ),
     addSupplier: (
-      <AddSuppliersForm onClose={handleCloseForm} onAddSupplier={addSupplier} />
+      <AddSuppliersForm onClose={handleCloseForm} onAddSupplier={() => {}} />
     ),
-    suppliersInfo: <SuppliersInfoTable suppliers={suppliers} />,
+    suppliersInfo: <SuppliersInfoTable suppliers={[]} />,
     addCustomer: (
-      <AddCustomersForm onClose={handleCloseForm} onAddCustomer={addCustomer} />
+      <AddCustomersForm onClose={handleCloseForm} onAddCustomer={() => {}} />
     ),
-    customersInfo: <CustomersInfoTable customers={customers} />,
+    customersInfo: <CustomersInfoTable customers={[]} />,
   };
 
   return (
