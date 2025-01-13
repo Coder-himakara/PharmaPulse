@@ -2,40 +2,32 @@ import './Tables.css';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-const CustomersInfoTable = ({ customers }) => {
+const CustomersInfoTable = ({ customers, onEdit }) => {
   const [search, setSearch] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc'); // Ascending by default
-  const [isVisible, setIsVisible] = useState(true); // To control the visibility of the container
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [isVisible, setIsVisible] = useState(true);
 
   const filteredCustomers = customers.filter((customer) =>
     customer.customerName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  // Sort customers based on dateOfConnected
   const sortedCustomers = filteredCustomers.sort((a, b) => {
     const dateA = new Date(a.dateOfConnected);
     const dateB = new Date(b.dateOfConnected);
-
-    if (sortDirection === 'asc') {
-      return dateA - dateB; // Ascending order
-    } else {
-      return dateB - dateA; // Descending order
-    }
+    return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
-  // Toggle sort direction
   const toggleSort = () => {
     setSortDirection((prevDirection) =>
       prevDirection === 'asc' ? 'desc' : 'asc',
     );
   };
 
-  // Toggle visibility of customers container
   const handleClose = () => {
     setIsVisible(false);
   };
 
-  if (!isVisible) return null; // If not visible, render nothing
+  if (!isVisible) return null;
 
   return (
     <div className='items-container'>
@@ -92,8 +84,13 @@ const CustomersInfoTable = ({ customers }) => {
                 <td>{customer.email}</td>
                 <td>{customer.dateOfConnected}</td>
                 <td>
-                  <button className='edit-button'>Edit</button>
-                </td>{' '}
+                  <button
+                    className='edit-button'
+                    onClick={() => onEdit(customer)}
+                  >
+                    Edit
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -114,6 +111,7 @@ CustomersInfoTable.propTypes = {
       dateOfConnected: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  onEdit: PropTypes.func.isRequired,
 };
 
 export default CustomersInfoTable;

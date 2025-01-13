@@ -46,7 +46,7 @@ const EditProductsForm = ({ product, onClose, onUpdateProduct }) => {
     e.preventDefault();
 
     // Basic validation
-    if (!formData.category) {
+    if (!formData) {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
@@ -62,9 +62,9 @@ const EditProductsForm = ({ product, onClose, onUpdateProduct }) => {
 
     // Clear the form and success message after a delay
     setTimeout(() => {
-      setSuccessMessage(''); // Reset success message
-      if (onClose) onClose(); // Close the form after success
-    }, 30000); // 3 seconds delay
+      setSuccessMessage('');
+      if (onClose) onClose();
+    }, 30000);
   };
 
   const handleCancel = () => {
