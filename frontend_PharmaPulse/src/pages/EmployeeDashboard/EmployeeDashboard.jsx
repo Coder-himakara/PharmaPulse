@@ -12,12 +12,18 @@ import ProductsInfoTable from '../../components/Tables/ProductsInfoTable';
 import SuppliersInfoTable from '../../components/Tables/SuppliersInfoTable';
 import CustomersInfoTable from '../../components/Tables/CustomersInfoTable';
 import EditProductsForm from '../../components/Forms/EditProductsForm';
+import EditSuppliersForm from '../../components/Forms/EditSuppliersForm';
+import EditCustomersForm from '../../components/Forms/EditCustomersForm';
 
 const EmployeeDashboard = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [activeLink, setActiveLink] = useState(null);
   const [products, setProducts] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [productToEdit, setProductToEdit] = useState(null);
+  const [supplierToEdit, setSupplierToEdit] = useState(null);
+  const [customerToEdit, setCustomerToEdit] = useState(null);
 
   const handleSelect = (section) => {
     setSelectedSection(section);
@@ -25,7 +31,19 @@ const EmployeeDashboard = () => {
   };
 
   const handleCancelEditProduct = () => {
-    setSelectedSection('productsInfo'); // Navigate to ProductsInfoTable
+    setSelectedSection('productsInfo');
+    setActiveLink(null);
+    setProductToEdit(null);
+  };
+
+  const handleCancelEditSupplier = () => {
+    setSelectedSection('suppliersInfo');
+    setActiveLink(null);
+    setProductToEdit(null);
+  };
+
+  const handleCancelEditCustomer = () => {
+    setSelectedSection('customersInfo');
     setActiveLink(null);
     setProductToEdit(null);
   };
@@ -40,8 +58,15 @@ const EmployeeDashboard = () => {
     setProducts((prevProducts) => [...prevProducts, product]);
   };
 
+  const addSupplier = (supplier) => {
+    setSuppliers((prevSuppliers) => [...prevSuppliers, supplier]);
+  };
+
+  const addCustomer = (customer) => {
+    setCustomers((prevCustomers) => [...prevCustomers, customer]);
+  };
+
   const updateProduct = (updatedProduct) => {
-    // Directly update the product in the list
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
         product.productId === updatedProduct.productId
@@ -52,9 +77,41 @@ const EmployeeDashboard = () => {
     setSelectedSection('productsInfo');
   };
 
+  const updateSupplier = (updatedSupplier) => {
+    setSuppliers((prevSuppliers) =>
+      prevSuppliers.map((supplier) =>
+        supplier.supplierId === updatedSupplier.supplierId
+          ? updatedSupplier
+          : supplier,
+      ),
+    );
+    setSelectedSection('suppliersInfo');
+  };
+
+  const updateCustomer = (updatedCustomer) => {
+    setCustomers((prevCustomers) =>
+      prevCustomers.map((customer) =>
+        customer.customerId === updatedCustomer.customerId
+          ? updatedCustomer
+          : customer,
+      ),
+    );
+    setSelectedSection('customersInfo');
+  };
+
   const handleEditProduct = (product) => {
-    setProductToEdit(product); // Set the product to edit
-    setSelectedSection('editProduct'); // Set the section to editProduct to show EditProductsForm
+    setProductToEdit(product);
+    setSelectedSection('editProduct');
+  };
+
+  const handleEditSupplier = (supplier) => {
+    setSupplierToEdit(supplier);
+    setSelectedSection('editSupplier');
+  };
+
+  const handleEditCustomer = (customer) => {
+    setCustomerToEdit(customer);
+    setSelectedSection('editCustomer');
   };
 
   const sectionComponents = {
@@ -74,14 +131,38 @@ const EmployeeDashboard = () => {
         onUpdateProduct={updateProduct}
       />
     ),
+
     addSupplier: (
-      <AddSuppliersForm onClose={handleCloseForm} onAddSupplier={() => {}} />
+      <AddSuppliersForm onClose={handleCloseForm} onAddSupplier={addSupplier} />
     ),
-    suppliersInfo: <SuppliersInfoTable suppliers={[]} />,
+
+    suppliersInfo: (
+      <SuppliersInfoTable suppliers={suppliers} onEdit={handleEditSupplier} />
+    ),
+
+    editSupplier: (
+      <EditSuppliersForm
+        supplier={supplierToEdit}
+        onClose={handleCancelEditSupplier}
+        onUpdateSupplier={updateSupplier}
+      />
+    ),
+
     addCustomer: (
-      <AddCustomersForm onClose={handleCloseForm} onAddCustomer={() => {}} />
+      <AddCustomersForm onClose={handleCloseForm} onAddCustomer={addCustomer} />
     ),
-    customersInfo: <CustomersInfoTable customers={[]} />,
+
+    customersInfo: (
+      <CustomersInfoTable customers={customers} onEdit={handleEditCustomer} />
+    ),
+
+    editCustomer: (
+      <EditCustomersForm
+        customer={customerToEdit}
+        onClose={handleCancelEditCustomer}
+        onUpdateCustomer={updateCustomer}
+      />
+    ),
   };
 
   return (
