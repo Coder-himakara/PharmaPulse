@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class AppWideExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<StandardResponse> handleException(Exception e) {
-        return new ResponseEntity<>(
-                new StandardResponse(500, "Error Found", e.getCause() + " Please try again later"),
-                HttpStatus.INTERNAL_SERVER_ERROR
-        );
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<StandardResponse> handleException(Exception e) {
+//        return new ResponseEntity<>(
+//                new StandardResponse(500, "Error Found", e.getCause() + " Please try again later"),
+//                HttpStatus.INTERNAL_SERVER_ERROR
+//        );
+//    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<StandardResponse> handleNotFoundException(NotFoundException e) {
