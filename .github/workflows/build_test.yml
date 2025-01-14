@@ -1,11 +1,12 @@
-name: Build and Test
+name: Deployment Code Build and Test
 on:
-   workflow_run:
-     workflows: ["Deployment Code Quality and Linting"]
-     types:
-       - completed
-     branches:
-       - main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 
 jobs:
     build:
