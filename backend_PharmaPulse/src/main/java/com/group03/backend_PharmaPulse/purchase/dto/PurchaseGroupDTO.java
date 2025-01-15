@@ -5,10 +5,9 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Builder
 public class PurchaseGroupDTO {
-    private int purchaseGroupId;
+    //private int purchaseGroupId;
 
     private String purchaseGroupName;
 
@@ -21,4 +20,5 @@ public class PurchaseGroupDTO {
     private String purchaseGroupFaxNo;
 
     private String purchaseGroupEmail;
+
 }

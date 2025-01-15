@@ -24,14 +24,17 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
 
     @Override
     public List<PurchaseGroupDTO> getAllPurchaseGroups() {
-
         List<PurchaseGroup> purchaseGroups= purchaseGroupRepo.findAll();
         return purchaseGroupMapper.toDTOsList(purchaseGroups);
     }
 
     @Override
     public PurchaseGroupDTO getPurchaseGroupById(int id) {
-
         return null;
+    }
+
+    @Override
+    public PurchaseGroup addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO) {
+        return purchaseGroupRepo.save(purchaseGroupMapper.toEntity(purchaseGroupDTO));
     }
 }

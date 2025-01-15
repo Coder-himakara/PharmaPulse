@@ -8,4 +8,6 @@ import java.util.List;
 public interface PurchaseGroupService {
     public List<PurchaseGroupDTO> getAllPurchaseGroups();
     public PurchaseGroupDTO getPurchaseGroupById(int id);
+
+    public PurchaseGroup addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO);
 }

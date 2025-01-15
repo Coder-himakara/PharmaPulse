@@ -5,10 +5,7 @@ import com.group03.backend_PharmaPulse.purchase.service.PurchaseGroupService;
 import com.group03.backend_PharmaPulse.util.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,7 +22,7 @@ public class PurchaseGroupController {
     public ResponseEntity<StandardResponse> getAllPurchaseGroups() {
         List<PurchaseGroupDTO> purchaseGroupDTOS  = purchaseGroupService.getAllPurchaseGroups();
         return new ResponseEntity<StandardResponse>(
-                new StandardResponse(201,"Success",purchaseGroupDTOS+"Retrived all purchase groups"),
+                new StandardResponse(201,"Success",purchaseGroupDTOS),
                 HttpStatus.CREATED
         );
     }
@@ -35,8 +32,19 @@ public class PurchaseGroupController {
     public ResponseEntity<StandardResponse> getPurchaseGroupsById(@PathVariable int id) {
         String message = purchaseGroupService.getPurchaseGroupById(id).toString();
         return new ResponseEntity<StandardResponse>(
-                new StandardResponse(201,"Success",message+"Retrived all purchase groups"),
+                new StandardResponse(201,"Success",message),
                 HttpStatus.CREATED
         );
     }
+
+    @PostMapping("/add")
+    public ResponseEntity<StandardResponse> addPurchaseGroup(@RequestBody PurchaseGroupDTO purchaseGroupDTO) {
+        String message=purchaseGroupService.addPurchaseGroup(purchaseGroupDTO).toString();
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(201,"Success",message),
+                HttpStatus.CREATED
+        );
+
+    }
+
 }

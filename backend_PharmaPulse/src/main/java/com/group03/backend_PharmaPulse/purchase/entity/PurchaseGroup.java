@@ -7,8 +7,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Builder
 @Table(name = "purchase_group")
 public class PurchaseGroup {
 
