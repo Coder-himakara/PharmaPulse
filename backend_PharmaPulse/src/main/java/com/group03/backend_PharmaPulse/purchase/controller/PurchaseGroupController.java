@@ -25,4 +25,9 @@ public class PurchaseGroupController {
                 HttpStatus.CREATED
         );
     }
+//    @GetMapping("/all")
+//    public String getAllPurchaseGroups() {
+//        String message = "Successfully ";
+//        return message+"Retrived all purchase groups";
+//    }
 }
