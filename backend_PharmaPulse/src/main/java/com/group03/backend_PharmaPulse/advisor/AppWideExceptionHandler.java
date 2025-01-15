@@ -1,6 +1,7 @@
 package com.group03.backend_PharmaPulse.advisor;
 
 import com.group03.backend_PharmaPulse.exception.NotFoundException;
+import com.group03.backend_PharmaPulse.purchase.exception.PurchaseGroupNotFoundException;
 import com.group03.backend_PharmaPulse.util.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,14 @@ public class AppWideExceptionHandler {
     public ResponseEntity<StandardResponse> handleNotFoundException(NotFoundException e) {
         return new ResponseEntity<>(
                 new StandardResponse(404, "Error Found", e.getMessage()+" not found"),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(PurchaseGroupNotFoundException.class)
+    public ResponseEntity<StandardResponse> handleNotFoundException(PurchaseGroupNotFoundException e) {
+        return new ResponseEntity<>(
+                new StandardResponse(404, "No PurchaseGroup in the Database", e.getMessage()+" not found"),
                 HttpStatus.NOT_FOUND
         );
     }

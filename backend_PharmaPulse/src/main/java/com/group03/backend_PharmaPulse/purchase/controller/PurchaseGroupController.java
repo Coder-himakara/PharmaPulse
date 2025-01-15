@@ -19,15 +19,12 @@ public class PurchaseGroupController {
     // This method is used to retrieve all purchase groups
     @GetMapping("/all")
     public ResponseEntity<StandardResponse> getAllPurchaseGroups() {
-        String message = "Successfully ";
+        String message = purchaseGroupService.getAllPurchaseGroups().toString();
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(201,"Success",message+"Retrived all purchase groups"),
                 HttpStatus.CREATED
         );
     }
-//    @GetMapping("/all")
-//    public String getAllPurchaseGroups() {
-//        String message = "Successfully ";
-//        return message+"Retrived all purchase groups";
-//    }
+
+    // This method is used to retrieve a purchase group by its id
 }
