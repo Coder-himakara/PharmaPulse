@@ -28,11 +28,13 @@ const Navbar = () => {
               <a href='#profile' className='dropdown-item'>
                 <FaUser className='dropdown-item-icon' />
                 Profile
+
               </a>
 
               <a href='#logout' className='dropdown-item'>
                 <FaSignOutAlt className='dropdown-item-icon' />
                 Log Out
+
               </a>
             </div>
           </div>

@@ -12,9 +12,11 @@ const Footer = () => {
           &copy; A &amp; K Agencies PharmaPulse. All Rights Reserved.
         </div>
         <div className='footer-right'>Developed by: Team PharmaPulse</div>
+
       </div>
     </footer>
   );
 };
 
 export default Footer;
+
