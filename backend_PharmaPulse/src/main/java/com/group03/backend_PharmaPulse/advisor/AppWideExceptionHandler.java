@@ -30,7 +30,7 @@ public class AppWideExceptionHandler {
     @ExceptionHandler(PurchaseGroupNotFoundException.class)
     public ResponseEntity<StandardResponse> handleNotFoundException(PurchaseGroupNotFoundException e) {
         return new ResponseEntity<>(
-                new StandardResponse(404, "No PurchaseGroup in the Database", e.getMessage()+" not found"),
+                new StandardResponse(404, "No PurchaseGroup in the Database", e.getMessage()),
                 HttpStatus.NOT_FOUND
         );
     }

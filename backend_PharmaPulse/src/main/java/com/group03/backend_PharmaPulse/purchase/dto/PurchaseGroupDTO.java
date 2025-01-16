@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class PurchaseGroupDTO {
-    //private int purchaseGroupId;
+    private int purchaseGroupId;
 
     private String purchaseGroupName;
 

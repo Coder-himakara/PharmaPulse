@@ -16,7 +16,6 @@ public class PurchaseGroupController {
     public PurchaseGroupController(PurchaseGroupService purchaseGroupService) {
         this.purchaseGroupService = purchaseGroupService;
     }
-
     // This method is used to retrieve all purchase groups
     @GetMapping("/all")
     public ResponseEntity<StandardResponse> getAllPurchaseGroups() {
@@ -26,17 +25,16 @@ public class PurchaseGroupController {
                 HttpStatus.CREATED
         );
     }
-
     // This method is used to retrieve a purchase group by its id
     @GetMapping("/{id}")
     public ResponseEntity<StandardResponse> getPurchaseGroupsById(@PathVariable int id) {
-        String message = purchaseGroupService.getPurchaseGroupById(id).toString();
+        PurchaseGroupDTO selectedPurchaseGroup = purchaseGroupService.getPurchaseGroupById(id);
         return new ResponseEntity<StandardResponse>(
-                new StandardResponse(201,"Success",message),
+                new StandardResponse(201,"Success",selectedPurchaseGroup),
                 HttpStatus.CREATED
         );
     }
-
+    // This method is used to add a purchase group
     @PostMapping("/add")
     public ResponseEntity<StandardResponse> addPurchaseGroup(@RequestBody PurchaseGroupDTO purchaseGroupDTO) {
         PurchaseGroupDTO savedPurchaseGroup=purchaseGroupService.addPurchaseGroup(purchaseGroupDTO);
