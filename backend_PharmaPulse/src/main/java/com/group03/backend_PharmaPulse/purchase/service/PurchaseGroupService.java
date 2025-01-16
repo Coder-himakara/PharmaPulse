@@ -9,5 +9,5 @@ public interface PurchaseGroupService {
     public List<PurchaseGroupDTO> getAllPurchaseGroups();
     public PurchaseGroupDTO getPurchaseGroupById(int id);
 
-    public PurchaseGroup addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO);
+    public PurchaseGroupDTO addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO);
 }

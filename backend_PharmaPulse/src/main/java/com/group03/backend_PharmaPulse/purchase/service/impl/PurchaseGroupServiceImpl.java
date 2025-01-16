@@ -34,7 +34,10 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
     }
 
     @Override
-    public PurchaseGroup addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO) {
-        return purchaseGroupRepo.save(purchaseGroupMapper.toEntity(purchaseGroupDTO));
+    public PurchaseGroupDTO addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO) {
+
+        PurchaseGroup savedPurchaseGroup= purchaseGroupRepo.save(purchaseGroupMapper.toEntity(purchaseGroupDTO));
+        return purchaseGroupMapper.toDTO(savedPurchaseGroup);
+
     }
 }

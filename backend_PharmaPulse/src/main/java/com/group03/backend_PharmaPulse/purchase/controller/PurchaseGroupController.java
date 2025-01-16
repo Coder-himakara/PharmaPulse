@@ -39,9 +39,9 @@ public class PurchaseGroupController {
 
     @PostMapping("/add")
     public ResponseEntity<StandardResponse> addPurchaseGroup(@RequestBody PurchaseGroupDTO purchaseGroupDTO) {
-        String message=purchaseGroupService.addPurchaseGroup(purchaseGroupDTO).toString();
+        PurchaseGroupDTO savedPurchaseGroup=purchaseGroupService.addPurchaseGroup(purchaseGroupDTO);
         return new ResponseEntity<StandardResponse>(
-                new StandardResponse(201,"Success",message),
+                new StandardResponse(201,"Success",savedPurchaseGroup),
                 HttpStatus.CREATED
         );
 
