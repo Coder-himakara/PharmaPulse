@@ -37,7 +37,7 @@ public class PurchaseGroupController {
     }
     // This method is used to add a purchase group
     @PostMapping("/add")
-    public ResponseEntity<StandardResponse> addPurchaseGroup(@Valid
+    public ResponseEntity<StandardResponse> addPurchaseGroups(@Valid
                                                                  @RequestBody PurchaseGroupDTO purchaseGroupDTO) {
         PurchaseGroupDTO savedPurchaseGroup=purchaseGroupService.addPurchaseGroup(purchaseGroupDTO);
         return new ResponseEntity<StandardResponse>(
@@ -47,7 +47,7 @@ public class PurchaseGroupController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse> updatePurchaseGroup(@PathVariable int id,
+    public ResponseEntity<StandardResponse> updatePurchaseGroups(@PathVariable int id,
                                                                 @RequestBody PurchaseGroupDTO purchaseGroupDTO) {
         PurchaseGroupDTO updatedPurchaseGroup=purchaseGroupService.updatePurchaseGroup(id,purchaseGroupDTO);
         return new ResponseEntity<StandardResponse>(
