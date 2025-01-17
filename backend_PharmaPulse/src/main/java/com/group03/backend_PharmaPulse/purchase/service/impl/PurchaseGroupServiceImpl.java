@@ -48,11 +48,13 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
     }
 
     @Override
-    public PurchaseGroupDTO updatePurchaseGroup(int id,PurchaseGroupDTO purchaseGroupDTO) {
-        Optional<PurchaseGroup> purchaseGroup= purchaseGroupRepo.findById(id);
+    public PurchaseGroupDTO updatePurchaseGroup(int id, PurchaseGroupDTO purchaseGroupDTO) {
+        Optional<PurchaseGroup> purchaseGroup = purchaseGroupRepo.findById(id);
         if (purchaseGroup.isPresent()) {
-            PurchaseGroup updatedPurchaseGroup = purchaseGroupRepo.save(purchaseGroupMapper.toEntity(purchaseGroupDTO));
-            return purchaseGroupMapper.toDTO(updatedPurchaseGroup);
+            PurchaseGroup updatedPurchaseGroup = purchaseGroupMapper.toEntity(purchaseGroupDTO);
+            updatedPurchaseGroup.setPurchaseGroupId(id); // Ensure the ID is set to the existing entity's ID
+            PurchaseGroup savedPurchaseGroup = purchaseGroupRepo.save(updatedPurchaseGroup);
+            return purchaseGroupMapper.toDTO(savedPurchaseGroup);
         } else {
             throw new PurchaseGroupNotFoundException("PurchaseGroup not found");
         }

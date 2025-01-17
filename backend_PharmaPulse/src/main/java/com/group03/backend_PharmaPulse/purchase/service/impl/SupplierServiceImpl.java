@@ -56,8 +56,10 @@ public class SupplierServiceImpl implements SupplierService {
     public SupplierDTO updateSupplier(int id, SupplierDTO supplierDTO) {
         Optional<Supplier> supplier = supplierRepo.findById(id);
         if (supplier.isPresent()) {
-            Supplier updatedSupplier = supplierRepo.save(supplierMapper.toEntity(supplierDTO));
-            return supplierMapper.toDTO(updatedSupplier);
+            Supplier updatedSupplier = supplierMapper.toEntity(supplierDTO);
+            updatedSupplier.setSupplier_id(id); // Ensure the ID is set to the existing entity's ID
+            Supplier savedSupplier = supplierRepo.save(updatedSupplier);
+            return supplierMapper.toDTO(savedSupplier);
         } else {
             try {
                 throw new NotFoundException("Supplier not found");
