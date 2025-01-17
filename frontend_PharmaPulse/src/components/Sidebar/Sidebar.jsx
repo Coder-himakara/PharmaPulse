@@ -1,109 +1,86 @@
-import './Sidebar.css';
-import PropTypes from 'prop-types';
+import "./Sidebar.css";
+import { NavLink } from "react-router-dom";
 
-const Sidebar = ({ onSelect, activeLink }) => {
+const Sidebar = () => {
   return (
-    <aside className='sidebar'>
-      <div className='sidebar-section'>
+    <aside className="sidebar">
+      <div className="sidebar-section">
         <h2>Products</h2>
         <ul>
           <li>
-            <a
-              href='#'
-              onClick={() => onSelect('addProduct')}
-              className={
-                activeLink === 'addProduct'
-                  ? 'sidebar-link active'
-                  : 'sidebar-link'
+            <NavLink
+              to="/add-products"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
               }
             >
               Add Products
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a
-              href='#'
-              onClick={() => onSelect('productsInfo')}
-              className={
-                activeLink === 'productsInfo'
-                  ? 'sidebar-link active'
-                  : 'sidebar-link'
+            <NavLink
+              to="/products-info"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
               }
             >
               Products Info
-            </a>
+            </NavLink>
           </li>
         </ul>
       </div>
-      <div className='sidebar-section'>
+      <div className="sidebar-section">
         <h2>Suppliers</h2>
         <ul>
           <li>
-            <a
-              href='#'
-              onClick={() => onSelect('addSupplier')}
-              className={
-                activeLink === 'addSupplier'
-                  ? 'sidebar-link active'
-                  : 'sidebar-link'
+            <NavLink
+              to="/add-suppliers"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
               }
             >
               Add Suppliers
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a
-              href='#'
-              onClick={() => onSelect('suppliersInfo')}
-              className={
-                activeLink === 'suppliersInfo'
-                  ? 'sidebar-link active'
-                  : 'sidebar-link'
+            <NavLink
+              to="/suppliers-info"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
               }
             >
               Suppliers Info
-            </a>
+            </NavLink>
           </li>
         </ul>
       </div>
-      <div className='sidebar-section'>
+      <div className="sidebar-section">
         <h2>Customers</h2>
         <ul>
           <li>
-            <a
-              href='#'
-              onClick={() => onSelect('addCustomer')}
-              className={
-                activeLink === 'addCustomer'
-                  ? 'sidebar-link active'
-                  : 'sidebar-link'
+            <NavLink
+              to="/add-customers"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
               }
             >
               Add Customers
-            </a>
+            </NavLink>
           </li>
           <li>
-            <a
-              href='#'
-              onClick={() => onSelect('customersInfo')}
-              className={
-                activeLink === 'customersInfo'
-                  ? 'sidebar-link active'
-                  : 'sidebar-link'
+            <NavLink
+              to="/customers-info"
+              className={({ isActive }) =>
+                isActive ? "sidebar-link active" : "sidebar-link"
               }
             >
               Customers Info
-            </a>
+            </NavLink>
           </li>
         </ul>
       </div>
     </aside>
   );
-};
-
-Sidebar.propTypes = {
-  onSelect: PropTypes.func.isRequired,
-  activeLink: PropTypes.string.isRequired,
 };
 
 export default Sidebar;
