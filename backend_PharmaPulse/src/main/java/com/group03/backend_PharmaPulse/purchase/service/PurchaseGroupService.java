@@ -10,4 +10,6 @@ public interface PurchaseGroupService {
     public PurchaseGroupDTO getPurchaseGroupById(int id);
 
     public PurchaseGroupDTO addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO);
+
+    public PurchaseGroupDTO updatePurchaseGroup(int id,PurchaseGroupDTO purchaseGroupDTO);
 }

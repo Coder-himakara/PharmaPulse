@@ -17,11 +17,11 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
 
     private PurchaseGroupRepo purchaseGroupRepo;
 
-    @Autowired
     private PurchaseGroupMapper purchaseGroupMapper;
 
-    public PurchaseGroupServiceImpl(PurchaseGroupRepo purchaseGroupRepo) {
+    public PurchaseGroupServiceImpl(PurchaseGroupRepo purchaseGroupRepo,PurchaseGroupMapper purchaseGroupMapper) {
         this.purchaseGroupRepo = purchaseGroupRepo;
+        this.purchaseGroupMapper = purchaseGroupMapper;
     }
 
     @Override
@@ -32,7 +32,6 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
         }else{
             throw new PurchaseGroupNotFoundException("No PurchaseGroups found");
         }
-
     }
 
     @Override
@@ -44,9 +43,18 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
 
     @Override
     public PurchaseGroupDTO addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO) {
-
         PurchaseGroup savedPurchaseGroup= purchaseGroupRepo.save(purchaseGroupMapper.toEntity(purchaseGroupDTO));
         return purchaseGroupMapper.toDTO(savedPurchaseGroup);
+    }
 
+    @Override
+    public PurchaseGroupDTO updatePurchaseGroup(int id,PurchaseGroupDTO purchaseGroupDTO) {
+        Optional<PurchaseGroup> purchaseGroup= purchaseGroupRepo.findById(id);
+        if (purchaseGroup.isPresent()) {
+            PurchaseGroup updatedPurchaseGroup = purchaseGroupRepo.save(purchaseGroupMapper.toEntity(purchaseGroupDTO));
+            return purchaseGroupMapper.toDTO(updatedPurchaseGroup);
+        } else {
+            throw new PurchaseGroupNotFoundException("PurchaseGroup not found");
+        }
     }
 }
