@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import './Forms.css';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
-const AddProductsForm = ({ onClose, onAddProduct }) => {
+const AddProductsForm = ({ onAddProduct }) => {
   const [formData, setFormData] = useState({
     productName: '',
     productId: '',
@@ -14,6 +15,8 @@ const AddProductsForm = ({ onClose, onAddProduct }) => {
     unitPrice: '',
     wholesalePrice: '',
   });
+
+  const navigate = useNavigate();
 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -57,11 +60,11 @@ const AddProductsForm = ({ onClose, onAddProduct }) => {
         wholesalePrice: '',
       });
       setSuccessMessage('');
-    }, 3000);
+    }, 2000);
   };
 
   const handleCancel = () => {
-    if (onClose) onClose();
+    navigate('/sidebar');
   };
 
   return (
@@ -187,7 +190,6 @@ const AddProductsForm = ({ onClose, onAddProduct }) => {
 };
 
 AddProductsForm.propTypes = {
-  onClose: PropTypes.func.isRequired,
   onAddProduct: PropTypes.func.isRequired,
 };
 

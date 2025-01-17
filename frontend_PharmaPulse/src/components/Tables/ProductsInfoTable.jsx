@@ -1,11 +1,12 @@
 import './Tables.css';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
-const ProductsInfoTable = ({ products, onEdit }) => {
+const ProductsInfoTable = ({ products }) => {
   const [search, setSearch] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
-  const [isVisible, setIsVisible] = useState(true);
+  const navigate = useNavigate();
 
   const filteredProducts = products.filter((product) =>
     product.productName.toLowerCase().includes(search.toLowerCase()),
@@ -24,10 +25,13 @@ const ProductsInfoTable = ({ products, onEdit }) => {
   };
 
   const handleClose = () => {
-    setIsVisible(false);
+    navigate('/sidebar');
   };
 
-  if (!isVisible) return null;
+  const handleEdit = (productId) => {
+    const product = products.find((p) => p.productId === productId); // Find the specific product
+    navigate(`/edit-product/${productId}`, { state: { product } }); // Pass the product data to the Edit form
+  };
 
   return (
     <div className='items-container'>
@@ -92,7 +96,7 @@ const ProductsInfoTable = ({ products, onEdit }) => {
                 <td>
                   <button
                     className='edit-button'
-                    onClick={() => onEdit(product)}
+                    onClick={() => handleEdit(product.productId)}
                   >
                     Edit
                   </button>
@@ -120,7 +124,6 @@ ProductsInfoTable.propTypes = {
       wholesalePrice: PropTypes.number.isRequired,
     }),
   ).isRequired,
-  onEdit: PropTypes.func.isRequired,
 };
 
 export default ProductsInfoTable;

@@ -1,19 +1,19 @@
-import { useState } from 'react';
+/*import { useState } from "react";
 
-import Navbar from '../../components/Navbar/Navbar';
-import Sidebar from '../../components/Sidebar/Sidebar';
-import DashboardCard from '../../components/DashboardCard/DashboardCard';
-import Footer from '../../components/Footer/Footer';
+import Navbar from "../../components/Navbar/Navbar";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import DashboardCard from "../../components/DashboardCard/DashboardCard";
+import Footer from "../../components/Footer/Footer";
 
-import AddProductsForm from '../../components/Forms/AddProductsForm';
-import AddSuppliersForm from '../../components/Forms/AddSuppliersForm';
-import AddCustomersForm from '../../components/Forms/AddCustomersForm';
-import ProductsInfoTable from '../../components/Tables/ProductsInfoTable';
-import SuppliersInfoTable from '../../components/Tables/SuppliersInfoTable';
-import CustomersInfoTable from '../../components/Tables/CustomersInfoTable';
-import EditProductsForm from '../../components/Forms/EditProductsForm';
-import EditSuppliersForm from '../../components/Forms/EditSuppliersForm';
-import EditCustomersForm from '../../components/Forms/EditCustomersForm';
+import AddProductsForm from "../../components/Forms/AddProductsForm";
+import AddSuppliersForm from "../../components/Forms/AddSuppliersForm";
+import AddCustomersForm from "../../components/Forms/AddCustomersForm";
+import ProductsInfoTable from "../../components/Tables/ProductsInfoTable";
+import SuppliersInfoTable from "../../components/Tables/SuppliersInfoTable";
+import CustomersInfoTable from "../../components/Tables/CustomersInfoTable";
+import EditProductsForm from "../../components/Forms/EditProductsForm";
+import EditSuppliersForm from "../../components/Forms/EditSuppliersForm";
+import EditCustomersForm from "../../components/Forms/EditCustomersForm";
 
 const EmployeeDashboard = () => {
   const [selectedSection, setSelectedSection] = useState(null);
@@ -31,19 +31,19 @@ const EmployeeDashboard = () => {
   };
 
   const handleCancelEditProduct = () => {
-    setSelectedSection('productsInfo');
+    setSelectedSection("productsInfo");
     setActiveLink(null);
     setProductToEdit(null);
   };
 
   const handleCancelEditSupplier = () => {
-    setSelectedSection('suppliersInfo');
+    setSelectedSection("suppliersInfo");
     setActiveLink(null);
     setProductToEdit(null);
   };
 
   const handleCancelEditCustomer = () => {
-    setSelectedSection('customersInfo');
+    setSelectedSection("customersInfo");
     setActiveLink(null);
     setProductToEdit(null);
   };
@@ -71,10 +71,10 @@ const EmployeeDashboard = () => {
       prevProducts.map((product) =>
         product.productId === updatedProduct.productId
           ? updatedProduct
-          : product,
-      ),
+          : product
+      )
     );
-    setSelectedSection('productsInfo');
+    setSelectedSection("productsInfo");
   };
 
   const updateSupplier = (updatedSupplier) => {
@@ -82,10 +82,10 @@ const EmployeeDashboard = () => {
       prevSuppliers.map((supplier) =>
         supplier.supplierId === updatedSupplier.supplierId
           ? updatedSupplier
-          : supplier,
-      ),
+          : supplier
+      )
     );
-    setSelectedSection('suppliersInfo');
+    setSelectedSection("suppliersInfo");
   };
 
   const updateCustomer = (updatedCustomer) => {
@@ -93,25 +93,25 @@ const EmployeeDashboard = () => {
       prevCustomers.map((customer) =>
         customer.customerId === updatedCustomer.customerId
           ? updatedCustomer
-          : customer,
-      ),
+          : customer
+      )
     );
-    setSelectedSection('customersInfo');
+    setSelectedSection("customersInfo");
   };
 
   const handleEditProduct = (product) => {
     setProductToEdit(product);
-    setSelectedSection('editProduct');
+    setSelectedSection("editProduct");
   };
 
   const handleEditSupplier = (supplier) => {
     setSupplierToEdit(supplier);
-    setSelectedSection('editSupplier');
+    setSelectedSection("editSupplier");
   };
 
   const handleEditCustomer = (customer) => {
     setCustomerToEdit(customer);
-    setSelectedSection('editCustomer');
+    setSelectedSection("editCustomer");
   };
 
   const sectionComponents = {
@@ -166,10 +166,10 @@ const EmployeeDashboard = () => {
   };
 
   return (
-    <div className='dashboard-container'>
+    <div className="dashboard-container">
       <Navbar />
       <Sidebar onSelect={handleSelect} activeLink={activeLink} />
-      <div className='dashboard-content'>
+      <div className="dashboard-content">
         <DashboardCard
           content={
             sectionComponents[selectedSection] || (
@@ -179,6 +179,31 @@ const EmployeeDashboard = () => {
         />
       </div>
       <Footer />
+    </div>
+  );
+};
+
+export default EmployeeDashboard;
+
+*/
+import { BrowserRouter as Router } from 'react-router-dom';
+import Navbar from '../../components/Navbar/Navbar';
+import Sidebar from '../../components/Sidebar/Sidebar';
+import DashboardCard from '../../components/DashboardCard/DashboardCard';
+import Footer from '../../components/Footer/Footer';
+import AppRoutes from '../../routes/AppRoutes';
+
+const EmployeeDashboard = () => {
+  return (
+    <div className='employee-dashboard'>
+      <Router>
+        <Navbar />
+        <Sidebar />
+        <div className='dashboard-content'>
+          <DashboardCard content={<AppRoutes />} />
+        </div>
+        <Footer />
+      </Router>
     </div>
   );
 };

@@ -1,11 +1,12 @@
 import './Tables.css';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
-const CustomersInfoTable = ({ customers, onEdit }) => {
+const CustomersInfoTable = ({ customers }) => {
   const [search, setSearch] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
-  const [isVisible, setIsVisible] = useState(true);
+  const navigate = useNavigate();
 
   const filteredCustomers = customers.filter((customer) =>
     customer.customerName.toLowerCase().includes(search.toLowerCase()),
@@ -24,10 +25,13 @@ const CustomersInfoTable = ({ customers, onEdit }) => {
   };
 
   const handleClose = () => {
-    setIsVisible(false);
+    navigate('/sidebar');
   };
 
-  if (!isVisible) return null;
+  const handleEdit = (customerId) => {
+    const customer = customers.find((c) => c.customerId === customerId); // Find the specific customer
+    navigate(`/edit-customer/${customerId}`, { state: { customer } }); // Pass the customer data to the Edit form
+  };
 
   return (
     <div className='items-container'>
@@ -86,7 +90,7 @@ const CustomersInfoTable = ({ customers, onEdit }) => {
                 <td>
                   <button
                     className='edit-button'
-                    onClick={() => onEdit(customer)}
+                    onClick={() => handleEdit(customer.customerId)}
                   >
                     Edit
                   </button>
@@ -111,7 +115,6 @@ CustomersInfoTable.propTypes = {
       dateOfConnected: PropTypes.string.isRequired,
     }),
   ).isRequired,
-  onEdit: PropTypes.func.isRequired,
 };
 
 export default CustomersInfoTable;

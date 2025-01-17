@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './Forms.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const EditSuppliersForm = ({ supplier, onClose, onUpdateSupplier }) => {
+const EditSuppliersForm = ({ onUpdateSupplier }) => {
+  const { state } = useLocation(); // Access the state passed by navigate
+  const supplier = state?.supplier; // Get supplier from the state
+
   const [formData, setFormData] = useState({
     supplierName: '',
     supplierId: '',
@@ -11,6 +15,8 @@ const EditSuppliersForm = ({ supplier, onClose, onUpdateSupplier }) => {
     email: '',
     dateOfConnected: '',
   });
+
+  const navigate = useNavigate();
 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -57,12 +63,12 @@ const EditSuppliersForm = ({ supplier, onClose, onUpdateSupplier }) => {
     // Clear the form and success message after a delay
     setTimeout(() => {
       setSuccessMessage('');
-      if (onClose) onClose();
-    }, 30000);
+      navigate('/suppliers-info');
+    }, 2000);
   };
 
   const handleCancel = () => {
-    if (onClose) onClose();
+    navigate('/suppliers-info');
   };
 
   return (
@@ -151,7 +157,6 @@ const EditSuppliersForm = ({ supplier, onClose, onUpdateSupplier }) => {
 
 EditSuppliersForm.propTypes = {
   supplier: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
   onUpdateSupplier: PropTypes.func.isRequired,
 };
 

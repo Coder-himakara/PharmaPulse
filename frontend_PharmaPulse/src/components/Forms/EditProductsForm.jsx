@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './Forms.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const EditProductsForm = ({ product, onClose, onUpdateProduct }) => {
+const EditProductsForm = ({ onUpdateProduct }) => {
+  const { state } = useLocation(); // Access the state passed by navigate
+  const product = state?.product; // Get product from the state
+
   const [formData, setFormData] = useState({
     productName: '',
     productId: '',
@@ -14,6 +18,8 @@ const EditProductsForm = ({ product, onClose, onUpdateProduct }) => {
     unitPrice: '',
     wholesalePrice: '',
   });
+
+  const navigate = useNavigate();
 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -63,12 +69,12 @@ const EditProductsForm = ({ product, onClose, onUpdateProduct }) => {
     // Clear the form and success message after a delay
     setTimeout(() => {
       setSuccessMessage('');
-      if (onClose) onClose();
-    }, 30000);
+      navigate('/products-info');
+    }, 2000);
   };
 
   const handleCancel = () => {
-    if (onClose) onClose();
+    navigate('/products-info');
   };
 
   return (
@@ -195,7 +201,6 @@ const EditProductsForm = ({ product, onClose, onUpdateProduct }) => {
 
 EditProductsForm.propTypes = {
   product: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
   onUpdateProduct: PropTypes.func.isRequired,
 };
 

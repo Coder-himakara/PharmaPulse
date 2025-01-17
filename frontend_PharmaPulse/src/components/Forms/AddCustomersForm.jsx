@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import './Forms.css';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
-const AddCustomersForm = ({ onClose, onAddCustomer }) => {
+const AddCustomersForm = ({ onAddCustomer }) => {
   const [formData, setFormData] = useState({
     customerName: '',
     customerId: '',
@@ -11,6 +12,8 @@ const AddCustomersForm = ({ onClose, onAddCustomer }) => {
     email: '',
     dateOfConnected: '',
   });
+
+  const navigate = useNavigate();
 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -55,11 +58,11 @@ const AddCustomersForm = ({ onClose, onAddCustomer }) => {
         dateOfConnected: '',
       });
       setSuccessMessage('');
-    }, 3000);
+    }, 2000);
   };
 
   const handleCancel = () => {
-    if (onClose) onClose();
+    navigate('/sidebar');
   };
 
   return (
@@ -146,7 +149,6 @@ const AddCustomersForm = ({ onClose, onAddCustomer }) => {
 };
 
 AddCustomersForm.propTypes = {
-  onClose: PropTypes.func.isRequired,
   onAddCustomer: PropTypes.func.isRequired,
 };
 

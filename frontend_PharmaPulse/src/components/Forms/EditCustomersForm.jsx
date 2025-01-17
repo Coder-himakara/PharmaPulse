@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './Forms.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const EditCustomersForm = ({ customer, onClose, onUpdateCustomer }) => {
+const EditCustomersForm = ({ onUpdateCustomer }) => {
+  const { state } = useLocation(); // Access the state passed by navigate
+  const customer = state?.customer; // Get customer from the state
+
   const [formData, setFormData] = useState({
     customerName: '',
     customerId: '',
@@ -11,6 +15,8 @@ const EditCustomersForm = ({ customer, onClose, onUpdateCustomer }) => {
     email: '',
     dateOfConnected: '',
   });
+
+  const navigate = useNavigate();
 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -57,12 +63,12 @@ const EditCustomersForm = ({ customer, onClose, onUpdateCustomer }) => {
     // Clear the form and success message after a delay
     setTimeout(() => {
       setSuccessMessage('');
-      if (onClose) onClose();
-    }, 30000);
+      navigate('/customers-info');
+    }, 2000);
   };
 
   const handleCancel = () => {
-    if (onClose) onClose();
+    navigate('/customers-info');
   };
 
   return (
@@ -151,7 +157,6 @@ const EditCustomersForm = ({ customer, onClose, onUpdateCustomer }) => {
 
 EditCustomersForm.propTypes = {
   customer: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
   onUpdateCustomer: PropTypes.func.isRequired,
 };
 
