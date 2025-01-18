@@ -2,15 +2,16 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import sidebarSections from '../../sidebarSections.json';
 
+// SidebarLink Component
 const SidebarLink = ({ to, children }) => (
-  <li className='mb-[10px]'>
+  <li className="mb-2">
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `block text-[17px] p-[10px] px-[15px] rounded transition-all duration-300 ${
+        `block text-base p-2 rounded-md transition-all duration-300 ${
           isActive
-            ? 'bg-[#2d6a6c] text-white'
-            : 'text-[#494949] hover:bg-[#2d6a6c] hover:text-[#1abc9c]'
+            ? 'bg-teal-700 text-white'
+            : 'text-gray-700 hover:bg-teal-700 hover:text-teal-200 dark:text-gray-300 dark:hover:text-teal-400'
         }`
       }
     >
@@ -20,16 +21,17 @@ const SidebarLink = ({ to, children }) => (
 );
 
 SidebarLink.propTypes = {
-  to: PropTypes.string.isRequired, // Ensuring 'to' is a required string
-  children: PropTypes.node.isRequired, // Ensuring 'children' is required and can be any renderable content
+  to: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
+// SidebarSection Component
 const SidebarSection = ({ title, links }) => (
-  <div className='mb-5'>
-    <h2 className='text-[20px] mb-2 mt-4 border-b border-[#2d6a6c] pb-1 font-bold'>
+  <div className="mb-6">
+    <h2 className="pb-1 mb-3 text-lg font-semibold border-b border-teal-700 dark:border-teal-400">
       {title}
     </h2>
-    <ul className='list-none p-0'>
+    <ul className="p-0 list-none">
       {links.map((link, index) => (
         <SidebarLink key={index} to={link.to}>
           {link.name}
@@ -45,28 +47,25 @@ SidebarSection.propTypes = {
     PropTypes.shape({
       to: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-    }),
+    })
   ).isRequired,
 };
 
+// Sidebar Component
 const Sidebar = ({ role }) => {
   const sections = sidebarSections[role] || [];
 
   return (
-    <aside className='fixed top-[100px] bottom-[70px] left-0 w-[250px] bg-[#c1d4e0] text-[#494949] overflow-y-auto shadow-md p-5 z-[999] box-border'>
+    <aside className="fixed top-[100px] bottom-[70px] left-0 w-[250px] bg-teal-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 overflow-y-auto shadow-lg p-5 z-[999] box-border">
       {sections.map((section, index) => (
-        <SidebarSection
-          key={index}
-          title={section.title}
-          links={section.links}
-        />
+        <SidebarSection key={index} title={section.title} links={section.links} />
       ))}
     </aside>
   );
 };
 
 Sidebar.propTypes = {
-  role: PropTypes.string.isRequired, // Role will determine which sections to show
+  role: PropTypes.string.isRequired,
 };
 
 export default Sidebar;

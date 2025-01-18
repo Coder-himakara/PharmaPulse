@@ -1,23 +1,25 @@
-import { useState } from 'react';
+/* eslint-disable prettier/prettier */
+import { useState, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { FaUser, FaSignOutAlt, FaTachometerAlt } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaTachometerAlt, FaSun, FaMoon } from 'react-icons/fa';
 import logo from '../../assets/Logo.jpg';
+import { ThemeContext } from '../../ThemeContext';
 
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
   <li>
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center p-2 text-sm transition-all duration-300 ${
+        `flex items-center p-2 text-sm rounded-md transition-all duration-300 ${
           isActive
-            ? 'bg-[#2d6a6c] text-white'
-            : 'bg-white text-black hover:bg-[#2d6a6c] hover:text-[#1abc9c]'
+            ? 'bg-teal-700 text-white'
+            : 'bg-transparent text-gray-700 dark:text-gray-300 hover:bg-teal-700 hover:text-teal-300'
         }`
       }
       onClick={onClick}
     >
-      {Icon && <Icon className='w-5 h-5 mr-2' />}
+      {Icon && <Icon className="w-5 h-5 mr-2" />}
       {children}
     </NavLink>
   </li>
@@ -31,6 +33,7 @@ DropdownLink.propTypes = {
 };
 
 const Navbar = () => {
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
@@ -42,51 +45,61 @@ const Navbar = () => {
   };
 
   return (
-    <div className='flex justify-between items-center bg-[#1a5353] p-4 text-white fixed top-0 left-0 w-full z-10 h-[100px]'>
-      <div className='flex items-center'>
-        <img src={logo} alt='Logo' className='h-[40px] mr-9 ml-9' />
-        <span className='text-lg font-bold'>Home</span>
+    <div
+      className={`flex justify-between items-center px-6 py-4 fixed top-0 left-0 w-full z-10 h-[100px] transition-colors duration-300 ${
+        isDarkMode ? 'bg-gray-900 text-white' : 'bg-teal-800 text-white'
+      }`}
+    >
+      {/* Logo and Home */}
+      <div className="flex items-center">
+        <img src={logo} alt="Logo" className="h-10 mr-4" />
+        <span className="text-lg font-bold">Home</span>
       </div>
 
-      <div className='flex items-center gap-2 relative mr-9'>
+      {/* User and Dropdown */}
+      <div className="relative flex items-center gap-4">
         <div>
-          <span className='text-sm font-bold'>John Doe</span>
+          <span className="text-sm font-bold">John Doe</span>
           <br />
-          <span className='text-xs italic'>Admin</span>
+          <span className="text-xs italic">Admin</span>
         </div>
-        <div className='relative ml-4 dropdown'>
+        <div className="relative">
           <button
             onClick={toggleDropdown}
-            className='bg-transparent border-none text-white text-base cursor-pointer flex items-center hover:text-[#c3e4e5]'
+            className="flex items-center text-base text-white bg-transparent border-none cursor-pointer hover:text-teal-300"
           >
             ▼
           </button>
           {isDropdownVisible && (
-            <ul className='absolute top-full right-0 bg-white text-[#333] border border-[#ddd] rounded-md min-w-[150px] shadow-lg z-10 list-none p-0'>
-              <DropdownLink
-                to='/dashboard'
-                icon={FaTachometerAlt}
-                onClick={closeDropdown}
-              >
+            <ul
+              className={`absolute top-full right-0 mt-2 border rounded-md min-w-[150px] shadow-lg z-10 list-none ${
+                isDarkMode ? 'bg-gray-800 text-white border-gray-600' : 'bg-white text-black border-gray-300'
+              }`}
+            >
+              <DropdownLink to="/dashboard" icon={FaTachometerAlt} onClick={closeDropdown}>
                 Dashboard
               </DropdownLink>
-              <DropdownLink
-                to='/update-profile'
-                icon={FaUser}
-                onClick={closeDropdown}
-              >
+              <DropdownLink to="/update-profile" icon={FaUser} onClick={closeDropdown}>
                 Profile
               </DropdownLink>
-              <DropdownLink
-                to='/home'
-                icon={FaSignOutAlt}
-                onClick={closeDropdown}
-              >
+              <DropdownLink to="/home" icon={FaSignOutAlt} onClick={closeDropdown}>
                 Log Out
               </DropdownLink>
             </ul>
           )}
         </div>
+
+        {/* Theme Toggle */}
+        <button
+          className="flex items-center justify-center w-8 h-8 rounded-full focus:outline-none"
+          onClick={toggleTheme}
+        >
+          {isDarkMode ? (
+            <FaSun className="w-5 h-5 text-yellow-400" />
+          ) : (
+            <FaMoon className="w-5 h-5 text-blue-400" />
+          )}
+        </button>
       </div>
     </div>
   );
