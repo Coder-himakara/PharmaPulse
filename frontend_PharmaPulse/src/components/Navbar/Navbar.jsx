@@ -1,13 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-  FaUser,
-  FaSignOutAlt,
-  FaTachometerAlt,
-  FaMoon,
-  FaSun,
-} from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaTachometerAlt } from 'react-icons/fa';
 import logo from '../../assets/Logo.jpg';
 
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
@@ -36,7 +30,7 @@ DropdownLink.propTypes = {
   onClick: PropTypes.func,
 };
 
-const Navbar = ({ isDarkMode, toggleDarkMode }) => {
+const Navbar = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
@@ -93,22 +87,9 @@ const Navbar = ({ isDarkMode, toggleDarkMode }) => {
             </ul>
           )}
         </div>
-
-        {/* Dark/Light Mode Toggle */}
-        <button
-          onClick={toggleDarkMode}
-          className='text-white text-lg ml-4 flex items-center justify-center'
-        >
-          {isDarkMode ? <FaSun /> : <FaMoon />}
-        </button>
       </div>
     </div>
   );
-};
-
-Navbar.propTypes = {
-  isDarkMode: PropTypes.bool.isRequired,
-  toggleDarkMode: PropTypes.func.isRequired,
 };
 
 export default Navbar;

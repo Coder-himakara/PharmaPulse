@@ -1,0 +1,82 @@
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  background-image: url("loginBg.webp"); /* Path to the image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.8); /* Slight transparency */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #003d33;
+  font-size: 24px;
+}
+
+.login-box {
+  width: 100%;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #333333;
+}
+
+.input-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #004d40;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #003d33;
+}
+
+.forgot-password {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: red;
+  cursor: pointer;
+}
