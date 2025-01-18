@@ -1,0 +1,25 @@
+{
+  "employee": [
+    {
+      "title": "Products",
+      "links": [
+        { "to": "/add-products", "name": "Add Products" },
+        { "to": "/products-info", "name": "Products Info" }
+      ]
+    },
+    {
+      "title": "Suppliers",
+      "links": [
+        { "to": "/add-suppliers", "name": "Add Suppliers" },
+        { "to": "/suppliers-info", "name": "Suppliers Info" }
+      ]
+    },
+    {
+      "title": "Customers",
+      "links": [
+        { "to": "/add-customers", "name": "Add Customers" },
+        { "to": "/customers-info", "name": "Customers Info" }
+      ]
+    }
+  ]
+}
