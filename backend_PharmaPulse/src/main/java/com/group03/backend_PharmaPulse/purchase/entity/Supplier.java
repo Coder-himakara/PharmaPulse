@@ -35,6 +35,9 @@ public class Supplier {
 
     private Date credit_period;
 
-    //private String purchase_group_id;
+    @ManyToOne
+    @JoinColumn(name="purchase_group_id", nullable=false)
+    private PurchaseGroup purchase_group;
+
 
 }

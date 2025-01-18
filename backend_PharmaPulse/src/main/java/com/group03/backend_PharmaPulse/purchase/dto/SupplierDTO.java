@@ -1,8 +1,10 @@
 package com.group03.backend_PharmaPulse.purchase.dto;
 
+import com.group03.backend_PharmaPulse.purchase.entity.PurchaseGroup;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +20,7 @@ import java.sql.Date;
 public class SupplierDTO {
 
     private int supplier_id;
+
     @NotBlank(message = "Supplier Name is required")
     private String supplier_name;
 
@@ -37,5 +40,6 @@ public class SupplierDTO {
 
     private Date credit_period;
 
-    //private String purchase_group_id;
+    @NotNull(message = "Please select a purchase group")
+    private int purchase_group;
 }
