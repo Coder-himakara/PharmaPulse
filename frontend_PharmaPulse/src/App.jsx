@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import EmployeeDashboard from './pages/EmployeeDashboard/EmployeeDashboard';
 import './App.css';
 import './index.css';
-import ThemeProvider from './ThemeContext'; // Import ThemeProvider
+import { ThemeProvider } from './ThemeContext';
 
 function App() {
   return (
