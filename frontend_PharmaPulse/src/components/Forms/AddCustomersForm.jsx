@@ -61,7 +61,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   };
 
   const handleCancel = () => {
-    navigate('/sidebar');
+    navigate('/home');
   };
 
   return (

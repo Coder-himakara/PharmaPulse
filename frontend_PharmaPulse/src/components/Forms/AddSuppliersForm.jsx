@@ -61,7 +61,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
   };
 
   const handleCancel = () => {
-    navigate('/sidebar');
+    navigate('/home');
   };
 
   return (

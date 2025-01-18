@@ -1,12 +1,14 @@
-import EmployeeDashboard from './pages/EmployeeDashboard/EmployeeDashboard';
-
-import './App.css';
+import { BrowserRouter as Router } from "react-router-dom";
+import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
+import "./App.css";
 
 function App() {
   return (
-    <div className='App'>
-      <EmployeeDashboard />
-    </div>
+    <Router>
+      <div className="App">
+        <EmployeeDashboard />
+      </div>
+    </Router>
   );
 }
 

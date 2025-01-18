@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-import AddProductsForm from "../components/Forms/AddProductsForm";
-import ProductsInfoTable from "../components/Tables/ProductsInfoTable";
-import AddCustomersForm from "../components/Forms/AddCustomersForm";
-import SuppliersInfoTable from "../components/Tables/SuppliersInfoTable";
-import AddSuppliersForm from "../components/Forms/AddSuppliersForm";
-import CustomersInfoTable from "../components/Tables/CustomersInfoTable";
-import EditProductsForm from "../components/Forms/EditProductsForm";
-import EditSuppliersForm from "../components/Forms/EditSuppliersForm";
-import EditCustomersForm from "../components/Forms/EditCustomersForm";
+import AddProductsForm from '../components/Forms/AddProductsForm';
+import ProductsInfoTable from '../components/Tables/ProductsInfoTable';
+import AddCustomersForm from '../components/Forms/AddCustomersForm';
+import SuppliersInfoTable from '../components/Tables/SuppliersInfoTable';
+import AddSuppliersForm from '../components/Forms/AddSuppliersForm';
+import CustomersInfoTable from '../components/Tables/CustomersInfoTable';
+import EditProductsForm from '../components/Forms/EditProductsForm';
+import EditSuppliersForm from '../components/Forms/EditSuppliersForm';
+import EditCustomersForm from '../components/Forms/EditCustomersForm';
 
-import Sidebar from "../components/Sidebar/Sidebar";
+import Sidebar from '../components/Sidebar/Sidebar';
 
 const AppRoutes = () => {
   const [products, setProducts] = useState([]);
@@ -35,8 +35,8 @@ const AppRoutes = () => {
       prevProducts.map((product) =>
         product.productId === updatedProduct.productId
           ? updatedProduct
-          : product
-      )
+          : product,
+      ),
     );
   };
 
@@ -45,8 +45,8 @@ const AppRoutes = () => {
       prevSuppliers.map((supplier) =>
         supplier.supplierId === updatedSupplier.supplierId
           ? updatedSupplier
-          : supplier
-      )
+          : supplier,
+      ),
     );
   };
 
@@ -55,53 +55,54 @@ const AppRoutes = () => {
       prevCustomers.map((customer) =>
         customer.customerId === updatedCustomer.customerId
           ? updatedCustomer
-          : customer
-      )
+          : customer,
+      ),
     );
   };
 
   return (
     <Routes>
       <Route
-        path="/add-products"
+        path='/add-products'
         element={<AddProductsForm onAddProduct={addProduct} />}
       />
       <Route
-        path="/products-info"
+        path='/products-info'
         element={<ProductsInfoTable products={products} />}
       />
       <Route
-        path="/edit-product/:productId"
+        path='/edit-product/:productId'
         element={<EditProductsForm onUpdateProduct={updateProduct} />}
       />
 
       <Route
-        path="/add-suppliers"
+        path='/add-suppliers'
         element={<AddSuppliersForm onAddSupplier={addSupplier} />}
       />
       <Route
-        path="/suppliers-info"
+        path='/suppliers-info'
         element={<SuppliersInfoTable suppliers={suppliers} />}
       />
       <Route
-        path="/edit-supplier/:supplierId"
+        path='/edit-supplier/:supplierId'
         element={<EditSuppliersForm onUpdateSupplier={updateSupplier} />}
       />
 
       <Route
-        path="/add-customers"
+        path='/add-customers'
         element={<AddCustomersForm onAddCustomer={addCustomer} />}
       />
       <Route
-        path="/customers-info"
+        path='/customers-info'
         element={<CustomersInfoTable customers={customers} />}
       />
       <Route
-        path="/edit-customer/:customerId"
+        path='/edit-customer/:customerId'
         element={<EditCustomersForm onUpdateCustomer={updateCustomer} />}
       />
 
-      <Route path="/sidebar" element={<Sidebar role="employee" />} />
+      <Route path='/home' element={<Sidebar role='employee' />} />
+      <Route path='/dashboard' element={<Sidebar role='employee' />} />
     </Routes>
   );
 };

@@ -14,6 +14,44 @@
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+/* Light Mode (default) styles */
+body {
+  background-color: #ffffff;
+  color: #333333;
 }
+
+/* Dark Mode styles */
+body.dark-mode {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+/* Navbar styles */
+nav {
+  background-color: #1a5353;
+  color: #ffffff;
+}
+
+body.dark-mode nav {
+  background-color: #222222;
+}
+
+/* Example: Dark/Light Mode for Buttons */
+button {
+  background-color: #2d6a6c;
+  color: white;
+}
+
+body.dark-mode button {
+  background-color: #444444;
+  color: white;
+}
+
+/* Add specific component styles for dark mode */
+body.dark-mode .card {
+  background-color: #444444;
+  color: #ffffff;
+}
+
+/* Customize other elements based on your design */

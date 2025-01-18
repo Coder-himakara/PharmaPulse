@@ -24,7 +24,7 @@ const ProductsInfoTable = ({ products }) => {
   };
 
   const handleClose = () => {
-    navigate('/sidebar');
+    navigate('/home');
   };
 
   const handleEdit = (productId) => {

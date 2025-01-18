@@ -1,13 +1,50 @@
 import { useState } from 'react';
-import { FaUser, FaSignOutAlt, FaTachometerAlt } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import {
+  FaUser,
+  FaSignOutAlt,
+  FaTachometerAlt,
+  FaMoon,
+  FaSun,
+} from 'react-icons/fa';
 import logo from '../../assets/Logo.jpg';
 
-const Navbar = () => {
-  // State to manage dropdown visibility
+const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
+  <li>
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex items-center p-2 text-sm transition-all duration-300 ${
+          isActive
+            ? 'bg-[#2d6a6c] text-white'
+            : 'bg-white text-black hover:bg-[#2d6a6c] hover:text-[#1abc9c]'
+        }`
+      }
+      onClick={onClick}
+    >
+      {Icon && <Icon className='w-5 h-5 mr-2' />}
+      {children}
+    </NavLink>
+  </li>
+);
+
+DropdownLink.propTypes = {
+  to: PropTypes.string.isRequired,
+  icon: PropTypes.elementType,
+  children: PropTypes.node.isRequired,
+  onClick: PropTypes.func,
+};
+
+const Navbar = ({ isDarkMode, toggleDarkMode }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownVisible((prev) => !prev);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownVisible(false);
   };
 
   return (
@@ -23,43 +60,55 @@ const Navbar = () => {
           <br />
           <span className='text-xs italic'>Admin</span>
         </div>
-        <div className='relative ml-4'>
+        <div className='relative ml-4 dropdown'>
           <button
             onClick={toggleDropdown}
             className='bg-transparent border-none text-white text-base cursor-pointer flex items-center hover:text-[#c3e4e5]'
           >
             ▼
           </button>
-          {/* Show dropdown if isDropdownVisible is true */}
           {isDropdownVisible && (
-            <div className='absolute top-full right-0 bg-white text-[#333] border border-[#ddd] rounded-md min-w-[150px] shadow-lg z-10'>
-              <a
-                href='#dashboard'
-                className='flex items-center p-2 text-sm text-[#333] hover:bg-[#f1f1f1]'
+            <ul className='absolute top-full right-0 bg-white text-[#333] border border-[#ddd] rounded-md min-w-[150px] shadow-lg z-10 list-none p-0'>
+              <DropdownLink
+                to='/dashboard'
+                icon={FaTachometerAlt}
+                onClick={closeDropdown}
               >
-                <FaTachometerAlt className='w-5 h-5 mr-2' />
                 Dashboard
-              </a>
-              <a
-                href='#profile'
-                className='flex items-center p-2 text-sm text-[#333] hover:bg-[#f1f1f1]'
+              </DropdownLink>
+              <DropdownLink
+                to='/update-profile'
+                icon={FaUser}
+                onClick={closeDropdown}
               >
-                <FaUser className='w-5 h-5 mr-2' />
                 Profile
-              </a>
-              <a
-                href='#logout'
-                className='flex items-center p-2 text-sm text-[#333] hover:bg-[#f1f1f1]'
+              </DropdownLink>
+              <DropdownLink
+                to='/home'
+                icon={FaSignOutAlt}
+                onClick={closeDropdown}
               >
-                <FaSignOutAlt className='w-5 h-5 mr-2' />
                 Log Out
-              </a>
-            </div>
+              </DropdownLink>
+            </ul>
           )}
         </div>
+
+        {/* Dark/Light Mode Toggle */}
+        <button
+          onClick={toggleDarkMode}
+          className='text-white text-lg ml-4 flex items-center justify-center'
+        >
+          {isDarkMode ? <FaSun /> : <FaMoon />}
+        </button>
       </div>
     </div>
   );
+};
+
+Navbar.propTypes = {
+  isDarkMode: PropTypes.bool.isRequired,
+  toggleDarkMode: PropTypes.func.isRequired,
 };
 
 export default Navbar;

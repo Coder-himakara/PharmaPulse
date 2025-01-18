@@ -24,7 +24,7 @@ const CustomersInfoTable = ({ customers }) => {
   };
 
   const handleClose = () => {
-    navigate('/sidebar');
+    navigate('/home');
   };
 
   const handleEdit = (customerId) => {

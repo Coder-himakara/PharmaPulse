@@ -24,7 +24,7 @@ const SuppliersInfoTable = ({ suppliers }) => {
   };
 
   const handleClose = () => {
-    navigate('/sidebar');
+    navigate('/home');
   };
 
   const handleEdit = (supplierId) => {

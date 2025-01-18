@@ -63,7 +63,7 @@ const AddProductsForm = ({ onAddProduct }) => {
   };
 
   const handleCancel = () => {
-    navigate('/sidebar');
+    navigate('/home');
   };
 
   return (
