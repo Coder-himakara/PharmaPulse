@@ -1,30 +1,30 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const CustomersInfoTable = ({ customers }) => {
-  const [search, setSearch] = useState("");
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [search, setSearch] = useState('');
+  const [sortDirection, setSortDirection] = useState('asc');
   const navigate = useNavigate();
 
   const filteredCustomers = customers.filter((customer) =>
-    customer.customerName.toLowerCase().includes(search.toLowerCase())
+    customer.customerName.toLowerCase().includes(search.toLowerCase()),
   );
 
   const sortedCustomers = filteredCustomers.sort((a, b) => {
     const dateA = new Date(a.dateOfConnected);
     const dateB = new Date(b.dateOfConnected);
-    return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
+    return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
   const toggleSort = () => {
     setSortDirection((prevDirection) =>
-      prevDirection === "asc" ? "desc" : "asc"
+      prevDirection === 'asc' ? 'desc' : 'asc',
     );
   };
 
   const handleClose = () => {
-    navigate("/sidebar");
+    navigate('/sidebar');
   };
 
   const handleEdit = (customerId) => {
@@ -33,96 +33,96 @@ const CustomersInfoTable = ({ customers }) => {
   };
 
   return (
-    <div className="bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative">
-      <div className="bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative">
-        <h1 className="m-1 p-1 text-2xl">Customers Management</h1>
+    <div className='bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative'>
+      <div className='bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative'>
+        <h1 className='m-1 p-1 text-2xl'>Customers Management</h1>
         <button
-          className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1] mr-4"
+          className='absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1] mr-4'
           onClick={handleClose}
         >
           X
         </button>
       </div>
 
-      <div className="m-2 p-2 flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-[#1a5353]">Customers</h2>
-        <div className="relative">
+      <div className='m-2 p-2 flex justify-between items-center'>
+        <h2 className='text-2xl font-bold text-[#1a5353]'>Customers</h2>
+        <div className='relative'>
           <input
-            type="text"
-            placeholder="Search Customers..."
+            type='text'
+            placeholder='Search Customers...'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"
+            className='px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]'
           />
         </div>
       </div>
 
       {sortedCustomers.length === 0 && search && (
-        <div className="text-[#991919] text-sm text-center mt-2 font-bold">
+        <div className='text-[#991919] text-sm text-center mt-2 font-bold'>
           No customers found matching your search.
         </div>
       )}
 
-      <div className="m-2 p-2">
-        <table className="w-full border-collapse">
+      <div className='m-2 p-2'>
+        <table className='w-full border-collapse'>
           <thead>
             <tr>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 #
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Customer Name
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Customer ID
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Contact Number
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Address
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Email
               </th>
               <th
                 onClick={toggleSort}
-                className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer underline font-bold"
+                className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer underline font-bold'
               >
-                Date of Connected {sortDirection === "asc" ? "▲" : "▼"}
+                Date of Connected {sortDirection === 'asc' ? '▲' : '▼'}
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
             {sortedCustomers.map((customer, index) => (
-              <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {index + 1}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {customer.customerName}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {customer.customerId}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {customer.contactNumber}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {customer.address}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {customer.email}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {customer.dateOfConnected}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]"
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]'
                     onClick={() => handleEdit(customer.customerId)}
                   >
                     Edit
@@ -146,7 +146,7 @@ CustomersInfoTable.propTypes = {
       address: PropTypes.string.isRequired,
       email: PropTypes.string.isRequired,
       dateOfConnected: PropTypes.string.isRequired,
-    })
+    }),
   ).isRequired,
 };
 
