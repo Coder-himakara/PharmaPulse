@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* index.css or App.css */
+
+body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-image: url('./loginBg.webp'); /* Path to the image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Fix the background */
+    background-color: black; /* Fallback color */
+  }
+  

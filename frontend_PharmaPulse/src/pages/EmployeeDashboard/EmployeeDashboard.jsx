@@ -14,12 +14,12 @@ const EmployeeDashboard = () => {
           <div className='flex-grow'>
             <DashboardCard
               content={<EmpRoutes />}
-              className='bg-white shadow-md rounded-lg p-4'
+              className='p-4 bg-white rounded-lg shadow-md'
             />
           </div>
         </div>
       </div>
-      <Footer className='bg-gray-200 text-center py-4' />
+      <Footer className='py-4 text-center bg-gray-200' />
     </div>
   );
 };

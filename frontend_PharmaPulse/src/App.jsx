@@ -1,16 +1,18 @@
 /* eslint-disable prettier/prettier */
 import { BrowserRouter as Router } from 'react-router-dom';
-import EmployeeDashboard from './pages/EmployeeDashboard/EmployeeDashboard';
+//import EmployeeDashboard from './pages/EmployeeDashboard/EmployeeDashboard';
 import './App.css';
 import './index.css';
 import { ThemeProvider } from './ThemeContext';
+import LoginPage from './pages/LoginPage/LoginPage';
 
 function App() {
   return (
     <ThemeProvider>
     <Router>
       <div className='App'>
-        <EmployeeDashboard />
+        {/*<EmployeeDashboard />*/}
+        <LoginPage />
       </div>
     </Router>
     </ThemeProvider>
