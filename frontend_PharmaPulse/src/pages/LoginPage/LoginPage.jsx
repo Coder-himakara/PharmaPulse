@@ -1,33 +1,36 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Simple login logic for demo purposes
-    if (username === 'admin' && password === 'admin') {
-      // Redirect to Employee Dashboard
-      navigate('/employee-dashboard');
+    if (username === "admin" && password === "admin") {
+      navigate("/employee-dashboard");
     } else {
-      alert('Invalid credentials');
+      alert("Invalid credentials");
     }
   };
 
   return (
     <div className="flex items-center justify-center w-full h-screen bg-center bg-no-repeat bg-cover">
       <div className="flex flex-col items-center w-full max-w-md p-5 text-center bg-white rounded-lg shadow-lg bg-opacity-80">
-        <h1 className="mb-5 text-2xl font-bold text-teal-900" style={{ fontSize: '24px', marginBottom: '20px' }}>
+        <h1 className="mb-5 text-2xl font-bold text-teal-900">
           Welcome to PharmaPulse
         </h1>
         <div className="w-full">
           <h2 className="mb-5 text-lg font-medium text-gray-800">Login</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="mb-4 text-left">
-              <label htmlFor="username" className="block mb-1 font-bold text-gray-600">Username:</label>
+              <label
+                htmlFor="username"
+                className="block mb-1 font-bold text-gray-600"
+              >
+                Username:
+              </label>
               <input
                 type="text"
                 id="username"
@@ -40,7 +43,12 @@ function LoginPage() {
               />
             </div>
             <div className="mb-4 text-left">
-              <label htmlFor="password" className="block mb-1 font-bold text-gray-600">Password:</label>
+              <label
+                htmlFor="password"
+                className="block mb-1 font-bold text-gray-600"
+              >
+                Password:
+              </label>
               <input
                 type="password"
                 id="password"
@@ -51,12 +59,15 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <a href="#" className="block mt-1 text-xs text-red-500 cursor-pointer">
+              <a
+                href="#"
+                className="block mt-1 text-xs text-red-500 cursor-pointer"
+              >
                 Forgot Password?
               </a>
             </div>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="w-full py-2 bg-teal-700 text-white rounded-md cursor-pointer hover:bg-[#003d33]"
             >
               Login
