@@ -47,7 +47,7 @@ public class PurchaseGroupController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse> updatePurchaseGroups(@PathVariable int id,
+    public ResponseEntity<StandardResponse> updatePurchaseGroups(@Valid @PathVariable int id,
                                                                 @RequestBody PurchaseGroupDTO purchaseGroupDTO) {
         PurchaseGroupDTO updatedPurchaseGroup=purchaseGroupService.updatePurchaseGroup(id,purchaseGroupDTO);
         return new ResponseEntity<StandardResponse>(

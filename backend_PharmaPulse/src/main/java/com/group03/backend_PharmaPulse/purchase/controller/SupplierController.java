@@ -48,7 +48,7 @@ public class SupplierController {
         );
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse> updateSuppliers(@PathVariable int id,
+    public ResponseEntity<StandardResponse> updateSuppliers(@Valid @PathVariable int id,
                                                                  @RequestBody SupplierDTO supplierDTO) {
         SupplierDTO updatedSupplier=supplierService.updateSupplier(id,supplierDTO);
         return new ResponseEntity<StandardResponse>(

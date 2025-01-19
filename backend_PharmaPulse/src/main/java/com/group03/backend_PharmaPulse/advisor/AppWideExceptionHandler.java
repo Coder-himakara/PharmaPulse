@@ -1,13 +1,9 @@
 package com.group03.backend_PharmaPulse.advisor;
 
-import com.group03.backend_PharmaPulse.purchase.exception.PurchaseGroupNotFoundException;
+import com.group03.backend_PharmaPulse.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.util.ErrorResponseDto;
-import com.group03.backend_PharmaPulse.util.StandardResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import javassist.NotFoundException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -37,7 +33,7 @@ public class AppWideExceptionHandler{
             NoHandlerFoundException ex, HttpServletRequest httpServletRequest) {
         ErrorResponseDto error = new ErrorResponseDto(
                 404,
-                "Resource not found",
+                "Page Not Found",
                 ex.getMessage()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -69,20 +65,13 @@ public class AppWideExceptionHandler{
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
-
+    // Handle NotFoundException for specific resources
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleNotFoundException(NotFoundException e) {
         return new ResponseEntity<>(
-                new ErrorResponseDto(404, "Not Page Found", e.getMessage()),
+                new ErrorResponseDto(404, "Resource Not Found", e.getMessage()),
                 HttpStatus.NOT_FOUND
         );
     }
-    
-    @ExceptionHandler(PurchaseGroupNotFoundException.class)
-    public ResponseEntity<StandardResponse> handleNoResourceFoundException(PurchaseGroupNotFoundException e) {
-        return new ResponseEntity<>(
-                new StandardResponse(404, "No PurchaseGroup in the Database", e.getMessage()),
-                HttpStatus.NOT_FOUND
-        );
-    }
+
 }
