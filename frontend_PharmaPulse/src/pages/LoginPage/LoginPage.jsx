@@ -74,8 +74,9 @@ function LoginPage() {
             <button
               type="submit"
               className="w-full py-2 bg-teal-700 text-white rounded-md cursor-pointer hover:bg-[#003d33]"
+              onClick={handleSubmit}
             >
-              <NavLink to="/employee-dashboard">Login</NavLink>
+              Login
             </button>
           </form>
         </div>
