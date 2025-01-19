@@ -1,11 +1,12 @@
 package com.group03.backend_PharmaPulse.purchase.service.impl;
 
+import com.group03.backend_PharmaPulse.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.purchase.dto.SupplierDTO;
 import com.group03.backend_PharmaPulse.purchase.entity.Supplier;
 import com.group03.backend_PharmaPulse.purchase.mapper.SupplierMapper;
 import com.group03.backend_PharmaPulse.purchase.repository.SupplierRepo;
 import com.group03.backend_PharmaPulse.purchase.service.SupplierService;
-import javassist.NotFoundException;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,24 +27,17 @@ public class SupplierServiceImpl implements SupplierService {
         List<Supplier> suppliers = supplierRepo.findAll();
         if(!suppliers.isEmpty()) {
             return supplierMapper.toDTOsList(suppliers);
-        }else {
-            try {
-                throw new NotFoundException("No Suppliers found");
-            } catch (NotFoundException e) {
-                throw new RuntimeException(e);
-            }
+        } else {
+            throw new NotFoundException("No Suppliers found");
         }
     }
 
     @Override
     public SupplierDTO getSupplierById(int id) {
         Optional<Supplier> supplier = supplierRepo.findById(id);
-        try {
             return supplier.map(supplierMapper::toDTO)
                     .orElseThrow(() -> new NotFoundException("Supplier not found"));
-        } catch (NotFoundException e) {
-            throw new RuntimeException(e);
-        }
+
     }
 
     @Override
@@ -61,11 +55,7 @@ public class SupplierServiceImpl implements SupplierService {
             Supplier savedSupplier = supplierRepo.save(updatedSupplier);
             return supplierMapper.toDTO(savedSupplier);
         } else {
-            try {
-                throw new NotFoundException("Supplier not found");
-            } catch (NotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            throw new NotFoundException("Supplier not found");
         }
     }
 }

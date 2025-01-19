@@ -1,12 +1,11 @@
 package com.group03.backend_PharmaPulse.purchase.service.impl;
 
+import com.group03.backend_PharmaPulse.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.purchase.dto.PurchaseGroupDTO;
 import com.group03.backend_PharmaPulse.purchase.entity.PurchaseGroup;
-import com.group03.backend_PharmaPulse.purchase.exception.PurchaseGroupNotFoundException;
 import com.group03.backend_PharmaPulse.purchase.mapper.PurchaseGroupMapper;
 import com.group03.backend_PharmaPulse.purchase.repository.PurchaseGroupRepo;
 import com.group03.backend_PharmaPulse.purchase.service.PurchaseGroupService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
         if(!purchaseGroups.isEmpty()){
             return purchaseGroupMapper.toDTOsList(purchaseGroups);
         }else{
-            throw new PurchaseGroupNotFoundException("No PurchaseGroups found");
+            throw new NotFoundException("No PurchaseGroups found");
         }
     }
 
@@ -38,7 +37,7 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
     public PurchaseGroupDTO getPurchaseGroupById(int id) {
         Optional<PurchaseGroup> purchaseGroup= purchaseGroupRepo.findById(id);
         return purchaseGroup.map(purchaseGroupMapper::toDTO)
-                .orElseThrow(() -> new PurchaseGroupNotFoundException("PurchaseGroup not found"));
+                .orElseThrow(() -> new NotFoundException("PurchaseGroup not found"));
     }
 
     @Override
@@ -56,7 +55,7 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
             PurchaseGroup savedPurchaseGroup = purchaseGroupRepo.save(updatedPurchaseGroup);
             return purchaseGroupMapper.toDTO(savedPurchaseGroup);
         } else {
-            throw new PurchaseGroupNotFoundException("PurchaseGroup not found");
+            throw new NotFoundException("PurchaseGroup not found");
         }
     }
 }
