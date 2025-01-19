@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
@@ -8,7 +8,9 @@ function LoginPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    // Simple login logic for demo purposes
     if (username === "admin" && password === "admin") {
+      // Redirect to Employee Dashboard
       navigate("/employee-dashboard");
     } else {
       alert("Invalid credentials");
@@ -18,7 +20,10 @@ function LoginPage() {
   return (
     <div className="flex items-center justify-center w-full h-screen bg-center bg-no-repeat bg-cover">
       <div className="flex flex-col items-center w-full max-w-md p-5 text-center bg-white rounded-lg shadow-lg bg-opacity-80">
-        <h1 className="mb-5 text-2xl font-bold text-teal-900">
+        <h1
+          className="mb-5 text-2xl font-bold text-teal-900"
+          style={{ fontSize: "24px", marginBottom: "20px" }}
+        >
           Welcome to PharmaPulse
         </h1>
         <div className="w-full">
@@ -59,18 +64,18 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <a
-                href="#"
-                className="block mt-1 text-xs text-red-500 cursor-pointer"
+              <NavLink
+                to="/forgot-password"
+                className="block mt-1 text-xs text-red-500 cursor-pointer hover:underline"
               >
                 Forgot Password?
-              </a>
+              </NavLink>
             </div>
             <button
               type="submit"
               className="w-full py-2 bg-teal-700 text-white rounded-md cursor-pointer hover:bg-[#003d33]"
             >
-              Login
+              <NavLink to="/employee-dashboard">Login</NavLink>
             </button>
           </form>
         </div>

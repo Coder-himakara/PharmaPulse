@@ -10,10 +10,8 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
-        <div className="App">
-          {/*<EmployeeDashboard />*/}
-          <LoginPage />
-        </div>
+        {/*<EmployeeDashboard />*/}
+        <LoginPage />
       </Router>
     </ThemeProvider>
   );
