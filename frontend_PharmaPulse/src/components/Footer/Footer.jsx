@@ -1,4 +1,4 @@
-import logo from '../../assets/Logo.jpg';
+import logo from "../../assets/Logo.jpg";
 
 const Footer = () => {
   return (
@@ -12,13 +12,16 @@ const Footer = () => {
 
         {/* Copyright Section */}
         <div className="flex-grow text-sm text-center">
-          &copy; {new Date().getFullYear()} A &amp; K Agencies PharmaPulse. All Rights Reserved.
+          &copy; {new Date().getFullYear()} A &amp; K Agencies PharmaPulse. All
+          Rights Reserved.
         </div>
 
         {/* Developer Info */}
         <div className="flex items-center gap-3 text-sm font-medium">
           <span>Developed by:</span>
-          <span className="text-green-600 dark:text-green-400">Team PharmaPulse</span>
+          <span className="text-green-600 dark:text-green-400">
+            Team PharmaPulse
+          </span>
         </div>
       </div>
     </footer>
