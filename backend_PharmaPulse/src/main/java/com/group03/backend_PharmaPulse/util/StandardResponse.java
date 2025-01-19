@@ -1,11 +1,13 @@
 package com.group03.backend_PharmaPulse.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 @NoArgsConstructor
 @Data
+@Setter
+@Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StandardResponse {
     private int code;
     private String message;

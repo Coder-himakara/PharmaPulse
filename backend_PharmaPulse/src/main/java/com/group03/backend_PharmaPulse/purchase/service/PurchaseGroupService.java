@@ -1,9 +1,15 @@
 package com.group03.backend_PharmaPulse.purchase.service;
 
+import com.group03.backend_PharmaPulse.purchase.dto.PurchaseGroupDTO;
 import com.group03.backend_PharmaPulse.purchase.entity.PurchaseGroup;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface PurchaseGroupService {
-    public abstract Collection<PurchaseGroup> getAllPurchaseGroups();
+    public List<PurchaseGroupDTO> getAllPurchaseGroups();
+    public PurchaseGroupDTO getPurchaseGroupById(int id);
+
+    public PurchaseGroupDTO addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO);
+
+    public PurchaseGroupDTO updatePurchaseGroup(int id,PurchaseGroupDTO purchaseGroupDTO);
 }

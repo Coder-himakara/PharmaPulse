@@ -3,12 +3,13 @@ package com.group03.backend_PharmaPulse.purchase.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Builder
 @Table(name = "purchase_group")
 public class PurchaseGroup {
 
@@ -29,6 +30,7 @@ public class PurchaseGroup {
 
     private String purchaseGroupEmail;
 
-    //private ArrayList supplierList;
+    @OneToMany(mappedBy="purchase_group")
+    private Set<Supplier> suppliers;
 
 }
