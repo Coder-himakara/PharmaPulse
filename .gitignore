@@ -1,0 +1,47 @@
+# Docker-related files
+.env                          # Ignore sensitive environment files
+.env.*                        # Ignore all other environment files
+!env.example                  # Keep an example for collaborators
+docker-compose.override.yml   # Ignore local overrides
+docker-compose.*.yml          # Ignore additional environment-specific configurations
+!docker-compose.yml           # Keep the primary compose file for collaborators
+
+# Docker build files and logs
+Dockerfile.*                  # Ignore Dockerfile variants
+**/logs/                      # Ignore application logs
+*.log                         # Ignore all log files
+*.pid                         # Ignore process ID files
+*.sock                        # Ignore socket files
+
+# Temporary and build directories
+**/node_modules/              # Ignore Node.js dependencies
+**/coverage/                  # Ignore test coverage data
+**/tmp/                       # Ignore temporary directories
+**/data/                      # Ignore data directories created by containers
+
+# Build artifacts
+dist/
+build/
+target/
+
+# Compressed files and archives
+*.gz
+*.tgz
+*.zip
+*.tar
+*.rar
+*.7z
+
+# OS-specific files
+.DS_Store                     # macOS metadata
+Thumbs.db                     # Windows thumbnail cache
+desktop.ini                   # Windows desktop metadata
+
+# IDE-specific files
+.vscode/                      # Visual Studio Code settings
+.idea/                        # IntelliJ IDEA settings
+*.iml                         # IntelliJ IDEA module files
+*.suo                         # Visual Studio solution user options
+*.user                        # Visual Studio user settings
+*.userosscache                # Visual Studio user state cache
+*.sln.docstates               # Visual Studio solution user state
