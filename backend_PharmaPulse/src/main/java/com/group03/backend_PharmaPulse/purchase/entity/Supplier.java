@@ -1,5 +1,6 @@
 package com.group03.backend_PharmaPulse.purchase.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,5 +1,6 @@
 package com.group03.backend_PharmaPulse.purchase.service.impl;
 
+import com.group03.backend_PharmaPulse.common.PurchaseGroupInterface;
 import com.group03.backend_PharmaPulse.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.purchase.dto.PurchaseGroupDTO;
 import com.group03.backend_PharmaPulse.purchase.entity.PurchaseGroup;
@@ -57,5 +58,18 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
         } else {
             throw new NotFoundException("PurchaseGroup not found");
         }
+    }
+    //fetch and map PurchaseGroup entities to the PurchaseGroupInterface interface
+    public PurchaseGroupInterface toView(PurchaseGroup purchaseGroup) {
+        return new PurchaseGroupInterface() {
+            @Override
+            public int getPurchaseGroupId() {
+                return purchaseGroup.getPurchaseGroupId();
+            }
+            @Override
+            public String getPurchaseGroupName() {
+                return purchaseGroup.getPurchaseGroupName();
+            }
+        };
     }
 }
