@@ -18,6 +18,9 @@ Dockerfile.*                  # Ignore Dockerfile variants
 **/coverage/                  # Ignore test coverage data
 **/tmp/                       # Ignore temporary directories
 **/data/                      # Ignore data directories created by containers
+cache/
+**/cache/
+grafana.db
 
 # Build artifacts
 dist/
