@@ -6,7 +6,6 @@ import com.group03.backend_PharmaPulse.inventory.entity.Product;
 import com.group03.backend_PharmaPulse.inventory.mapper.ProductMapper;
 import com.group03.backend_PharmaPulse.inventory.repository.ProductRepo;
 import com.group03.backend_PharmaPulse.inventory.service.ProductService;
-import com.group03.backend_PharmaPulse.purchase.entity.PurchaseGroup;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
