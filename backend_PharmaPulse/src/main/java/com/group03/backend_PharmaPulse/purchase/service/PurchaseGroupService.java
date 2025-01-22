@@ -6,10 +6,10 @@ import com.group03.backend_PharmaPulse.purchase.entity.PurchaseGroup;
 import java.util.List;
 
 public interface PurchaseGroupService {
-    public List<PurchaseGroupDTO> getAllPurchaseGroups();
-    public PurchaseGroupDTO getPurchaseGroupById(int id);
+     List<PurchaseGroupDTO> getAllPurchaseGroups();
+     PurchaseGroupDTO getPurchaseGroupById(int id);
 
-    public PurchaseGroupDTO addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO);
+     PurchaseGroupDTO addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO);
 
-    public PurchaseGroupDTO updatePurchaseGroup(int id,PurchaseGroupDTO purchaseGroupDTO);
+     PurchaseGroupDTO updatePurchaseGroup(int id,PurchaseGroupDTO purchaseGroupDTO);
 }

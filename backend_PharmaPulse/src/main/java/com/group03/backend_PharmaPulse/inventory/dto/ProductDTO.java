@@ -4,7 +4,6 @@ import com.group03.backend_PharmaPulse.inventory.enumeration.DosageForm;
 import com.group03.backend_PharmaPulse.inventory.enumeration.PackageType;
 import com.group03.backend_PharmaPulse.inventory.enumeration.ProductCategory;
 import com.group03.backend_PharmaPulse.inventory.enumeration.ProductStatus;
-import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;

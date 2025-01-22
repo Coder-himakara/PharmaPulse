@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/purchase-group")
+@RequestMapping("/purchase-groups")
 public class PurchaseGroupController {
     private PurchaseGroupService purchaseGroupService;
     public PurchaseGroupController(PurchaseGroupService purchaseGroupService) {

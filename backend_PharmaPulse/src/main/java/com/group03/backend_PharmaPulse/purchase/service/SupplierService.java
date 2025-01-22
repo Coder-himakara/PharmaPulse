@@ -5,8 +5,8 @@ import com.group03.backend_PharmaPulse.purchase.dto.SupplierDTO;
 import java.util.List;
 
 public interface SupplierService {
-    public List<SupplierDTO> getAllSuppliers();
-    public SupplierDTO getSupplierById(int id);
-    public SupplierDTO addSupplier(SupplierDTO supplierDTO);
-    public SupplierDTO updateSupplier(int id,SupplierDTO supplierDTO);
+    List<SupplierDTO> getAllSuppliers();
+    SupplierDTO getSupplierById(int id);
+    SupplierDTO addSupplier(SupplierDTO supplierDTO);
+    SupplierDTO updateSupplier(int id,SupplierDTO supplierDTO);
 }
