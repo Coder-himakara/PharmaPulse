@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { BrowserRouter as Router } from "react-router-dom";
-//import EmployeeDashboard from './pages/EmployeeDashboard/EmployeeDashboard';
+import { BrowserRouter as Router,Routes,Route } from "react-router-dom";
+import EmployeeDashboard from './pages/EmployeeDashboard/EmployeeDashboard';
 import "./App.css";
 import "./index.css";
 import { ThemeProvider } from "./ThemeContext";
@@ -10,9 +10,11 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
-        {/*<EmployeeDashboard />*/}
-        <LoginPage />
-      </Router>
+      <Routes>
+        <Route path='/' element={<LoginPage />} />
+        <Route path='/employee-dashboard' element={<EmployeeDashboard />} />
+      </Routes>
+    </Router>
     </ThemeProvider>
   );
 }
