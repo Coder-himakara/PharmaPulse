@@ -42,7 +42,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductStatus product_status;
 
-    private int reorder_limit;
+    private Integer reorder_limit;
 
     @Column(name = "purchase_group_id", nullable = false)
     private int purchaseGroupId;

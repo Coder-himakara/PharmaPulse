@@ -37,7 +37,7 @@ public class ProductDTO {
     @Enumerated(EnumType.STRING)
     private ProductStatus product_status;
 
-    private int reorder_limit;
+    private Integer reorder_limit;
 
     private int purchaseGroupId;
 }

@@ -19,7 +19,7 @@ import java.sql.Date;
 @Builder
 public class SupplierDTO {
 
-    private int supplier_id;
+    //private int supplier_id;
 
     @NotBlank(message = "Supplier Name is required")
     private String supplier_name;
