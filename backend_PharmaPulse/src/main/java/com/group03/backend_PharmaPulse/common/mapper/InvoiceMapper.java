@@ -2,7 +2,6 @@ package com.group03.backend_PharmaPulse.common.mapper;
 
 import com.group03.backend_PharmaPulse.common.dto.InvoiceDTO;
 import com.group03.backend_PharmaPulse.common.entity.Invoice;
-import com.group03.backend_PharmaPulse.common.entity.LineItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,5 +13,5 @@ public interface InvoiceMapper {
     @Mapping(target = "lineItems" ,ignore = true)
     Invoice toEntity(InvoiceDTO invoiceDTO);
     InvoiceDTO toDTO(Invoice invoice);
-    List<InvoiceDTO> toDTOsList(List<LineItem> lineItems);
+    List<InvoiceDTO> toDTOsList(List<Invoice> invoices);
 }
