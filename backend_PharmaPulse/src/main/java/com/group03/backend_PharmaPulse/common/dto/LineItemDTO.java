@@ -13,7 +13,7 @@ import java.sql.Date;
 @Builder
 public class LineItemDTO {
     //private Long lineItemId;
-    //private Invoice invoice;
+    private Long invoice;
     private int product;
     private Integer quantity;
     private BigDecimal unitPrice;

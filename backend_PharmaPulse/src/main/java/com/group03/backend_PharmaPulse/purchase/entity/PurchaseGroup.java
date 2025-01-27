@@ -1,7 +1,5 @@
 package com.group03.backend_PharmaPulse.purchase.entity;
 
-import com.group03.backend_PharmaPulse.common.PurchaseGroupInterface;
-import com.group03.backend_PharmaPulse.inventory.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 

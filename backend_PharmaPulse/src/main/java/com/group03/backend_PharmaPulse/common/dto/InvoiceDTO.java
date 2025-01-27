@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @SuperBuilder
@@ -19,12 +21,13 @@ public class InvoiceDTO {
     private InvoiceStatus invoiceStatus;
 
     private LocalDateTime invoiceDate;
-
     private String invoiceNo;
+
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
     private BigDecimal totalAmount;
     private BigDecimal discountAmount;
     private BigDecimal netAmount;
+    private List<LineItemDTO> lineItemsList;
 }
