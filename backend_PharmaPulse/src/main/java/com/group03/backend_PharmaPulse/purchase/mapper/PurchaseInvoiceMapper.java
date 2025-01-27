@@ -14,6 +14,7 @@ import java.util.List;
 public interface PurchaseInvoiceMapper{
     @Mapping(target = "invoiceId" ,ignore = true)
     @Mapping(target = "lineItems" ,ignore = true)
+    @Mapping(target = "supplier" ,ignore = true)
     PurchaseInvoice toEntity(PurchaseInvoiceDTO purchaseInvoiceDTO);
     @Mapping(target = "lineItemsList", ignore = true)
     PurchaseInvoiceDTO toDTO(PurchaseInvoice purchaseInvoice);

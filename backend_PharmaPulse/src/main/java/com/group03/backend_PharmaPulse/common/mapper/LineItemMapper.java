@@ -23,7 +23,10 @@ public interface LineItemMapper {
 
     List<LineItemDTO> toDTOsList(List<LineItem> lineItems);
 
-    //List<LineItem> toEntityList(List<LineItemDTO> lineItemDTOS);
+    @Mapping(target = "lineItemId" ,ignore = true)
+    @Mapping(target = "product" ,source = "product" ,qualifiedByName = "mapProduct")
+    @Mapping(target = "invoice" ,source = "invoice" ,qualifiedByName = "mapInvoice")
+    List<LineItem> toEntityList(List<LineItemDTO> lineItemDTOS);
     @Named("mapProduct")
     default Product mapProduct(String product_id) {
         Product product = new Product();

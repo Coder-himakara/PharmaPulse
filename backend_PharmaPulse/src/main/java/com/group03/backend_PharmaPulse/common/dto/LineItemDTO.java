@@ -14,7 +14,7 @@ import java.sql.Date;
 public class LineItemDTO {
     //private Long lineItemId;
     private Long invoice;
-    private int product;
+    private String product;
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;

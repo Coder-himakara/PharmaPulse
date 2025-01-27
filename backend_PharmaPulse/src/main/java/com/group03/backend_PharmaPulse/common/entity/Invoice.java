@@ -41,4 +41,15 @@ public class Invoice {
     @OneToMany(mappedBy = "invoice",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<LineItem> lineItems = new ArrayList<>();
 
+    public Invoice(InvoiceStatus invoiceStatus, LocalDateTime invoiceDate, String invoiceNo,
+                   PaymentType paymentType, BigDecimal totalAmount,
+                   BigDecimal discountAmount, BigDecimal netAmount) {
+        this.invoiceStatus = invoiceStatus;
+        this.invoiceDate = invoiceDate;
+        this.invoiceNo = invoiceNo;
+        this.paymentType = paymentType;
+        this.totalAmount = totalAmount;
+        this.discountAmount = discountAmount;
+        this.netAmount = netAmount;
+    }
 }
