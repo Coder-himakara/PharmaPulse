@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -17,6 +17,7 @@ import java.sql.Date;
 @Table(name = "product_retailPrice")
 public class ProductRetailPrice {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "price_id")
     private Long price_id;
 
@@ -25,8 +26,8 @@ public class ProductRetailPrice {
     private Product product;
 
     private BigDecimal retail_price;
-    private Date effective_date;
-    private Date end_date;
+    private LocalDateTime effectiveDate;
+    private LocalDateTime endDate;
     private String created_by; // what purchase order has made this price
 
 }

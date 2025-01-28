@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +20,6 @@ public class LineItemDTO {
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
     private BigDecimal discountAmount;
-    private Date manufactureDate;
-    private Date expiryDate;
+    private LocalDate manufactureDate;
+    private LocalDate  expiryDate;
 }

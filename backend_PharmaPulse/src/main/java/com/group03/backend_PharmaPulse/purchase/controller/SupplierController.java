@@ -23,7 +23,7 @@ public class SupplierController {
     @GetMapping("/all")
     public ResponseEntity<StandardResponse> getAllSuppliers() {
         List<SupplierDTO> supplierDTOS  = supplierService.getAllSuppliers();
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",supplierDTOS),
                 HttpStatus.OK
         );
@@ -32,7 +32,7 @@ public class SupplierController {
     @GetMapping("/{id}")
     public ResponseEntity<StandardResponse> getSuppliersById(@PathVariable int id) {
         SupplierDTO selectedSupplier = supplierService.getSupplierById(id);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",selectedSupplier),
                 HttpStatus.FOUND
         );
@@ -42,7 +42,7 @@ public class SupplierController {
     public ResponseEntity<StandardResponse> addSuppliers(@Valid
                                                              @RequestBody SupplierDTO supplierDTO) {
         SupplierDTO savedSupplier=supplierService.addSupplier(supplierDTO);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",savedSupplier),
                 HttpStatus.CREATED
         );
@@ -51,7 +51,7 @@ public class SupplierController {
     public ResponseEntity<StandardResponse> updateSuppliers(@Valid @PathVariable int id,
                                                                  @RequestBody SupplierDTO supplierDTO) {
         SupplierDTO updatedSupplier=supplierService.updateSupplier(id,supplierDTO);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",updatedSupplier),
                 HttpStatus.CREATED
         );

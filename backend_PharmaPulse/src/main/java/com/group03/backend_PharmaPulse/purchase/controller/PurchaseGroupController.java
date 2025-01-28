@@ -21,7 +21,7 @@ public class PurchaseGroupController {
     @GetMapping("/all")
     public ResponseEntity<StandardResponse> getAllPurchaseGroups() {
         List<PurchaseGroupDTO> purchaseGroupDTOS  = purchaseGroupService.getAllPurchaseGroups();
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",purchaseGroupDTOS),
                 HttpStatus.OK
         );
@@ -30,7 +30,7 @@ public class PurchaseGroupController {
     @GetMapping("/{id}")
     public ResponseEntity<StandardResponse> getPurchaseGroupsById(@PathVariable int id) {
         PurchaseGroupDTO selectedPurchaseGroup = purchaseGroupService.getPurchaseGroupById(id);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",selectedPurchaseGroup),
                 HttpStatus.FOUND
         );
@@ -40,7 +40,7 @@ public class PurchaseGroupController {
     public ResponseEntity<StandardResponse> addPurchaseGroups(@Valid
                                                                  @RequestBody PurchaseGroupDTO purchaseGroupDTO) {
         PurchaseGroupDTO savedPurchaseGroup=purchaseGroupService.addPurchaseGroup(purchaseGroupDTO);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",savedPurchaseGroup),
                 HttpStatus.CREATED
         );
@@ -50,7 +50,7 @@ public class PurchaseGroupController {
     public ResponseEntity<StandardResponse> updatePurchaseGroups(@Valid @PathVariable int id,
                                                                 @RequestBody PurchaseGroupDTO purchaseGroupDTO) {
         PurchaseGroupDTO updatedPurchaseGroup=purchaseGroupService.updatePurchaseGroup(id,purchaseGroupDTO);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",updatedPurchaseGroup),
                 HttpStatus.CREATED
         );

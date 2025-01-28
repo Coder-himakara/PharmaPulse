@@ -20,7 +20,7 @@ public class PurchaseInvoiceController {
     @GetMapping("/all")
     public ResponseEntity<StandardResponse> getAllPurchaseInvoices() {
         List<PurchaseInvoiceDTO> purchaseInvoiceDTOS  = purchaseInvoiceService.getAllPurchaseInvoices();
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",purchaseInvoiceDTOS),
                 HttpStatus.OK
         );
@@ -28,7 +28,7 @@ public class PurchaseInvoiceController {
     @GetMapping("/{purchaseNo}")
     public ResponseEntity<StandardResponse> getPurchaseInvoicesById(@PathVariable int purchaseNo) {
         PurchaseInvoiceDTO selectedPurchaseInvoice = purchaseInvoiceService.getPurchaseInvoicesById(purchaseNo);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",selectedPurchaseInvoice),
                 HttpStatus.FOUND
         );
@@ -36,7 +36,7 @@ public class PurchaseInvoiceController {
     @PostMapping("/add")
     public ResponseEntity<StandardResponse> addPurchaseInvoice(@RequestBody PurchaseInvoiceDTO purchaseInvoiceDTO) {
         PurchaseInvoiceDTO addedPurchaseInvoice = purchaseInvoiceService.addPurchaseInvoice(purchaseInvoiceDTO);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",addedPurchaseInvoice),
                 HttpStatus.CREATED
         );

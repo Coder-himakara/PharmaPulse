@@ -34,7 +34,7 @@ public class Supplier {
 
     private BigDecimal credit_limit;
 
-    private Date credit_period;
+    private Date credit_period;// we want to store the credit period in days.Check!!!
 
     @ManyToOne
     @JoinColumn(name="purchase_group_id", nullable=false)

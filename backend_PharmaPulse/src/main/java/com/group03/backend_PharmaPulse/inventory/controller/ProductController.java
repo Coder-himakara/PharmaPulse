@@ -20,7 +20,7 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<StandardResponse> getAllProducts() {
         List<ProductDTO> productDTOS  = productService.getAllProducts();
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",productDTOS),
                 HttpStatus.OK
         );
@@ -28,7 +28,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<StandardResponse> getProductsById(@PathVariable String id) {
         ProductDTO selectedProduct = productService.getProductsById(id);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",selectedProduct),
                 HttpStatus.FOUND
         );
@@ -37,7 +37,7 @@ public class ProductController {
     public ResponseEntity<StandardResponse> addProducts(@Valid
                                                               @RequestBody ProductDTO productDTO) {
         ProductDTO savedProduct=productService.addProducts(productDTO);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",savedProduct),
                 HttpStatus.CREATED
         );
@@ -46,7 +46,7 @@ public class ProductController {
     public ResponseEntity<StandardResponse> updateProducts(@Valid @PathVariable String id,
                                                                  @RequestBody ProductDTO productDTO) {
         ProductDTO updatedProducts=productService.updateProducts(id,productDTO);
-        return new ResponseEntity<StandardResponse>(
+        return new ResponseEntity<>(
                 new StandardResponse(201,"Success",updatedProducts),
                 HttpStatus.CREATED
         );
