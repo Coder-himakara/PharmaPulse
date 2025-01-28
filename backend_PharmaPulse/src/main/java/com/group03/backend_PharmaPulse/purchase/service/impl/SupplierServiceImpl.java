@@ -15,8 +15,8 @@ import java.util.Optional;
 @Service
 public class SupplierServiceImpl implements SupplierService {
 
-    private SupplierRepo supplierRepo;
-    private SupplierMapper supplierMapper;
+    private final SupplierRepo supplierRepo;
+    private final SupplierMapper supplierMapper;
 
     public SupplierServiceImpl(SupplierRepo supplierRepo, SupplierMapper supplierMapper) {
         this.supplierRepo = supplierRepo;

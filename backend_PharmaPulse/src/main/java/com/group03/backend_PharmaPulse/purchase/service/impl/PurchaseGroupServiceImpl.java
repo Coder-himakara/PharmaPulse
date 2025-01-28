@@ -15,9 +15,9 @@ import java.util.Optional;
 @Service
 public class PurchaseGroupServiceImpl implements PurchaseGroupService {
 
-    private PurchaseGroupRepo purchaseGroupRepo;
+    private final PurchaseGroupRepo purchaseGroupRepo;
 
-    private PurchaseGroupMapper purchaseGroupMapper;
+    private final PurchaseGroupMapper purchaseGroupMapper;
 
     public PurchaseGroupServiceImpl(PurchaseGroupRepo purchaseGroupRepo,PurchaseGroupMapper purchaseGroupMapper) {
         this.purchaseGroupRepo = purchaseGroupRepo;

@@ -19,11 +19,11 @@ import java.util.List;
 @Transactional
 public class PurchaseInvoiceImpl implements PurchaseInvoiceService {
 
-    private PurchaseInvoiceRepo purchaseInvoiceRepo;
-    private PurchaseInvoiceMapper purchaseInvoiceMapper;
-    private LineItemMapper lineItemMapper;
-    private LineItemService lineItemService;
-    private ProductRepo productRepo;
+    private final PurchaseInvoiceRepo purchaseInvoiceRepo;
+    private final PurchaseInvoiceMapper purchaseInvoiceMapper;
+    private final LineItemMapper lineItemMapper;
+    private final LineItemService lineItemService;
+    private final ProductRepo productRepo;
 
     public PurchaseInvoiceImpl(PurchaseInvoiceRepo purchaseInvoiceRepo, PurchaseInvoiceMapper purchaseInvoiceMapper,
                                LineItemMapper lineItemMapper, LineItemService lineItemService,ProductRepo productRepo) {

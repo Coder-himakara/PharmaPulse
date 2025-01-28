@@ -11,6 +11,7 @@ import java.util.List;
 public interface ProductMapper {
     ProductDTO toDTO(Product product);
     @Mapping(target = "purchase_group",ignore = true)
+    @Mapping(target = "productRetailPrices",ignore = true)
     Product toEntity(ProductDTO productDTO);
     List<ProductDTO> toDTOsList(List<Product> products);
 }

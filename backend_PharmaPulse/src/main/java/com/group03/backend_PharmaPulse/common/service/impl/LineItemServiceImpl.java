@@ -12,8 +12,8 @@ import java.util.List;
 @Service
 public class LineItemServiceImpl implements LineItemService {
 
-    private LineItemRepo lineItemRepo;
-    private LineItemMapper lineItemMapper;
+    private final LineItemRepo lineItemRepo;
+    private final LineItemMapper lineItemMapper;
 
     public LineItemServiceImpl(LineItemRepo lineItemRepo, LineItemMapper lineItemMapper) {
         this.lineItemRepo = lineItemRepo;

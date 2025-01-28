@@ -12,6 +12,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -49,5 +51,9 @@ public class Product {
 
     @Transient
     private PurchaseGroupInterface purchase_group;
+
+    //LAZY fetch type is used to avoid fetching all the product retail prices when a product is fetched
+    @OneToMany(mappedBy="product" ,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<ProductRetailPrice> productRetailPrices;
 
 }

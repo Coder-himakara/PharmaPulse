@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/purchase-groups")
 public class PurchaseGroupController {
-    private PurchaseGroupService purchaseGroupService;
+    private final PurchaseGroupService purchaseGroupService;
     public PurchaseGroupController(PurchaseGroupService purchaseGroupService) {
         this.purchaseGroupService = purchaseGroupService;
     }
