@@ -1,0 +1,13 @@
+{
+    "employee": [
+      {
+        "title": "Price List",
+        "links": [
+          { "to": "/price-list-view", "name": "Price List View" }
+         
+        ]
+      }
+      
+    ]
+  }
+  

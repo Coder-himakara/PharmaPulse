@@ -1,7 +1,7 @@
 {
   "employee": [
     {
-      "title": "Products",
+      "title": "Price List",
       "links": [
         { "to": "/add-products", "name": "Add Products" },
         { "to": "/products-info", "name": "Products Info" }

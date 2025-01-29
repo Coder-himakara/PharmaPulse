@@ -10,6 +10,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     address: '',
     email: '',
     dateOfConnected: '',
+    batchName: '',
+    time: '',
+    age: '',
   });
 
   const navigate = useNavigate();
@@ -32,7 +35,10 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     if (
       !formData.customerName ||
       !formData.customerId ||
-      !formData.contactNumber
+      !formData.contactNumber ||
+      !formData.batchName ||
+      !formData.time ||
+      !formData.age
     ) {
       setErrorMessage('Please fill out all required fields.');
       return;
@@ -55,6 +61,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         address: '',
         email: '',
         dateOfConnected: '',
+        batchName: '',
+        time: '',
+        age: '',
       });
       setSuccessMessage('');
     }, 2000);
@@ -82,6 +91,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         </p>
       )}
 
+      {/* Customer Name Field */}
       <div className='flex justify-between items-center mb-4'>
         <label
           htmlFor='customerName'
@@ -99,6 +109,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         />
       </div>
 
+      {/* Customer ID Field */}
       <div className='flex justify-between items-center mb-4'>
         <label htmlFor='customerId' className='text-[16px] text-gray-800 w-2/3'>
           Customer ID:
@@ -113,6 +124,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         />
       </div>
 
+      {/* Contact Number Field */}
       <div className='flex justify-between items-center mb-4'>
         <label
           htmlFor='contactNumber'
@@ -130,6 +142,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         />
       </div>
 
+      {/* Address Field */}
       <div className='flex justify-between items-center mb-4'>
         <label htmlFor='address' className='text-[16px] text-gray-800 w-2/3'>
           Address:
@@ -144,6 +157,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         />
       </div>
 
+      {/* Email Field */}
       <div className='flex justify-between items-center mb-4'>
         <label htmlFor='email' className='text-[16px] text-gray-800 w-2/3'>
           Email:
@@ -158,6 +172,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         />
       </div>
 
+      {/* Date of Connected Field */}
       <div className='flex justify-between items-center mb-4'>
         <label
           htmlFor='dateOfConnected'
@@ -172,6 +187,51 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           value={formData.dateOfConnected}
           onChange={handleChange}
           className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm text-gray-800'
+        />
+      </div>
+
+      {/* Batch Name Field */}
+      <div className='flex justify-between items-center mb-4'>
+        <label htmlFor='batchName' className='text-[16px] text-gray-800 w-2/3'>
+          Batch Name:
+        </label>
+        <input
+          type='text'
+          id='batchName'
+          name='batchName'
+          value={formData.batchName}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+        />
+      </div>
+
+      {/* Time Field */}
+      <div className='flex justify-between items-center mb-4'>
+        <label htmlFor='time' className='text-[16px] text-gray-800 w-2/3'>
+          Time:
+        </label>
+        <input
+          type='text'
+          id='time'
+          name='time'
+          value={formData.time}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+        />
+      </div>
+
+      {/* Age Field */}
+      <div className='flex justify-between items-center mb-4'>
+        <label htmlFor='age' className='text-[16px] text-gray-800 w-2/3'>
+          Age:
+        </label>
+        <input
+          type='number'
+          id='age'
+          name='age'
+          value={formData.age}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
         />
       </div>
 
