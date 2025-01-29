@@ -12,6 +12,7 @@ import EditSuppliersForm from '../components/Forms/EditSuppliersForm';
 import EditCustomersForm from '../components/Forms/EditCustomersForm';
 import AddCustomerGroupForm from '../components/Forms/AddCustomerGroupForm';
 import CustomerGroupInfoTable from '../components/Tables/CustomerGroupInfoTable';
+import EditCustomerGroupForm from '../components/Forms/EditCustomersForm';
 
 import Sidebar from '../components/Sidebar/Sidebar';
 
@@ -57,6 +58,13 @@ const AppRoutes = () => {
     setCustomers((prevCustomers) =>
       prevCustomers.map((customer) =>
         customer.customerId === updatedCustomer.customerId ? updatedCustomer : customer
+      )
+    );
+  };
+  const updateCustomerGroup = (updatedCustomerGroup) => {
+    setCustomerGroups((prevCustomerGroup) =>
+      prevCustomerGroup.map((customerGroups) =>
+        customerGroups.customerId === updatedCustomerGroup.customerId ? updatedCustomerGroup : customerGroups
       )
     );
   };
@@ -110,6 +118,11 @@ const AppRoutes = () => {
       <Route
         path='/customer-group-info'
         element={<CustomerGroupInfoTable customerGroups={customerGroups} />}
+      />
+      <Route
+        path='/edit-customer-group/:customerGroupId'
+        // eslint-disable-next-line prettier/prettier
+        element={<EditCustomerGroupForm onUpdateCustomerGroups={updateCustomerGroup} />}
       />
       
       <Route path='/home' element={<Sidebar role='employee' />} />

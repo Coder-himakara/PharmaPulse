@@ -18,7 +18,7 @@
       "title": "Accounts",
       "links": [
         { "to": "/add-customer-group", "name": "Add Customer Group" },
-        { "to": "/add-customer-group-info", "name": "Add Customer Group Info" },
+        { "to": "/customer-group-info", "name": "Customer Group Info" },
         { "to": "/add-customers", "name": "Add Customers" },
         { "to": "/customers-info", "name": "Customers Info" }
       ]

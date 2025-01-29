@@ -47,7 +47,7 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
         <table className='w-full'>
           <thead>
             <tr>
-              {['#', 'Customer Group Name', 'Customer Group ID', 'Sales Rep ID', 'Sales Rep Name', 'Location', 'Date of Connected', 'Action'].map((header, index) => (
+              {['#', 'Customer Group ID','Customer Group Name', 'Sales Rep ID', 'Sales Rep Name', 'Location', 'Action'].map((header, index) => (
                 <th key={index} className='p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                   {header === 'Date of Connected' ? (
                     <span onClick={toggleSort} className='underline cursor-pointer'>{header} {sortDirection === 'asc' ? '▲' : '▼'}</span>
@@ -65,7 +65,6 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
                 <td className='p-2 text-center'>{group.salesRepId}</td>
                 <td className='p-2 text-center'>{group.salesRepName}</td>
                 <td className='p-2 text-center'>{group.location}</td>
-                <td className='p-2 text-center'>{group.dateOfConnected}</td>
                 <td className='p-2 text-center'>
                   <button
                     onClick={() => handleEdit(group.customerGroupId)}
@@ -91,7 +90,7 @@ CustomerGroupInfoTable.propTypes = {
       salesRepId: PropTypes.string.isRequired,
       salesRepName: PropTypes.string.isRequired,
       location: PropTypes.string.isRequired,
-      dateOfConnected: PropTypes.string.isRequired,
+     
     }),
   ).isRequired,
 };
