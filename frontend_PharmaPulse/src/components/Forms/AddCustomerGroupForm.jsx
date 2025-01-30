@@ -62,11 +62,20 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
         Add Customer Group
       </h2>
 
-      {errorMessage && <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>}
-      {successMessage && <p className='text-[#3c5f3c] text-sm font-bold mb-4'>{successMessage}</p>}
+      {errorMessage && (
+        <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>
+      )}
+      {successMessage && (
+        <p className='text-[#3c5f3c] text-sm font-bold mb-4'>
+          {successMessage}
+        </p>
+      )}
 
       <div className='flex items-center gap-4 mb-4'>
-        <label htmlFor='customerGroupName' className='text-[16px] text-gray-800 whitespace-nowrap'>
+        <label
+          htmlFor='customerGroupName'
+          className='text-[16px] text-gray-800 whitespace-nowrap'
+        >
           Customer Group Name:
         </label>
         <input

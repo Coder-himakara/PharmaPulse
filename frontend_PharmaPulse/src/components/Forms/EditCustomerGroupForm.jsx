@@ -43,7 +43,11 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroups }) => {
     e.preventDefault();
 
     // Basic validation
-    if (!formData.assignSalesRepId|| !formData.assignSalesRepName || !formData.customerGroupName) {
+    if (
+      !formData.assignSalesRepId ||
+      !formData.assignSalesRepName ||
+      !formData.customerGroupName
+    ) {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
@@ -103,7 +107,6 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroups }) => {
         />
       </div>
 
-      
       <div className='flex items-center justify-between mb-4'>
         <label htmlFor='assignSalesRepId' className='text-[16px] text-gray-800'>
           Sales Rep:

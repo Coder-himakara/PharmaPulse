@@ -41,34 +41,41 @@ const AppRoutes = () => {
   const updateProduct = (updatedProduct) => {
     setProducts((prevProducts) =>
       prevProducts.map((product) =>
-        product.productId === updatedProduct.productId ? updatedProduct : product
-      )
+        product.productId === updatedProduct.productId
+          ? updatedProduct
+          : product,
+      ),
     );
   };
 
   const updateSupplier = (updatedSupplier) => {
     setSuppliers((prevSuppliers) =>
       prevSuppliers.map((supplier) =>
-        supplier.supplierId === updatedSupplier.supplierId ? updatedSupplier : supplier
-      )
+        supplier.supplierId === updatedSupplier.supplierId
+          ? updatedSupplier
+          : supplier,
+      ),
     );
   };
 
   const updateCustomer = (updatedCustomer) => {
     setCustomers((prevCustomers) =>
       prevCustomers.map((customer) =>
-        customer.customerId === updatedCustomer.customerId ? updatedCustomer : customer
-      )
+        customer.customerId === updatedCustomer.customerId
+          ? updatedCustomer
+          : customer,
+      ),
     );
   };
   const updateCustomerGroup = (updatedCustomerGroup) => {
     setCustomerGroups((prevCustomerGroup) =>
       prevCustomerGroup.map((customerGroups) =>
-        customerGroups.customerId === updatedCustomerGroup.customerId ? updatedCustomerGroup : customerGroups
-      )
+        customerGroups.customerId === updatedCustomerGroup.customerId
+          ? updatedCustomerGroup
+          : customerGroups,
+      ),
     );
   };
-
 
   return (
     <Routes>
@@ -123,8 +130,9 @@ const AppRoutes = () => {
         path='/edit-customer-group/:customerGroupId'
         // eslint-disable-next-line prettier/prettier
         element={<EditCustomerGroupForm onUpdateCustomerGroups={updateCustomerGroup} />}
+        
       />
-      
+
       <Route path='/home' element={<Sidebar role='employee' />} />
       <Route path='/dashboard' element={<Sidebar role='employee' />} />
     </Routes>
