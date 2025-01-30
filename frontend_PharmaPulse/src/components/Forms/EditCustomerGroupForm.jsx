@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 // eslint-disable-next-line react/prop-types
 const EditCustomerGroupForm = ({ onUpdateCustomerGroups }) => {
   const { state } = useLocation(); // Access the state passed by navigate
-  const customerGroups = state?.customerGroups; // Get customer from the state
+  const customerGroups = state?.customerGroups; // Get customer group from the state
 
   const [formData, setFormData] = useState({
     customerGroupName: '',
@@ -46,7 +46,8 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroups }) => {
     if (
       !formData.assignSalesRepId ||
       !formData.assignSalesRepName ||
-      !formData.customerGroupName
+      !formData.customerGroupName ||
+      !formData.location
     ) {
       setErrorMessage('Please fill out all required fields.');
       return;

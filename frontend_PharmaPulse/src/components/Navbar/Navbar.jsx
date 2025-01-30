@@ -67,7 +67,7 @@ const Navbar = () => {
         <div>
           <span className="text-sm font-bold">John Doe</span>
           <br />
-          <span className="text-xs italic">Admin</span>
+          <span className="text-xs italic">Employee</span>
         </div>
         <div className="relative">
           <button

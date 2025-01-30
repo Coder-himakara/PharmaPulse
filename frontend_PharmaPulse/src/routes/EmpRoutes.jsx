@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -13,6 +14,9 @@ import EditCustomersForm from '../components/Forms/EditCustomersForm';
 import AddCustomerGroupForm from '../components/Forms/AddCustomerGroupForm';
 import CustomerGroupInfoTable from '../components/Tables/CustomerGroupInfoTable';
 import EditCustomerGroupForm from '../components/Forms/EditCustomersForm';
+import AddPurchaseGroupForm from '../components/Forms/AddPurchaseGroupForm';
+import EditPurchaseGroupForm from '../components/Forms/EditPurchaseGroupForm';
+import PurchaseGroupInfoTable from '../components/Tables/CustomerGroupInfoTable';
 
 import Sidebar from '../components/Sidebar/Sidebar';
 
@@ -21,6 +25,7 @@ const AppRoutes = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [customerGroups, setCustomerGroups] = useState([]);
+  const [purchaseGroups, setPurchaseGroups] = useState([]);
 
   const addProduct = (product) => {
     setProducts((prevProducts) => [...prevProducts, product]);
@@ -35,8 +40,12 @@ const AppRoutes = () => {
   };
 
   const addCustomerGroup = (customerGroup) => {
-    setCustomerGroups((prevGroups) => [...prevGroups, customerGroup]);
+    setCustomerGroups((prevCustomerGroups) => [...prevCustomerGroups, customerGroup]);
   };
+  const addPurchaseGroup = (purchaseGroup) => {
+    setPurchaseGroups((prevPurchaseGroups) => [...prevPurchaseGroups, purchaseGroup]);
+  };
+
 
   const updateProduct = (updatedProduct) => {
     setProducts((prevProducts) =>
@@ -73,6 +82,16 @@ const AppRoutes = () => {
         customerGroups.customerId === updatedCustomerGroup.customerId
           ? updatedCustomerGroup
           : customerGroups,
+      ),
+    );
+  };
+
+  const updatePurchaseGroup = (updatedPurchaseGroup) => {
+    setPurchaseGroups((prevPurchaseGroup) =>
+      prevPurchaseGroup.map((purchaseGroups) =>
+        purchaseGroups.purchaseGroupId=== updatedPurchaseGroup.purchaseGroupId
+          ? updatedPurchaseGroup
+          :purchaseGroups,
       ),
     );
   };
@@ -120,7 +139,7 @@ const AppRoutes = () => {
 
       <Route
         path='/add-customer-group'
-        element={<AddCustomerGroupForm onAddCustomerGroup={addCustomerGroup} />}
+        element={<AddCustomerGroupForm onAddCustomerGroups={addCustomerGroup} />}
       />
       <Route
         path='/customer-group-info'
@@ -128,8 +147,22 @@ const AppRoutes = () => {
       />
       <Route
         path='/edit-customer-group/:customerGroupId'
-        // eslint-disable-next-line prettier/prettier
         element={<EditCustomerGroupForm onUpdateCustomerGroups={updateCustomerGroup} />}
+        
+      />
+      
+      <Route
+        path='/add-purchase-group'
+        element={<AddPurchaseGroupForm onAddPurchaseGroups={addPurchaseGroup} />}
+      />
+
+      <Route
+        path='/purchase-group-info'
+        element={<PurchaseGroupInfoTable purchaseGroups={purchaseGroups} />}
+      />
+      <Route
+        path='/edit-purchase-group-info/:purchaseGroupId'
+        element={<EditPurchaseGroupForm onUpdateCustomerGroups={updatePurchaseGroup} />}
         
       />
 
