@@ -1,7 +1,9 @@
 package com.group03.backend_PharmaPulse.inventory.service.impl;
 
+import com.group03.backend_PharmaPulse.inventory.dto.ProductRetailPriceDTO;
 import com.group03.backend_PharmaPulse.inventory.entity.Product;
 import com.group03.backend_PharmaPulse.inventory.entity.ProductRetailPrice;
+import com.group03.backend_PharmaPulse.inventory.mapper.ProductRetailPriceMapper;
 import com.group03.backend_PharmaPulse.inventory.repository.ProductRetailPriceRepo;
 import com.group03.backend_PharmaPulse.inventory.service.ProductRetailPriceService;
 import org.slf4j.Logger;
@@ -16,9 +18,12 @@ import java.time.LocalDateTime;
 public class ProductRetailPriceServiceImpl implements ProductRetailPriceService {
 
     private final ProductRetailPriceRepo retailPriceRepository;
+    private final ProductRetailPriceMapper productRetailPriceMapper;
 
-    public ProductRetailPriceServiceImpl(ProductRetailPriceRepo retailPriceRepository) {
+    public ProductRetailPriceServiceImpl(ProductRetailPriceRepo retailPriceRepository,
+                                         ProductRetailPriceMapper productRetailPriceMapper) {
         this.retailPriceRepository = retailPriceRepository;
+        this.productRetailPriceMapper = productRetailPriceMapper;
     }
     /**
      * Checks and updates the retail price of a product while adding a new purchase invoice.
@@ -35,23 +40,30 @@ public class ProductRetailPriceServiceImpl implements ProductRetailPriceService 
             BigDecimal suggestedRetailPrice = newUnitPrice;
 
             if (mostRecentPrice == null ||
-                    !mostRecentPrice.getRetail_price().equals(suggestedRetailPrice)) {
+                    !mostRecentPrice.getRetailPrice().equals(suggestedRetailPrice)) {
 
                 if (mostRecentPrice != null) {
                     mostRecentPrice.setEndDate(LocalDateTime.now());
                     retailPriceRepository.save(mostRecentPrice);
                 }
                 //Create new retail price record
-                ProductRetailPrice newRetailPrice = new ProductRetailPrice();
+                /**ProductRetailPrice newRetailPrice = new ProductRetailPrice();
                 newRetailPrice.setProduct(product);
-                newRetailPrice.setRetail_price(suggestedRetailPrice);
+                newRetailPrice.setRetailPrice(suggestedRetailPrice);
                 newRetailPrice.setEffectiveDate(LocalDateTime.now());
-                newRetailPrice.setCreated_by("Purchase Order");
+                newRetailPrice.setCreatedBy("Purchase Order");
+                retailPriceRepository.save(newRetailPrice);**/
 
-                retailPriceRepository.save(newRetailPrice);
+                ProductRetailPriceDTO newRetailPriceDTO = new ProductRetailPriceDTO();
+                newRetailPriceDTO.setProduct(product.getProductId());
+                newRetailPriceDTO.setRetailPrice(suggestedRetailPrice);
+                newRetailPriceDTO.setEffectiveDate(LocalDateTime.now());
+                newRetailPriceDTO.setCreatedBy("Purchase Order");
+                retailPriceRepository.save(productRetailPriceMapper.toEntity(newRetailPriceDTO));
+
             }
         }catch (Exception e){
-            logger.error("Error updating retail price for product: " + product.getProduct_id(), e);
+            logger.error("Error updating retail price for product: " + product.getProductId(), e);
         }
 
     }

@@ -1,5 +1,9 @@
 package com.group03.backend_PharmaPulse.inventory.dto;
 
+import com.group03.backend_PharmaPulse.inventory.entity.Product;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +17,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ProductRetailPriceDTO {
-    //private Long price_id;
+    //private Long priceId;
     private String product;
-    private BigDecimal retail_price;
+    private String createdBy;
     private LocalDateTime effectiveDate;
     private LocalDateTime endDate;
-    private String created_by; // what purchase order has made this price
+    private BigDecimal retailPrice;
 }

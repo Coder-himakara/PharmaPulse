@@ -23,34 +23,34 @@ import java.util.Set;
 public class Product {
     @Id
     @Column(name = "product_id",length = 50)
-    private String product_id;
+    private String productId;
 
-    private String product_name;
-    private String generic_name;
+    private String productName;
+    private String genericName;
     private String description;
-    private String product_ModelNo;
+    private String productModelNo;
 
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
 
     @Enumerated(EnumType.STRING)
-    private DosageForm dosage_form;
+    private DosageForm dosageForm;
 
     private String strength;
 
     @Enumerated(EnumType.STRING)
-    private PackageType package_type;
+    private PackageType packageType;
 
     @Enumerated(EnumType.STRING)
-    private ProductStatus product_status;
+    private ProductStatus productStatus;
 
-    private Integer reorder_limit;
+    private Integer reorderLimit;
 
     @Column(name = "purchase_group_id", nullable = false)
     private int purchaseGroupId;
 
     @Transient
-    private PurchaseGroupInterface purchase_group;
+    private PurchaseGroupInterface purchaseGroup;
 
     //LAZY fetch type is used to avoid fetching all the product retail prices when a product is fetched
     @OneToMany(mappedBy="product" ,fetch = FetchType.LAZY, cascade = CascadeType.ALL)

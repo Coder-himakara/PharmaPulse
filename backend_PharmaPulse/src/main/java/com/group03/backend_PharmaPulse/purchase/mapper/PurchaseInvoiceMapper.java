@@ -35,7 +35,7 @@ public interface PurchaseInvoiceMapper{
     }
 
     default String map(Product value) {
-        return value != null ? value.getProduct_id() : null;
+        return value != null ? value.getProductId() : null;
     }
 
     default Product map(String value) {
@@ -43,7 +43,7 @@ public interface PurchaseInvoiceMapper{
             return null;
         }
         Product product = new Product();
-        product.setProduct_id(value);
+        product.setProductId(value);
         return product;
     }
 }

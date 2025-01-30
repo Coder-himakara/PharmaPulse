@@ -17,7 +17,7 @@ public interface LineItemMapper {
     @Mapping(target = "invoice" ,source = "invoice" ,qualifiedByName = "mapInvoice")
     LineItem toEntity(LineItemDTO lineItemDTO);
 
-    @Mapping(target = "product" ,source = "product.product_id")
+    @Mapping(target = "product" ,source = "product.productId")
     @Mapping(target = "invoice" ,source = "invoice.invoiceId")
     LineItemDTO toDTO(LineItem lineItem);
 
@@ -30,7 +30,7 @@ public interface LineItemMapper {
     @Named("mapProduct")
     default Product mapProduct(String product_id) {
         Product product = new Product();
-        product.setProduct_id(product_id);
+        product.setProductId(product_id);
         return product;
     }
     @Named("mapInvoice")

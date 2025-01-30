@@ -79,7 +79,7 @@ public class PurchaseInvoiceImpl implements PurchaseInvoiceService {
                 //Set the InvoiceNo to LineItem
                 lineItem.setInvoice(purchaseInvoice);
                 //Set the ProductID to LineItem
-                Product product = productRepo.findById(lineItem.getProduct().getProduct_id())
+                Product product = productRepo.findById(lineItem.getProduct().getProductId())
                         .orElseThrow(() -> new NotFoundException("Product not found"));
                 lineItem.setProduct(product);
             }

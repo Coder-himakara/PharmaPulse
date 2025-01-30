@@ -16,28 +16,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProductDTO {
-    private String product_id;
+    private String productId;
 
-    private String product_name;
-    private String generic_name;
+    private String productName;
+    private String genericName;
     private String description;
-    private String product_ModelNo;
+    private String productModelNo;
 
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
 
     @Enumerated(EnumType.STRING)
-    private DosageForm dosage_form;
+    private DosageForm dosageForm;
 
     private String strength;
 
     @Enumerated(EnumType.STRING)
-    private PackageType package_type;
+    private PackageType packageType;
 
     @Enumerated(EnumType.STRING)
-    private ProductStatus product_status;
+    private ProductStatus productStatus;
 
-    private Integer reorder_limit;
+    private Integer reorderLimit;
 
     private int purchaseGroupId;
 }

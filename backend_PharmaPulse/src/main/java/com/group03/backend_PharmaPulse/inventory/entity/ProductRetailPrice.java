@@ -18,16 +18,22 @@ import java.time.LocalDateTime;
 public class ProductRetailPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "price_id")
-    private Long price_id;
+    private Long priceId;
 
     @ManyToOne
-    @JoinColumn(name="product_id", nullable=false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    private BigDecimal retail_price;
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
+
+    @Column(name = "effective_date", nullable = false)
     private LocalDateTime effectiveDate;
+
+    @Column(name = "end_date")
     private LocalDateTime endDate;
-    private String created_by; // what purchase order has made this price
+
+    @Column(name = "retail_price", nullable = false)
+    private BigDecimal retailPrice;
 
 }

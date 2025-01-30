@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> product = productRepo.findById(id);
         if (product.isPresent()) {
             Product updatedProduct = productMapper.toEntity(productDTO);
-            updatedProduct.setProduct_id(id); // Ensure the ID is set to the existing entity's ID
+            updatedProduct.setProductId(id); // Ensure the ID is set to the existing entity's ID
             Product savedProduct = productRepo.save(updatedProduct);
             return productMapper.toDTO(savedProduct);
         } else {
