@@ -3,7 +3,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
+const AddPurchaseGroupForm = ({ onAddPurchaseGroups }) => {
   const [formData, setFormData] = useState({
     purchaseGroupId: '',
     purchaseGroupName: '',
@@ -15,49 +15,52 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   });
 
   const navigate = useNavigate();
-
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (pg) => {
     const { name, value } = pg.target;
-    setFormData((prevData) => {
-      const updatedData = {
-        ...prevData,
-        [name]: value.trim(),
-      };
-      console.log(updatedData); // Log form data to check if it's being updated
-      return updatedData;
-    });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value.trim(),
+    }));
   };
-  
 
   const handleSubmit = (pg) => {
     pg.preventDefault();
-    console.log(formData); // Add this line to inspect the formData
-    if (!formData.purchaseGroupId|| !formData.purchaseGroupName.trim() ||!formData.address||!formData.contactName.trim()||!formData.telePhoneNo.trim() ||!formData.telePhoneNo.trim()||!formData.supplierId) {
 
+    // Check if any required field is empty
+    if (
+      !formData.purchaseGroupId ||
+      !formData.purchaseGroupName.trim() ||
+      !formData.address.trim() ||
+      !formData.contactName.trim() ||
+      !formData.telePhoneNo.trim() ||
+      !formData.email.trim() ||
+      !formData.supplierId.trim()
+    ) {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
 
+    // Clear error message and show success
     setErrorMessage('');
     setSuccessMessage('Purchase Group Added Successfully!');
+
     // Save the new purchase group to localStorage
-  const savedPurchaseGroups = JSON.parse(localStorage.getItem('purchaseGroups')) || [];
-  const updatedPurchaseGroups = [...savedPurchaseGroups, formData];
-  localStorage.setItem('purchaseGroups', JSON.stringify(updatedPurchaseGroups));
+    const savedPurchaseGroups = JSON.parse(localStorage.getItem('purchaseGroups')) || [];
+    const updatedPurchaseGroups = [...savedPurchaseGroups, formData];
+    localStorage.setItem('purchaseGroups', JSON.stringify(updatedPurchaseGroups));
 
-    if (onAddPurchaseGroup) {
-      onAddPurchaseGroup(formData);
-    }
+    // Pass the data to the parent component
+    onAddPurchaseGroups(formData);
 
+    // Show success message for a short period
     setTimeout(() => {
       setSuccessMessage('');
-      navigate('/purchase-groups', { state: { newCustomerGroup: formData } });
+      navigate('/purchase-group-info');
     }, 1500);
   };
-
 
   const handleCancel = () => {
     navigate('/home');
@@ -72,15 +75,14 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       {errorMessage && <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>}
       {successMessage && <p className='text-[#3c5f3c] text-sm font-bold mb-4'>{successMessage}</p>}
 
-      {[
-        { label: 'Purchase Group Id', name:'purchaseGroupId'},
-        { label: 'Purchase Group Name', name:'purchaseGroupName'},  
-        { label: 'Address', name:'address'},
-        { label: 'Contact Name', name:'contactName'},
-        { label: 'Telephone No', name:'telePhoneNo'},
-        { label: 'Email', name:'email'},
-        { label: 'Supplier Id', name:'supplierId'},
-      
+      {[ // Form Fields Mapping
+        { label: 'Purchase Group Id', name: 'purchaseGroupId' },
+        { label: 'Purchase Group Name', name: 'purchaseGroupName' },
+        { label: 'Address', name: 'address' },
+        { label: 'Contact Name', name: 'contactName' },
+        { label: 'Telephone No', name: 'telePhoneNo' },
+        { label: 'Email', name: 'email' },
+        { label: 'Supplier Id', name: 'supplierId' },
       ].map(({ label, name }) => (
         <div className='flex items-center mb-4' key={name}>
           <label htmlFor={name} className='text-[16px] text-gray-800 font-medium w-1/3 text-left'>
@@ -89,8 +91,8 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           <input
             type='text'
             id={name}
-            name={name}  // Correctly match with formData property name
-            value={formData[name]}  // Correctly match with formData state
+            name={name}  // Ensure formData property matches with name
+            value={formData[name]}  // Ensures input value corresponds to state
             onChange={handleChange}
             className='w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md'
           />
@@ -117,7 +119,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
 };
 
 AddPurchaseGroupForm.propTypes = {
-  onAddPurchaseGroup: PropTypes.func.isRequired,
+  onAddPurchaseGroups: PropTypes.func.isRequired,
 };
 
 export default AddPurchaseGroupForm;

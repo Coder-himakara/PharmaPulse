@@ -15,16 +15,17 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (cg) => {
+    const { name, value } = cg.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+   
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (cg) => {
+    cg.preventDefault();
 
     if (!formData.customerGroupName || !formData.assignSalesRepId || !formData.assignSalesRepName|| !formData.location) {
       setErrorMessage('Please fill out all required fields.');
@@ -45,7 +46,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
 
     setTimeout(() => {
       setSuccessMessage('');
-      navigate('/customer-groups', { state: { newCustomerGroup: formData } });
+      navigate('/add-customer-groups', { state: { newCustomerGroup: formData } });
     }, 1500);
   };
 
@@ -139,7 +140,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
 };
 
 AddCustomerGroupForm.propTypes = {
-  onAddCustomerGroup: PropTypes.func,
+  onAddCustomerGroup: PropTypes.func.isRequired,
 };
 
 export default AddCustomerGroupForm;
