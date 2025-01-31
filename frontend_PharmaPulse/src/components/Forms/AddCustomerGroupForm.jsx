@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +12,6 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   });
 
   const navigate = useNavigate();
-
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -26,33 +26,33 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.customerGroupName) {
+    if (!formData.customerGroupName || !formData.assignSalesRepId || !formData.assignSalesRepName|| !formData.location) {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
 
     setErrorMessage('');
     setSuccessMessage('Customer group added successfully!');
+    // Save the new customer group to localStorage
+  const savedGroups = JSON.parse(localStorage.getItem('customerGroups')) || [];
+  const updatedGroups = [...savedGroups, formData];
+  localStorage.setItem('customerGroups', JSON.stringify(updatedGroups));
+
 
     if (onAddCustomerGroup) {
       onAddCustomerGroup(formData);
     }
 
     setTimeout(() => {
-      setFormData({
-        customerGroupName: '',
-        assignSalesRepId: '',
-        assignSalesRepName: '',
-        location: '',
-      });
       setSuccessMessage('');
-    }, 2000);
+      navigate('/customer-groups', { state: { newCustomerGroup: formData } });
+    }, 1500);
   };
 
   const handleCancel = () => {
     navigate('/home');
   };
-
+  
   return (
     <form
       onSubmit={handleSubmit}
@@ -62,20 +62,11 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
         Add Customer Group
       </h2>
 
-      {errorMessage && (
-        <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>
-      )}
-      {successMessage && (
-        <p className='text-[#3c5f3c] text-sm font-bold mb-4'>
-          {successMessage}
-        </p>
-      )}
+      {errorMessage && <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>}
+      {successMessage && <p className='text-[#3c5f3c] text-sm font-bold mb-4'>{successMessage}</p>}
 
       <div className='flex items-center gap-4 mb-4'>
-        <label
-          htmlFor='customerGroupName'
-          className='text-[16px] text-gray-800 whitespace-nowrap'
-        >
+        <label htmlFor='customerGroupName' className='text-[16px] text-gray-800 whitespace-nowrap'>
           Customer Group Name:
         </label>
         <input
@@ -148,7 +139,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
 };
 
 AddCustomerGroupForm.propTypes = {
-  onAddCustomerGroup: PropTypes.func.isRequired,
+  onAddCustomerGroup: PropTypes.func,
 };
 
 export default AddCustomerGroupForm;

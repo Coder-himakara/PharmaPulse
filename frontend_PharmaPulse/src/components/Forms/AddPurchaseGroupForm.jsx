@@ -30,7 +30,13 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.purchaseGroupName || !formData.purchaseGroupId || !formData.supplierId || !formData.telePhoneNo) {
+    if (
+      !formData.email.trim() ||
+      !formData.purchaseGroupName.trim() ||
+      !formData.purchaseGroupId.trim() ||
+      !formData.supplierId.trim() ||
+      !formData.telePhoneNo.trim()
+    ) {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
@@ -70,12 +76,12 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       {successMessage && <p className='text-[#3c5f3c] text-sm font-bold mb-4'>{successMessage}</p>}
 
       {[
-        { label: 'Purchase Group Name', name: 'purchaseGroupName' },
-        { label: 'Address', name: 'address' },
-        { label: 'Contact Name', name: 'contactName' },
-        { label: 'Telephone No', name: 'telePhoneNo' },
-        { label: 'Supplier Id', name: 'supplierId' },
-        { label: 'Email', name: 'email' },
+        { label: 'Purchase Group Name', name:'purchaseGroupName' },
+        { label: 'Address', name:'address' },
+        { label: 'Contact Name', name:'contactName' },
+        { label: 'Telephone No', name:'telePhoneNo' },
+        { label: 'Supplier Id', name:'supplierId' },
+        { label: 'Email', name:'email' },
       ].map(({ label, name }) => (
         <div className='flex items-center mb-4' key={name}>
           <label htmlFor={name} className='text-[16px] text-gray-800 font-medium w-1/3 text-left'>

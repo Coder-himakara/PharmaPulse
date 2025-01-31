@@ -16,7 +16,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
  const handleClose = () => navigate('/home');
   // Edit button action
   const handleEdit = (purchaseGroupId) => {
-    const purchaseGroup = purchaseGroups.find(c => c.purchaseGroupId === purchaseGroupId);
+    const purchaseGroup = purchaseGroup.find(pg => pg.purchaseGroupId === purchaseGroupId);
     navigate(`/edit-purchase-group/${purchaseGroupId}`, { state: { purchaseGroup } });
   };
   return (
@@ -51,19 +51,19 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
           </thead>
           
           <tbody>
-          {filteredPurchaseGroups.map((group, index) => (
+          {filteredPurchaseGroups.map((purchaseGroup, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
                 <td className='p-2 text-center border border-gray-400'>{index + 1}</td>
-                <td className='p-2 text-center border border-gray-400'>{group.purchaseGroupId}</td>
-                <td className='p-2 text-center border border-gray-400'>{group.purchaseGroupName}</td>
-                <td className='p-2 text-center border border-gray-400'>{group.address}</td>
-                <td className='p-2 text-center border border-gray-400'>{group.contactName}</td>
-                <td className='p-2 text-center border border-gray-400'>{group.telePhoneNo}</td>
-                <td className='p-2 text-center border border-gray-400'>{group.email}</td>
-                <td className='p-2 text-center border border-gray-400'>{group.supplierId}</td>
+                <td className='p-2 text-center border border-gray-400'>{purchaseGroup.purchaseGroupId}</td>
+                <td className='p-2 text-center border border-gray-400'>{purchaseGroup.purchaseGroupName}</td>
+                <td className='p-2 text-center border border-gray-400'>{purchaseGroup.address}</td>
+                <td className='p-2 text-center border border-gray-400'>{purchaseGroup.contactName}</td>
+                <td className='p-2 text-center border border-gray-400'>{purchaseGroup.telePhoneNo}</td>
+                <td className='p-2 text-center border border-gray-400'>{purchaseGroup.email}</td>
+                <td className='p-2 text-center border border-gray-400'>{purchaseGroup.supplierId}</td>
                 <td className='p-2 text-center border border-gray-400'>
                   <button
-                    onClick={() => handleEdit(group.purchaseGroupId)}
+                    onClick={() => handleEdit(purchaseGroup.purchaseGroupId)}
                     className='bg-[#4c85a6] text-white py-1 px-3 rounded-md text-sm hover:bg-[#15375c]'
                   >
                     Edit

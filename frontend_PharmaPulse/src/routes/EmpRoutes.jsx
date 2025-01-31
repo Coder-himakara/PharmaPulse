@@ -42,7 +42,7 @@ const AppRoutes = () => {
   const updateCustomer = (updated) =>
     setCustomers((prev) => prev.map((c) => (c.customerId === updated.customerId ? updated : c)));
 
-  const updateCustomerGroup = (updated) =>
+  const handleUpdateCustomerGroups = (updated) =>
     setCustomerGroups((prev) =>prev.map((cg) => (cg.customerGroupId === updated.customerGroupId ? updated : cg))
     );
 
@@ -66,7 +66,7 @@ const AppRoutes = () => {
 
       <Route path='/add-customer-group' element={<AddCustomerGroupForm onAddCustomerGroups={addCustomerGroup} />} />
       <Route path='/customer-group-info' element={<CustomerGroupInfoTable customerGroups={customerGroups} />} />
-      <Route path='/edit-customer-group/:customerGroupId' element={<EditCustomerGroupForm onUpdateCustomerGroups={updateCustomerGroup} />} />
+      <Route path='/edit-customer-group/:customerGroupId' element={<EditCustomerGroupForm onUpdateCustomerGroups={handleUpdateCustomerGroups} />} />
 
       <Route path='/add-purchase-group' element={<AddPurchaseGroupForm onAddPurchaseGroups={addPurchaseGroup} />} />
       <Route path='/purchase-group-info' element={<PurchaseGroupInfoTable purchaseGroups={purchaseGroups} />} />

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const EditCustomersForm = ({ onUpdateCustomer }) => {
   const { state } = useLocation(); // Access the state passed by navigate
   const customer = state?.customer; // Get customer from the state
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     customerName: '',
@@ -16,8 +16,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     dateOfConnected: '',
   });
 
-  const navigate = useNavigate();
-
+ 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 

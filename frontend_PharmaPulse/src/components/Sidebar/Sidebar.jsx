@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import sidebarSections from '../../sidebarSections.json';
@@ -5,16 +6,16 @@ import sidebarSections from '../../sidebarSections.json';
 // SidebarLink Component
 const SidebarLink = ({ to, children }) => (
   <li className='mb-2'>
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `block text-base p-2 rounded-md transition-all duration-300 ${
-          isActive
-            ? 'bg-teal-700 text-white'
-            : 'text-gray-700 hover:bg-teal-700 hover:text-teal-200 dark:text-gray-300 dark:hover:text-teal-400'
-        }`
-      }
-    >
+  <NavLink
+  to={to}
+  className={({ isActive }) =>
+    `block text-left text-base p-2 rounded-md transition-all duration-300 ${
+      isActive
+        ? 'bg-teal-700 text-white'
+        : 'text-gray-700 hover:bg-teal-700 hover:text-teal-200 dark:text-gray-300 dark:hover:text-teal-400'
+    }`
+  }
+>
       {children}
     </NavLink>
   </li>
@@ -31,7 +32,7 @@ const SidebarSection = ({ title, links }) => (
     <h2 className='pb-1 mb-3 text-lg font-semibold border-b border-teal-700 dark:border-teal-400'>
       {title}
     </h2>
-    <ul className='p-0 list-none'>
+    <ul className='p-0 space-y-2 list-none'>
       {links.map((link, index) => (
         <SidebarLink key={index} to={link.to}>
           {link.name}
