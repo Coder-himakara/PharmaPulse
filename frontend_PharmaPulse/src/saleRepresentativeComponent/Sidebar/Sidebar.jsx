@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import sidebarSections from '../../sidebarSections.json';
-
+//import sidebarSections from '../../sidebarSections.json';
+import sidebarSectionRep from '../../sidebarSectionRep.json';
 // SidebarLink Component
 const SidebarLink = ({ to, children }) => (
   <li className='mb-2'>
@@ -53,7 +53,7 @@ SidebarSection.propTypes = {
 
 // Sidebar Component
 const Sidebar = ({ role }) => {
-  const sections = sidebarSections[role] || [];
+  const sections = sidebarSectionRep[role] || [];
 
   return (
     <aside className='fixed top-[100px] bottom-[70px] left-0 w-[250px] bg-teal-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 overflow-y-auto shadow-lg p-5 z-[999] box-border'>

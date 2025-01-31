@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import {
     Table,
     TableBody,
@@ -11,50 +11,49 @@ import {
     Button,
     Typography,
     Box,
+    MenuItem,
+    Select,
+    Grid,
 } from "@mui/material";
+
+const customers = [
+    { regNo: "CUST001", name: "John Doe" },
+    { regNo: "CUST002", name: "Jane Smith" },
+];
+
+const products = [
+    { name: "Product A", code: "A001", price: 100, quantity: 50 },
+    { name: "Product B", code: "B001", price: 200, quantity: 20 },
+];
 
 const OrderForm = () => {
     const [orderItems, setOrderItems] = useState([]);
+    const [customerRegNo, setCustomerRegNo] = useState("");
     const [customerName, setCustomerName] = useState("");
-    const [orderQty, setOrderQty] = useState({});
+    const [selectedProduct, setSelectedProduct] = useState("");
+    const [orderQty, setOrderQty] = useState("");
+    const [quantityError, setQuantityError] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
-    const products = [
-        {
-            name: "Product A",
-            code: "A001",
-            price: 100,
-            quantity: 50,
-            expiryDate: "2025-12-31",
-            manufacturer: "Manufacturer A",
-        },
-        {
-            name: "Product B",
-            code: "B001",
-            price: 200,
-            quantity: 20,
-            expiryDate: "2026-06-30",
-            manufacturer: "Manufacturer B",
-        },
-    ];
+    const handleCustomerChange = (regNo) => {
+        setCustomerRegNo(regNo);
+        const customer = customers.find((c) => c.regNo === regNo);
+        setCustomerName(customer ? customer.name : "");
+    };
 
-    const filteredProducts = products.filter(
-        (product) =>
-            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            product.code.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const addToOrder = () => {
+        const product = products.find((p) => p.code === selectedProduct);
+        const qty = parseInt(orderQty);
 
-    const addToOrder = (product) => {
-        const qty = parseInt(orderQty[product.code] || 0);
-        if (qty > 0 && qty <= product.quantity) {
-            setOrderItems((prevItems) => [
-                ...prevItems,
-                { ...product, orderQty: qty },
-            ]);
-            setOrderQty((prevQty) => ({ ...prevQty, [product.code]: "" }));
-        } else {
-            alert("Invalid quantity");
+        if (!product || qty <= 0 || qty > product.quantity) {
+            setQuantityError(true);
+            return;
         }
+
+        setOrderItems((prevItems) => [...prevItems, { ...product, orderQty: qty }]);
+        setSelectedProduct("");
+        setOrderQty("");
+        setQuantityError(false);
     };
 
     const removeFromOrder = (productCode) => {
@@ -62,103 +61,100 @@ const OrderForm = () => {
     };
 
     const handleSubmit = () => {
-        if (!customerName) {
-            alert("Please enter a customer name");
+        if (!customerRegNo) {
+            alert("Please enter a customer registration number");
             return;
         }
 
         console.log("Order submitted:", {
+            customerRegNo,
             customerName,
             orderItems,
         });
         setOrderItems([]);
+        setCustomerRegNo("");
         setCustomerName("");
     };
 
     return (
-        <Box p={4} bgcolor="#f5f5f5" minHeight="100vh">
-            {/* Price List Section */}
-            <Paper elevation={3} sx={{ mb: 4, p: 2 }}>
-                <Typography variant="h5" gutterBottom>
-                    Price List
-                </Typography>
-                <TextField
-                    fullWidth
-                    placeholder="Search Product..."
-                    variant="outlined"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    sx={{ mb: 2 }}
-                />
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow sx={{ backgroundColor: "#1976d2" }}>
-                                <TableCell sx={{ color: "#fff" }}>Product Name</TableCell>
-                                <TableCell sx={{ color: "#fff" }}>Code</TableCell>
-                                <TableCell sx={{ color: "#fff" }}>Price</TableCell>
-                                <TableCell sx={{ color: "#fff" }}>Quantity</TableCell>
-                                <TableCell sx={{ color: "#fff" }}>Expiry Date</TableCell>
-                                <TableCell sx={{ color: "#fff" }}>Manufacturer</TableCell>
-                                <TableCell sx={{ color: "#fff" }}>Order Qty</TableCell>
-                                <TableCell sx={{ color: "#fff" }}>Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredProducts.map((product) => (
-                                <TableRow key={product.code}>
-                                    <TableCell>{product.name}</TableCell>
-                                    <TableCell>{product.code}</TableCell>
-                                    <TableCell>${product.price}</TableCell>
-                                    <TableCell>{product.quantity}</TableCell>
-                                    <TableCell>{product.expiryDate}</TableCell>
-                                    <TableCell>{product.manufacturer}</TableCell>
-                                    <TableCell>
-                                        <TextField
-                                            type="number"
-                                            value={orderQty[product.code] || ""}
-                                            onChange={(e) =>
-                                                setOrderQty((prevQty) => ({
-                                                    ...prevQty,
-                                                    [product.code]: e.target.value,
-                                                }))
-                                            }
-                                            size="small"
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={() => addToOrder(product)}
-                                        >
-                                            Add
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
-
-            {/* Create Order Section */}
-            <Paper elevation={3} sx={{ p: 2 }}>
-                <Typography variant="h5" gutterBottom>
+        <Box p={4} bgcolor="#e0f2f1" minHeight="100vh">
+            <Paper elevation={3} sx={{ p: 2, borderRadius: 2 }}>
+                <Typography variant="h5" gutterBottom color="#004d40">
                     Create Order
                 </Typography>
-                <TextField
-                    fullWidth
-                    placeholder="Customer Name"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    variant="outlined"
-                    sx={{ mb: 2 }}
-                />
-                <TableContainer component={Paper}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            select
+                            label="Customer Registration No"
+                            value={customerRegNo}
+                            onChange={(e) => handleCustomerChange(e.target.value)}
+                        >
+                            {customers.map((customer) => (
+                                <MenuItem key={customer.regNo} value={customer.regNo}>
+                                    {customer.regNo}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Customer Name"
+                            value={customerName}
+                            variant="outlined"
+                            disabled
+                        />
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2} sx={{ mt: 2 }}>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Search Product"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Select
+                            fullWidth
+                            value={selectedProduct}
+                            onChange={(e) => setSelectedProduct(e.target.value)}
+                            displayEmpty
+                        >
+                            <MenuItem value="" disabled>Select Product</MenuItem>
+                            {products
+                                .filter((product) =>
+                                    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+                                )
+                                .map((product) => (
+                                    <MenuItem key={product.code} value={product.code}>
+                                        {product.name} - ${product.price}
+                                    </MenuItem>
+                                ))}
+                        </Select>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            type="number"
+                            fullWidth
+                            label="Quantity"
+                            value={orderQty}
+                            onChange={(e) => setOrderQty(e.target.value)}
+                            error={quantityError}
+                            helperText={quantityError ? "Invalid quantity" : ""}
+                        />
+                    </Grid>
+                </Grid>
+                <Button sx={{ mt: 2, bgcolor: "#00796b" }} variant="contained" onClick={addToOrder}>
+                    Add to Order
+                </Button>
+                <TableContainer component={Paper} sx={{ mt: 2, borderRadius: 2 }}>
                     <Table>
                         <TableHead>
-                            <TableRow>
+                            <TableRow sx={{ bgcolor: "#ffcc80" }}>
                                 <TableCell>Product Name</TableCell>
                                 <TableCell>Quantity</TableCell>
                                 <TableCell>Action</TableCell>
@@ -166,7 +162,7 @@ const OrderForm = () => {
                         </TableHead>
                         <TableBody>
                             {orderItems.map((item) => (
-                                <TableRow key={item.code}>
+                                <TableRow key={item.code} sx={{ bgcolor: "#bbdefb" }}>
                                     <TableCell>{item.name}</TableCell>
                                     <TableCell>{item.orderQty}</TableCell>
                                     <TableCell>
@@ -192,6 +188,7 @@ const OrderForm = () => {
                         color="error"
                         onClick={() => {
                             setOrderItems([]);
+                            setCustomerRegNo("");
                             setCustomerName("");
                         }}
                     >

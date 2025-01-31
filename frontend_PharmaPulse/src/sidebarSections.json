@@ -3,8 +3,8 @@
     {
       "title": "Price List",
       "links": [
-        { "to": "/add-products", "name": "Add Products" },
-        { "to": "/products-info", "name": "Products Info" }
+        { "to": "/price-list-view", "name": "Price List" },
+        { "to": "/order-reation", "name": "Order Creation" }
       ]
     },
     {

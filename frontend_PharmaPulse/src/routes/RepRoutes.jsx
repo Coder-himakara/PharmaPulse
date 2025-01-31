@@ -1,20 +1,19 @@
-import { useState } from 'react';
+//import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 
-import AddProductsForm from '../components/Forms/AddProductsForm';
-import ProductsInfoTable from '../components/Tables/ProductsInfoTable';
+
+
 import OrderForm from '../saleRepresentativeComponent/Forms/OrderForm';
 
-import Sidebar from '../components/Sidebar/Sidebar';
+//import Sidebar from '../components/Sidebar/Sidebar';
+import Sidebar from '../saleRepresentativeComponent/Sidebar/Sidebar';
+import PriceListTable from '../saleRepresentativeComponent/Tables/PriceListTable';
 
 const RepRoutes = () => {
-  const [products, setProducts] = useState([]);
- 
+  
 
-  const addProduct = (product) => {
-    setProducts((prevProducts) => [...prevProducts, product]);
-  };
+  
 
   
 
@@ -23,9 +22,14 @@ const RepRoutes = () => {
   return (
     <Routes>
       <Route
-              path='/add-products'
-              element={<OrderForm onAddProduct={addProduct} />}
-            />
+        path='/price-list-view'
+        element={<  PriceListTable/>}
+      />
+      <Route
+        path='/order-creation'
+        element={< OrderForm />}
+      />
+      
             
       
       
