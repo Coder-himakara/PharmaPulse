@@ -11,11 +11,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface InvoiceMapper {
     @Mapping(target = "invoiceId" ,ignore = true)
-    @Mapping(target = "lineItems", ignore = true)
     Invoice toEntity(InvoiceDTO invoiceDTO);
-    @Mapping(target = "lineItemsList", ignore = true)
+
     InvoiceDTO toDTO(Invoice invoice);
-    @Mapping(target = "lineItemsList", ignore = true)
+
     List<InvoiceDTO> toDTOsList(List<Invoice> invoices);
 
     // Custom mapping methods

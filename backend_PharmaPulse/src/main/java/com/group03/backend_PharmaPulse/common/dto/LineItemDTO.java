@@ -1,8 +1,5 @@
 package com.group03.backend_PharmaPulse.common.dto;
 
-
-import com.group03.backend_PharmaPulse.common.entity.Invoice;
-import com.group03.backend_PharmaPulse.inventory.entity.Product;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -15,7 +12,6 @@ import java.math.BigDecimal;
 @SuperBuilder
 public class LineItemDTO {
     //private Long lineItemId;
-    private Long invoice;
     private String product;
     private Integer quantityByPackage;
     private Long conversionFactor;  // how many units in a package

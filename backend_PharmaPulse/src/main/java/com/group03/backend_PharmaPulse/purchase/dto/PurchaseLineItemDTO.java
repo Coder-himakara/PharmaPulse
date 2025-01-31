@@ -19,4 +19,5 @@ public class PurchaseLineItemDTO extends LineItemDTO {
     private LocalDate manufactureDate;
     private LocalDate  expiryDate;
     private BigDecimal unitPrice; //check and rename.Retail price of the product
+    private Long purchaseInvoice;
 }

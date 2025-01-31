@@ -3,9 +3,7 @@ package com.group03.backend_PharmaPulse.purchase.entity;
 import com.group03.backend_PharmaPulse.common.entity.Invoice;
 import com.group03.backend_PharmaPulse.common.entity.LineItem;
 import com.group03.backend_PharmaPulse.inventory.entity.Product;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -29,15 +27,20 @@ public class PurchaseLineItem extends LineItem {
     private LocalDate  expiryDate;
     private BigDecimal unitPrice; //check and rename.Retail price of the product
 
-    public PurchaseLineItem(Invoice invoice, Product product, Integer quantityByPackage,
-                            Long conversionFactor, BigDecimal discountAmount,
-                            BigDecimal costPerUnit, BigDecimal totalCost, LocalDate manufactureDate,
-                            LocalDate expiryDate, BigDecimal unitPrice) {
-        super(invoice, product, quantityByPackage, conversionFactor, discountAmount);
+    @ManyToOne
+    @JoinColumn(name = "invoice_id", nullable = false)
+    private Invoice purchaseInvoice;
+
+    public PurchaseLineItem(Product product, Integer quantityByPackage, Long conversionFactor,
+                            BigDecimal discountAmount, BigDecimal costPerUnit, BigDecimal totalCost,
+                            LocalDate manufactureDate, LocalDate expiryDate,
+                            BigDecimal unitPrice, Invoice purchaseInvoice) {
+        super(product, quantityByPackage, conversionFactor, discountAmount);
         this.costPerUnit = costPerUnit;
         this.totalCost = totalCost;
         this.manufactureDate = manufactureDate;
         this.expiryDate = expiryDate;
         this.unitPrice = unitPrice;
+        this.purchaseInvoice = purchaseInvoice;
     }
 }

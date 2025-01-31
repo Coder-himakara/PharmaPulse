@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -29,5 +29,4 @@ public class InvoiceDTO {
     private BigDecimal totalAmount;
     private BigDecimal discountAmount;
     private BigDecimal netAmount;
-    private List<LineItemDTO> lineItemsList;
 }

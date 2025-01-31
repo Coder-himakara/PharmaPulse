@@ -22,10 +22,6 @@ public class LineItem {
     private Long lineItemId;
 
     @ManyToOne
-    @JoinColumn(name = "invoice_id", nullable = false)
-    private Invoice invoice;
-
-    @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -33,13 +29,10 @@ public class LineItem {
     private Long conversionFactor;  // how many units in a package
     private BigDecimal discountAmount;
 
-    public LineItem(Invoice invoice, Product product, Integer quantityByPackage,
-                    Long conversionFactor, BigDecimal discountAmount) {
-        this.invoice = invoice;
+    public LineItem(Product product, Integer quantityByPackage, Long conversionFactor, BigDecimal discountAmount) {
         this.product = product;
         this.quantityByPackage = quantityByPackage;
         this.conversionFactor = conversionFactor;
         this.discountAmount = discountAmount;
     }
-
 }

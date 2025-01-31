@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 @Data
@@ -37,9 +36,6 @@ public class Invoice {
     private BigDecimal totalAmount;
     private BigDecimal discountAmount;
     private BigDecimal netAmount;
-
-    @OneToMany(mappedBy = "invoice",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<LineItem> lineItems = new ArrayList<>();
 
     public Invoice(InvoiceStatus invoiceStatus, LocalDateTime invoiceDate, String invoiceNo,
                    PaymentType paymentType, BigDecimal totalAmount,

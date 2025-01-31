@@ -16,8 +16,10 @@ public interface PurchaseInvoiceMapper{
     @Mapping(target = "lineItems" ,ignore = true)
     @Mapping(target = "supplier" ,ignore = true)
     PurchaseInvoice toEntity(PurchaseInvoiceDTO purchaseInvoiceDTO);
+
     @Mapping(target = "lineItemsList", ignore = true)
     PurchaseInvoiceDTO toDTO(PurchaseInvoice purchaseInvoice);
+
     @Mapping(target = "lineItemsList", ignore = true)
     List<PurchaseInvoiceDTO> toDTOsList(List<PurchaseInvoice> purchaseInvoices);
 
