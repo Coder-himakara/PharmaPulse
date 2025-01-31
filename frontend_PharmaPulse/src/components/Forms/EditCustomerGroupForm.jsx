@@ -69,6 +69,9 @@ setTimeout(() => {
   navigate('/customer-group-info'); // Navigate back to the list
 }, 2000);
 };
+const handleCancel = () => {
+  navigate('/customers-group-info');
+};
   return (
     <form onSubmit={handleSubmit} className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'>
       <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
@@ -100,7 +103,10 @@ setTimeout(() => {
         <button type='submit' className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'>
           Update
         </button>
-        <button type='button' onClick={() => navigate('/customer-group-info')} className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'>
+        <button type='button' 
+       onClick={handleCancel}
+       className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
+       >
           Cancel
         </button>
       </div>

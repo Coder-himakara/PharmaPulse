@@ -35,17 +35,18 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroups }) => {
     }
   }, [purchaseGroups]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (pg) => {
+    const { name, value } = pg.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.purchaseGroupId || !formData.purchaseGroupName || !formData.address || !formData.contactName || !formData.telePhoneNo || !formData.email || !formData.supplierId) {
+  const handleSubmit = (pg) => {
+    pg.preventDefault();
+    if (!formData.email.trim() || !formData.purchaseGroupName.trim() || !formData.purchaseGroupId.trim() || !formData.supplierId.trim() || !formData.telePhoneNo.trim()) {
+
       setErrorMessage('Please fill out all required fields.');
       return;
     }
@@ -71,30 +72,34 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroups }) => {
       </h2>
       {errorMessage && <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>}
       {successMessage && <p className='text-[#3c5f3c] text-sm font-bold mb-4'>{successMessage}</p>}
-      <div className='mb-4'>
-        <label htmlFor='purchaseGroupName' className='text-gray-800'>Purchase Group Name:</label>
-        <input type='text' id='purchaseGroupName' name='purchaseGroupName' value={formData.purchaseGroupName} onChange={handleChange} className='w-full px-2 py-2 border border-gray-300 rounded-md' />
-      </div>
-      <div className='mb-4'>
-        <label htmlFor='address' className='text-gray-800'>Address:</label>
-        <input type='text' id='address' name='address' value={formData.address} onChange={handleChange} className='w-full px-2 py-2 border border-gray-300 rounded-md' />
-      </div>
-      <div className='mb-4'>
-        <label htmlFor='contactName' className='text-gray-800'>Contact Name:</label>
-        <input type='text' id='contactName' name='contactName' value={formData.contactName} onChange={handleChange} className='w-full px-2 py-2 border border-gray-300 rounded-md' />
-      </div>
-      <div className='mb-4'>
-        <label htmlFor='telePhoneNo' className='text-gray-800'>Telephone No:</label>
-        <input type='text' id='telePhoneNo' name='telePhoneNo' value={formData.telePhoneNo} onChange={handleChange} className='w-full px-2 py-2 border border-gray-300 rounded-md' />
-      </div>
-      <div className='mb-4'>
-        <label htmlFor='supplierId' className='text-gray-800'>Supplier ID:</label>
-        <input type='text' id='supplierId' name='supplierId' value={formData.supplierId} onChange={handleChange} className='w-full px-2 py-2 border border-gray-300 rounded-md' />
-      </div>
-      <div className='mb-4'>
-        <label htmlFor='email' className='text-gray-800'>Email:</label>
-        <input type='email' id='email' name='email' value={formData.email} onChange={handleChange} className='w-full px-2 py-2 border border-red-500 rounded-md' />
-      </div>
+      
+      {errorMessage && <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>}
+      {successMessage && <p className='text-[#3c5f3c] text-sm font-bold mb-4'>{successMessage}</p>}
+
+      {[
+        { label: 'Purchase Group Id', name:'purchaseGroupId' },
+        { label: 'Purchase Group Name', name:'purchaseGroupName' },  
+        { label: 'Address', name:'address' },
+        { label: 'Contact Name', name:'contactName' },
+        { label: 'Email', name:'email' },
+        { label: 'Supplier Id', name:'supplierId' },
+      
+      ].map(({ label, name }) => (
+        <div className='flex items-center mb-4' key={name}>
+          <label htmlFor={name} className='text-[16px] text-gray-800 font-medium w-1/3 text-left'>
+            {label}:
+          </label>
+          <input
+            type='text'
+            id={name}
+            name={name}  // Correctly match with formData property name
+            value={formData[name]}  // Correctly match with formData state
+            onChange={handleChange}
+            className='w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md'
+          />
+        </div>
+      ))}
+
       <div className='flex justify-center gap-2 mt-5'>
         <button type='submit' className='px-5 py-2 bg-[#2a4d69] text-white rounded-md hover:bg-[#00796b]'>Update</button>
         <button type='button' onClick={handleCancel} className='px-5 py-2 bg-[#2a4d69] text-white rounded-md hover:bg-[#00796b]'>Cancel</button>

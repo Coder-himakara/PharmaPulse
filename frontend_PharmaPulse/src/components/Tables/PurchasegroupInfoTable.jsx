@@ -30,7 +30,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
       <input
         type='text'
         value={search}
-        onChange={e => setSearch(e.target.value)}
+        onChange={pg => setSearch(pg.target.value)}
         placeholder='Search Purchase Groups...'
         className='px-3 py-2 border rounded-md text-sm w-[400px]'
       />

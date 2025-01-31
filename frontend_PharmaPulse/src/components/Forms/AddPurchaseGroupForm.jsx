@@ -19,48 +19,45 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+  const handleChange = (pg) => {
+    const { name, value } = pg.target;
+    setFormData((prevData) => {
+      const updatedData = {
+        ...prevData,
+        [name]: value.trim(),
+      };
+      console.log(updatedData); // Log form data to check if it's being updated
+      return updatedData;
+    });
   };
+  
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (pg) => {
+    pg.preventDefault();
+    console.log(formData); // Add this line to inspect the formData
+    if (!formData.purchaseGroupId|| !formData.purchaseGroupName.trim() ||!formData.address||!formData.contactName.trim()||!formData.telePhoneNo.trim() ||!formData.telePhoneNo.trim()||!formData.supplierId) {
 
-    if (
-      !formData.email.trim() ||
-      !formData.purchaseGroupName.trim() ||
-      !formData.purchaseGroupId.trim() ||
-      !formData.supplierId.trim() ||
-      !formData.telePhoneNo.trim()
-    ) {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
 
     setErrorMessage('');
     setSuccessMessage('Purchase Group Added Successfully!');
+    // Save the new purchase group to localStorage
+  const savedPurchaseGroups = JSON.parse(localStorage.getItem('purchaseGroups')) || [];
+  const updatedPurchaseGroups = [...savedPurchaseGroups, formData];
+  localStorage.setItem('purchaseGroups', JSON.stringify(updatedPurchaseGroups));
 
     if (onAddPurchaseGroup) {
       onAddPurchaseGroup(formData);
     }
 
     setTimeout(() => {
-      setFormData({
-        purchaseGroupId: '',
-        purchaseGroupName: '',
-        address: '',
-        contactName: '',
-        telePhoneNo: '',
-        email: '',
-        supplierId: '',
-      });
       setSuccessMessage('');
-    }, 2000);
+      navigate('/purchase-groups', { state: { newCustomerGroup: formData } });
+    }, 1500);
   };
+
 
   const handleCancel = () => {
     navigate('/home');
@@ -76,12 +73,14 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       {successMessage && <p className='text-[#3c5f3c] text-sm font-bold mb-4'>{successMessage}</p>}
 
       {[
-        { label: 'Purchase Group Name', name:'purchaseGroupName' },
-        { label: 'Address', name:'address' },
-        { label: 'Contact Name', name:'contactName' },
-        { label: 'Telephone No', name:'telePhoneNo' },
-        { label: 'Supplier Id', name:'supplierId' },
-        { label: 'Email', name:'email' },
+        { label: 'Purchase Group Id', name:'purchaseGroupId'},
+        { label: 'Purchase Group Name', name:'purchaseGroupName'},  
+        { label: 'Address', name:'address'},
+        { label: 'Contact Name', name:'contactName'},
+        { label: 'Telephone No', name:'telePhoneNo'},
+        { label: 'Email', name:'email'},
+        { label: 'Supplier Id', name:'supplierId'},
+      
       ].map(({ label, name }) => (
         <div className='flex items-center mb-4' key={name}>
           <label htmlFor={name} className='text-[16px] text-gray-800 font-medium w-1/3 text-left'>
