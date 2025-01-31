@@ -6,7 +6,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const EditPurchaseGroupForm = ({ onUpdatePurchaseGroups }) => {
   const { state } = useLocation();
   const purchaseGroups = state?.purchaseGroups;
-
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     purchaseGroupId: '',
     purchaseGroupName: '',
@@ -17,7 +18,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroups }) => {
     supplierId: '',
   });
 
-  const navigate = useNavigate();
+  
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -109,6 +110,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroups }) => {
 };
 
 EditPurchaseGroupForm.propTypes = {
+  purchaseGroups: PropTypes.object.isRequired,
   onUpdatePurchaseGroups: PropTypes.func.isRequired,
 };
 
