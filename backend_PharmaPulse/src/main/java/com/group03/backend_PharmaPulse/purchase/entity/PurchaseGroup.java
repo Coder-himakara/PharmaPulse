@@ -30,7 +30,7 @@ public class PurchaseGroup {
 
     private String purchaseGroupEmail;
 
-    //EAGER fetch type is used to load all the related suppliers at once.
-    @OneToMany(mappedBy="purchase_group", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //LAZY fetch is used to avoid fetching suppliers when fetching purchase group
+    @OneToMany(mappedBy="purchase_group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Supplier> suppliers;
 }
