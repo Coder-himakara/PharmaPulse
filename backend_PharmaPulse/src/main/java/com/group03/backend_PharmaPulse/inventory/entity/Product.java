@@ -2,10 +2,7 @@ package com.group03.backend_PharmaPulse.inventory.entity;
 
 
 import com.group03.backend_PharmaPulse.common.PurchaseGroupInterface;
-import com.group03.backend_PharmaPulse.inventory.enumeration.DosageForm;
-import com.group03.backend_PharmaPulse.inventory.enumeration.PackageType;
-import com.group03.backend_PharmaPulse.inventory.enumeration.ProductCategory;
-import com.group03.backend_PharmaPulse.inventory.enumeration.ProductStatus;
+import com.group03.backend_PharmaPulse.inventory.enumeration.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +13,8 @@ import java.util.Set;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(name = "product")
 public class Product {
@@ -36,7 +33,8 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private DosageForm dosageForm;
 
-    private String strength;
+    @Enumerated(EnumType.STRING)
+    private SellingUnit sellingUnit;
 
     @Enumerated(EnumType.STRING)
     private PackageType packageType;
@@ -44,7 +42,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
-    private Integer reorderLimit;
+    private Integer reorderLimitBySellingUnit;
 
     @Column(name = "purchase_group_id", nullable = false)
     private int purchaseGroupId;

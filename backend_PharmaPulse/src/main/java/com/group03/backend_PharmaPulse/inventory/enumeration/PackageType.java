@@ -1,12 +1,7 @@
 package com.group03.backend_PharmaPulse.inventory.enumeration;
 
 public enum PackageType {
-    BOTTLE,
+    CARTON,
     BOX,
-    STRIP,
-    VIAL,
-    TUBE,
-    SACHET,
-    PACKET
 
 }

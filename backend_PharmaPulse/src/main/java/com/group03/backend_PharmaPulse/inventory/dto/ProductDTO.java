@@ -1,9 +1,6 @@
 package com.group03.backend_PharmaPulse.inventory.dto;
 
-import com.group03.backend_PharmaPulse.inventory.enumeration.DosageForm;
-import com.group03.backend_PharmaPulse.inventory.enumeration.PackageType;
-import com.group03.backend_PharmaPulse.inventory.enumeration.ProductCategory;
-import com.group03.backend_PharmaPulse.inventory.enumeration.ProductStatus;
+import com.group03.backend_PharmaPulse.inventory.enumeration.*;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -29,7 +26,8 @@ public class ProductDTO {
     @Enumerated(EnumType.STRING)
     private DosageForm dosageForm;
 
-    private String strength;
+    @Enumerated(EnumType.STRING)
+    private SellingUnit sellingUnit;
 
     @Enumerated(EnumType.STRING)
     private PackageType packageType;
@@ -37,7 +35,7 @@ public class ProductDTO {
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
-    private Integer reorderLimit;
+    private Integer reorderLimitBySellingUnit;
 
     private int purchaseGroupId;
 }

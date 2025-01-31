@@ -4,37 +4,49 @@ import com.group03.backend_PharmaPulse.common.dto.LineItemDTO;
 import com.group03.backend_PharmaPulse.common.entity.Invoice;
 import com.group03.backend_PharmaPulse.common.entity.LineItem;
 import com.group03.backend_PharmaPulse.inventory.entity.Product;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface LineItemMapper {
-    @Mapping(target = "lineItemId" ,ignore = true)
-    @Mapping(target = "product" ,source = "product" ,qualifiedByName = "mapProduct")
-    @Mapping(target = "invoice" ,source = "invoice" ,qualifiedByName = "mapInvoice")
-    LineItem toEntity(LineItemDTO lineItemDTO);
 
-    @Mapping(target = "product" ,source = "product.productId")
-    @Mapping(target = "invoice" ,source = "invoice.invoiceId")
-    LineItemDTO toDTO(LineItem lineItem);
+    // Map DTO to Entity (single object)
+    @Named("toEntity")
+    @Mapping(target = "lineItemId", ignore = true)
+    @Mapping(target = "product", source = "product", qualifiedByName = "mapProductId")
+    @Mapping(target = "invoice", source = "invoice", qualifiedByName = "mapInvoiceId")
+    LineItem toEntity(LineItemDTO dto);
 
-    List<LineItemDTO> toDTOsList(List<LineItem> lineItems);
+    // Map Entity to DTO (single object)
+    @Named("toDTO")
+    @Mapping(target = "product", source = "product.productId")
+    @Mapping(target = "invoice", source = "invoice.invoiceId")
+    LineItemDTO toDTO(LineItem entity);
 
-    @Mapping(target = "lineItemId" ,ignore = true)
-    @Mapping(target = "product" ,source = "product" ,qualifiedByName = "mapProduct")
-    @Mapping(target = "invoice" ,source = "invoice" ,qualifiedByName = "mapInvoice")
-    List<LineItem> toEntityList(List<LineItemDTO> lineItemDTOS);
-    @Named("mapProduct")
-    default Product mapProduct(String product_id) {
+    // Map DTO list to Entity list
+    @IterableMapping(qualifiedByName = "toEntity")
+    List<LineItem> toEntityList(List<LineItemDTO> dtos);
+
+    // Map Entity list to DTO list
+    @IterableMapping(qualifiedByName = "toDTO")
+    List<LineItemDTO> toDTOsList(List<LineItem> entities);
+
+    // Qualifier method for Product (String -> Product)
+    @Named("mapProductId")
+    default Product mapProductId(String productId) {
         Product product = new Product();
-        product.setProductId(product_id);
+        product.setProductId(productId);
         return product;
     }
-    @Named("mapInvoice")
-    default Invoice mapInvoice(Long invoiceId) {
+
+    // Qualifier method for Invoice (Long -> Invoice)
+    @Named("mapInvoiceId")
+    default Invoice mapInvoiceId(Long invoiceId) {
         Invoice invoice = new Invoice();
         invoice.setInvoiceId(invoiceId);
         return invoice;

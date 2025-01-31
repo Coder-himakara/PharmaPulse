@@ -31,40 +31,43 @@ public class ProductRetailPriceServiceImpl implements ProductRetailPriceService 
     @Override
     public void checkAndUpdateRetailPrice(Product product, BigDecimal newUnitPrice) {
         Logger logger = LoggerFactory.getLogger(ProductRetailPriceServiceImpl.class);
+        if (newUnitPrice == null) {
+            throw new IllegalArgumentException("New unit price cannot be null");
+        }
         try {
             ProductRetailPrice mostRecentPrice = retailPriceRepository
                     .findTopByProductAndEndDateIsNullOrderByEffectiveDateDesc(product)
                     .orElse(null);
 
-            //new retail price (if client asks we can add a margin to the new price)
+             //Add the logic to calculate the suggested retail price here if there is one
             BigDecimal suggestedRetailPrice = newUnitPrice;
 
-            if (mostRecentPrice == null ||
-                    !mostRecentPrice.getRetailPrice().equals(suggestedRetailPrice)) {
+            if (mostRecentPrice == null || !mostRecentPrice.getRetailPrice().equals(suggestedRetailPrice)) {
 
                 if (mostRecentPrice != null) {
                     mostRecentPrice.setEndDate(LocalDateTime.now());
                     retailPriceRepository.save(mostRecentPrice);
                 }
-                //Create new retail price record
-                /**ProductRetailPrice newRetailPrice = new ProductRetailPrice();
-                newRetailPrice.setProduct(product);
-                newRetailPrice.setRetailPrice(suggestedRetailPrice);
-                newRetailPrice.setEffectiveDate(LocalDateTime.now());
-                newRetailPrice.setCreatedBy("Purchase Order");
-                retailPriceRepository.save(newRetailPrice);**/
 
                 ProductRetailPriceDTO newRetailPriceDTO = new ProductRetailPriceDTO();
                 newRetailPriceDTO.setProduct(product.getProductId());
                 newRetailPriceDTO.setRetailPrice(suggestedRetailPrice);
                 newRetailPriceDTO.setEffectiveDate(LocalDateTime.now());
                 newRetailPriceDTO.setCreatedBy("Purchase Order");
-                retailPriceRepository.save(productRetailPriceMapper.toEntity(newRetailPriceDTO));
 
+                ProductRetailPrice newRetailPrice = productRetailPriceMapper.toEntity(newRetailPriceDTO);
+                retailPriceRepository.save(newRetailPrice);
+
+                logger.info("Updated retail price for product: {} from {} to {}",
+                        product.getProductId(),
+                        mostRecentPrice != null ? mostRecentPrice.getRetailPrice() : "N/A",
+                        suggestedRetailPrice);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error updating retail price for product: " + product.getProductId(), e);
+            throw new RuntimeException("Failed to update retail price", e);
         }
-
     }
+
 }
+

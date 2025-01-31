@@ -87,7 +87,7 @@ public class PurchaseInvoiceImpl implements PurchaseInvoiceService {
                 lineItemService.addLineItems(lineItems);
                 for(LineItem lineItem : lineItems){
                     //Check and Update the Retail Price of the Product
-                    productRetailPriceService.checkAndUpdateRetailPrice(lineItem.getProduct(),lineItem.getUnitPrice());
+                    productRetailPriceService.checkAndUpdateRetailPrice(lineItem.getProduct(),lineItem.getDiscountAmount());
                 }
             }else{
                 throw new NotFoundException("Line Items not found");

@@ -1,25 +1,23 @@
 package com.group03.backend_PharmaPulse.common.dto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.group03.backend_PharmaPulse.common.entity.Invoice;
+import com.group03.backend_PharmaPulse.inventory.entity.Product;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public class LineItemDTO {
     //private Long lineItemId;
     private Long invoice;
     private String product;
-    private Integer quantity;
-    private BigDecimal unitPrice;
-    private BigDecimal totalPrice;
+    private Integer quantityByPackage;
+    private Long conversionFactor;  // how many units in a package
     private BigDecimal discountAmount;
-    private LocalDate manufactureDate;
-    private LocalDate  expiryDate;
 }

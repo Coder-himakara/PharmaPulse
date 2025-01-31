@@ -2,22 +2,23 @@ package com.group03.backend_PharmaPulse.common.entity;
 
 import com.group03.backend_PharmaPulse.inventory.entity.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
-import java.time.LocalDate;
+
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "line_item")
 public class LineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "line_item_id")
     private Long lineItemId;
 
     @ManyToOne
@@ -28,11 +29,17 @@ public class LineItem {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    private Integer quantity;
-    private BigDecimal unitPrice;
-    private BigDecimal totalPrice;
+    private Integer quantityByPackage;
+    private Long conversionFactor;  // how many units in a package
     private BigDecimal discountAmount;
-    private LocalDate manufactureDate;
-    private LocalDate  expiryDate;
+
+    public LineItem(Invoice invoice, Product product, Integer quantityByPackage,
+                    Long conversionFactor, BigDecimal discountAmount) {
+        this.invoice = invoice;
+        this.product = product;
+        this.quantityByPackage = quantityByPackage;
+        this.conversionFactor = conversionFactor;
+        this.discountAmount = discountAmount;
+    }
 
 }
