@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
@@ -29,21 +30,18 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Basic validation
-    if (!formData.email|| !formData.purchaseGroupName|| !formData.purchaseGroupId|| !formData.supplierId|| !formData.telePhoneNo) {
+    if (!formData.email || !formData.purchaseGroupName || !formData.purchaseGroupId || !formData.supplierId || !formData.telePhoneNo) {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
 
-    setErrorMessage(''); // Clear errors
+    setErrorMessage('');
     setSuccessMessage('Purchase Group Added Successfully!');
 
-    // Pass the new ppurchase group data to the parent
-    if ( onAddPurchaseGroup ) {
-        onAddPurchaseGroup (formData);
+    if (onAddPurchaseGroup) {
+      onAddPurchaseGroup(formData);
     }
 
-    // Clear the form after a delay
     setTimeout(() => {
       setFormData({
         purchaseGroupId: '',
@@ -63,116 +61,36 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'
-    >
+    <form onSubmit={handleSubmit} className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'>
       <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
         Add Purchase Group
       </h2>
 
-      {errorMessage && (
-        <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>
-      )}
-      {successMessage && (
-        <p className='text-[#3c5f3c] text-sm font-bold mb-4'>
-          {successMessage}
-        </p>
-      )}
+      {errorMessage && <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>}
+      {successMessage && <p className='text-[#3c5f3c] text-sm font-bold mb-4'>{successMessage}</p>}
 
-      <div className='flex items-center justify-between mb-4'>
-        <label
-          htmlFor='purchaseGroupNameme'
-          className='text-[16px] text-gray-800 w-2/3'
-        >
-          Purchase Group Name:
-        </label>
-        <input
-          type='text'
-          id=' purchaseGroupName'
-          name=' purchaseGroupName'
-          value={formData. purchaseGroupName}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-        />
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
-        <label htmlFor=' address' className='text-[16px] text-gray-800 w-2/3'>
-         Address:
-        </label>
-        <input
-          type='text'
-          id=' address'
-          name=' address'
-          value={formData. address}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-        />
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='contactName' className='text-[16px] text-gray-800 w-2/3'>
-         Contact Name:
-        </label>
-        <input
-          type='text'
-          id='contactName'
-          name='contactName'
-          value={formData.contactName}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-        />
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='telePhoneNo' className='text-[16px] text-gray-800 w-2/3'>
-        Telephone No:
-        </label>
-        <input
-          id='telePhoneNo'
-          name='  telePhoneNo'
-          value={formData.telePhoneNo}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-        />
-       
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='supplierId' className='text-[16px] text-gray-800 w-2/3'>
-          Supplier ID:
-        </label>
-        <select
-          id='supplierId'
-          name='supplierId'
-          value={formData.supplierId}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-        >
-          <option value=''>Choose a supplier</option>
-          <option value='S001'>S001</option>
-          <option value='S002'>S002</option>
-        </select>
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
-        <label
-          htmlFor=' email'
-          className='text-[16px] text-gray-800 w-2/3'
-        >
-           Email:
-        </label>
-        <input
-          type='text'
-          id=' email'
-          name=' email'
-          value={formData.email}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-red-500 rounded-md'
-        />
-      </div>
-
+      {[
+        { label: 'Purchase Group Name', name: 'purchaseGroupName' },
+        { label: 'Address', name: 'address' },
+        { label: 'Contact Name', name: 'contactName' },
+        { label: 'Telephone No', name: 'telePhoneNo' },
+        { label: 'Supplier Id', name: 'supplierId' },
+        { label: 'Email', name: 'email' },
+      ].map(({ label, name }) => (
+        <div className='flex items-center mb-4' key={name}>
+          <label htmlFor={name} className='text-[16px] text-gray-800 font-medium w-1/3 text-left'>
+            {label}:
+          </label>
+          <input
+            type='text'
+            id={name}
+            name={name}  // Correctly match with formData property name
+            value={formData[name]}  // Correctly match with formData state
+            onChange={handleChange}
+            className='w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md'
+          />
+        </div>
+      ))}
 
       <div className='flex justify-center gap-2 mt-5'>
         <button
@@ -193,8 +111,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   );
 };
 
-
- AddPurchaseGroupForm.propTypes = {
+AddPurchaseGroupForm.propTypes = {
   onAddPurchaseGroup: PropTypes.func.isRequired,
 };
 

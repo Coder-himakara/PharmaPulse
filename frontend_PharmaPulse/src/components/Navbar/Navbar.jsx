@@ -65,7 +65,7 @@ const Navbar = () => {
       {/* User and Dropdown */}
       <div className="relative flex items-center gap-4">
         <div>
-          <span className="text-sm font-bold">John Doe</span>
+          <span className="text-sm font-bold">Amali De Silva</span>
           <br />
           <span className="text-xs italic">Employee</span>
         </div>

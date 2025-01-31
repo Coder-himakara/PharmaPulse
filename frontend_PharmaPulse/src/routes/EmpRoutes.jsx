@@ -13,10 +13,10 @@ import EditSuppliersForm from '../components/Forms/EditSuppliersForm';
 import EditCustomersForm from '../components/Forms/EditCustomersForm';
 import AddCustomerGroupForm from '../components/Forms/AddCustomerGroupForm';
 import CustomerGroupInfoTable from '../components/Tables/CustomerGroupInfoTable';
-import EditCustomerGroupForm from '../components/Forms/EditCustomersForm';
+import EditCustomerGroupForm from '../components/Forms/EditCustomerGroupForm';
 import AddPurchaseGroupForm from '../components/Forms/AddPurchaseGroupForm';
+import PurchaseGroupInfoTable from '../components/Tables/PurchaseGroupInfoTable';
 import EditPurchaseGroupForm from '../components/Forms/EditPurchaseGroupForm';
-import PurchaseGroupInfoTable from '../components/Tables/CustomerGroupInfoTable';
 
 import Sidebar from '../components/Sidebar/Sidebar';
 
@@ -27,144 +27,50 @@ const AppRoutes = () => {
   const [customerGroups, setCustomerGroups] = useState([]);
   const [purchaseGroups, setPurchaseGroups] = useState([]);
 
-  const addProduct = (product) => {
-    setProducts((prevProducts) => [...prevProducts, product]);
-  };
+  const addProduct = (product) => setProducts((prev) => [...prev, product]);
+  const addSupplier = (supplier) => setSuppliers((prev) => [...prev, supplier]);
+  const addCustomer = (customer) => setCustomers((prev) => [...prev, customer]);
+  const addCustomerGroup = (customerGroup) => setCustomerGroups((prev) => [...prev, customerGroup]);
+  const addPurchaseGroup = (purchaseGroup) => setPurchaseGroups((prev) => [...prev, purchaseGroup]);
 
-  const addSupplier = (supplier) => {
-    setSuppliers((prevSuppliers) => [...prevSuppliers, supplier]);
-  };
+  const updateProduct = (updated) =>
+    setProducts((prev) => prev.map((p) => (p.productId === updated.productId ? updated : p)));
 
-  const addCustomer = (customer) => {
-    setCustomers((prevCustomers) => [...prevCustomers, customer]);
-  };
+  const updateSupplier = (updated) =>
+    setSuppliers((prev) => prev.map((s) => (s.supplierId === updated.supplierId ? updated : s)));
 
-  const addCustomerGroup = (customerGroup) => {
-    setCustomerGroups((prevCustomerGroups) => [...prevCustomerGroups, customerGroup]);
-  };
-  const addPurchaseGroup = (purchaseGroup) => {
-    setPurchaseGroups((prevPurchaseGroups) => [...prevPurchaseGroups, purchaseGroup]);
-  };
+  const updateCustomer = (updated) =>
+    setCustomers((prev) => prev.map((c) => (c.customerId === updated.customerId ? updated : c)));
 
-
-  const updateProduct = (updatedProduct) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((product) =>
-        product.productId === updatedProduct.productId
-          ? updatedProduct
-          : product,
-      ),
+  const updateCustomerGroup = (updated) =>
+    setCustomerGroups((prev) =>prev.map((cg) => (cg.customerGroupId === updated.customerGroupId ? updated : cg))
     );
-  };
 
-  const updateSupplier = (updatedSupplier) => {
-    setSuppliers((prevSuppliers) =>
-      prevSuppliers.map((supplier) =>
-        supplier.supplierId === updatedSupplier.supplierId
-          ? updatedSupplier
-          : supplier,
-      ),
+  const updatePurchaseGroup = (updated) =>
+    setPurchaseGroups((prev) =>prev.map((pg) => (pg.purchaseGroupId === updated.purchaseGroupId ? updated :pg))
     );
-  };
-
-  const updateCustomer = (updatedCustomer) => {
-    setCustomers((prevCustomers) =>
-      prevCustomers.map((customer) =>
-        customer.customerId === updatedCustomer.customerId
-          ? updatedCustomer
-          : customer,
-      ),
-    );
-  };
-  const updateCustomerGroup = (updatedCustomerGroup) => {
-    setCustomerGroups((prevCustomerGroup) =>
-      prevCustomerGroup.map((customerGroups) =>
-        customerGroups.customerId === updatedCustomerGroup.customerId
-          ? updatedCustomerGroup
-          : customerGroups,
-      ),
-    );
-  };
-
-  const updatePurchaseGroup = (updatedPurchaseGroup) => {
-    setPurchaseGroups((prevPurchaseGroup) =>
-      prevPurchaseGroup.map((purchaseGroups) =>
-        purchaseGroups.purchaseGroupId=== updatedPurchaseGroup.purchaseGroupId
-          ? updatedPurchaseGroup
-          :purchaseGroups,
-      ),
-    );
-  };
 
   return (
     <Routes>
-      <Route
-        path='/add-products'
-        element={<AddProductsForm onAddProduct={addProduct} />}
-      />
-      <Route
-        path='/products-info'
-        element={<ProductsInfoTable products={products} />}
-      />
-      <Route
-        path='/edit-product/:productId'
-        element={<EditProductsForm onUpdateProduct={updateProduct} />}
-      />
+      <Route path='/add-products' element={<AddProductsForm onAddProduct={addProduct} />} />
+      <Route path='/products-info' element={<ProductsInfoTable products={products} />} />
+      <Route path='/edit-product/:productId' element={<EditProductsForm onUpdateProduct={updateProduct} />} />
 
-      <Route
-        path='/add-suppliers'
-        element={<AddSuppliersForm onAddSupplier={addSupplier} />}
-      />
-      <Route
-        path='/suppliers-info'
-        element={<SuppliersInfoTable suppliers={suppliers} />}
-      />
-      <Route
-        path='/edit-supplier/:supplierId'
-        element={<EditSuppliersForm onUpdateSupplier={updateSupplier} />}
-      />
+      <Route path='/add-suppliers' element={<AddSuppliersForm onAddSupplier={addSupplier} />} />
+      <Route path='/suppliers-info' element={<SuppliersInfoTable suppliers={suppliers} />} />
+      <Route path='/edit-supplier/:supplierId' element={<EditSuppliersForm onUpdateSupplier={updateSupplier} />} />
 
-      <Route
-        path='/add-customers'
-        element={<AddCustomersForm onAddCustomer={addCustomer} />}
-      />
-      <Route
-        path='/customers-info'
-        element={<CustomersInfoTable customers={customers} />}
-      />
-      <Route
-        path='/edit-customer/:customerId'
-        element={<EditCustomersForm onUpdateCustomer={updateCustomer} />}
-      />
+      <Route path='/add-customers' element={<AddCustomersForm onAddCustomer={addCustomer} />} />
+      <Route path='/customers-info' element={<CustomersInfoTable customers={customers} />} />
+      <Route path='/edit-customer/:customerId' element={<EditCustomersForm onUpdateCustomer={updateCustomer} />} />
 
-      <Route
-        path='/add-customer-group'
-        element={<AddCustomerGroupForm onAddCustomerGroups={addCustomerGroup} />}
-      />
-      <Route
-        path='/customer-group-info'
-        element={<CustomerGroupInfoTable customerGroups={customerGroups} />}
-      />
-      <Route
-        path='/edit-customer-group/:customerGroupId'
-        element={<EditCustomerGroupForm onUpdateCustomerGroups={updateCustomerGroup} />}
-        
-      />
-      
-      <Route
-        path='/add-purchase-group'
-        element={<AddPurchaseGroupForm onAddPurchaseGroups={addPurchaseGroup} />}
-      />
+      <Route path='/add-customer-group' element={<AddCustomerGroupForm onAddCustomerGroups={addCustomerGroup} />} />
+      <Route path='/customer-group-info' element={<CustomerGroupInfoTable customerGroups={customerGroups} />} />
+      <Route path='/edit-customer-group/:customerGroupId' element={<EditCustomerGroupForm onUpdateCustomerGroups={updateCustomerGroup} />} />
 
-      <Route
-        path='/purchase-group-info'
-        element={<PurchaseGroupInfoTable purchaseGroups={purchaseGroups} />}
-      />
-      <Route
-        path='/edit-purchase-group-info/:purchaseGroupId'
-        element={<EditPurchaseGroupForm onUpdateCustomerGroups={updatePurchaseGroup} />}
-        
-      />
+      <Route path='/add-purchase-group' element={<AddPurchaseGroupForm onAddPurchaseGroups={addPurchaseGroup} />} />
+      <Route path='/purchase-group-info' element={<PurchaseGroupInfoTable purchaseGroups={purchaseGroups} />} />
+      <Route path='/edit-purchase-group/:purchaseGroupId' element={<EditPurchaseGroupForm onUpdatePurchaseGroups={updatePurchaseGroup} />} />
 
       <Route path='/home' element={<Sidebar role='employee' />} />
       <Route path='/dashboard' element={<Sidebar role='employee' />} />
