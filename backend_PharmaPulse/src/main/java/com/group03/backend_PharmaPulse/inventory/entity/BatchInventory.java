@@ -1,8 +1,7 @@
 package com.group03.backend_PharmaPulse.inventory.entity;
 
+import com.group03.backend_PharmaPulse.common.entity.Invoice;
 import com.group03.backend_PharmaPulse.inventory.enumeration.BatchStatus;
-import com.group03.backend_PharmaPulse.purchase.entity.PurchaseInvoice;
-import com.group03.backend_PharmaPulse.purchase.entity.Supplier;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,12 +27,8 @@ public class BatchInventory {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "purchase_no")
-    private PurchaseInvoice purchaseInvoice;
+    @JoinColumn(name = "invoice_id")
+    private Invoice invoice;
 
     private LocalDate manufactureDate;
     private LocalDate expiryDate;
