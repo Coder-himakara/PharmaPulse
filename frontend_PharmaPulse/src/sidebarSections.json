@@ -4,7 +4,7 @@
       "title": "Price List",
       "links": [
         { "to": "/price-list-view", "name": "Price List" },
-        { "to": "/order-reation", "name": "Order Creation" }
+        { "to": "/order-creation", "name": "Order Creation" }
       ]
     },
     {
@@ -21,5 +21,15 @@
         { "to": "/customers-info", "name": "Customers Info" }
       ]
     }
+  ],
+  "salerep": [
+    {
+      "title": "Options",
+      "links": [
+        { "to": "/price-list-view", "name": "Price List" },
+        { "to": "/order-creation", "name": "Order Creation" }
+      ]
+    }
+    
   ]
 }

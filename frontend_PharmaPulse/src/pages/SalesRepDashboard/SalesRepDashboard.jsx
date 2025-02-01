@@ -1,15 +1,16 @@
-import Navbar from '../../saleRepresentativeComponent/Navbar/Navbar';
-import Sidebar from '../../saleRepresentativeComponent/Sidebar/Sidebar';
-import DashboardCard from '../../saleRepresentativeComponent/DashboardCard/DashboardCard';
-import Footer from '../../saleRepresentativeComponent/Footer/Footer';
-import EmpRoutes from '../../routes/EmpRoutes';
+import Navbar from '../../components/Navbar/Navbar';
+
+import DashboardCard from '../../components/DashboardCard/DashboardCard';
+import Footer from '../../components/Footer/Footer';
+
 import RepRoutes from '../../routes/RepRoutes';
+import SalesRepSidebar from '../../components/Sidebar/SalesRepSidebar';
 const SalesRepDashboard = () => {
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
       <Navbar />
       <div className='flex flex-grow'>
-        <Sidebar role='employee' className='w-1/5 bg-white shadow-lg' />
+        <SalesRepSidebar role='salerep' className='w-1/5 bg-white shadow-lg' />
         <div className='flex flex-col flex-grow p-6'>
           <div className='flex-grow'>
             <DashboardCard

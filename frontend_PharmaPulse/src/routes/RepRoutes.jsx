@@ -1,14 +1,10 @@
 //import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
-
-
-
-
-import OrderForm from '../saleRepresentativeComponent/Forms/OrderForm';
-
 //import Sidebar from '../components/Sidebar/Sidebar';
-import Sidebar from '../saleRepresentativeComponent/Sidebar/Sidebar';
-import PriceListTable from '../saleRepresentativeComponent/Tables/PriceListTable';
+//import Sidebar from '../saleRepresentativeComponent/Sidebar/Sidebar';
+import PriceListTable from '../components/Tables/saleRepTable/PriceListTable';
+import OrderForm from '../components/Forms/saleRepForm/OrderForm';
+import SalesRepSidebar from '../components/Sidebar/SalesRepSidebar';
 
 const RepRoutes = () => {
   
@@ -36,8 +32,8 @@ const RepRoutes = () => {
      
      
 
-      <Route path='/home' element={<Sidebar role='employee' />} />
-      <Route path='/dashboard' element={<Sidebar role='employee' />} />
+      <Route path='/home' element={<SalesRepSidebar role='salerep' />} />
+      <Route path='/dashboard' element={<SalesRepSidebar role='salerep' />} />
     </Routes>
   );
 };
