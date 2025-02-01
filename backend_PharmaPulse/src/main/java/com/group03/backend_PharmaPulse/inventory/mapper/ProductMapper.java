@@ -13,6 +13,7 @@ public interface ProductMapper {
 
     @Mapping(target = "purchaseGroup",ignore = true)
     @Mapping(target = "productRetailPrices",ignore = true)
+    @Mapping(target = "batchInventories",ignore = true)
     Product toEntity(ProductDTO productDTO);
 
     List<ProductDTO> toDTOsList(List<Product> products);

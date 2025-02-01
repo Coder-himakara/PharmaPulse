@@ -54,4 +54,9 @@ public class Product {
     @OneToMany(mappedBy="product" ,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ProductRetailPrice> productRetailPrices;
 
+    //LAZY fetch type is used to avoid fetching all the product retail prices when a product is fetched
+    @OneToMany(mappedBy="product" ,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<BatchInventory> batchInventories;
+
+
 }

@@ -27,7 +27,8 @@ public class PurchaseInvoiceImpl implements PurchaseInvoiceService {
     private final ProductRepo productRepo;
     private final ProductRetailPriceService productRetailPriceService;
 
-    public PurchaseInvoiceImpl(PurchaseInvoiceRepo purchaseInvoiceRepo, PurchaseInvoiceMapper purchaseInvoiceMapper,
+    public PurchaseInvoiceImpl(PurchaseInvoiceRepo purchaseInvoiceRepo,
+                               PurchaseInvoiceMapper purchaseInvoiceMapper,
                                PurchaseLineItemMapper purchaseLineItemMapper,
                                PurchaseLineItemService purchaseLineItemService,ProductRepo productRepo,
                                ProductRetailPriceService productRetailPriceService) {
@@ -50,16 +51,16 @@ public class PurchaseInvoiceImpl implements PurchaseInvoiceService {
     }
 
 /**
- * Method to add the Purchase Invoice and LineItems to the database
- * after including all the validated information by the user.
- * During the transaction, Retail Price of the Product is also checked and updated.
- * During the transaction, new Batch Inventory is also added.
+ * Method to add the Purchase Invoice and Purchase LineItem details to the database
+ * Prerequisites: Validated information by the user.
+ * During the transaction, Retail Price of each Product is checked and updated.
+ * During the transaction, new Batch Inventory is added.
  */
 
     @Override
     @Transactional
     public PurchaseInvoiceDTO addPurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO) {
-        //Transaction to add the Purchase Invoice
+        //1. Transaction to add the Purchase Invoice
         PurchaseInvoice purchaseInvoice = new PurchaseInvoice(
                 purchaseInvoiceDTO.getInvoiceStatus(),
                 purchaseInvoiceDTO.getInvoiceDate(),
@@ -73,9 +74,11 @@ public class PurchaseInvoiceImpl implements PurchaseInvoiceService {
                 purchaseInvoiceDTO.getPurchaseOrderRef()
         );
         purchaseInvoiceRepo.save(purchaseInvoice);
-        //Transaction to add the LineItems
+        //2. Transaction to add the Purchase LineItems
         if(purchaseInvoiceRepo.existsById(purchaseInvoice.getInvoiceId())){
-            List<PurchaseLineItem> purchaseLineItems = purchaseLineItemMapper.toEntityList(purchaseInvoiceDTO.getLineItemsList());
+            List<PurchaseLineItem> purchaseLineItems = purchaseLineItemMapper.
+                    toEntityList(purchaseInvoiceDTO.getLineItemsList());
+
             for (PurchaseLineItem lineItem : purchaseLineItems) {
                 //Set the InvoiceNo to LineItem
                 lineItem.setPurchaseInvoice(purchaseInvoice);
@@ -85,11 +88,14 @@ public class PurchaseInvoiceImpl implements PurchaseInvoiceService {
                 lineItem.setProduct(product);
             }
             if(!purchaseLineItems.isEmpty()){
+                //Add the Purchase LineItems to the database
                 purchaseLineItemService.addPurchaseLineItems(purchaseLineItems);
+                //Check and Update the Retail Price of the Product
                 for(PurchaseLineItem lineItem : purchaseLineItems){
-                    //Check and Update the Retail Price of the Product
                     productRetailPriceService.checkAndUpdateRetailPrice(lineItem.getProduct(),lineItem.getDiscountAmount());
                 }
+                //Add the Logic to create the Batch Inventory here
+
             }else{
                 throw new NotFoundException("Line Items not found");
             }
