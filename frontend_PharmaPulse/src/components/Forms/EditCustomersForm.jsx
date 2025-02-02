@@ -16,7 +16,6 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     dateOfConnected: '',
   });
 
- 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
