@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+
 import AddProductsForm from "../components/Forms/AddProductsForm";
 import ProductsInfoTable from "../components/Tables/ProductsInfoTable";
 import AddCustomersForm from "../components/Forms/AddCustomersForm";
@@ -16,81 +17,91 @@ import EditCustomerGroupForm from "../components/Forms/EditCustomerGroupForm";
 import AddPurchaseGroupForm from "../components/Forms/AddPurchaseGroupForm";
 import PurchaseGroupInfoTable from "../components/Tables/PurchaseGroupInfoTable";
 import EditPurchaseGroupForm from "../components/Forms/EditPurchaseGroupForm";
+
 import Sidebar from "../components/Sidebar/Sidebar";
 
-const AppRoutes = () => {
-  // Load from localStorage if available
-  const [products, setProducts] = useState(
-    () => JSON.parse(localStorage.getItem("products")) || []
-  );
-  const [suppliers, setSuppliers] = useState(
-    () => JSON.parse(localStorage.getItem("suppliers")) || []
-  );
-  const [customers, setCustomers] = useState(
-    () => JSON.parse(localStorage.getItem("customers")) || []
-  );
-  const [customerGroups, setCustomerGroups] = useState(
-    () => JSON.parse(localStorage.getItem("customerGroups")) || []
-  );
-  const [purchaseGroups, setPurchaseGroups] = useState(
-    () => JSON.parse(localStorage.getItem("purchaseGroups")) || []
-  );
+const EmpRoutes = () => {
+  const [products, setProducts] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [customerGroups, setCustomerGroups] = useState([]);
+  const [purchaseGroups, setPurchaseGroups] = useState([]);
 
-  // Function to update localStorage whenever data changes
-  useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
+  const addProduct = (product) => {
+    setProducts((prevProducts) => [...prevProducts, product]);
+  };
 
-  useEffect(() => {
-    localStorage.setItem("suppliers", JSON.stringify(suppliers));
-  }, [suppliers]);
+  const addSupplier = (supplier) => {
+    setSuppliers((prevSuppliers) => [...prevSuppliers, supplier]);
+  };
 
-  useEffect(() => {
-    localStorage.setItem("customers", JSON.stringify(customers));
-  }, [customers]);
+  const addCustomer = (customer) => {
+    setCustomers((prevCustomers) => [...prevCustomers, customer]);
+  };
 
-  useEffect(() => {
-    localStorage.setItem("customerGroups", JSON.stringify(customerGroups));
-  }, [customerGroups]);
+  const addCustomerGroup = (customerGroup) => {
+    setCustomerGroups((prevCustomerGroups) => [
+      ...prevCustomerGroups,
+      customerGroup,
+    ]);
+  };
 
-  useEffect(() => {
-    localStorage.setItem("purchaseGroups", JSON.stringify(purchaseGroups));
-  }, [purchaseGroups]);
+  const addPurchaseGroup = (purchaseGroup) => {
+    setPurchaseGroups((prevPurchaseGroups) => [
+      ...prevPurchaseGroups,
+      purchaseGroup,
+    ]);
+  };
 
-  // Functions to add new records and store in localStorage
-  const addProduct = (product) => setProducts((prev) => [...prev, product]);
-  const addSupplier = (supplier) => setSuppliers((prev) => [...prev, supplier]);
-  const addCustomer = (customer) => setCustomers((prev) => [...prev, customer]);
-  const addCustomerGroup = (customerGroup) =>
-    setCustomerGroups((prev) => [...prev, customerGroup]);
-  const addPurchaseGroup = (purchaseGroup) =>
-    setPurchaseGroups((prev) => [...prev, purchaseGroup]);
-
-  // Functions to update records and store in localStorage
-  const updateProduct = (updated) =>
-    setProducts((prev) =>
-      prev.map((p) => (p.productId === updated.productId ? updated : p))
-    );
-  const updateSupplier = (updated) =>
-    setSuppliers((prev) =>
-      prev.map((s) => (s.supplierId === updated.supplierId ? updated : s))
-    );
-  const updateCustomer = (updated) =>
-    setCustomers((prev) =>
-      prev.map((c) => (c.customerId === updated.customerId ? updated : c))
-    );
-  const updateCustomerGroups = (updated) =>
-    setCustomerGroups((prev) =>
-      prev.map((cg) =>
-        cg.customerGroupId === updated.customerGroupId ? updated : cg
+  const updateProduct = (updatedProduct) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.productId === updatedProduct.productId
+          ? updatedProduct
+          : product
       )
     );
-  const updatePurchaseGroup = (updated) =>
-    setPurchaseGroups((prev) =>
-      prev.map((pg) =>
-        pg.purchaseGroupId === updated.purchaseGroupId ? updated : pg
+  };
+
+  const updateSupplier = (updatedSupplier) => {
+    setSuppliers((prevSuppliers) =>
+      prevSuppliers.map((supplier) =>
+        supplier.supplierId === updatedSupplier.supplierId
+          ? updatedSupplier
+          : supplier
       )
     );
+  };
+
+  const updateCustomer = (updatedCustomer) => {
+    setCustomers((prevCustomers) =>
+      prevCustomers.map((customer) =>
+        customer.customerId === updatedCustomer.customerId
+          ? updatedCustomer
+          : customer
+      )
+    );
+  };
+
+  const updateCustomerGroup = (updatedCustomerGroup) => {
+    setCustomerGroups((prevCustomerGroups) =>
+      prevCustomerGroups.map((customerGroup) =>
+        customerGroup.customerGroupId === updatedCustomerGroup.customerGroupId
+          ? updatedCustomerGroup
+          : customerGroup
+      )
+    );
+  };
+
+  const updatePurchaseGroup = (updatedPurchaseGroup) => {
+    setPurchaseGroups((prevPurchaseGroups) =>
+      prevPurchaseGroups.map((purchaseGroup) =>
+        purchaseGroup.purchaseGroupId === updatedPurchaseGroup.purchaseGroupId
+          ? updatedPurchaseGroup
+          : purchaseGroup
+      )
+    );
+  };
 
   return (
     <Routes>
@@ -135,9 +146,7 @@ const AppRoutes = () => {
 
       <Route
         path="/add-customer-group"
-        element={
-          <AddCustomerGroupForm onAddCustomerGroups={addCustomerGroup} />
-        }
+        element={<AddCustomerGroupForm onAddCustomerGroup={addCustomerGroup} />}
       />
       <Route
         path="/customer-group-info"
@@ -146,17 +155,13 @@ const AppRoutes = () => {
       <Route
         path="/edit-customer-group/:customerGroupId"
         element={
-          <EditCustomerGroupForm
-            onUpdateCustomerGroups={updateCustomerGroups}
-          />
+          <EditCustomerGroupForm onUpdateCustomerGroup={updateCustomerGroup} />
         }
       />
 
       <Route
         path="/add-purchase-group"
-        element={
-          <AddPurchaseGroupForm onAddPurchaseGroups={addPurchaseGroup} />
-        }
+        element={<AddPurchaseGroupForm onAddPurchaseGroup={addPurchaseGroup} />}
       />
       <Route
         path="/purchase-group-info"
@@ -165,7 +170,7 @@ const AppRoutes = () => {
       <Route
         path="/edit-purchase-group/:purchaseGroupId"
         element={
-          <EditPurchaseGroupForm onUpdatePurchaseGroups={updatePurchaseGroup} />
+          <EditPurchaseGroupForm onUpdatePurchaseGroup={updatePurchaseGroup} />
         }
       />
 
@@ -175,4 +180,4 @@ const AppRoutes = () => {
   );
 };
 
-export default AppRoutes;
+export default EmpRoutes;
