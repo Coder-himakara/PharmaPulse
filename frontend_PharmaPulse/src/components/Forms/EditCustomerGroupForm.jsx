@@ -91,7 +91,6 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
       {[
         { label: "Customer Group Id", name: "customerGroupId" },
         { label: "Customer Group Name", name: "customerGroupName" },
-        { label: "Sales Rep (ID & Name)", name: "salesRep", placeholder: "ID - Name" },
         { label: "Location", name: "location" },
       ].map(({ label, name, placeholder }) => (
         <div className="flex items-center justify-between mb-4" key={name}>
@@ -109,6 +108,29 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
           />
         </div>
       ))}
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="assignSalesRepId" className="text-[16px] text-gray-800 w-2/5">
+          Assign Sales Rep:
+        </label>
+        <input
+          type="text"
+          id="assignSalesRepId"
+          name="assignSalesRepId"
+          value={formData.assignSalesRepId}
+          onChange={handleChange}
+          placeholder="Rep ID"
+          className="w-1/3 px-3 py-2 mr-2 text-sm border border-gray-300 rounded-md"
+        />
+        <input
+          type="text"
+          id="assignSalesRepName"
+          name="assignSalesRepName"
+          value={formData.assignSalesRepName}
+          onChange={handleChange}
+          placeholder="Rep Name"
+          className="w-1/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
 
       <div className="flex justify-center gap-2 mt-5">
         <button
