@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +20,12 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if ((name === "purchaseGroupId" || name === "telePhoneNo") && !/^[0-9]*$/.test(value)) {
+      setErrorMessage("Purchase Group ID and Telephone No must contain only numbers.");
+      return;
+    }
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -30,7 +35,6 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if any required field is empty
     if (
       !formData.purchaseGroupId ||
       !formData.purchaseGroupName.trim() ||
@@ -43,8 +47,12 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
+    // Updated email validation to check for "@" instead of "@simple"
+    if (!formData.email.includes("@")) {
+      setErrorMessage("Email must contain '@'.");
+      return;
+    }
 
-    // Clear error message and show success
     setErrorMessage("");
     setSuccessMessage("Purchase Group Added Successfully!");
 
@@ -52,7 +60,6 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       onAddPurchaseGroup(formData);
     }
 
-    // Clear the form after a delay
     setTimeout(() => {
       setFormData({
         purchaseGroupId: "",
@@ -90,7 +97,6 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       )}
 
       {[
-        // Form Fields Mapping
         { label: "Purchase Group Id", name: "purchaseGroupId" },
         { label: "Purchase Group Name", name: "purchaseGroupName" },
         { label: "Address", name: "address" },
@@ -106,8 +112,8 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           <input
             type="text"
             id={name}
-            name={name} // Ensure formData property matches with name
-            value={formData[name]} // Ensures input value corresponds to state
+            name={name}
+            value={formData[name]}
             onChange={handleChange}
             className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
           />
