@@ -1,28 +1,33 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   const [formData, setFormData] = useState({
-    purchaseGroupId: "",
-    purchaseGroupName: "",
-    address: "",
-    contactName: "",
-    telePhoneNo: "",
-    email: "",
-    supplierId: "",
+    purchaseGroupId: '',
+    purchaseGroupName: '',
+    address: '',
+    contactName: '',
+    telePhoneNo: '',
+    email: '',
+    supplierId: '',
   });
 
   const navigate = useNavigate();
 
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if ((name === "purchaseGroupId" || name === "telePhoneNo") && !/^[0-9]*$/.test(value)) {
-      setErrorMessage("Purchase Group ID and Telephone No must contain only numbers.");
+    if (
+      (name === 'purchaseGroupId' || name === 'telePhoneNo') &&
+      !/^[0-9]*$/.test(value)
+    ) {
+      setErrorMessage(
+        'Purchase Group ID and Telephone No must contain only numbers.',
+      );
       return;
     }
 
@@ -44,17 +49,17 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       !formData.email.trim() ||
       !formData.supplierId.trim()
     ) {
-      setErrorMessage("Please fill out all required fields.");
+      setErrorMessage('Please fill out all required fields.');
       return;
     }
     // Updated email validation to check for "@" instead of "@simple"
-    if (!formData.email.includes("@")) {
+    if (!formData.email.includes('@')) {
       setErrorMessage("Email must contain '@'.");
       return;
     }
 
-    setErrorMessage("");
-    setSuccessMessage("Purchase Group Added Successfully!");
+    setErrorMessage('');
+    setSuccessMessage('Purchase Group Added Successfully!');
 
     if (onAddPurchaseGroup) {
       onAddPurchaseGroup(formData);
@@ -62,75 +67,75 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
 
     setTimeout(() => {
       setFormData({
-        purchaseGroupId: "",
-        purchaseGroupName: "",
-        address: "",
-        contactName: "",
-        telePhoneNo: "",
-        email: "",
-        supplierId: "",
+        purchaseGroupId: '',
+        purchaseGroupName: '',
+        address: '',
+        contactName: '',
+        telePhoneNo: '',
+        email: '',
+        supplierId: '',
       });
-      setSuccessMessage("");
+      setSuccessMessage('');
     }, 2000);
   };
 
   const handleCancel = () => {
-    navigate("/home");
+    navigate('/home');
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
+      className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'
     >
-      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg">
+      <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
         Add Purchase Group
       </h2>
 
       {errorMessage && (
-        <p className="text-[#991919] text-sm font-bold mb-4">{errorMessage}</p>
+        <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>
       )}
       {successMessage && (
-        <p className="text-[#3c5f3c] text-sm font-bold mb-4">
+        <p className='text-[#3c5f3c] text-sm font-bold mb-4'>
           {successMessage}
         </p>
       )}
 
       {[
-        { label: "Purchase Group Id", name: "purchaseGroupId" },
-        { label: "Purchase Group Name", name: "purchaseGroupName" },
-        { label: "Address", name: "address" },
-        { label: "Contact Name", name: "contactName" },
-        { label: "Telephone No", name: "telePhoneNo" },
-        { label: "Email", name: "email" },
-        { label: "Supplier Id", name: "supplierId" },
+        { label: 'Purchase Group Id', name: 'purchaseGroupId' },
+        { label: 'Purchase Group Name', name: 'purchaseGroupName' },
+        { label: 'Address', name: 'address' },
+        { label: 'Contact Name', name: 'contactName' },
+        { label: 'Telephone No', name: 'telePhoneNo' },
+        { label: 'Email', name: 'email' },
+        { label: 'Supplier Id', name: 'supplierId' },
       ].map(({ label, name }) => (
-        <div className="flex items-center justify-between mb-4" key={name}>
-          <label htmlFor={name} className="text-[16px] text-gray-800 w-2/3">
+        <div className='flex items-center justify-between mb-4' key={name}>
+          <label htmlFor={name} className='text-[16px] text-gray-800 w-2/3'>
             {label}:
           </label>
           <input
-            type="text"
+            type='text'
             id={name}
             name={name}
             value={formData[name]}
             onChange={handleChange}
-            className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
+            className='w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md'
           />
         </div>
       ))}
 
-      <div className="flex justify-center gap-2 mt-5">
+      <div className='flex justify-center gap-2 mt-5'>
         <button
-          type="submit"
-          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+          type='submit'
+          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
         >
           Add
         </button>
         <button
-          type="button"
+          type='button'
           onClick={handleCancel}
-          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
         >
           Cancel
         </button>
