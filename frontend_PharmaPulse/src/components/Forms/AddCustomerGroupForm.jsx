@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   const [formData, setFormData] = useState({
+    customerGroupId: "",
     customerGroupName: "",
     assignSalesRepId: "",
     assignSalesRepName: "",

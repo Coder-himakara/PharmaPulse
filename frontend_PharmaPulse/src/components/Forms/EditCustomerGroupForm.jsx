@@ -43,9 +43,10 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
     cg.preventDefault();
 
     if (
-      !formData.assignSalesRepId ||
-      !formData.assignSalesRepName ||
-      !formData.location
+      !formData.customerGroupName.trim() ||
+      !formData.assignSalesRepId.trim() ||
+      !formData.assignSalesRepName.trim() ||
+      !formData.location.trim()
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;
