@@ -45,7 +45,7 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
             type="text"
             placeholder="Search Customer Group..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(cg) => setSearch(cg.target.value)}
             className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"
           />
         </div>
@@ -82,8 +82,7 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
           </thead>
           <tbody>
             {filteredCustomerGroups.map((customerGroup, index) => (
-              <tr
-                key={customerGroup.customerGroupId}
+              <tr key={index}
                 className="bg-[#c6dceb] hover:bg-[#dce4e9] border border-gray-400"
               >
                 <td className="p-2 text-center border border-gray-400">

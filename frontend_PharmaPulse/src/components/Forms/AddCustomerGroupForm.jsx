@@ -16,22 +16,22 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (cg) => {
+    const { name, value } = cg.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (cg) => {
+    cg.preventDefault();
 
     if (
-      !formData.customerGroupName ||
-      !formData.assignSalesRepId ||
-      !formData.assignSalesRepName ||
-      !formData.location
+      !formData.customerGroupName.trim() ||
+      !formData.assignSalesRepId.trim() ||
+      !formData.assignSalesRepName.trim() ||
+      !formData.location.trim()
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;
@@ -78,65 +78,28 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
         </p>
       )}
 
-      <div className="flex items-center justify-between mb-4">
-        <label
-          htmlFor="customerGroupName"
-          className="text-[16px] text-gray-800 w-2/3"
-        >
-          Customer Group Name:
-        </label>
-        <input
-          type="text"
-          id="customerGroupName"
-          name="customerGroupName"
-          value={formData.customerGroupName}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label
-          htmlFor="assignSalesRepId"
-          className="text-[16px] text-gray-800 w-2/3"
-        >
-          Sales Rep:
-        </label>
-        <div className="flex w-2/3 gap-2">
+      {[
+        { label: "Customer Group Id", name: "customerGroupId" },
+        { label: "Customer Group Name", name: "customerGroupName" },
+        { label: "Assign Sales Rep Id", name: "assignSalesRepId" },
+        { label: "Assign Sales Rep Name", name: "assignSalesRepName" },
+        { label: "Location", name: "location" },
+       
+      ].map(({ label, name }) => (
+        <div className="flex items-center justify-between mb-4" key={name}>
+          <label htmlFor={name} className="text-[16px] text-gray-800 w-2/3">
+            {label}:
+          </label>
           <input
             type="text"
-            id="assignSalesRepId"
-            name="assignSalesRepId"
-            placeholder="ID"
-            value={formData.assignSalesRepId}
+            id={name}
+            name={name} // Correctly match with formData property name
+            value={formData[name]} // Correctly match with formData state
             onChange={handleChange}
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-          />
-          <input
-            type="text"
-            id="assignSalesRepName"
-            name="assignSalesRepName"
-            placeholder="Name"
-            value={formData.assignSalesRepName}
-            onChange={handleChange}
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className="w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md"
           />
         </div>
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="location" className="text-[16px] text-gray-800 w-2/3">
-          Location:
-        </label>
-        <input
-          type="text"
-          id="location"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-      </div>
+      ))}
 
       <div className="flex justify-center gap-2 mt-5">
         <button

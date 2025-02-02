@@ -32,8 +32,8 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (pg) => {
+    pg.preventDefault();
 
     if (
       !formData.purchaseGroupId ||

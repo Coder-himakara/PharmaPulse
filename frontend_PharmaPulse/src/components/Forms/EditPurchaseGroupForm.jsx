@@ -35,16 +35,16 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
     }
   }, [purchaseGroup]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (pg) => {
+    const { name, value } = pg.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (pg) => {
+    pg.preventDefault();
 
     if (
       !formData.email ||

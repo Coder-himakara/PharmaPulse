@@ -47,7 +47,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
             type="text"
             placeholder="Search Purchase Group..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(pg) => setSearch(pg.target.value)}
             className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"
           />
         </div>
