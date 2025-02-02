@@ -20,17 +20,6 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    if (
-      (name === 'purchaseGroupId' || name === 'telePhoneNo') &&
-      !/^[0-9]*$/.test(value)
-    ) {
-      setErrorMessage(
-        'Purchase Group ID and Telephone No must contain only numbers.',
-      );
-      return;
-    }
-
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -50,11 +39,6 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       !formData.supplierId.trim()
     ) {
       setErrorMessage('Please fill out all required fields.');
-      return;
-    }
-    // Updated email validation to check for "@" instead of "@simple"
-    if (!formData.email.includes('@')) {
-      setErrorMessage("Email must contain '@'.");
       return;
     }
 
@@ -101,29 +85,117 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
         </p>
       )}
 
-      {[
-        { label: 'Purchase Group Id', name: 'purchaseGroupId' },
-        { label: 'Purchase Group Name', name: 'purchaseGroupName' },
-        { label: 'Address', name: 'address' },
-        { label: 'Contact Name', name: 'contactName' },
-        { label: 'Telephone No', name: 'telePhoneNo' },
-        { label: 'Email', name: 'email' },
-        { label: 'Supplier Id', name: 'supplierId' },
-      ].map(({ label, name }) => (
-        <div className='flex items-center justify-between mb-4' key={name}>
-          <label htmlFor={name} className='text-[16px] text-gray-800 w-2/3'>
-            {label}:
-          </label>
-          <input
-            type='text'
-            id={name}
-            name={name}
-            value={formData[name]}
-            onChange={handleChange}
-            className='w-2/3 px-3 py-2 text-sm border border-gray-300 rounded-md'
-          />
-        </div>
-      ))}
+      <div className='flex items-center justify-between mb-4'>
+        <label
+          htmlFor='purchaseGroupName'
+          className='text-[16px] text-gray-800 w-2/3'
+        >
+          Purchase Group Name:
+        </label>
+        <input
+          type='text'
+          id='purchaseGroupName'
+          name='purchaseGroupName'
+          value={formData.purchaseGroupName}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        />
+      </div>
+
+      <div className='flex items-center justify-between mb-4'>
+        <label
+          htmlFor='purchaseGroupId'
+          className='text-[16px] text-gray-800 w-2/3'
+        >
+          Purchase Group Id:
+        </label>
+        <input
+          type='text'
+          id='purchaseGroupId'
+          name='purchaseGroupId'
+          value={formData.purchaseGroupId}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        />
+      </div>
+
+      <div className='flex items-center justify-between mb-4'>
+        <label htmlFor='address' className='text-[16px] text-gray-800 w-2/3'>
+          Address:
+        </label>
+        <input
+          type='text'
+          id='address'
+          name='address'
+          value={formData.address}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        />
+      </div>
+
+      <div className='flex items-center justify-between mb-4'>
+        <label
+          htmlFor='contactName'
+          className='text-[16px] text-gray-800 w-2/3'
+        >
+          Contact Name:
+        </label>
+        <input
+          type='text'
+          id='contactName'
+          name='contactName'
+          value={formData.contactName}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        />
+      </div>
+      <div className='flex items-center justify-between mb-4'>
+        <label
+          htmlFor='telePhoneNo'
+          className='text-[16px] text-gray-800 w-2/3'
+        >
+          Telephone No:
+        </label>
+        <input
+          type='number'
+          id='telePhoneNo'
+          name='telePhoneNo'
+          value={formData.telePhoneNo}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        />
+      </div>
+
+      <div className='flex items-center justify-between mb-4'>
+        <label htmlFor='email' className='text-[16px] text-gray-800 w-2/3'>
+          Email:
+        </label>
+        <input
+          type='email'
+          id='email'
+          name='email'
+          value={formData.email}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        />
+      </div>
+
+      <div className='flex items-center justify-between mb-4'>
+        <label htmlFor='supplierId' className='text-[16px] text-gray-800 w-2/3'>
+          Supplier Id
+        </label>
+        <select
+          id='supplierId'
+          name='supplierId'
+          value={formData.supplierId}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md'
+        >
+          <option value=''>Choose a supplier</option>
+          <option value='S001'>S001</option>
+          <option value='S002'>S002</option>
+        </select>
+      </div>
 
       <div className='flex justify-center gap-2 mt-5'>
         <button
