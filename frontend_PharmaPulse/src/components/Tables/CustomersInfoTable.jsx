@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +36,7 @@ const CustomersInfoTable = ({ customers }) => {
   return (
     <div className='bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative'>
       <div className='bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative'>
-        <h1 className='m-1 p-1 text-2xl'>Customers Management</h1>
+        <h1 className='p-1 m-1 text-2xl'>Customers Management</h1>
         <button
           className='absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1] mr-4'
           onClick={handleClose}
@@ -44,7 +45,7 @@ const CustomersInfoTable = ({ customers }) => {
         </button>
       </div>
 
-      <div className='m-2 p-2 flex justify-between items-center'>
+      <div className='flex items-center justify-between p-2 m-2'>
         <h2 className='text-2xl font-bold text-[#1a5353]'>Customers</h2>
         <div className='relative'>
           <input
@@ -63,7 +64,7 @@ const CustomersInfoTable = ({ customers }) => {
         </div>
       )}
 
-      <div className='m-2 p-2'>
+      <div className='p-2 m-2'>
         <table className='w-full border-collapse'>
           <thead>
             <tr>

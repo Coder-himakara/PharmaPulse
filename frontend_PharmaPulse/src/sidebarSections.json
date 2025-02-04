@@ -8,17 +8,16 @@
       ]
     },
     {
-      "title": "Suppliers",
+      "title": "Accounts",
       "links": [
+        { "to": "/add-customer-group", "name": "Add Customer Group" },
+        { "to": "/customer-group-info", "name": "Customer Group Info" },
+        { "to": "/add-customers", "name": "Add Customers" },
+        { "to": "/customers-info", "name": "Customers Info" },
+        { "to": "/add-purchase-group", "name": "Add Purchase Group" },
+        { "to": "/purchase-group-info", "name": "Purchase Group Info" },
         { "to": "/add-suppliers", "name": "Add Suppliers" },
         { "to": "/suppliers-info", "name": "Suppliers Info" }
-      ]
-    },
-    {
-      "title": "Customers",
-      "links": [
-        { "to": "/add-customers", "name": "Add Customers" },
-        { "to": "/customers-info", "name": "Customers Info" }
       ]
     }
   ]
