@@ -31,5 +31,23 @@
       ]
     }
     
+  ],
+  "admin": [
+    {
+      "title": "Users",
+      "links": [
+        { "to": "/add-users", "name": "Add Users" },
+        { "to": "/users-info", "name": "User info" }
+      ]
+    },
+    {
+      "title": "Lorry",
+      "links": [
+        { "to": "/add-lorry", "name": "Add Lorry" },
+        { "to": "/lorry-info", "name": "Lorry Info" }
+      ]
+    }
+
   ]
+  
 }

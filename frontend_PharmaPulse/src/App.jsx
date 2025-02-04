@@ -4,8 +4,8 @@ import "./App.css";
 import "./index.css";
 import { ThemeProvider } from "./ThemeContext";
 
-import SalesRepDashboard from "./pages/SalesRepDashboard/SalesRepDashboard";
 
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 
 function App() {
   return (
@@ -13,7 +13,9 @@ function App() {
       <Router>
         
         
-        <SalesRepDashboard /> 
+      <AdminDashboard />
+      
+        
         
        
        
@@ -21,7 +23,8 @@ function App() {
         
       </Router>
     </ThemeProvider>
-  );
+  )
+  ;
 }
 
 export default App;
