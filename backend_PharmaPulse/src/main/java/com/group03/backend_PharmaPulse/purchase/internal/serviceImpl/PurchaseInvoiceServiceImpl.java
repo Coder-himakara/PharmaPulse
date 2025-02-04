@@ -3,7 +3,7 @@ package com.group03.backend_PharmaPulse.purchase.internal.serviceImpl;
 import com.group03.backend_PharmaPulse.product.api.ProductRetailPriceService;
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseLineItemDTO;
 import com.group03.backend_PharmaPulse.shared.InvoiceReference;
-import com.group03.backend_PharmaPulse.exception.NotFoundException;
+import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseInvoiceDTO;
 import com.group03.backend_PharmaPulse.purchase.internal.entity.PurchaseInvoice;
