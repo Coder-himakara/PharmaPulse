@@ -17,4 +17,8 @@ body {
   background-attachment: fixed; /* Fix the background */
   background-color: black; /* Fallback color */
   overflow: hidden;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  
+  
 }

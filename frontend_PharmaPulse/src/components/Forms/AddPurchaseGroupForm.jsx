@@ -1,36 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const EditCustomersForm = ({ onUpdateCustomer }) => {
-  const { state } = useLocation(); // Access the state passed by navigate
-  const customer = state?.customer; // Get customer from the state
-  const navigate = useNavigate();
-
+const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   const [formData, setFormData] = useState({
-    customerName: '',
-    customerId: '',
-    contactNumber: '',
+    purchaseGroupId: '',
+    purchaseGroupName: '',
     address: '',
+    contactName: '',
+    telePhoneNo: '',
     email: '',
-    dateOfConnected: '',
+    supplierId: '',
   });
+
+  const navigate = useNavigate();
 
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
-  useEffect(() => {
-    if (customer) {
-      setFormData({
-        customerName: customer.customerName,
-        customerId: customer.customerId,
-        contactNumber: customer.contactNumber,
-        address: customer.address,
-        email: customer.email,
-        dateOfConnected: customer.dateOfConnected,
-      });
-    }
-  }, [customer]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,33 +26,45 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (pg) => {
+    pg.preventDefault();
 
-    // Basic validation
-    if (!formData.email || !formData.address || !formData.contactNumber) {
+    if (
+      !formData.purchaseGroupId ||
+      !formData.purchaseGroupName.trim() ||
+      !formData.address.trim() ||
+      !formData.contactName.trim() ||
+      !formData.telePhoneNo.trim() ||
+      !formData.email.trim() ||
+      !formData.supplierId.trim()
+    ) {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
 
-    setErrorMessage(''); // Clear errors
+    setErrorMessage('');
+    setSuccessMessage('Purchase Group Added Successfully!');
 
-    // Pass the updated customer data to the parent
-    if (onUpdateCustomer) {
-      onUpdateCustomer(formData);
+    if (onAddPurchaseGroup) {
+      onAddPurchaseGroup(formData);
     }
 
-    setSuccessMessage('Customer updated successfully!');
-
-    // Clear the form and success message after a delay
     setTimeout(() => {
+      setFormData({
+        purchaseGroupId: '',
+        purchaseGroupName: '',
+        address: '',
+        contactName: '',
+        telePhoneNo: '',
+        email: '',
+        supplierId: '',
+      });
       setSuccessMessage('');
-      navigate('/customers-info');
     }, 2000);
   };
 
   const handleCancel = () => {
-    navigate('/customers-info');
+    navigate('/home');
   };
 
   return (
@@ -75,7 +73,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'
     >
       <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
-        Edit Customer
+        Add Purchase Group
       </h2>
 
       {errorMessage && (
@@ -89,47 +87,33 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
 
       <div className='flex items-center justify-between mb-4'>
         <label
-          htmlFor='customerName'
+          htmlFor='purchaseGroupName'
           className='text-[16px] text-gray-800 w-2/3'
         >
-          Customer Name:
+          Purchase Group Name:
         </label>
         <input
           type='text'
-          id='customerName'
-          name='customerName'
-          value={formData.customerName}
+          id='purchaseGroupName'
+          name='purchaseGroupName'
+          value={formData.purchaseGroupName}
+          onChange={handleChange}
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-          readOnly
-        />
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='customerId' className='text-[16px] text-gray-800 w-2/3'>
-          Customer ID:
-        </label>
-        <input
-          type='text'
-          id='customerId'
-          name='customerId'
-          value={formData.customerId}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-          readOnly
         />
       </div>
 
       <div className='flex items-center justify-between mb-4'>
         <label
-          htmlFor='contactNumber'
+          htmlFor='purchaseGroupId'
           className='text-[16px] text-gray-800 w-2/3'
         >
-          Contact Number:
+          Purchase Group Id:
         </label>
         <input
           type='text'
-          id='contactNumber'
-          name='contactNumber'
-          value={formData.contactNumber}
+          id='purchaseGroupId'
+          name='purchaseGroupId'
+          value={formData.purchaseGroupId}
           onChange={handleChange}
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
@@ -150,6 +134,39 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       </div>
 
       <div className='flex items-center justify-between mb-4'>
+        <label
+          htmlFor='contactName'
+          className='text-[16px] text-gray-800 w-2/3'
+        >
+          Contact Name:
+        </label>
+        <input
+          type='text'
+          id='contactName'
+          name='contactName'
+          value={formData.contactName}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        />
+      </div>
+      <div className='flex items-center justify-between mb-4'>
+        <label
+          htmlFor='telePhoneNo'
+          className='text-[16px] text-gray-800 w-2/3'
+        >
+          Telephone No:
+        </label>
+        <input
+          type='number'
+          id='telePhoneNo'
+          name='telePhoneNo'
+          value={formData.telePhoneNo}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        />
+      </div>
+
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='email' className='text-[16px] text-gray-800 w-2/3'>
           Email:
         </label>
@@ -164,21 +181,20 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       </div>
 
       <div className='flex items-center justify-between mb-4'>
-        <label
-          htmlFor='dateOfConnected'
-          className='text-[16px] text-gray-800 w-2/3'
-        >
-          Date of Connected:
+        <label htmlFor='supplierId' className='text-[16px] text-gray-800 w-2/3'>
+          Supplier Id
         </label>
-        <input
-          type='date'
-          id='dateOfConnected'
-          name='dateOfConnected'
-          value={formData.dateOfConnected}
+        <select
+          id='supplierId'
+          name='supplierId'
+          value={formData.supplierId}
           onChange={handleChange}
           className='w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md'
-          readOnly
-        />
+        >
+          <option value=''>Choose a supplier</option>
+          <option value='S001'>S001</option>
+          <option value='S002'>S002</option>
+        </select>
       </div>
 
       <div className='flex justify-center gap-2 mt-5'>
@@ -186,7 +202,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           type='submit'
           className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
         >
-          Update
+          Add
         </button>
         <button
           type='button'
@@ -200,9 +216,8 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
   );
 };
 
-EditCustomersForm.propTypes = {
-  customer: PropTypes.object.isRequired,
-  onUpdateCustomer: PropTypes.func.isRequired,
+AddPurchaseGroupForm.propTypes = {
+  onAddPurchaseGroup: PropTypes.func.isRequired,
 };
 
-export default EditCustomersForm;
+export default AddPurchaseGroupForm;
