@@ -1,6 +1,6 @@
-@ApplicationModule(
-        allowedDependencies = {"advisor","common","config","exception","util","inventory::inventory-entity",
-        "inventory::inventory-repository","inventory::inventory-service","common::common-mapper"}
+@org.springframework.modulith.ApplicationModule(
+        type = ApplicationModule.Type.OPEN,
+        allowedDependencies = {"product","shared", "advisor", "exception", "util","inventory"} // Added "product"
 )
 package com.group03.backend_PharmaPulse.purchase;
 
