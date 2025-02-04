@@ -1,4 +1,4 @@
-package com.group03.backend_PharmaPulse.exception;
+package com.group03.backend_PharmaPulse.util.api.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

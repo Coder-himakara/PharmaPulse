@@ -1,7 +1,7 @@
 package com.group03.backend_PharmaPulse.advisor;
 
-import com.group03.backend_PharmaPulse.exception.NotFoundException;
-import com.group03.backend_PharmaPulse.util.ErrorResponseDto;
+import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
+import com.group03.backend_PharmaPulse.util.api.dto.ErrorResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

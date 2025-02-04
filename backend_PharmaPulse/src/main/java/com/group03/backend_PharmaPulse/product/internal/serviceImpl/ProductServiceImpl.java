@@ -1,6 +1,6 @@
 package com.group03.backend_PharmaPulse.product.internal.serviceImpl;
 
-import com.group03.backend_PharmaPulse.exception.NotFoundException;
+import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.product.api.ProductService;
 import com.group03.backend_PharmaPulse.product.api.dto.ProductDTO;
 import com.group03.backend_PharmaPulse.product.internal.entity.Product;
