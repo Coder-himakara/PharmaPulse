@@ -56,7 +56,7 @@ const Sidebar = ({ role }) => {
   const sections = sidebarSections[role] || [];
 
   return (
-    <aside className='fixed top-[100px] bottom-[70px] left-0 w-[250px] bg-teal-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 overflow-y-auto shadow-lg p-5 z-[999] box-border'>
+    <aside className='fixed top-[100px] bottom-[70px] left-0 w-[250px] bg-[#C1D4E0] dark:bg-gray-800 text-gray-800 dark:text-gray-200 overflow-y-auto shadow-lg p-5 z-[999] box-border'>
       {sections.map((section, index) => (
         <SidebarSection
           key={index}
