@@ -61,7 +61,7 @@ const AddUsersForm = ({ onAddUser }) => {
     setErrorMessage('');
     setSuccessMessage('Account created successfully!');
     if (onAddUser) {
-        onAddUser(formData);
+      onAddUser(formData);
     }
 
     setTimeout(() => {
@@ -87,13 +87,22 @@ const AddUsersForm = ({ onAddUser }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'>
+    <form
+      onSubmit={handleSubmit}
+      className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'
+    >
       <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
         Create Account
       </h2>
 
-      {errorMessage && <p className='text-red-600 text-sm font-bold mb-4'>{errorMessage}</p>}
-      {successMessage && <p className='text-green-600 text-sm font-bold mb-4'>{successMessage}</p>}
+      {errorMessage && (
+        <p className='text-red-600 text-sm font-bold mb-4'>{errorMessage}</p>
+      )}
+      {successMessage && (
+        <p className='text-green-600 text-sm font-bold mb-4'>
+          {successMessage}
+        </p>
+      )}
 
       {[
         ['Username', 'username', 'text'],
@@ -107,7 +116,9 @@ const AddUsersForm = ({ onAddUser }) => {
         ['Confirm Password', 'confirmPassword', 'password'],
       ].map(([label, name, type]) => (
         <div key={name} className='flex justify-between items-center mb-4'>
-          <label htmlFor={name} className='text-[16px] text-gray-800 w-2/3'>{label}:</label>
+          <label htmlFor={name} className='text-[16px] text-gray-800 w-2/3'>
+            {label}:
+          </label>
           <input
             type={type}
             id={name}
@@ -120,7 +131,9 @@ const AddUsersForm = ({ onAddUser }) => {
       ))}
 
       <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='role' className='text-[16px] text-gray-800 w-2/3'>Role:</label>
+        <label htmlFor='role' className='text-[16px] text-gray-800 w-2/3'>
+          Role:
+        </label>
         <select
           id='role'
           name='role'
@@ -135,20 +148,42 @@ const AddUsersForm = ({ onAddUser }) => {
       </div>
 
       <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='profilePicture' className='text-[16px] text-gray-800 w-2/3'>Profile Picture:</label>
-        <input type='file' id='profilePicture' name='profilePicture' onChange={handleFileChange} className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm' />
+        <label
+          htmlFor='profilePicture'
+          className='text-[16px] text-gray-800 w-2/3'
+        >
+          Profile Picture:
+        </label>
+        <input
+          type='file'
+          id='profilePicture'
+          name='profilePicture'
+          onChange={handleFileChange}
+          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+        />
       </div>
 
       <div className='flex justify-center gap-2 mt-5'>
-        <button type='submit' className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'>Sign Up</button>
-        <button type='button' onClick={handleCancel} className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'>Cancel</button>
+        <button
+          type='submit'
+          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
+        >
+          Sign Up
+        </button>
+        <button
+          type='button'
+          onClick={handleCancel}
+          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
+        >
+          Cancel
+        </button>
       </div>
     </form>
   );
 };
 
 AddUsersForm.propTypes = {
-    onAddUser: PropTypes.func.isRequired,
+  onAddUser: PropTypes.func.isRequired,
 };
 
 export default AddUsersForm;

@@ -7,30 +7,10 @@ import OrderForm from '../components/Forms/saleRepForm/OrderForm';
 import SalesRepSidebar from '../components/Sidebar/SalesRepSidebar';
 
 const RepRoutes = () => {
-  
-
-  
-
-  
-
-  
-
   return (
     <Routes>
-      <Route
-        path='/price-list-view'
-        element={<  PriceListTable/>}
-      />
-      <Route
-        path='/order-creation'
-        element={< OrderForm />}
-      />
-      
-            
-      
-      
-     
-     
+      <Route path='/price-list-view' element={<PriceListTable />} />
+      <Route path='/order-creation' element={<OrderForm />} />
 
       <Route path='/home' element={<SalesRepSidebar role='salerep' />} />
       <Route path='/dashboard' element={<SalesRepSidebar role='salerep' />} />

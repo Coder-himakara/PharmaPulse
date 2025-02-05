@@ -5,7 +5,6 @@ import Footer from '../../components/Footer/Footer';
 import AdminSidebar from '../../components/Sidebar/AdminSidebar';
 import AdminRotes from '../../routes/AdminRoutes';
 
-
 const AdminDashboard = () => {
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
@@ -26,4 +25,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard ;
+export default AdminDashboard;

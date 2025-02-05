@@ -8,7 +8,7 @@ const UsersInfoTable = ({ users }) => {
   const navigate = useNavigate();
 
   const filteredUsers = users.filter((user) =>
-    user.username.toLowerCase().includes(search.toLowerCase())
+    user.username.toLowerCase().includes(search.toLowerCase()),
   );
 
   const sortedUsers = filteredUsers.sort((a, b) => {
@@ -18,7 +18,9 @@ const UsersInfoTable = ({ users }) => {
   });
 
   const toggleSort = () => {
-    setSortDirection((prevDirection) => (prevDirection === 'asc' ? 'desc' : 'asc'));
+    setSortDirection((prevDirection) =>
+      prevDirection === 'asc' ? 'desc' : 'asc',
+    );
   };
 
   const handleClose = () => {
@@ -67,27 +69,47 @@ const UsersInfoTable = ({ users }) => {
         <table className='w-full border-collapse'>
           <thead>
             <tr>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>#</th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>User ID</th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>Username</th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>Role</th>
-              <th 
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                #
+              </th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                User ID
+              </th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Username
+              </th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Role
+              </th>
+              <th
                 className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer'
                 onClick={toggleSort}
               >
                 Date of Joined {sortDirection === 'asc' ? '🔼' : '🔽'}
               </th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>Action</th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
             {sortedUsers.map((user, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>{index + 1}</td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>{user.userId}</td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>{user.username}</td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>{user.role}</td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>{user.dateOfJoined}</td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {index + 1}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {user.userId}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {user.username}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {user.role}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {user.dateOfJoined}
+                </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
                     className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
@@ -124,7 +146,7 @@ UsersInfoTable.propTypes = {
       username: PropTypes.string.isRequired,
       role: PropTypes.string.isRequired,
       dateOfJoined: PropTypes.string.isRequired, // Added missing prop validation
-    })
+    }),
   ).isRequired,
 };
 

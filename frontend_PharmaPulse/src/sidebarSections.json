@@ -1,10 +1,10 @@
 {
   "employee": [
     {
-      "title": "Price List",
+      "title": "Products",
       "links": [
-        { "to": "/price-list-view", "name": "Price List" },
-        { "to": "/order-creation", "name": "Order Creation" }
+        { "to": "/add-products", "name": "Add Products" },
+        { "to": "/products-info", "name": "Produts Info" }
       ]
     },
     {

@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import AddProductsForm from '../components/Forms/AddProductsForm';
-import ProductsInfoTable from '../components/Tables/ProductsInfoTable';
-import AddCustomersForm from '../components/Forms/AddCustomersForm';
-import SuppliersInfoTable from '../components/Tables/SuppliersInfoTable';
-import AddSuppliersForm from '../components/Forms/AddSuppliersForm';
-import CustomersInfoTable from '../components/Tables/CustomersInfoTable';
-import EditProductsForm from '../components/Forms/EditProductsForm';
-import EditSuppliersForm from '../components/Forms/EditSuppliersForm';
-import EditCustomersForm from '../components/Forms/EditCustomersForm';
+import AddProductsForm from '../components/Forms/employeeForm/AddProductsForm';
+import ProductsInfoTable from '../components/Tables/employeeTable/ProductsInfoTable';
+import AddCustomersForm from '../components/Forms/employeeForm/AddCustomersForm';
+import SuppliersInfoTable from '../components/Tables/employeeTable/SuppliersInfoTable';
+import AddSuppliersForm from '../components/Forms/employeeForm/AddSuppliersForm';
+import CustomersInfoTable from '../components/Tables/employeeTable/CustomersInfoTable';
+import EditProductsForm from '../components/Forms/employeeForm/EditProductsForm';
+import EditSuppliersForm from '../components/Forms/employeeForm/EditSuppliersForm';
+import EditCustomersForm from '../components/Forms/employeeForm/EditCustomersForm';
 
 import Sidebar from '../components/Sidebar/Sidebar';
 

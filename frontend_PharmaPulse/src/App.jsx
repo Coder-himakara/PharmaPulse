@@ -5,7 +5,8 @@ import "./index.css";
 import { ThemeProvider } from "./ThemeContext";
 
 
-import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+//import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
 
 function App() {
   return (
@@ -13,7 +14,10 @@ function App() {
       <Router>
         
         
-      <AdminDashboard />
+       
+        <EmployeeDashboard />
+
+      
       
         
         
