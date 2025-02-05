@@ -1,3 +1,4 @@
+
 /* eslint-disable prettier/prettier */
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
@@ -21,6 +22,7 @@ import EditPurchaseGroupForm from "../components/Forms/employeeForms/EditPurchas
 import Sidebar from "../components/Sidebar/Sidebar";
 
 const EmpRoutes = () => {
+
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [customers, setCustomers] = useState([]);
