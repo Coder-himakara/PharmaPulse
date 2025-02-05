@@ -2,21 +2,21 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import AddProductsForm from "../components/Forms/AddProductsForm";
-import ProductsInfoTable from "../components/Tables/ProductsInfoTable";
-import AddCustomersForm from "../components/Forms/AddCustomersForm";
-import SuppliersInfoTable from "../components/Tables/SuppliersInfoTable";
-import AddSuppliersForm from "../components/Forms/AddSuppliersForm";
-import CustomersInfoTable from "../components/Tables/CustomersInfoTable";
-import EditProductsForm from "../components/Forms/EditProductsForm";
-import EditSuppliersForm from "../components/Forms/EditSuppliersForm";
-import EditCustomersForm from "../components/Forms/EditCustomersForm";
-import AddCustomerGroupForm from "../components/Forms/AddCustomerGroupForm";
-import CustomerGroupInfoTable from "../components/Tables/CustomerGroupInfoTable";
-import EditCustomerGroupForm from "../components/Forms/EditCustomerGroupForm";
-import AddPurchaseGroupForm from "../components/Forms/AddPurchaseGroupForm";
-import PurchaseGroupInfoTable from "../components/Tables/PurchaseGroupInfoTable";
-import EditPurchaseGroupForm from "../components/Forms/EditPurchaseGroupForm";
+import AddProductsForm from "../components/Forms/employeeForms/AddProductsForm";
+import ProductsInfoTable from "../components/Tables/employeeTables/ProductsInfoTable";
+import AddCustomersForm from "../components/Forms/employeeForms/AddCustomersForm";
+import SuppliersInfoTable from "../components/Tables/employeeTables/SuppliersInfoTable";
+import AddSuppliersForm from "../components/Forms/employeeForms/AddSuppliersForm";
+import CustomersInfoTable from "../components/Tables/employeeTables/CustomersInfoTable";
+import EditProductsForm from "../components/Forms/employeeForms/EditProductsForm";
+import EditSuppliersForm from "../components/Forms/employeeForms/EditSuppliersForm";
+import EditCustomersForm from "../components/Forms/employeeForms/EditCustomersForm";
+import AddCustomerGroupForm from "../components/Forms/employeeForms/AddCustomerGroupForm";
+import CustomerGroupInfoTable from "../components/Tables/employeeTables/CustomerGroupInfoTable";
+import EditCustomerGroupForm from "../components/Forms/employeeForms/EditCustomerGroupForm";
+import AddPurchaseGroupForm from "../components/Forms/employeeForms/AddPurchaseGroupForm";
+import PurchaseGroupInfoTable from "../components/Tables/employeeTables/PurchasegroupInfoTable";
+import EditPurchaseGroupForm from "../components/Forms/employeeForms/EditPurchaseGroupForm";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 
