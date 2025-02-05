@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
@@ -10,9 +11,6 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     address: '',
     email: '',
     dateOfConnected: '',
-    batchName: '',
-    time: '',
-    age: '',
   });
 
   const navigate = useNavigate();
@@ -35,10 +33,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     if (
       !formData.customerName ||
       !formData.customerId ||
-      !formData.contactNumber ||
-      !formData.batchName ||
-      !formData.time ||
-      !formData.age
+      !formData.contactNumber
     ) {
       setErrorMessage('Please fill out all required fields.');
       return;
@@ -61,9 +56,6 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         address: '',
         email: '',
         dateOfConnected: '',
-        batchName: '',
-        time: '',
-        age: '',
       });
       setSuccessMessage('');
     }, 2000);
@@ -91,8 +83,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         </p>
       )}
 
-      {/* Customer Name Field */}
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='customerName'
           className='text-[16px] text-gray-800 w-2/3'
@@ -105,12 +96,11 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           name='customerName'
           value={formData.customerName}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
 
-      {/* Customer ID Field */}
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='customerId' className='text-[16px] text-gray-800 w-2/3'>
           Customer ID:
         </label>
@@ -120,12 +110,11 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           name='customerId'
           value={formData.customerId}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
 
-      {/* Contact Number Field */}
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='contactNumber'
           className='text-[16px] text-gray-800 w-2/3'
@@ -138,12 +127,11 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           name='contactNumber'
           value={formData.contactNumber}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
 
-      {/* Address Field */}
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='address' className='text-[16px] text-gray-800 w-2/3'>
           Address:
         </label>
@@ -153,12 +141,11 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           name='address'
           value={formData.address}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
 
-      {/* Email Field */}
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='email' className='text-[16px] text-gray-800 w-2/3'>
           Email:
         </label>
@@ -168,12 +155,11 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           name='email'
           value={formData.email}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
 
-      {/* Date of Connected Field */}
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='dateOfConnected'
           className='text-[16px] text-gray-800 w-2/3'
@@ -186,52 +172,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           name='dateOfConnected'
           value={formData.dateOfConnected}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm text-gray-800'
-        />
-      </div>
-
-      {/* Batch Name Field */}
-      <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='batchName' className='text-[16px] text-gray-800 w-2/3'>
-          Batch Name:
-        </label>
-        <input
-          type='text'
-          id='batchName'
-          name='batchName'
-          value={formData.batchName}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
-        />
-      </div>
-
-      {/* Time Field */}
-      <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='time' className='text-[16px] text-gray-800 w-2/3'>
-          Time:
-        </label>
-        <input
-          type='text'
-          id='time'
-          name='time'
-          value={formData.time}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
-        />
-      </div>
-
-      {/* Age Field */}
-      <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='age' className='text-[16px] text-gray-800 w-2/3'>
-          Age:
-        </label>
-        <input
-          type='number'
-          id='age'
-          name='age'
-          value={formData.age}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md'
         />
       </div>
 
