@@ -6,8 +6,9 @@ import { ThemeProvider } from "./ThemeContext";
 
 
 //import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+//import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
+//import SalesRepDashboard from "./pages/SalesRepDashboard/SalesRepDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
-
 function App() {
   return (
     <ThemeProvider>
@@ -15,7 +16,10 @@ function App() {
         
         
        
+        
         <EmployeeDashboard />
+        
+
 
       
       
