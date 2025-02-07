@@ -33,7 +33,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierDTO getSupplierById(int id) {
+    public SupplierDTO getSupplierById(Long id) {
         Optional<Supplier> supplier = supplierRepo.findById(id);
             return supplier.map(supplierMapper::toDTO)
                     .orElseThrow(() -> new NotFoundException("Supplier not found"));
@@ -47,7 +47,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierDTO updateSupplier(int id, SupplierDTO supplierDTO) {
+    public SupplierDTO updateSupplier(Long id, SupplierDTO supplierDTO) {
         Optional<Supplier> supplier = supplierRepo.findById(id);
         if (supplier.isPresent()) {
             Supplier updatedSupplier = supplierMapper.toEntity(supplierDTO);

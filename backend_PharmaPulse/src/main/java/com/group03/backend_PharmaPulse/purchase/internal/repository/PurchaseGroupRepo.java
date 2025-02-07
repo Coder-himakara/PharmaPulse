@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @EnableJpaRepositories
-public interface PurchaseGroupRepo extends JpaRepository<PurchaseGroup,Integer> {
+public interface PurchaseGroupRepo extends JpaRepository<PurchaseGroup,Long> {
 
 }

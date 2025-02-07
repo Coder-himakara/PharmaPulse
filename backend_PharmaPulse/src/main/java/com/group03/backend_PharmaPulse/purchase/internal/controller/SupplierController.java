@@ -29,7 +29,7 @@ public class SupplierController {
     }
     // This method is used to retrieve a supplier by its id
     @GetMapping("/{id}")
-    public ResponseEntity<StandardResponse> getSuppliersById(@PathVariable int id) {
+    public ResponseEntity<StandardResponse> getSuppliersById(@PathVariable Long id) {
         SupplierDTO selectedSupplier = supplierService.getSupplierById(id);
         return new ResponseEntity<>(
                 new StandardResponse(201,"Success",selectedSupplier),
@@ -47,7 +47,7 @@ public class SupplierController {
         );
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse> updateSuppliers(@Valid @PathVariable int id,
+    public ResponseEntity<StandardResponse> updateSuppliers(@Valid @PathVariable Long id,
                                                                  @RequestBody SupplierDTO supplierDTO) {
         SupplierDTO updatedSupplier=supplierService.updateSupplier(id,supplierDTO);
         return new ResponseEntity<>(

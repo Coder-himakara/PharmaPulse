@@ -28,7 +28,7 @@ public class PurchaseGroupController {
     }
     // This method is used to retrieve a purchase group by its id
     @GetMapping("/{id}")
-    public ResponseEntity<StandardResponse> getPurchaseGroupsById(@PathVariable int id) {
+    public ResponseEntity<StandardResponse> getPurchaseGroupsById(@PathVariable Long id) {
         PurchaseGroupDTO selectedPurchaseGroup = purchaseGroupService.getPurchaseGroupById(id);
         return new ResponseEntity<>(
                 new StandardResponse(201,"Success",selectedPurchaseGroup),
@@ -47,7 +47,7 @@ public class PurchaseGroupController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse> updatePurchaseGroups(@Valid @PathVariable int id,
+    public ResponseEntity<StandardResponse> updatePurchaseGroups(@Valid @PathVariable Long id,
                                                                 @RequestBody PurchaseGroupDTO purchaseGroupDTO) {
         PurchaseGroupDTO updatedPurchaseGroup=purchaseGroupService.updatePurchaseGroup(id,purchaseGroupDTO);
         return new ResponseEntity<>(
