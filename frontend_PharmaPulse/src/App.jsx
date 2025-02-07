@@ -7,17 +7,17 @@ import { ThemeProvider } from "./ThemeContext";
 
 
 
-//import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 //import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
 //import SalesRepDashboard from "./pages/SalesRepDashboard/SalesRepDashboard";
-import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
+//import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
 function App() {
   return (
     <ThemeProvider>
       <Router>
-
+      <AdminDashboard />
    
-       <EmployeeDashboard />
+       {/*<EmployeeDashboard />*/}
     
     </Router>
     </ThemeProvider>

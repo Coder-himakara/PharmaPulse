@@ -1,9 +1,11 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 const UsersInfoTable = ({ users }) => {
   const [search, setSearch] = useState('');
+  const [sortKey, setSortKey] = useState('dateOfJoined');
   const [sortDirection, setSortDirection] = useState('asc');
   const navigate = useNavigate();
 
@@ -11,16 +13,15 @@ const UsersInfoTable = ({ users }) => {
     user.username.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const sortedUsers = filteredUsers.sort((a, b) => {
-    const dateA = new Date(a.dateOfJoined);
-    const dateB = new Date(b.dateOfJoined);
+  const sortedUsers = [...filteredUsers].sort((a, b) => {
+    const dateA = new Date(a[sortKey]);
+    const dateB = new Date(b[sortKey]);
     return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
-  const toggleSort = () => {
-    setSortDirection((prevDirection) =>
-      prevDirection === 'asc' ? 'desc' : 'asc',
-    );
+  const toggleSort = (key) => {
+    setSortKey(key);
+    setSortDirection((prevDirection) => (sortKey === key && prevDirection === 'asc' ? 'desc' : 'asc'));
   };
 
   const handleClose = () => {
@@ -39,7 +40,7 @@ const UsersInfoTable = ({ users }) => {
   return (
     <div className='bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative'>
       <div className='bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg relative'>
-        <h1 className='m-1 p-1 text-2xl'>Users Management</h1>
+        <h1 className='p-1 m-1 text-2xl'>Users Management</h1>
         <button
           className='absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1]'
           onClick={handleClose}
@@ -48,7 +49,7 @@ const UsersInfoTable = ({ users }) => {
         </button>
       </div>
 
-      <div className='m-2 p-2 flex justify-between items-center'>
+      <div className='flex items-center justify-between p-2 m-2'>
         <h2 className='text-2xl font-bold text-[#1a5353]'>Users</h2>
         <input
           type='text'
@@ -65,7 +66,7 @@ const UsersInfoTable = ({ users }) => {
         </div>
       )}
 
-      <div className='m-2 p-2'>
+      <div className='p-2 m-2'>
         <table className='w-full border-collapse'>
           <thead>
             <tr>
@@ -83,9 +84,18 @@ const UsersInfoTable = ({ users }) => {
               </th>
               <th
                 className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer'
-                onClick={toggleSort}
+                onClick={() => toggleSort('dateOfJoined')}
               >
-                Date of Joined {sortDirection === 'asc' ? '🔼' : '🔽'}
+                Date of Joined {sortKey === 'dateOfJoined' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+              </th>
+              <th
+                className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer'
+                onClick={() => toggleSort('lastLoginDate')}
+              >
+                Last Login Date {sortKey === 'lastLoginDate' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
+              </th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Status
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Action
@@ -109,6 +119,12 @@ const UsersInfoTable = ({ users }) => {
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {user.dateOfJoined}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {user.lastLoginDate}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {user.status}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
@@ -145,7 +161,9 @@ UsersInfoTable.propTypes = {
       userId: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
       role: PropTypes.string.isRequired,
-      dateOfJoined: PropTypes.string.isRequired, // Added missing prop validation
+      dateOfJoined: PropTypes.string.isRequired,
+      lastLoginDate: PropTypes.string.isRequired,
+      status:PropTypes.string.isRequired,
     }),
   ).isRequired,
 };

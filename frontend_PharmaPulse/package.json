@@ -21,11 +21,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
-
-    "@mui/material": "^6.4.1",
-
     "@hookform/resolvers": "^3.10.0",
-
+    "@mui/material": "^6.4.1",
     "font-awesome": "^4.7.0",
     "frontend-pharmapulse": "file:",
     "prop-types": "^15.8.1",
