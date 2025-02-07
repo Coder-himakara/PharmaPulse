@@ -37,8 +37,8 @@ public class SupplierDTO {
 
     private BigDecimal credit_limit;
 
-    private Date credit_period;
+    private Integer credit_period;
 
     @NotNull(message = "Please select a purchase group")
-    private int purchase_group;
+    private Long purchase_group;
 }

@@ -16,7 +16,7 @@ public class PurchaseGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "purchase_group_id",length = 50)
-    private int purchaseGroupId;
+    private Long purchaseGroupId;
 
     private String purchaseGroupName;
 

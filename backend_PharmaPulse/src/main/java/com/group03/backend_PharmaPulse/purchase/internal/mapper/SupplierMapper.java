@@ -26,7 +26,7 @@ public interface SupplierMapper {
 
     // Custom method to map int to PurchaseGroup
     @Named("mapPurchaseGroup")
-    default PurchaseGroup mapPurchaseGroup(int purchaseGroupId) {
+    default PurchaseGroup mapPurchaseGroup(Long purchaseGroupId) {
         PurchaseGroup purchaseGroup = new PurchaseGroup();
         purchaseGroup.setPurchaseGroupId(purchaseGroupId);
         return purchaseGroup;

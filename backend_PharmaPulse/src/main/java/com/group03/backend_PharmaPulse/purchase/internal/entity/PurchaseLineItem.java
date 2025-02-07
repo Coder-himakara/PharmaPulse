@@ -1,6 +1,5 @@
 package com.group03.backend_PharmaPulse.purchase.internal.entity;
 
-
 import com.group03.backend_PharmaPulse.shared.entity.LineItem;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,5 +22,5 @@ public class PurchaseLineItem extends LineItem {
     private LocalDate manufactureDate;
     private LocalDate  expiryDate;
     private BigDecimal unitPrice; //check and rename.Retail price of the product
-    private Integer purchaseInvoice;
+    private Long purchaseInvoice;
 }
