@@ -45,6 +45,9 @@ jobs:
                 cd ./backend_PharmaPulse
                 ./mvnw dependency:resolve
 
+            - name: Start Docker
+              run: sudo systemctl start docker
+
             # Step 6: Build the backend with Maven
             - name: Build backend with Maven
               run: |

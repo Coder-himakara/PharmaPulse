@@ -3,6 +3,7 @@ package com.group03.backend_PharmaPulse.purchase.internal.entity;
 import com.group03.backend_PharmaPulse.shared.InvoiceReference;
 import com.group03.backend_PharmaPulse.shared.entity.Invoice;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
