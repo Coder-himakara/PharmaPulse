@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Table(name = "batch_inventory")
 public class BatchInventory {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "batch_id_seq")
     private Long batchId;
 
     private String productId;

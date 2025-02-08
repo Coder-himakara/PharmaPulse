@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 public abstract class Invoice {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invoice_id_seq")
     private Long invoiceId;
 
     @Enumerated(EnumType.STRING)
