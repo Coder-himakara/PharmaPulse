@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 public abstract class LineItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "line_item_id_seq")
     private Long lineItemId;
 
     private String productId;

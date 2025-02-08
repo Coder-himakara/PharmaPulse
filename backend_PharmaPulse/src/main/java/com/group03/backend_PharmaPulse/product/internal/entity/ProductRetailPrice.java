@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Table(name = "product_retailPrice")
 public class ProductRetailPrice {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "retail_price_id_seq")
     private Long priceId;
 
     @ManyToOne(fetch = FetchType.LAZY)
