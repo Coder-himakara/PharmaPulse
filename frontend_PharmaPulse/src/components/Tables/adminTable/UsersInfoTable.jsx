@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 const UsersInfoTable = ({ users }) => {
   const [search, setSearch] = useState('');
-  const [sortKey, setSortKey] = useState('dateOfJoined');
-  const [sortDirection, setSortDirection] = useState('asc');
+  const [sortKey] = useState('dateOfJoined');
+  const [sortDirection] = useState('asc');
   const navigate = useNavigate();
 
   const filteredUsers = users.filter((user) =>
@@ -19,10 +19,7 @@ const UsersInfoTable = ({ users }) => {
     return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
-  const toggleSort = (key) => {
-    setSortKey(key);
-    setSortDirection((prevDirection) => (sortKey === key && prevDirection === 'asc' ? 'desc' : 'asc'));
-  };
+
 
   const handleClose = () => {
     navigate('/home');
@@ -82,21 +79,6 @@ const UsersInfoTable = ({ users }) => {
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Role
               </th>
-              <th
-                className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer'
-                onClick={() => toggleSort('dateOfJoined')}
-              >
-                Date of Joined {sortKey === 'dateOfJoined' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
-              </th>
-              <th
-                className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer'
-                onClick={() => toggleSort('lastLoginDate')}
-              >
-                Last Login Date {sortKey === 'lastLoginDate' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}
-              </th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Status
-              </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Action
               </th>
@@ -117,15 +99,7 @@ const UsersInfoTable = ({ users }) => {
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {user.role}
                 </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {user.dateOfJoined}
-                </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {user.lastLoginDate}
-                </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {user.status}
-                </td>
+               
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
                     className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
@@ -139,12 +113,7 @@ const UsersInfoTable = ({ users }) => {
                   >
                     View
                   </button>
-                  <button
-                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]'
-                    onClick={() => console.log('Delete user', user.userId)}
-                  >
-                    Delete
-                  </button>
+                 
                 </td>
               </tr>
             ))}
@@ -161,9 +130,6 @@ UsersInfoTable.propTypes = {
       userId: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
       role: PropTypes.string.isRequired,
-      dateOfJoined: PropTypes.string.isRequired,
-      lastLoginDate: PropTypes.string.isRequired,
-      status:PropTypes.string.isRequired,
     }),
   ).isRequired,
 };

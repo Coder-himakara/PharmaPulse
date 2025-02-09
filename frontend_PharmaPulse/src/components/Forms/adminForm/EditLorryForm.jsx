@@ -82,10 +82,10 @@ const EditLorryForm = ({ onUpdateLorry }) => {
       </h2>
 
       {errorMessage && (
-        <p className='text-red-600 text-sm font-bold mb-4'>{errorMessage}</p>
+        <p className='mb-4 text-sm font-bold text-red-600'>{errorMessage}</p>
       )}
       {successMessage && (
-        <p className='text-green-600 text-sm font-bold mb-4'>
+        <p className='mb-4 text-sm font-bold text-green-600'>
           {successMessage}
         </p>
       )}
@@ -97,7 +97,7 @@ const EditLorryForm = ({ onUpdateLorry }) => {
         ['Capacity(t)', 'capacity', 'number'],
         ['Date of Added', 'dateOfAdded', 'date'],
       ].map(([label, name, type]) => (
-        <div key={name} className='flex justify-between items-center mb-4'>
+        <div key={name} className='flex items-center justify-between mb-4'>
           <label htmlFor={name} className='text-[16px] text-gray-800 w-2/3'>
             {label}:
           </label>
@@ -107,12 +107,12 @@ const EditLorryForm = ({ onUpdateLorry }) => {
             name={name}
             value={formData[name]}
             onChange={handleChange}
-            className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
           />
         </div>
       ))}
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='status' className='text-[16px] text-gray-800 w-2/3'>
           Status:
         </label>
@@ -121,7 +121,7 @@ const EditLorryForm = ({ onUpdateLorry }) => {
           name='status'
           value={formData.status}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         >
           <option value=''>Choose a status</option>
           <option value='Active'>Active</option>
