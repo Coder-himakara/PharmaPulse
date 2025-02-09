@@ -24,7 +24,7 @@ public class BatchInventory {
 
     private String productId;
 
-    private Integer purchaseInvoiceNo;
+    private Long purchaseInvoiceNo;
 
     @Transient
     private InvoiceReference purchaseInvoice;

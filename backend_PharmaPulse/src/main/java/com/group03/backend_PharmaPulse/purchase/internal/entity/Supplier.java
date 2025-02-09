@@ -20,7 +20,7 @@ public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "supplier_id",length = 50)
-    private int supplier_id;
+    private Long supplier_id;
 
     private String supplier_name;
 
@@ -34,11 +34,10 @@ public class Supplier {
 
     private BigDecimal credit_limit;
 
-    private Date credit_period;// we want to store the credit period in days.Check!!!
+    private Integer credit_period;// we want to store the credit period in days.Check!!!
 
     @ManyToOne
     @JoinColumn(name="purchase_group_id", nullable=false)
     private PurchaseGroup purchase_group;
-
 
 }

@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface PurchaseGroupService {
      List<PurchaseGroupDTO> getAllPurchaseGroups();
-     PurchaseGroupDTO getPurchaseGroupById(int id);
+     PurchaseGroupDTO getPurchaseGroupById(Long id);
 
      PurchaseGroupDTO addPurchaseGroup(PurchaseGroupDTO purchaseGroupDTO);
 
-     PurchaseGroupDTO updatePurchaseGroup(int id,PurchaseGroupDTO purchaseGroupDTO);
+     PurchaseGroupDTO updatePurchaseGroup(Long id,PurchaseGroupDTO purchaseGroupDTO);
 }

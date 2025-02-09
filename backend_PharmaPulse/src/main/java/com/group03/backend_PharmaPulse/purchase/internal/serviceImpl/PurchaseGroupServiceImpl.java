@@ -1,6 +1,6 @@
 package com.group03.backend_PharmaPulse.purchase.internal.serviceImpl;
 
-import com.group03.backend_PharmaPulse.exception.NotFoundException;
+import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseGroupDTO;
 import com.group03.backend_PharmaPulse.purchase.internal.entity.PurchaseGroup;
 import com.group03.backend_PharmaPulse.purchase.internal.mapper.PurchaseGroupMapper;
@@ -34,7 +34,7 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
     }
 
     @Override
-    public PurchaseGroupDTO getPurchaseGroupById(int id) {
+    public PurchaseGroupDTO getPurchaseGroupById(Long id) {
         Optional<PurchaseGroup> purchaseGroup= purchaseGroupRepo.findById(id);
         return purchaseGroup.map(purchaseGroupMapper::toDTO)
                 .orElseThrow(() -> new NotFoundException("PurchaseGroup not found"));
@@ -47,7 +47,7 @@ public class PurchaseGroupServiceImpl implements PurchaseGroupService {
     }
 
     @Override
-    public PurchaseGroupDTO updatePurchaseGroup(int id, PurchaseGroupDTO purchaseGroupDTO) {
+    public PurchaseGroupDTO updatePurchaseGroup(Long id, PurchaseGroupDTO purchaseGroupDTO) {
         Optional<PurchaseGroup> purchaseGroup = purchaseGroupRepo.findById(id);
         if (purchaseGroup.isPresent()) {
             PurchaseGroup updatedPurchaseGroup = purchaseGroupMapper.toEntity(purchaseGroupDTO);

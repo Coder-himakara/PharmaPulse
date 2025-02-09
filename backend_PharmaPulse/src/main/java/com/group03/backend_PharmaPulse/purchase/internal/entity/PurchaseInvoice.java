@@ -3,6 +3,7 @@ package com.group03.backend_PharmaPulse.purchase.internal.entity;
 import com.group03.backend_PharmaPulse.shared.InvoiceReference;
 import com.group03.backend_PharmaPulse.shared.entity.Invoice;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -21,10 +22,10 @@ import java.util.List;
 public class PurchaseInvoice extends Invoice implements InvoiceReference {
 
     @Column(nullable = false)
-    private Integer purchaseNo;
+    private Long purchaseNo;
 
     @Column(nullable = false)
-    private String supplierId;
+    private Long supplierId;
 
     private String purchaseOrderRef;
 

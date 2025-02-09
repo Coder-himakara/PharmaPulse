@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class BatchInventoryDTO {
     //private Long batchId;
     private String productId;
-    private Integer purchaseInvoiceNo;
+    private Long purchaseInvoiceNo;
     private LocalDate manufactureDate;
     private LocalDate expiryDate;
     private Integer purchasedUnitQuantity;

@@ -2,7 +2,7 @@ package com.group03.backend_PharmaPulse.purchase.internal.controller;
 
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseInvoiceDTO;
 import com.group03.backend_PharmaPulse.purchase.api.PurchaseInvoiceService;
-import com.group03.backend_PharmaPulse.util.StandardResponse;
+import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
