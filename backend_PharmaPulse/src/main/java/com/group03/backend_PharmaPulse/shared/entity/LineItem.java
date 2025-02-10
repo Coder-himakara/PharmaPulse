@@ -11,11 +11,12 @@ import java.math.BigDecimal;
 @Data
 public abstract class LineItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "line_item_id_seq")
     private Long lineItemId;
 
     private String productId;
     private Integer quantityByPackage;
+    private Integer freeQuantity;
     private Integer conversionFactor;  // how many units in a package
     private BigDecimal discountAmount;
 

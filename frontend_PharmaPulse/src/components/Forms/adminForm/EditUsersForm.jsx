@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -7,17 +8,19 @@ const EditUsersForm = ({ onUpdateUser }) => {
   const user = state?.user;
 
   const [formData, setFormData] = useState({
+    userId: '',
     username: '',
     nicNumber: '',
     email: '',
     contactNumber: '',
     address: '',
+    role: '',
     password: '',
     confirmPassword: '',
-    role: '',
-    profilePicture: null,
-    userId: '',
     dateOfJoined: '',
+    lastLoginDate: '',
+    profilePicture: null,
+    status: '',
   });
 
   const navigate = useNavigate();
@@ -27,17 +30,19 @@ const EditUsersForm = ({ onUpdateUser }) => {
   useEffect(() => {
     if (user) {
       setFormData({
+        userId: user.userId,
         username: user.username,
         nicNumber: user.nicNumber,
         email: user.email,
         contactNumber: user.contactNumber,
         address: user.address,
+        role: user.role,
         password: '',
         confirmPassword: '',
-        role: user.role,
-        profilePicture: user.profilePicture,
-        userId: user.userId,
         dateOfJoined: user.dateOfJoined,
+        lastLoginDate: user.lastLoginDate,
+        profilePicture: user.profilePicture,
+        status: user.status,
       });
     }
   }, [user]);
@@ -63,6 +68,10 @@ const EditUsersForm = ({ onUpdateUser }) => {
     if (!formData.email || !formData.contactNumber || !formData.role) {
       setErrorMessage('Please fill out all required fields.');
       return;
+    }
+    if (!/^0[0-9]{9}$/.test(formData.contactNumber)) {
+      setErrorMessage('Contact number must start with 0 and contain exactly 10 digits.');
+      return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -100,79 +109,70 @@ const EditUsersForm = ({ onUpdateUser }) => {
         <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>
       )}
       {successMessage && (
-        <p className='text-[#3c5f3c] text-sm font-bold mb-4'>
-          {successMessage}
-        </p>
+        <p className='text-[#3c5f3c] text-sm font-bold mb-4'>{successMessage}</p>
       )}
 
-      <div className='mb-4'>
-        <label className='text-[16px] text-gray-800'>Username:</label>
-        <input
-          type='text'
-          name='username'
-          value={formData.username}
-          onChange={handleChange}
-          className='w-full px-2 py-2 border border-gray-300 rounded-md text-sm'
-        />
-      </div>
-
-      <div className='mb-4'>
-        <label className='text-[16px] text-gray-800'>Email:</label>
-        <input
-          type='email'
-          name='email'
-          value={formData.email}
-          onChange={handleChange}
-          className='w-full px-2 py-2 border border-gray-300 rounded-md text-sm'
-        />
-      </div>
-
-      <div className='mb-4'>
-        <label className='text-[16px] text-gray-800'>Password:</label>
-        <input
-          type='password'
-          name='password'
-          value={formData.password}
-          onChange={handleChange}
-          className='w-full px-2 py-2 border border-gray-300 rounded-md text-sm'
-        />
-      </div>
-
-      <div className='mb-4'>
-        <label className='text-[16px] text-gray-800'>Confirm Password:</label>
-        <input
-          type='password'
-          name='confirmPassword'
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          className='w-full px-2 py-2 border border-gray-300 rounded-md text-sm'
-        />
-      </div>
-
-      <div className='mb-4'>
-        <label className='text-[16px] text-gray-800'>Role:</label>
+      {[
+        { label: 'Username', name: 'username', type: 'text' },
+        { label: 'Email', name: 'email', type: 'email' },
+        { label: 'Contact Number', name: 'contactNumber', type: 'text' },
+        { label: 'Address', name: 'address', type: 'text' },
+        { label: 'Password', name: 'password', type: 'password' },
+        { label: 'Confirm Password', name: 'confirmPassword', type: 'password' },
+        { label: 'Status', name: 'status', type: 'status' },
+      ].map(({ label, name, type }) => (
+        <div key={name} className='flex items-center gap-4 mb-4'>
+          <label className='text-[16px] text-gray-800 w-1/3'>{label}:</label>
+          <input
+            type={type}
+            name={name}
+            value={formData[name]}
+            onChange={handleChange}
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          />
+        </div>
+      ))}
+       <div className='flex items-center gap-4 mb-4'>
+        <label htmlFor='role' className='text-[16px] text-gray-800 w-1/3'>Role:</label>
         <select
+          id='role'
           name='role'
           value={formData.role}
           onChange={handleChange}
-          className='w-full px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         >
           <option value=''>Choose a role</option>
           <option value='Employee'>Employee</option>
           <option value='Sales Representative'>Sales Representative</option>
         </select>
       </div>
-
-      <div className='mb-4'>
-        <label className='text-[16px] text-gray-800'>Profile Picture:</label>
+      <div className='flex items-center gap-4 mb-4'>
+        <label className='text-[16px] text-gray-800 w-1/3'>Profile Picture:</label>
         <input
           type='file'
           name='profilePicture'
           onChange={handleFileChange}
-          className='w-full px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
-
+      <div className='flex items-center gap-4 mb-4'>
+        <label className='text-[16px] text-gray-800 w-1/3'>
+          Status:
+        </label>
+        <select
+          id='status'
+          name='status'
+          value={formData.status}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        >
+          <option value=''>Choose a status</option>
+          <option value='Active'>Active</option>
+          <option value='Inactive'>Inactive</option>
+          <option value='Locked'>Locked</option>
+          <option value='Suspended'>Suspended</option>
+        </select>
+      </div>
       <div className='flex justify-center gap-2 mt-5'>
         <button
           type='submit'
