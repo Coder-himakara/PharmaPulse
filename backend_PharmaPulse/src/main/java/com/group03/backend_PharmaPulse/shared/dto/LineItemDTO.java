@@ -10,6 +10,7 @@ public abstract class LineItemDTO {
     //private Long lineItemId;
     private String productId;
     private Integer quantityByPackage;
+    private Integer freeQuantity;
     private Integer conversionFactor;  // how many units in a package
     private BigDecimal discountAmount;
 }
