@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const LorryInfoTable = ({ lorries }) => {
   const [search, setSearch] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc');
+  const [sortDirection] = useState('asc');
   const navigate = useNavigate();
 
   const filteredLorries = lorries.filter((lorry) =>
@@ -17,12 +17,7 @@ const LorryInfoTable = ({ lorries }) => {
     return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
-  const toggleSort = () => {
-    setSortDirection((prevDirection) =>
-      prevDirection === 'asc' ? 'desc' : 'asc',
-    );
-  };
-
+  
   const handleClose = () => {
     navigate('/home');
   };
@@ -39,7 +34,7 @@ const LorryInfoTable = ({ lorries }) => {
   return (
     <div className='bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative'>
       <div className='bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg relative'>
-        <h1 className='m-1 p-1 text-2xl'>Lorry Management</h1>
+        <h1 className='p-1 m-1 text-2xl'>Lorry Management</h1>
         <button
           className='absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1]'
           onClick={handleClose}
@@ -48,7 +43,7 @@ const LorryInfoTable = ({ lorries }) => {
         </button>
       </div>
 
-      <div className='m-2 p-2 flex justify-between items-center'>
+      <div className='flex items-center justify-between p-2 m-2'>
         <h2 className='text-2xl font-bold text-[#1a5353]'>Lorries</h2>
         <input
           type='text'
@@ -65,7 +60,7 @@ const LorryInfoTable = ({ lorries }) => {
         </div>
       )}
 
-      <div className='m-2 p-2'>
+      <div className='p-2 m-2'>
         <table className='w-full border-collapse'>
           <thead>
             <tr>
@@ -80,18 +75,6 @@ const LorryInfoTable = ({ lorries }) => {
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Rep ID
-              </th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Capacity (t)
-              </th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Status
-              </th>
-              <th
-                className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer'
-                onClick={toggleSort}
-              >
-                Date of Added {sortDirection === 'asc' ? '🔼' : '🔽'}
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Action
@@ -114,15 +97,6 @@ const LorryInfoTable = ({ lorries }) => {
                   {lorry.representativeId}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {lorry.capacity}
-                </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {lorry.status}
-                </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {lorry.dateOfAdded}
-                </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
                     className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
                     onClick={() => handleEdit(lorry.lorryId)}
@@ -134,12 +108,6 @@ const LorryInfoTable = ({ lorries }) => {
                     onClick={() => handleViewLorry(lorry)}
                   >
                     View
-                  </button>
-                  <button
-                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]'
-                    onClick={() => console.log('Delete lorry', lorry.lorryId)}
-                  >
-                    Delete
                   </button>
                 </td>
               </tr>
@@ -157,9 +125,6 @@ LorryInfoTable.propTypes = {
       lorryId: PropTypes.string.isRequired,
       numberPlate: PropTypes.string.isRequired,
       representativeId: PropTypes.string.isRequired,
-      capacity: PropTypes.number.isRequired,
-      status: PropTypes.string.isRequired,
-      dateOfAdded: PropTypes.string.isRequired,
     }),
   ).isRequired,
 };
