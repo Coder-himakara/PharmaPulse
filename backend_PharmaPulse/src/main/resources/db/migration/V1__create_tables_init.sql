@@ -79,6 +79,7 @@ CREATE TABLE purchase_line_item
     line_item_id        BIGINT NOT NULL,
     product_id          VARCHAR(255),
     quantity_by_package INTEGER,
+    free_quantity       INTEGER,
     conversion_factor   INTEGER,
     discount_amount     DECIMAL,
     cost_per_unit       DECIMAL,
