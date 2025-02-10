@@ -1,6 +1,5 @@
-package com.group03.backend_PharmaPulse.customer.api.dto;
-
-import com.group03.backend_PharmaPulse.customer.internal.entity.Customer;
+package com.group03.backend_PharmaPulse.sales.api.dto;
+import com.group03.backend_PharmaPulse.sales.api.enumeration.CustomerStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 
@@ -18,20 +17,15 @@ public class CustomerDTO {
     private Integer customerPhoneNo;
     private String customerGroup;
 
-    @Enumerated(EnumType.STRING)
-    private Customer.CustomerStatus status;
-
     private LocalDate registeredDate;
 
     private Double creditLimit;
     private Integer creditPeriodInDays; // Changed for consistency with days as integer
     private Double outstandingBalance;
 
-    // Enum for CustomerStatus
-    public enum CustomerStatus {
-        ACTIVE,
-        INACTIVE,
-        SUSPENDED
-    }
+    @Enumerated(EnumType.STRING)
+    private CustomerStatus customerStatus;
+
+
 
 }

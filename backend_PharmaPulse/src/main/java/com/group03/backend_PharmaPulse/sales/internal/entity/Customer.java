@@ -1,5 +1,6 @@
-package com.group03.backend_PharmaPulse.customer.internal.entity;
+package com.group03.backend_PharmaPulse.sales.internal.entity;
 
+import com.group03.backend_PharmaPulse.sales.api.enumeration.CustomerStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,21 +30,14 @@ public class Customer {
     private Integer customerPhoneNo;
     private String customerGroup;
 
-    @Enumerated(EnumType.STRING)
-    private CustomerStatus status;
-
     private LocalDate registeredDate;
 
     private Double creditLimit;
     private Integer creditPeriodInDays; // Changed for consistency with days as integer
     private Double outstandingBalance;
 
-    // Enum for CustomerStatus
-    public enum CustomerStatus {
-        ACTIVE,
-        INACTIVE,
-        SUSPENDED
-    }
+    @Enumerated(EnumType.STRING)
+    private CustomerStatus customerStatus;
 
 
 }
