@@ -9,7 +9,7 @@ import ViewUserDetails from '../components/Tables/adminTable/ViewUserDetails';
 import AddLorryForm from '../components/Forms/adminForm/AddLorryForm';
 import LorryInfoTable from '../components/Tables/adminTable/LorryInfoTable';
 import EditLorryForm from '../components/Forms/adminForm/EditLorryForm';
-
+import ViewLorryDetails from '../components/Tables/adminTable/ViewLorryDetails';
 const AdminRoutes = () => {
   const [users, setUsers] = useState([]);
   const [lorry, setLorry] = useState([]);
@@ -56,6 +56,8 @@ const AdminRoutes = () => {
         path='/edit-lorry/:lorryId'
         element={<EditLorryForm onUpdateLorry={updatelorry} />}
       />
+      <Route path='/view-lorry/:lorryId' element={<ViewLorryDetails />} />
+
       <Route path='/home' element={<AdminSidebar role='admin' />} />
       <Route path='/dashboard' element={<AdminSidebar role='admin' />} />
     </Routes>

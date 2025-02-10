@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
@@ -10,11 +11,12 @@ const AddUsersForm = ({ onAddUser }) => {
     email: '',
     contactNumber: '',
     address: '',
-    dateOfJoined: '',
     password: '',
     confirmPassword: '',
-    role: '',
+    dateOfJoined: '',
+    lastLoginDate:'',
     profilePicture: null,
+    status:'',
   });
 
   const navigate = useNavigate();
@@ -45,12 +47,21 @@ const AddUsersForm = ({ onAddUser }) => {
       !formData.nicNumber ||
       !formData.email ||
       !formData.contactNumber ||
+      !formData.role ||
       !formData.password ||
       !formData.confirmPassword ||
-      !formData.role
+      !formData.dateOfJoined ||
+      !formData.lastLoginDate ||
+      !formData.status
+     
     ) {
       setErrorMessage('Please fill out all required fields.');
       return;
+    }
+    
+    if (!/^0[0-9]{9}$/.test(formData.contactNumber)) {
+      setErrorMessage('Contact number must start with 0 and contain exactly 10 digits.');
+      return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -72,11 +83,13 @@ const AddUsersForm = ({ onAddUser }) => {
         email: '',
         contactNumber: '',
         address: '',
-        dateOfJoined: '',
+        role: '',
         password: '',
         confirmPassword: '',
-        role: '',
+        dateOfJoined: '',
+        lastLoginDate:'',
         profilePicture: null,
+        status:'',
       });
       setSuccessMessage('');
     }, 2000);
@@ -96,10 +109,10 @@ const AddUsersForm = ({ onAddUser }) => {
       </h2>
 
       {errorMessage && (
-        <p className='text-red-600 text-sm font-bold mb-4'>{errorMessage}</p>
+        <p className='mb-4 text-sm font-bold text-red-600'>{errorMessage}</p>
       )}
       {successMessage && (
-        <p className='text-green-600 text-sm font-bold mb-4'>
+        <p className='mb-4 text-sm font-bold text-green-600'>
           {successMessage}
         </p>
       )}
@@ -111,11 +124,13 @@ const AddUsersForm = ({ onAddUser }) => {
         ['Email', 'email', 'email'],
         ['Contact Number', 'contactNumber', 'text'],
         ['Address', 'address', 'text'],
-        ['Date of Joined', 'dateOfJoined', 'date'],
         ['Password', 'password', 'password'],
         ['Confirm Password', 'confirmPassword', 'password'],
+        ['Date of Joined', 'dateOfJoined', 'date'],
+        ['Last Login Date', 'lastLoginDate', 'date'],
+       
       ].map(([label, name, type]) => (
-        <div key={name} className='flex justify-between items-center mb-4'>
+        <div key={name} className='flex items-center justify-between mb-4'>
           <label htmlFor={name} className='text-[16px] text-gray-800 w-2/3'>
             {label}:
           </label>
@@ -125,12 +140,12 @@ const AddUsersForm = ({ onAddUser }) => {
             name={name}
             value={formData[name]}
             onChange={handleChange}
-            className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
           />
         </div>
       ))}
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='role' className='text-[16px] text-gray-800 w-2/3'>
           Role:
         </label>
@@ -139,7 +154,7 @@ const AddUsersForm = ({ onAddUser }) => {
           name='role'
           value={formData.role}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         >
           <option value=''>Choose a role</option>
           <option value='Employee'>Employee</option>
@@ -147,7 +162,7 @@ const AddUsersForm = ({ onAddUser }) => {
         </select>
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='profilePicture'
           className='text-[16px] text-gray-800 w-2/3'
@@ -159,8 +174,26 @@ const AddUsersForm = ({ onAddUser }) => {
           id='profilePicture'
           name='profilePicture'
           onChange={handleFileChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
+      </div>
+      <div className='flex items-center justify-between mb-4'>
+        <label htmlFor='status' className='text-[16px] text-gray-800 w-2/3'>
+          Status:
+        </label>
+        <select
+          id='status'
+          name='status'
+          value={formData.status}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        >
+          <option value=''>Choose a status</option>
+          <option value='Active'>Active</option>
+          <option value='Inactive'>Inactive</option>
+          <option value='Locked'>Locked</option>
+          <option value='Suspended'>Suspended</option>
+        </select>
       </div>
 
       <div className='flex justify-center gap-2 mt-5'>
