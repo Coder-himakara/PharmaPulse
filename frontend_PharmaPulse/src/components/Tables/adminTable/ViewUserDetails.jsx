@@ -61,7 +61,7 @@ const ViewUserDetails = () => {
           <strong>Password:</strong>
           {user.password}
         </li>
-        
+
         <li>
           <strong>Date of Joined:</strong> {user.dateOfJoined}
         </li>
@@ -71,7 +71,6 @@ const ViewUserDetails = () => {
         <li>
           <strong>Status:</strong> {user.status}
         </li>
-        
       </ul>
       <div className='flex justify-center mt-4'>
         <button

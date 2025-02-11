@@ -17,7 +17,6 @@ const LorryInfoTable = ({ lorries }) => {
     return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
-  
   const handleClose = () => {
     navigate('/home');
   };

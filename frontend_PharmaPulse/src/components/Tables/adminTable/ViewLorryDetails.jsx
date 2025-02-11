@@ -24,7 +24,7 @@ const ViewLorryDetails = () => {
       <h2 className='mb-4 text-xl font-bold text-center text-[var(--card-text-color)]'>
         Lorry Details
       </h2>
-     
+
       <ul className='text-left '>
         <li>
           <strong>Lorry Id</strong> {lorry.lorryId}
@@ -44,7 +44,6 @@ const ViewLorryDetails = () => {
         <li>
           <strong>Status:</strong> {lorry.status}
         </li>
-        
       </ul>
       <div className='flex justify-center mt-4'>
         <button
@@ -58,4 +57,4 @@ const ViewLorryDetails = () => {
   );
 };
 
-export default ViewLorryDetails ;
+export default ViewLorryDetails;
