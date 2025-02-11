@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
   FaUser,
@@ -11,6 +11,8 @@ import {
 } from "react-icons/fa";
 import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
+import { MegaMenu } from "primereact/megamenu";
+import navbarSections from "../../navbarSections.json"; // Import the JSON file
 
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
   <li>
@@ -42,6 +44,8 @@ const Navbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
+  const navigate = useNavigate();
+
   const toggleDropdown = () => {
     setIsDropdownVisible((prev) => !prev);
   };
@@ -50,19 +54,48 @@ const Navbar = () => {
     setIsDropdownVisible(false);
   };
 
+  const handleMenuClick = (event) => {
+    if (event.item.url) {
+      navigate(event.item.url);
+    }
+  };
+
   return (
     <div
       className={`flex justify-between items-center px-6 py-4 fixed top-0 left-0 w-full z-10 h-[100px] transition-colors duration-300 ${
         isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"
       }`}
     >
-      {/* Logo and Home */}
       <div className="flex items-center">
         <img src={logo} alt="Logo" className="h-10 mr-4" />
         <span className="text-lg font-bold">Home</span>
       </div>
 
-      {/* User and Dropdown */}
+      {/* Mega Menu (Icons & Text White) */}
+      <div className="hidden md:block">
+        <MegaMenu
+          model={navbarSections}
+          onMenuItemClick={handleMenuClick}
+          breakpoint="960px"
+          pt={{
+            root: {
+              className: `${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"} border-none`,
+            },
+            menu: {
+              className: `${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"} border-none shadow-md`,
+            },
+            submenu: {
+              className: ` ${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"} border-none shadow-md`,
+            },
+            content: {
+              className: ` ${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"}`,
+            },
+            label: { className: "text-white" },
+            icon: { className: "text-white" }, // Icons are now white
+          }}
+        />
+      </div>
+
       <div className="relative flex items-center gap-4">
         <div>
           <span className="text-sm font-bold">Amali De Silva</span>
@@ -109,7 +142,6 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Theme Toggle */}
         <button
           className="flex items-center justify-center w-8 h-8 rounded-full focus:outline-none"
           onClick={toggleTheme}
