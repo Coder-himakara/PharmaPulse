@@ -1,33 +1,58 @@
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const EditCustomersForm = ({ onUpdateCustomer }) => {
   const { state } = useLocation(); // Access the state passed by navigate
   const customer = state?.customer; // Get customer from the state
   const navigate = useNavigate();
 
+  // Function to format date (DD-MMM-YYYY)
+  const formatDate = (date) => {
+    return date
+      .toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+      .replace(/ /g, "-"); // Example: 11-Feb-2025
+  };
+
   const [formData, setFormData] = useState({
-    customerName: '',
-    customerId: '',
-    contactNumber: '',
-    address: '',
-    email: '',
-    dateOfConnected: '',
+    customerName: "",
+    address: "",
+    contactName: "",
+    nic: "",
+    brcNo: "",
+    email: "",
+    phoneNo: "",
+    customerGroup: "",
+    status: "",
+    registeredDate: formatDate(new Date()), // Default to current date if not provided
+    creditLimit: "",
+    creditPeriod: "",
   });
 
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (customer) {
       setFormData({
-        customerName: customer.customerName,
-        customerId: customer.customerId,
-        contactNumber: customer.contactNumber,
-        address: customer.address,
-        email: customer.email,
-        dateOfConnected: customer.dateOfConnected,
+        customerName: customer.customerName || "",
+        address: customer.address || "",
+        contactName: customer.contactName || "",
+        nic: customer.nic || "",
+        brcNo: customer.brcNo || "",
+        email: customer.email || "",
+        phoneNo: customer.phoneNo || "",
+        customerGroup: customer.customerGroup || "",
+        status: customer.status || "",
+        registeredDate: customer.registeredDate
+          ? formatDate(new Date(customer.registeredDate))
+          : formatDate(new Date()),
+        creditLimit: customer.creditLimit || "",
+        creditPeriod: customer.creditPeriod || "",
       });
     }
   }, [customer]);
@@ -44,154 +69,173 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     e.preventDefault();
 
     // Basic validation
-    if (!formData.email || !formData.address || !formData.contactNumber) {
-      setErrorMessage('Please fill out all required fields.');
+    if (
+      !formData.customerName ||
+      !formData.brcNo ||
+      !formData.customerGroup ||
+      !formData.creditLimit ||
+      !formData.creditPeriod
+    ) {
+      setErrorMessage("Please fill out all required fields.");
       return;
     }
 
-    setErrorMessage(''); // Clear errors
+    setErrorMessage(""); // Clear errors
 
     // Pass the updated customer data to the parent
     if (onUpdateCustomer) {
       onUpdateCustomer(formData);
     }
 
-    setSuccessMessage('Customer updated successfully!');
+    setSuccessMessage("Customer updated successfully!");
 
-    // Clear the form and success message after a delay
+    // Redirect after update
     setTimeout(() => {
-      setSuccessMessage('');
-      navigate('/customers-info');
+      setSuccessMessage("");
+      navigate("/customers-info");
     }, 2000);
   };
 
   const handleCancel = () => {
-    navigate('/customers-info');
+    navigate("/customers-info");
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'
+      className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
     >
-      <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
+      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg">
         Edit Customer
       </h2>
 
       {errorMessage && (
-        <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>
+        <p className="text-[#991919] text-sm font-bold mb-4">{errorMessage}</p>
       )}
       {successMessage && (
-        <p className='text-[#3c5f3c] text-sm font-bold mb-4'>
+        <p className="text-[#3c5f3c] text-sm font-bold mb-4">
           {successMessage}
         </p>
       )}
 
-      <div className='flex items-center justify-between mb-4'>
+      {/* Customer Name */}
+      <div className="flex items-center justify-between mb-4">
         <label
-          htmlFor='customerName'
-          className='text-[16px] text-gray-800 w-2/3'
+          htmlFor="customerName"
+          className="text-[16px] text-gray-800 w-2/3"
         >
           Customer Name:
         </label>
         <input
-          type='text'
-          id='customerName'
-          name='customerName'
+          type="text"
+          id="customerName"
+          name="customerName"
           value={formData.customerName}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-          readOnly
-        />
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='customerId' className='text-[16px] text-gray-800 w-2/3'>
-          Customer ID:
-        </label>
-        <input
-          type='text'
-          id='customerId'
-          name='customerId'
-          value={formData.customerId}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-          readOnly
-        />
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
-        <label
-          htmlFor='contactNumber'
-          className='text-[16px] text-gray-800 w-2/3'
-        >
-          Contact Number:
-        </label>
-        <input
-          type='text'
-          id='contactNumber'
-          name='contactNumber'
-          value={formData.contactNumber}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
 
-      <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='address' className='text-[16px] text-gray-800 w-2/3'>
-          Address:
+      {/* Address */}
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="address" className="text-[16px] text-gray-800 w-2/3">
+          Customer Address:
         </label>
         <input
-          type='text'
-          id='address'
-          name='address'
+          type="text"
+          id="address"
+          name="address"
           value={formData.address}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
 
-      <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='email' className='text-[16px] text-gray-800 w-2/3'>
-          Email:
-        </label>
-        <input
-          type='email'
-          id='email'
-          name='email'
-          value={formData.email}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-        />
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
+      {/* Registered Date (Read-Only) */}
+      <div className="flex items-center justify-between mb-4">
         <label
-          htmlFor='dateOfConnected'
-          className='text-[16px] text-gray-800 w-2/3'
+          htmlFor="registeredDate"
+          className="text-[16px] text-gray-800 w-2/3"
         >
-          Date of Connected:
+          Registered Date:
         </label>
         <input
-          type='date'
-          id='dateOfConnected'
-          name='dateOfConnected'
-          value={formData.dateOfConnected}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md'
+          type="text"
+          id="registeredDate"
+          name="registeredDate"
+          value={formData.registeredDate}
           readOnly
+          className="w-2/3 px-2 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md"
         />
       </div>
 
-      <div className='flex justify-center gap-2 mt-5'>
+      {/* Status */}
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="status" className="text-[16px] text-gray-800 w-2/3">
+          Status:
+        </label>
+        <select
+          id="status"
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        >
+          <option value="">Choose a status</option>
+          <option value="active">ACTIVE</option>
+          <option value="inactive">INACTIVE</option>
+          <option value="suspended">SUSPENDED</option>
+        </select>
+      </div>
+
+      {/* Credit Limit */}
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="creditLimit"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Credit Limit:
+        </label>
+        <input
+          type="text"
+          id="creditLimit"
+          name="creditLimit"
+          value={formData.creditLimit}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      {/* Credit Period */}
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="creditPeriod"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Credit Period:
+        </label>
+        <input
+          type="text"
+          id="creditPeriod"
+          name="creditPeriod"
+          value={formData.creditPeriod}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      {/* Buttons */}
+      <div className="flex justify-center gap-2 mt-5">
         <button
-          type='submit'
-          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
+          type="submit"
+          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
         >
           Update
         </button>
         <button
-          type='button'
+          type="button"
           onClick={handleCancel}
-          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
+          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
         >
           Cancel
         </button>
@@ -201,7 +245,6 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
 };
 
 EditCustomersForm.propTypes = {
-  customer: PropTypes.object.isRequired,
   onUpdateCustomer: PropTypes.func.isRequired,
 };
 
