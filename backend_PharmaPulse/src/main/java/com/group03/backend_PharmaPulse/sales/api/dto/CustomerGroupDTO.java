@@ -17,9 +17,9 @@ public class CustomerGroupDTO {
     private String customer_group_name;
 
     @NotBlank(message = "Assign Sales Rep is required")
-    private String assign_sales_rep;
+    private String assigned_sales_rep;
 
-    private String description;
+    private String descriptions;
 
     //customer Id List Should Include
 }

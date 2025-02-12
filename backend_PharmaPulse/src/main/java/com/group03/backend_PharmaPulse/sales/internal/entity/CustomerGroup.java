@@ -25,9 +25,9 @@ public class CustomerGroup {
 
     private String customerGroupName;
 
-    private String assigndSalesRep;
+    private String assignedSalesRep;
 
-    private String description;
+    private String descriptions;
 
     @OneToMany(mappedBy = "customer_group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Customer> customers;
