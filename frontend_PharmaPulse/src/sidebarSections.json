@@ -29,7 +29,6 @@
         { "to": "/order-creation", "name": "Order Creation" }
       ]
     }
-    
   ],
   "admin": [
     {
@@ -46,7 +45,5 @@
         { "to": "/lorry-info", "name": "Lorry Info" }
       ]
     }
-
   ]
-  
 }

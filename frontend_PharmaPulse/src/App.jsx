@@ -3,6 +3,12 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 import { ThemeProvider } from "./ThemeContext";
+import "primereact/resources/themes/lara-light-blue/theme.css"; // Theme
+import "primereact/resources/primereact.min.css"; // Core CSS
+import "primeicons/primeicons.css"; // Icons
+import "primeflex/primeflex.css"; // PrimeFlex (Optional)
+
+//import Sidebar from "./components/Sidebar/Sidebar";
 
 //import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
@@ -15,7 +21,7 @@ function App() {
         {/*<AdminDashboard />*/}
 
         <EmployeeDashboard />
-        {/*<SalesRepDashboard />*/}
+        {/* <SalesRepDashboard /> */}
       </Router>
     </ThemeProvider>
   );
