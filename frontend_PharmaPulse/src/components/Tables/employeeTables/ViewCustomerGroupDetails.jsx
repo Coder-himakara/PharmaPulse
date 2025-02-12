@@ -8,7 +8,7 @@ const ViewCustomerGroupDetails = () => {
   const customerGroups = location.state?.customerGroups;
 
   return (
-    <div className="max-w-md p-6 mx-auto mt-10 bg-white rounded-lg shadow-md">
+    <div className="max-w-md p-6 mx-auto mt-10 bg-[#e6eef3] rounded-lg shadow-md">
       <h2 className="mb-4 text-xl font-bold text-center text-[var(--card-text-color)]">
         Customer Details
       </h2>
@@ -35,7 +35,7 @@ const ViewCustomerGroupDetails = () => {
       </ul>
       <div className="flex justify-center mt-4">
         <button
-          className="px-4 py-2 text-white bg-gray-500 rounded-md hover:bg-gray-600"
+          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
           onClick={() => navigate("/customer-group-info")}
         >
           Back
