@@ -27,7 +27,7 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
   };
 
   const handleViewCustomerGroup = (customerGroup) => {
-    navigate(`/view-customer/${customerGroup.customerGroupId}`, {
+    navigate(`/view-customer-group/${customerGroup.customerGroupId}`, {
       state: { customerGroup },
     });
   };

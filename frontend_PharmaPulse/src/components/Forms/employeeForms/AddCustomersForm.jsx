@@ -73,7 +73,6 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         creditPeriod: "",
       });
       setSuccessMessage("");
-      navigate("/customers-info");
     }, 2000);
   };
 

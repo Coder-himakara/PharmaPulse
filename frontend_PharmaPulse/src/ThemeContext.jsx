@@ -1,18 +1,18 @@
 // theme_context.js
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from 'react';
 
 export const ThemeContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
+    return localStorage.getItem('theme') === 'dark';
   });
 
   const toggleTheme = () => {
     setIsDarkMode((prevMode) => {
       const newMode = !prevMode;
-      localStorage.setItem("theme", newMode ? "dark" : "light");
+      localStorage.setItem('theme', newMode ? 'dark' : 'light');
       return newMode;
     });
   };
@@ -20,17 +20,17 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     const root = document.documentElement;
     if (isDarkMode) {
-      root.classList.add("dark");
-      root.style.setProperty("--text-color", "#fffff");
-      root.style.setProperty("--bg-color", "#121212");
-      root.style.setProperty("--card-bg-color", "#1e293b");
-      root.style.setProperty("--card-text-color", "#e0f2f1");
+      root.classList.add('dark');
+      root.style.setProperty('--text-color', '#fffff');
+      root.style.setProperty('--bg-color', '#121212');
+      root.style.setProperty('--card-bg-color', '#1e293b');
+      root.style.setProperty('--card-text-color', '#e0f2f1');
     } else {
-      root.classList.remove("dark");
-      root.style.setProperty("--text-color", "#fffff");
-      root.style.setProperty("--bg-color", "#ffffff");
-      root.style.setProperty("--card-bg-color", "#ccfbf1");
-      root.style.setProperty("--card-text-color", "#065f46");
+      root.classList.remove('dark');
+      root.style.setProperty('--text-color', '#fffff');
+      root.style.setProperty('--bg-color', '#ffffff');
+      root.style.setProperty('--card-bg-color', '#ccfbf1');
+      root.style.setProperty('--card-text-color', '#065f46');
     }
   }, [isDarkMode]);
 

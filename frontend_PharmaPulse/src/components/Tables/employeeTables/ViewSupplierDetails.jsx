@@ -7,20 +7,6 @@ const ViewSupplierDetails = () => {
   const navigate = useNavigate();
   const supplier = location.state?.supplier;
 
-  if (!supplier) {
-    return (
-      <div className="p-5 text-center text-red-500">
-        <h2>Supplier not found</h2>
-        <button
-          className="px-4 py-2 mt-4 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-          onClick={() => navigate("/suppliers-info")}
-        >
-          Go Back
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-md p-6 mx-auto mt-10 bg-white rounded-lg shadow-md">
       <h2 className="mb-4 text-xl font-bold text-center text-[var(--card-text-color)]">

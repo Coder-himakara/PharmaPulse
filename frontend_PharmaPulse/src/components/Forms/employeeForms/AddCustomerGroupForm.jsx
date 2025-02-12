@@ -55,7 +55,6 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
         location: "",
       });
       setSuccessMessage("");
-      navigate("/customer-group-info");
     }, 2000);
   };
 

@@ -62,7 +62,6 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
         creditLimit: "",
       });
       setSuccessMessage("");
-      navigate("/suppliers-info");
     }, 2000);
   };
 

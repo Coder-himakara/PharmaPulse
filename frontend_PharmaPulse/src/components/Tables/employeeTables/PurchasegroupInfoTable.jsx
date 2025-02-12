@@ -28,7 +28,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
     });
   };
   const handleViewPurchaseGroup = (purchaseGroup) => {
-    navigate(`/view-purchase-group/${purchaseGroup.customerGroupId}`, {
+    navigate(`/view-purchase-group/${purchaseGroup.purchaseGroupId}`, {
       state: { purchaseGroup },
     });
   };

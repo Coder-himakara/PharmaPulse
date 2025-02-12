@@ -22,7 +22,7 @@ function App() {
         {/*<AdminDashboard />*/}
         {/*<LoginPage />*/}
         <EmployeeDashboard />
-        {/* <SalesRepDashboard /> */}
+        {/*<SalesRepDashboard />*/}
       </Router>
     </ThemeProvider>
   );

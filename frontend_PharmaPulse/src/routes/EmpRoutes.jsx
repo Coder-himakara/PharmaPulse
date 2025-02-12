@@ -4,19 +4,28 @@ import { Routes, Route } from "react-router-dom";
 
 import AddProductsForm from "../components/Forms/employeeForms/AddProductsForm";
 import ProductsInfoTable from "../components/Tables/employeeTables/ProductsInfoTable";
-import AddCustomersForm from "../components/Forms/employeeForms/AddCustomersForm";
-import SuppliersInfoTable from "../components/Tables/employeeTables/SuppliersInfoTable";
-import AddSuppliersForm from "../components/Forms/employeeForms/AddSuppliersForm";
-import CustomersInfoTable from "../components/Tables/employeeTables/CustomersInfoTable";
 import EditProductsForm from "../components/Forms/employeeForms/EditProductsForm";
-import EditSuppliersForm from "../components/Forms/employeeForms/EditSuppliersForm";
+import ViewProductDetails from "../components/Tables/employeeTables/ViewProductDetails";
+
+import AddCustomersForm from "../components/Forms/employeeForms/AddCustomersForm";
+import CustomersInfoTable from "../components/Tables/employeeTables/CustomersInfoTable";
 import EditCustomersForm from "../components/Forms/employeeForms/EditCustomersForm";
+import ViewCustomerDetails from "../components/Tables/employeeTables/ViewCustomerDetails";
+
+import AddSuppliersForm from "../components/Forms/employeeForms/AddSuppliersForm";
+import SuppliersInfoTable from "../components/Tables/employeeTables/SuppliersInfoTable";
+import EditSuppliersForm from "../components/Forms/employeeForms/EditSuppliersForm";
+import ViewSupplierDetails from "../components/Tables/employeeTables/ViewSupplierDetails";
+
 import AddCustomerGroupForm from "../components/Forms/employeeForms/AddCustomerGroupForm";
 import CustomerGroupInfoTable from "../components/Tables/employeeTables/CustomerGroupInfoTable";
 import EditCustomerGroupForm from "../components/Forms/employeeForms/EditCustomerGroupForm";
+import ViewCustomerGroupDetails from "../components/Tables/employeeTables/ViewCustomerGroupDetails";
+
 import AddPurchaseGroupForm from "../components/Forms/employeeForms/AddPurchaseGroupForm";
 import PurchaseGroupInfoTable from "../components/Tables/employeeTables/PurchaseGroupInfoTable";
 import EditPurchaseGroupForm from "../components/Forms/employeeForms/EditPurchaseGroupForm";
+import ViewPurchaseGroupDetails from "../components/Tables/employeeTables/ViewPurchaseGroupDetails";
 
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
@@ -115,6 +124,7 @@ const EmpRoutes = () => {
         path="/edit-product/:productId"
         element={<EditProductsForm onUpdateProduct={updateProduct} />}
       />
+      <Route path="/view-product/:productId" element={<ViewProductDetails />} />
 
       <Route
         path="/add-suppliers"
@@ -128,6 +138,10 @@ const EmpRoutes = () => {
         path="/edit-supplier/:supplierId"
         element={<EditSuppliersForm onUpdateSupplier={updateSupplier} />}
       />
+      <Route
+        path="/view-supplier/:supplierId"
+        element={<ViewSupplierDetails />}
+      />
 
       <Route
         path="/add-customers"
@@ -140,6 +154,10 @@ const EmpRoutes = () => {
       <Route
         path="/edit-customer/:customerId"
         element={<EditCustomersForm onUpdateCustomer={updateCustomer} />}
+      />
+      <Route
+        path="/view-customer/:customerId"
+        element={<ViewCustomerDetails />}
       />
 
       <Route
@@ -156,6 +174,10 @@ const EmpRoutes = () => {
           <EditCustomerGroupForm onUpdateCustomerGroup={updateCustomerGroup} />
         }
       />
+      <Route
+        path="/view-customer-group/:customerGroupId"
+        element={<ViewCustomerGroupDetails />}
+      />
 
       <Route
         path="/add-purchase-group"
@@ -170,6 +192,10 @@ const EmpRoutes = () => {
         element={
           <EditPurchaseGroupForm onUpdatePurchaseGroup={updatePurchaseGroup} />
         }
+      />
+      <Route
+        path="/view-purchase-group/:purchaseGroupId"
+        element={<ViewPurchaseGroupDetails />}
       />
     </Routes>
   );
