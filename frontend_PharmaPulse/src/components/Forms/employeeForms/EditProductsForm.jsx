@@ -1,40 +1,45 @@
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate, useLocation } from 'react-router-dom';
+/* eslint-disable prettier/prettier */
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useNavigate, useLocation } from "react-router-dom";
+import { FaSearch } from "react-icons/fa"; // Importing search icon
 
 const EditProductsForm = ({ onUpdateProduct }) => {
   const { state } = useLocation(); // Access the state passed by navigate
   const product = state?.product; // Get product from the state
 
   const [formData, setFormData] = useState({
-    productName: '',
-    productId: '',
-    batchId: '',
-    category: '',
-    supplierId: '',
-    currentStock: '',
-    expireDate: '',
-    unitPrice: '',
-    wholesalePrice: '',
+    productName: "",
+    genericName: "",
+    description: "",
+    purchaseGroupName: "",
+    modelNo: "",
+    category: "",
+    dosageForm: "",
+    sellingUnit: "",
+    packageType: "",
+    status: "",
+    reorderLimit: "",
   });
 
   const navigate = useNavigate();
 
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (product) {
       setFormData({
         productName: product.productName,
-        productId: product.productId,
-        batchId: product.batchId,
+        genericName: product.genericName,
+        description: product.description,
+        purchaseGroupName: product.purchaseGroupName,
+        modelNo: product.modelNo,
         category: product.category,
-        supplierId: product.supplierId,
-        currentStock: product.currentStock,
-        expireDate: product.expireDate,
-        unitPrice: product.unitPrice,
-        wholesalePrice: product.wholesalePrice,
+        dosageForm: product.dosageForm,
+        sellingUnit: product.sellingUnit,
+        packageType: product.packageType,
+        reorderLimit: product.reorderLimit,
       });
     }
   }, [product]);
@@ -52,200 +57,247 @@ const EditProductsForm = ({ onUpdateProduct }) => {
 
     // Basic validation
     if (!formData) {
-      setErrorMessage('Please fill out all required fields.');
+      setErrorMessage("Please fill out all required fields.");
       return;
     }
 
-    setErrorMessage(''); // Clear errors
+    setErrorMessage(""); // Clear errors
 
     // Pass the updated product data to the parent
     if (onUpdateProduct) {
       onUpdateProduct(formData);
     }
 
-    setSuccessMessage('Product updated successfully!');
+    setSuccessMessage("Product updated successfully!");
 
     // Clear the form and success message after a delay
     setTimeout(() => {
-      setSuccessMessage('');
-      navigate('/products-info');
+      setSuccessMessage("");
+      navigate("/products-info");
     }, 2000);
   };
 
   const handleCancel = () => {
-    navigate('/products-info');
+    navigate("/products-info");
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'
+      className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
     >
-      <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
+      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg">
         Edit Product
       </h2>
 
       {errorMessage && (
-        <p className='text-[#991919] text-sm font-bold mb-4'>{errorMessage}</p>
+        <p className="text-[#991919] text-sm font-bold mb-4">{errorMessage}</p>
       )}
       {successMessage && (
-        <p className='text-[#3c5f3c] text-sm font-bold mb-4'>
+        <p className="text-[#3c5f3c] text-sm font-bold mb-4">
           {successMessage}
         </p>
       )}
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className="flex items-center justify-between mb-4">
         <label
-          htmlFor='productName'
-          className='text-[16px] text-gray-800 w-2/3'
+          htmlFor="productName"
+          className="text-[16px] text-gray-800 w-2/3"
         >
           Product Name:
         </label>
         <input
-          type='text'
-          id='productName'
-          name='productName'
+          type="text"
+          id="productName"
+          name="productName"
           value={formData.productName}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
-          readOnly
-        />
-      </div>
-
-      <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='productId' className='text-[16px] text-gray-800 w-2/3'>
-          Product ID:
-        </label>
-        <input
-          type='text'
-          id='productId'
-          name='productId'
-          value={formData.productId}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
-          readOnly
-        />
-      </div>
-
-      <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='batchId' className='text-[16px] text-gray-800 w-2/3'>
-          Batch ID:
-        </label>
-        <input
-          type='text'
-          id='batchId'
-          name='batchId'
-          value={formData.batchId}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='category' className='text-[16px] text-gray-800 w-2/3'>
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="genericName"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Generic Name:
+        </label>
+        <input
+          type="text"
+          id="genericName"
+          name="genericName"
+          value={formData.genericName}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="modelNo" className="text-[16px] text-gray-800 w-2/3">
+          Model No:
+        </label>
+        <input
+          type="text"
+          id="modelNo"
+          name="modelNoe"
+          value={formData.modelNo}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="purchaseGroupName"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Purchase Group Name:
+        </label>
+        <input
+          type="text"
+          id="purchaseGroupName"
+          name="purchaseGroupName"
+          value={formData.purchaseGroupName}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+        <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="category" className="text-[16px] text-gray-800 w-2/3">
           Category:
         </label>
         <select
-          id='category'
-          name='category'
+          id="category"
+          name="category"
           value={formData.category}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         >
-          <option value=''>Choose a category</option>
-          <option value='Tablet'>Tablet</option>
-          <option value='Syrup'>Syrup</option>
+          <option value="">Choose a category</option>
+          <option value="OTC">OTC</option>
+          <option value="Prescription Medicine">Prescription Medicine</option>
         </select>
       </div>
-
-      <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='supplierId' className='text-[16px] text-gray-800 w-2/3'>
-          Supplier ID:
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="dosageForm" className="text-[16px] text-gray-800 w-2/3">
+          Dosage Form:
         </label>
         <select
-          id='supplierId'
-          name='supplierId'
-          value={formData.supplierId}
+          id="dosageForm"
+          name="dosageForm"
+          value={formData.dosageForm}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         >
-          <option value=''>Choose a supplier</option>
-          <option value='S001'>S001</option>
-          <option value='S002'>S002</option>
+          <option value="">Choose a dosage form</option>
+          <option value="OTC">TABLET</option>
+          <option value="Capsule">CAPSULE</option>
+          <option value="Syrup">SYRUP</option>
+        </select>
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="sellingUnit"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Selling Unit:
+        </label>
+        <select
+          id="sellingUnit"
+          name="sellingUnit"
+          value={formData.sellingUnit}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        >
+          <option value="">Choose a selling unit</option>
+          <option value="vial">VIAL</option>
+          <option value="bottle">BOTTLE</option>
+          <option value="blisterPack">BLISTER PACK</option>
+        </select>
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="packageType"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Package Type:
+        </label>
+        <select
+          id="packageType"
+          name="packageType"
+          value={formData.packageType}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        >
+          <option value="">Choose a package type</option>
+          <option value="carton">CARTON</option>
+          <option value="box">BOX</option>
+        </select>
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="status" className="text-[16px] text-gray-800 w-2/3">
+          Status:
+        </label>
+        <select
+          id="status"
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        >
+          <option value="">Choose a status</option>
+          <option value="active">ACTIVE</option>
+          <option value="inactive">INACTIVE</option>
+          <option value="discontinued">DISCONTINUED</option>
         </select>
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className="flex items-center justify-between mb-4">
         <label
-          htmlFor='currentStock'
-          className='text-[16px] text-gray-800 w-2/3'
+          htmlFor="reorderLimit"
+          className="text-[16px] text-gray-800 w-2/3"
         >
-          Current Stock:
+          Record Limit By Selling Unit:
         </label>
         <input
-          type='number'
-          id='currentStock'
-          name='currentStock'
-          value={formData.currentStock}
+          type="text"
+          id="reorderLimit"
+          name="reorderLimit"
+          value={formData.reorderLimit}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-red-500 rounded-md text-sm'
+          className="w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md"
         />
       </div>
-
-      <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='expireDate' className='text-[16px] text-gray-800 w-2/3'>
-          Expire Date:
-        </label>
-        <input
-          type='date'
-          id='expireDate'
-          name='expireDate'
-          value={formData.expireDate}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm text-gray-800'
-        />
-      </div>
-
-      <div className='flex justify-between items-center mb-4'>
-        <label htmlFor='unitPrice' className='text-[16px] text-gray-800 w-2/3'>
-          Unit Price (Rs.):
-        </label>
-        <input
-          type='number'
-          id='unitPrice'
-          name='unitPrice'
-          value={formData.unitPrice}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-red-500 rounded-md text-sm'
-        />
-      </div>
-
-      <div className='flex justify-between items-center mb-4'>
+      <div className="flex items-center justify-between mb-4">
         <label
-          htmlFor='wholesalePrice'
-          className='text-[16px] text-gray-800 w-2/3'
+          htmlFor="description"
+          className="text-[16px] text-gray-800 w-2/3"
         >
-          Wholesale Price (Rs.):
+          Description:
         </label>
         <input
-          type='number'
-          id='wholesalePrice'
-          name='wholesalePrice'
-          value={formData.wholesalePrice}
+          type="text"
+          id="description"
+          name="description"
+          value={formData.description}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-red-500 rounded-md text-sm'
+          className="w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md"
         />
       </div>
 
-      <div className='flex justify-center gap-2 mt-5'>
+      <div className="flex justify-center gap-2 mt-5">
         <button
-          type='submit'
-          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
+          type="submit"
+          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
         >
           Update
         </button>
         <button
-          type='button'
+          type="button"
           onClick={handleCancel}
-          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
+          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
         >
           Cancel
         </button>
