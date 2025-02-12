@@ -55,6 +55,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
         location: "",
       });
       setSuccessMessage("");
+      navigate("/customer-group-info");
     }, 2000);
   };
 
@@ -67,7 +68,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
       onSubmit={handleSubmit}
       className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
     >
-      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg">
+      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
         Add Customer Group
       </h2>
 
@@ -92,20 +93,6 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           id="customerGroupName"
           name="customerGroupName"
           value={formData.customerGroupName}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="customerId" className="text-[16px] text-gray-800 w-2/3">
-          Customer Group ID:
-        </label>
-        <input
-          type="text"
-          id="customerGroupId"
-          name="customerGroupId"
-          value={formData.customerGroupId}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
