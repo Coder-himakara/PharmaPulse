@@ -113,7 +113,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
                 <td className="p-2 text-center border border-gray-400">
                   <button
                     onClick={() => handleEdit(purchaseGroup.purchaseGroupId)}
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md text-sm hover:bg-[#15375c]"
+                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
                   >
                     Edit
                   </button>

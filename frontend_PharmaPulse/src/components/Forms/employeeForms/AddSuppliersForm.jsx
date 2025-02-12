@@ -145,16 +145,19 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
         >
           Purchase Group:
         </label>
-        <input
-          type="text"
-          id="purchaseGroup"
-          name="purchaseGroup"
-          value={formData.purchaseGroup}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-        <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
+        <div className="relative w-2/3">
+          <input
+            type="text"
+            id="purchaseGroup"
+            name="purchaseGroup"
+            value={formData.purchaseGroup}
+            onChange={handleChange}
+            className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
+          />
+          <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
+        </div>
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="creditPeriod"

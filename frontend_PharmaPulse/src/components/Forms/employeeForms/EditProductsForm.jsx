@@ -39,6 +39,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
         dosageForm: product.dosageForm,
         sellingUnit: product.sellingUnit,
         packageType: product.packageType,
+        status: product.status,
         reorderLimit: product.reorderLimit,
       });
     }
@@ -153,15 +154,17 @@ const EditProductsForm = ({ onUpdateProduct }) => {
         >
           Purchase Group Name:
         </label>
-        <input
-          type="text"
-          id="purchaseGroupName"
-          name="purchaseGroupName"
-          value={formData.purchaseGroupName}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-        <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
+        <div className="relative w-2/3">
+          <input
+            type="text"
+            id="purchaseGroupName"
+            name="purchaseGroupName"
+            value={formData.purchaseGroupName}
+            onChange={handleChange}
+            className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
+          />
+          <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
+        </div>
       </div>
 
       <div className="flex items-center justify-between mb-4">

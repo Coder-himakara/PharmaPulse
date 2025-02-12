@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ViewUserDetails = () => {
   const location = useLocation();
@@ -6,22 +6,22 @@ const ViewUserDetails = () => {
   const user = location.state?.user;
 
   return (
-    <div className="max-w-md p-6 mx-auto mt-10 bg-[#e6eef3] rounded-lg shadow-md">
-      <h2 className="mb-4 text-xl font-bold text-center text-[var(--card-text-color)]">
+    <div className='max-w-md p-6 mx-auto mt-10 bg-[#e6eef3] rounded-lg shadow-md'>
+      <h2 className='mb-4 text-xl font-bold text-center text-[var(--card-text-color)]'>
         User Details
       </h2>
-      <div className="flex items-center justify-center mb-4">
+      <div className='flex items-center justify-center mb-4'>
         <img
           src={
             user.profilePicture
               ? URL.createObjectURL(user.profilePicture)
-              : "https://via.placeholder.com/80"
+              : 'https://via.placeholder.com/80'
           }
           alt={user.username}
-          className="w-20 h-20 border border-gray-300 rounded-full"
+          className='w-20 h-20 border border-gray-300 rounded-full'
         />
       </div>
-      <ul className="text-left ">
+      <ul className='text-left '>
         <li>
           <strong>User ID:</strong> {user.userId}
         </li>
@@ -58,10 +58,10 @@ const ViewUserDetails = () => {
           <strong>Status:</strong> {user.status}
         </li>
       </ul>
-      <div className="flex justify-center mt-4">
+      <div className='flex justify-center mt-4'>
         <button
-          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
-          onClick={() => navigate("/users-info")}
+          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
+          onClick={() => navigate('/users-info')}
         >
           Back
         </button>

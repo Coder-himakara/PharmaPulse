@@ -106,7 +106,7 @@ const ProductsInfoTable = ({ products }) => {
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
-                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]'
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
                     onClick={() => handleEdit(product.productId)}
                   >
                     Edit

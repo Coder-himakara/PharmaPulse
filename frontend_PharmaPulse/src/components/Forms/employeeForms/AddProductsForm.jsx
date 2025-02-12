@@ -129,6 +129,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <label htmlFor="modelNo" className="text-[16px] text-gray-800 w-2/3">
           Model No:
@@ -179,6 +180,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <option value="Prescription Medicine">Prescription Medicine</option>
         </select>
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <label htmlFor="dosageForm" className="text-[16px] text-gray-800 w-2/3">
           Dosage Form:
@@ -196,6 +198,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <option value="Syrup">SYRUP</option>
         </select>
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="sellingUnit"
@@ -216,6 +219,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <option value="blisterPack">BLISTER PACK</option>
         </select>
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="packageType"
@@ -235,6 +239,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <option value="box">BOX</option>
         </select>
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <label htmlFor="status" className="text-[16px] text-gray-800 w-2/3">
           Status:
@@ -258,15 +263,15 @@ const AddProductsForm = ({ onAddProduct }) => {
           htmlFor="reorderLimit"
           className="text-[16px] text-gray-800 w-2/3"
         >
-          Record Limit By Selling Unit:
+          Reorder Limit By Selling Unit:
         </label>
         <input
-          type="text"
+          type="number"
           id="reorderLimit"
           name="reorderLimit"
           value={formData.reorderLimit}
           onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md"
+          className="w-2/3 px-2 py-2 text-sm text-gray-800 border border-red-300 rounded-md"
         />
       </div>
       <div className="flex items-center justify-between mb-4">
