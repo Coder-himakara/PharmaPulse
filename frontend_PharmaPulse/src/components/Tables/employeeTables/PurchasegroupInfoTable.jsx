@@ -27,6 +27,11 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
       state: { purchaseGroup },
     });
   };
+  const handleViewPurchaseGroup = (purchaseGroup) => {
+    navigate(`/view-purchase-group/${purchaseGroup.customerGroupId}`, {
+      state: { purchaseGroup },
+    });
+  };
 
   return (
     <div className="bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative">
@@ -66,14 +71,12 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
           <thead>
             <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
               {[
-                "#",
-                "Purchase Group ID",
                 "Purchase Group Name",
                 "Address",
                 "Contact Name",
                 "Telephone No",
                 "Email",
-                "Supplier ID",
+                "Fax",
                 "Action",
               ].map((header, index) => (
                 <th
@@ -90,12 +93,6 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
             {filteredPurchaseGroups.map((purchaseGroup, index) => (
               <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
                 <td className="p-2 text-center border border-gray-400">
-                  {index + 1}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.purchaseGroupId}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
                   {purchaseGroup.purchaseGroupName}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
@@ -111,7 +108,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
                   {purchaseGroup.email}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.supplierId}
+                  {purchaseGroup.fax}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
                   <button
@@ -119,6 +116,12 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
                     className="bg-[#4c85a6] text-white py-1 px-3 rounded-md text-sm hover:bg-[#15375c]"
                   >
                     Edit
+                  </button>
+                  <button
+                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                    onClick={() => handleViewPurchaseGroup(purchaseGroup)}
+                  >
+                    View
                   </button>
                 </td>
               </tr>

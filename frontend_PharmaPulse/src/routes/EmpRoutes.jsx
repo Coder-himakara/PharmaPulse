@@ -15,13 +15,12 @@ import AddCustomerGroupForm from "../components/Forms/employeeForms/AddCustomerG
 import CustomerGroupInfoTable from "../components/Tables/employeeTables/CustomerGroupInfoTable";
 import EditCustomerGroupForm from "../components/Forms/employeeForms/EditCustomerGroupForm";
 import AddPurchaseGroupForm from "../components/Forms/employeeForms/AddPurchaseGroupForm";
-import PurchaseGroupInfoTable from "../components/Tables/employeeTables/PurchasegroupInfoTable";
+import PurchaseGroupInfoTable from "../components/Tables/employeeTables/PurchaseGroupInfoTable";
 import EditPurchaseGroupForm from "../components/Forms/employeeForms/EditPurchaseGroupForm";
 
 import Sidebar from "../components/Sidebar/Sidebar";
 
 const EmpRoutes = () => {
-
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [customers, setCustomers] = useState([]);
