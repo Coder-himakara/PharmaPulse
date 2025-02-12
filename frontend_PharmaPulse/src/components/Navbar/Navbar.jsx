@@ -79,26 +79,44 @@ const Navbar = () => {
           breakpoint="960px"
           pt={{
             root: {
-              className: `${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"} border-none`,
+              className: `${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-black"} border-none`,
             },
             menu: {
-              className: `${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"} border-none shadow-md`,
+              className: "bg-transparent gap-2 border-none shadow-md",
             },
             submenu: {
-              className: ` ${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"} border-none shadow-md`,
+              className: `${isDarkMode ? "text-white" : "text-black"} border-none`,
             },
             content: {
-              className: ` ${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"}`,
+              className: `${isDarkMode ? "hover:bg-gray-700" : "hover:bg-teal-700"} border-none`,
             },
-            label: { className: "text-white" },
-            icon: { className: "text-white" }, // Icons are now white
+
+            // Make only navbar main items (Partners, Products, etc.) white
+            label: {
+              className: `${isDarkMode ? "text-gray-300 hover:bg-gray-700 hover:text-white active:bg-gray-700 active:text-white " : "text-gray-300 hover:bg-teal-700 hover:text-white active:bg-teal-700 active:text-white"} border-none`,
+            },
+            icon: { className: "text-white font-bold" },
+
+            // Keep dropdown menu text black
+            menuitem: {
+              className: "hover:bg-transparent text-black",
+            },
+            action: {
+              className: "hover:bg-transparent text-black",
+            },
+            link: {
+              className: "hover:bg-transparent text-black",
+            },
+            submenuitem: {
+              className: "hover:bg-transparent text-black",
+            },
           }}
         />
       </div>
 
       <div className="relative flex items-center gap-4">
         <div>
-          <span className="text-sm font-bold">Amali De Silva</span>
+          <span className="text-sm font-bold ">Amali De Silva</span>
           <br />
           <span className="text-xs italic">Employee</span>
         </div>
