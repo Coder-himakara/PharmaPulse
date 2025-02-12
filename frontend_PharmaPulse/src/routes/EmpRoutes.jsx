@@ -18,8 +18,6 @@ import AddPurchaseGroupForm from "../components/Forms/employeeForms/AddPurchaseG
 import PurchaseGroupInfoTable from "../components/Tables/employeeTables/PurchaseGroupInfoTable";
 import EditPurchaseGroupForm from "../components/Forms/employeeForms/EditPurchaseGroupForm";
 
-import Sidebar from "../components/Sidebar/Sidebar";
-
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -173,9 +171,6 @@ const EmpRoutes = () => {
           <EditPurchaseGroupForm onUpdatePurchaseGroup={updatePurchaseGroup} />
         }
       />
-
-      <Route path="/home" element={<Sidebar role="employee" />} />
-      <Route path="/dashboard" element={<Sidebar role="employee" />} />
     </Routes>
   );
 };
