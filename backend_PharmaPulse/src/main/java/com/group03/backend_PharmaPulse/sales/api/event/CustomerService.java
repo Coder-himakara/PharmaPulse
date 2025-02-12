@@ -1,4 +1,4 @@
-package com.group03.backend_PharmaPulse.sales.api;
+package com.group03.backend_PharmaPulse.sales.api.event;
 
 import com.group03.backend_PharmaPulse.sales.api.dto.CustomerDTO;
 

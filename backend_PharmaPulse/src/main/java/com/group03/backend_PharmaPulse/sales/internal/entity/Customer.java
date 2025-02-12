@@ -1,6 +1,5 @@
 package com.group03.backend_PharmaPulse.sales.internal.entity;
 
-import com.group03.backend_PharmaPulse.sales.api.enumeration.CustomerStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,25 +18,26 @@ import java.time.LocalDate;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
+    @Column(name = "customer_id",length = 50)
+    private Long customer_id;
 
-    private String customerName;
-    private String customerAddress;
-    private String customerContactName;
-    private String customerNicNo;
-    private String customerBrcNo;
-    private String customerEmail;
-    private Integer customerPhoneNo;
-    private String customerGroup;
+    private String customer_name;
+    private String customer_address;
+    private String customer_contact_name;
+    private String customer_nic_no;
+    private String customer_brc_no;
+    private String customer_email;
+    private Integer customer_phone_no;
 
-    private LocalDate registeredDate;
+    private LocalDate registered_date;
 
-    private Double creditLimit;
-    private Integer creditPeriodInDays; // Changed for consistency with days as integer
-    private Double outstandingBalance;
+    private Double credit_limit;
+    private Integer credit_period_in_days;
+    private Double outstanding_balance;
 
-    @Enumerated(EnumType.STRING)
-    private CustomerStatus customerStatus;
+    @ManyToOne
+    @JoinColumn(name="customer_group_id",nullable=false)
+    private CustomerGroup customer_group;
 
 
 }

@@ -1,30 +1,49 @@
 package com.group03.backend_PharmaPulse.sales.api.dto;
-import com.group03.backend_PharmaPulse.sales.api.enumeration.CustomerStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class CustomerDTO {
-    private Long customerId;
 
-    private String customerName;
-    private String customerAddress;
-    private String customerContactName;
-    private String customerNicNo;
-    private String customerBrcNo;
-    private String customerEmail;
-    private Integer customerPhoneNo;
-    private String customerGroup;
+    @NotBlank(message = "Customer Name is required")
+    private String customer_name;
 
-    private LocalDate registeredDate;
+    @NotBlank(message = "Customer Address is required")
+    private String customer_address;
 
-    private Double creditLimit;
-    private Integer creditPeriodInDays; // Changed for consistency with days as integer
-    private Double outstandingBalance;
+    @NotBlank(message = "Customer Contact Name is required")
+    private String customer_contact_name;
 
-    @Enumerated(EnumType.STRING)
-    private CustomerStatus customerStatus;
+    private String customer_nic_no;
+
+    private String customer_brc_no;
+
+    private String customer_email;
+
+    private Integer customer_phone_no;
+
+    @NotNull(message = "Please select a customer group")
+    private String customer_group;
+
+    private LocalDate registered_date;
+
+    private Double credit_limit;
+
+    private Integer credit_period_in_days;
+
+    private Double outstanding_balance;
+
+
 
 
 

@@ -1,6 +1,6 @@
 package com.group03.backend_PharmaPulse.sales.internal.serviceImpl;
 
-import com.group03.backend_PharmaPulse.sales.api.CustomerService;
+import com.group03.backend_PharmaPulse.sales.api.event.CustomerService;
 import com.group03.backend_PharmaPulse.sales.api.dto.CustomerDTO;
 import com.group03.backend_PharmaPulse.sales.internal.entity.Customer;
 import com.group03.backend_PharmaPulse.sales.internal.mapper.CustomerMapper;
@@ -12,14 +12,12 @@ import org.springframework.stereotype.Service;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepo customerRepo;
     private final CustomerMapper customerMapper;
-    private final CustomerService customerService;
 
     public CustomerServiceImpl(CustomerRepo customerRepo,
-                               CustomerMapper customerMapper,
-                               CustomerService customerService){
+                               CustomerMapper customerMapper){
         this.customerRepo=customerRepo;
         this.customerMapper=customerMapper;
-        this.customerService=customerService;
+
     }
 
    @Override
