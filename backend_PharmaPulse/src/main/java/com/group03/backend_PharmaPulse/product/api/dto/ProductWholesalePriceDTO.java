@@ -19,5 +19,5 @@ public class ProductWholesalePriceDTO {
     private String createdBy;
     private LocalDateTime effectiveDate;
     private LocalDateTime endDate;
-    private BigDecimal retailPrice;
+    private BigDecimal wholesalePrice;
 }

@@ -32,8 +32,9 @@ public class BatchInventory {
     private LocalDate manufactureDate;
     private LocalDate expiryDate;
     private Integer purchasedUnitQuantity;
+    private Integer freeQuantity;
     private Integer availableUnitQuantity;
-    private BigDecimal costPerUnit;
+    private BigDecimal wholesalePrice;
     private BigDecimal retailPrice;
     private BigDecimal discount;
 

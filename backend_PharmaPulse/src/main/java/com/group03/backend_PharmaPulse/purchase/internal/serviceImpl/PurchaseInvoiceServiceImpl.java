@@ -67,16 +67,16 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
             List<PurchaseLineItemDTO> purchaseLineItems = purchaseInvoiceDTO.getLineItemsList();
 
             for (PurchaseLineItemDTO lineItem : purchaseLineItems) {
-                //Set the InvoiceNo to LineItem
-                lineItem.setPurchaseInvoice(purchaseInvoice.getPurchaseNo());
+                //Set the InvoiceId to LineItem
+                lineItem.setPurchaseInvoice(purchaseInvoice.getInvoiceId());
             }
             if(!purchaseLineItems.isEmpty()){
                 //Add the Purchase LineItems to the database
                 //This will publish an event
                 purchaseLineItemService.addPurchaseLineItems(purchaseLineItemMapper.toEntityList(purchaseLineItems));
-                //Check and Update the Retail Price of the Product
+                //Check and Update the Wholesale Price of the Product
                 for(PurchaseLineItemDTO lineItemDTO : purchaseLineItems){
-                    productWholesalePriceService.checkAndUpdateRetailPrice
+                    productWholesalePriceService.checkAndUpdateWholesalePrice
                             (lineItemDTO.getProductId(),lineItemDTO.getUnitPrice());
                 }
             }else{

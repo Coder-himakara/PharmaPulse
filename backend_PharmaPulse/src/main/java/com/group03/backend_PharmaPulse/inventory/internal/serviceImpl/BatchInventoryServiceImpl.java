@@ -69,8 +69,9 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                     .expiryDate(dto.getExpiryDate())
                     .purchasedUnitQuantity(unitQuantity)
                     .availableUnitQuantity(unitQuantity) // Initially same as purchased
-                    .costPerUnit(dto.getCostPerUnit())
-                    .retailPrice(dto.getUnitPrice())
+                    .freeQuantity(dto.getFreeQuantity())
+                    .wholesalePrice(dto.getUnitPrice())
+                    .retailPrice(dto.getRetailPrice())
                     .discount(dto.getDiscountAmount())
                     .batchStatus(BatchStatus.AVAILABLE)
                     .dateReceived(LocalDate.now())

@@ -16,52 +16,59 @@ import java.time.LocalDateTime;
 
 @Service
 public class ProductWholesalePriceServiceImpl implements ProductWholesalePriceService {
-    private final ProductWholesalePriceRepo retailPriceRepository;
+    private final ProductWholesalePriceRepo wholesalePriceRepo;
     private final ProductWholesalePriceMapper productWholesalePriceMapper;
     private final ProductService productService;
     private final ProductMapper productMapper;
 
-    public ProductWholesalePriceServiceImpl(ProductWholesalePriceRepo retailPriceRepository,
+    public ProductWholesalePriceServiceImpl(ProductWholesalePriceRepo wholesalePriceRepo,
                                             ProductWholesalePriceMapper productWholesalePriceMapper,
                                             ProductService productService, ProductMapper productMapper) {
-        this.retailPriceRepository = retailPriceRepository;
+        this.wholesalePriceRepo = wholesalePriceRepo;
         this.productWholesalePriceMapper = productWholesalePriceMapper;
         this.productService = productService;
         this.productMapper = productMapper;
     }
-
+    /**
+     * This method checks if the new unit price is different from the most recent wholesale price for the product.
+     * If it is different, it updates the most recent wholesale price to have an end date and creates a new wholesale price
+     * with the new unit price.
+     *
+     * @param productId    The ID of the product to update the wholesale price for
+     * @param newUnitPrice The new unit price to set
+     */
     @Override
-    public void checkAndUpdateRetailPrice(Long productId, BigDecimal newUnitPrice) {
+    public void checkAndUpdateWholesalePrice(Long productId, BigDecimal newUnitPrice) {
         Logger logger = LoggerFactory.getLogger(ProductWholesalePriceServiceImpl.class);
         Product product =productMapper.toEntity(productService.getProductById(productId)) ;
         if (newUnitPrice == null) {
             throw new IllegalArgumentException("New unit price cannot be null");
         }
         try {
-            ProductWholesalePrice mostRecentPrice = retailPriceRepository
+            ProductWholesalePrice mostRecentPrice = wholesalePriceRepo
                     .findTopByProductAndEndDateIsNullOrderByEffectiveDateDesc(product)
                     .orElse(null);
 
             //Add the logic to calculate the suggested retail price here if there is one
             BigDecimal suggestedRetailPrice = newUnitPrice;
 
-            if (mostRecentPrice == null || !mostRecentPrice.getRetailPrice().equals(suggestedRetailPrice)) {
+            if (mostRecentPrice == null || !mostRecentPrice.getWholesalePrice().equals(suggestedRetailPrice)) {
 
                 if (mostRecentPrice != null) {
                     mostRecentPrice.setEndDate(LocalDateTime.now());
-                    retailPriceRepository.save(mostRecentPrice);
+                    wholesalePriceRepo.save(mostRecentPrice);
                 }
 
-                ProductWholesalePrice newRetailPrice = new ProductWholesalePrice();
-                newRetailPrice.setProduct(product);
-                newRetailPrice.setRetailPrice(suggestedRetailPrice);
-                newRetailPrice.setEffectiveDate(LocalDateTime.now());
-                newRetailPrice.setCreatedBy("Purchase Order");
-                retailPriceRepository.save(newRetailPrice);
+                ProductWholesalePrice newWholesalePrice = new ProductWholesalePrice();
+                newWholesalePrice.setProduct(product);
+                newWholesalePrice.setWholesalePrice(suggestedRetailPrice);
+                newWholesalePrice.setEffectiveDate(LocalDateTime.now());
+                newWholesalePrice.setCreatedBy("Purchase Order");
+                wholesalePriceRepo.save(newWholesalePrice);
 
                 logger.info("Updated retail price for product: {} from {} to {}",
                         product.getProductId(),
-                        mostRecentPrice != null ? mostRecentPrice.getRetailPrice() : "N/A",
+                        mostRecentPrice != null ? mostRecentPrice.getWholesalePrice() : "N/A",
                         suggestedRetailPrice);
             }
         } catch (Exception e) {

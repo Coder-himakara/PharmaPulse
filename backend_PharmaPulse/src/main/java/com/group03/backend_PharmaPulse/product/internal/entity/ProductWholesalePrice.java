@@ -34,6 +34,6 @@ public class ProductWholesalePrice {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @Column(name = "retail_price", nullable = false)
-    private BigDecimal retailPrice;
+    @Column(name = "wholesale_price", nullable = false)
+    private BigDecimal wholesalePrice;
 }

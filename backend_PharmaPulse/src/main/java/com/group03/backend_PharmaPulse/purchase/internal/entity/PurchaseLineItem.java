@@ -17,10 +17,10 @@ import java.time.LocalDate;
 @Table(name = "purchase_line_item")
 public class PurchaseLineItem extends LineItem {
 
-    private BigDecimal costPerUnit;
-    private BigDecimal totalCost;
     private LocalDate manufactureDate;
     private LocalDate  expiryDate;
-    private BigDecimal unitPrice; //check and rename.Retail price of the product
+    private BigDecimal unitPrice;
+    private BigDecimal totalPrice;
+    private BigDecimal retailPrice;
     private Long purchaseInvoice;
 }
