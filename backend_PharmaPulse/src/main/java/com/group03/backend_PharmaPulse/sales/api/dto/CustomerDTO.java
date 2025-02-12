@@ -1,6 +1,5 @@
 package com.group03.backend_PharmaPulse.sales.api.dto;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
