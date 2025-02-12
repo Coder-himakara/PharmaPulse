@@ -1,12 +1,12 @@
 package com.group03.backend_PharmaPulse.product.internal.serviceImpl;
 
-import com.group03.backend_PharmaPulse.product.api.ProductRetailPriceService;
+import com.group03.backend_PharmaPulse.product.api.ProductWholesalePriceService;
 import com.group03.backend_PharmaPulse.product.api.ProductService;
 import com.group03.backend_PharmaPulse.product.internal.entity.Product;
-import com.group03.backend_PharmaPulse.product.internal.entity.ProductRetailPrice;
+import com.group03.backend_PharmaPulse.product.internal.entity.ProductWholesalePrice;
 import com.group03.backend_PharmaPulse.product.internal.mapper.ProductMapper;
-import com.group03.backend_PharmaPulse.product.internal.mapper.ProductRetailPriceMapper;
-import com.group03.backend_PharmaPulse.product.internal.repository.ProductRetailPriceRepo;
+import com.group03.backend_PharmaPulse.product.internal.mapper.ProductWholesalePriceMapper;
+import com.group03.backend_PharmaPulse.product.internal.repository.ProductWholesalePriceRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,30 +15,30 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
-public class ProductRetailPriceServiceImpl implements ProductRetailPriceService {
-    private final ProductRetailPriceRepo retailPriceRepository;
-    private final ProductRetailPriceMapper productRetailPriceMapper;
+public class ProductWholesalePriceServiceImpl implements ProductWholesalePriceService {
+    private final ProductWholesalePriceRepo retailPriceRepository;
+    private final ProductWholesalePriceMapper productWholesalePriceMapper;
     private final ProductService productService;
     private final ProductMapper productMapper;
 
-    public ProductRetailPriceServiceImpl(ProductRetailPriceRepo retailPriceRepository,
-                                         ProductRetailPriceMapper productRetailPriceMapper,
-                                         ProductService productService,ProductMapper productMapper) {
+    public ProductWholesalePriceServiceImpl(ProductWholesalePriceRepo retailPriceRepository,
+                                            ProductWholesalePriceMapper productWholesalePriceMapper,
+                                            ProductService productService, ProductMapper productMapper) {
         this.retailPriceRepository = retailPriceRepository;
-        this.productRetailPriceMapper = productRetailPriceMapper;
+        this.productWholesalePriceMapper = productWholesalePriceMapper;
         this.productService = productService;
         this.productMapper = productMapper;
     }
 
     @Override
-    public void checkAndUpdateRetailPrice(String productId, BigDecimal newUnitPrice) {
-        Logger logger = LoggerFactory.getLogger(ProductRetailPriceServiceImpl.class);
+    public void checkAndUpdateRetailPrice(Long productId, BigDecimal newUnitPrice) {
+        Logger logger = LoggerFactory.getLogger(ProductWholesalePriceServiceImpl.class);
         Product product =productMapper.toEntity(productService.getProductById(productId)) ;
         if (newUnitPrice == null) {
             throw new IllegalArgumentException("New unit price cannot be null");
         }
         try {
-            ProductRetailPrice mostRecentPrice = retailPriceRepository
+            ProductWholesalePrice mostRecentPrice = retailPriceRepository
                     .findTopByProductAndEndDateIsNullOrderByEffectiveDateDesc(product)
                     .orElse(null);
 
@@ -52,7 +52,7 @@ public class ProductRetailPriceServiceImpl implements ProductRetailPriceService 
                     retailPriceRepository.save(mostRecentPrice);
                 }
 
-                ProductRetailPrice newRetailPrice = new ProductRetailPrice();
+                ProductWholesalePrice newRetailPrice = new ProductWholesalePrice();
                 newRetailPrice.setProduct(product);
                 newRetailPrice.setRetailPrice(suggestedRetailPrice);
                 newRetailPrice.setEffectiveDate(LocalDateTime.now());

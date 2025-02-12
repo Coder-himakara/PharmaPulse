@@ -1,6 +1,6 @@
 package com.group03.backend_PharmaPulse.purchase.internal.serviceImpl;
 
-import com.group03.backend_PharmaPulse.product.api.ProductRetailPriceService;
+import com.group03.backend_PharmaPulse.product.api.ProductWholesalePriceService;
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseLineItemDTO;
 import com.group03.backend_PharmaPulse.shared.InvoiceReference;
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
@@ -24,18 +24,18 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
     private final PurchaseInvoiceMapper purchaseInvoiceMapper;
     private final PurchaseLineItemMapper purchaseLineItemMapper;
     private final PurchaseLineItemService purchaseLineItemService;
-    private final ProductRetailPriceService productRetailPriceService;
+    private final ProductWholesalePriceService productWholesalePriceService;
 
     public PurchaseInvoiceServiceImpl(PurchaseInvoiceRepo purchaseInvoiceRepo,
                                       PurchaseInvoiceMapper purchaseInvoiceMapper,
                                       PurchaseLineItemMapper purchaseLineItemMapper,
                                       PurchaseLineItemService purchaseLineItemService,
-                                      ProductRetailPriceService productRetailPriceService) {
+                                      ProductWholesalePriceService productWholesalePriceService) {
         this.purchaseInvoiceRepo = purchaseInvoiceRepo;
         this.purchaseInvoiceMapper = purchaseInvoiceMapper;
         this.purchaseLineItemMapper = purchaseLineItemMapper;
         this.purchaseLineItemService = purchaseLineItemService;
-        this.productRetailPriceService = productRetailPriceService;
+        this.productWholesalePriceService = productWholesalePriceService;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
                 purchaseLineItemService.addPurchaseLineItems(purchaseLineItemMapper.toEntityList(purchaseLineItems));
                 //Check and Update the Retail Price of the Product
                 for(PurchaseLineItemDTO lineItemDTO : purchaseLineItems){
-                    productRetailPriceService.checkAndUpdateRetailPrice
+                    productWholesalePriceService.checkAndUpdateRetailPrice
                             (lineItemDTO.getProductId(),lineItemDTO.getUnitPrice());
                 }
             }else{

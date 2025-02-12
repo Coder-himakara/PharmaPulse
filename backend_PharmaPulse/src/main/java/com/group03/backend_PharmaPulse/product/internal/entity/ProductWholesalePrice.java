@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "product_retailPrice")
-public class ProductRetailPrice {
+@Table(name = "product_wholesale_price")
+public class ProductWholesalePrice {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "retail_price_id_seq")
     private Long priceId;

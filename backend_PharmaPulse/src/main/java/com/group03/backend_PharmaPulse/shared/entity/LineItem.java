@@ -14,7 +14,7 @@ public abstract class LineItem {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "line_item_id_seq")
     private Long lineItemId;
 
-    private String productId;
+    private Long productId;
     private Integer quantityByPackage;
     private Integer freeQuantity;
     private Integer conversionFactor;  // how many units in a package

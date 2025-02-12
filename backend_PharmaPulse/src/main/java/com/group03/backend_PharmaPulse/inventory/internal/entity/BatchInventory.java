@@ -22,7 +22,7 @@ public class BatchInventory {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "batch_id_seq")
     private Long batchId;
 
-    private String productId;
+    private Long productId;
 
     private Long purchaseInvoiceNo;
 

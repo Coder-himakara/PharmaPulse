@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @EnableJpaRepositories
-public interface ProductRepo extends JpaRepository<Product,String> {
+public interface ProductRepo extends JpaRepository<Product,Long> {
 }

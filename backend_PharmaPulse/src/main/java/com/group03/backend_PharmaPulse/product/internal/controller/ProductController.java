@@ -27,7 +27,7 @@ public class ProductController {
         );
     }
     @GetMapping("/{id}")
-    public ResponseEntity<StandardResponse> getProductsById(@PathVariable String id) {
+    public ResponseEntity<StandardResponse> getProductsById(@PathVariable Long id) {
         ProductDTO selectedProduct = productService.getProductById(id);
         return new ResponseEntity<>(
                 new StandardResponse(201,"Success",selectedProduct),
@@ -43,7 +43,7 @@ public class ProductController {
         );
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse> updateProducts(@Valid @PathVariable String id,
+    public ResponseEntity<StandardResponse> updateProducts(@Valid @PathVariable Long id,
                                                            @RequestBody ProductDTO productDTO) {
         ProductDTO updatedProducts=productService.updateProduct(id,productDTO);
         return new ResponseEntity<>(

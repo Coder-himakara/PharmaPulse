@@ -22,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO getProductById(String id) {
+    public ProductDTO getProductById(Long id) {
         Optional<Product> product = productRepo.findById(id);
         return product.map(productMapper::toDTO)
                 .orElseThrow(() -> new NotFoundException("Product not found"));
@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(String id, ProductDTO productDTO) {
+    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
        Optional<Product> product = productRepo.findById(id);
         if (product.isPresent()) {
             Product updatedProduct = productMapper.toEntity(productDTO);
@@ -56,7 +56,8 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException("No Products found");
         }
     }
-    public Product findProductById(String id) {
+
+    public Product findProductById(Long id) {
         return  productRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Product not found"));
     }
