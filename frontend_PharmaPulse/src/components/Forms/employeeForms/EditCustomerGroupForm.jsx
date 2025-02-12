@@ -75,7 +75,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
       onSubmit={handleSubmit}
       className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
     >
-      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg">
+      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
         Edit Customer Group
       </h2>
 
