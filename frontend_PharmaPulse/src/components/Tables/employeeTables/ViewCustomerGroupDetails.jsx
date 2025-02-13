@@ -5,32 +5,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 const ViewCustomerGroupDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const customerGroups = location.state?.customerGroups;
+  const customerGroup = location.state?.customerGroup;
 
   return (
     <div className="max-w-md p-6 mx-auto mt-10 bg-[#e6eef3] rounded-lg shadow-md">
       <h2 className="mb-4 text-xl font-bold text-center text-[var(--card-text-color)]">
-        Customer Details
+        Customer Group Details
       </h2>
       <div className="flex items-center justify-center mb-4"></div>
       <ul className="text-left ">
         <li>
-          <strong>Customer Group Id:</strong> {customerGroups.customerGroupId}
-        </li>
-        <li>
           <strong>Customer Group Name:</strong>{" "}
-          {customerGroups.customerGroupName}
+          {customerGroup.customerGroupName}
         </li>
         <li>
-          <strong>Assign Sales Rep Id:</strong>{" "}
-          {customerGroups.assignSalesRepId}
+          <strong>Assign Sales Rep Id:</strong> {customerGroup.assignSalesRepId}
         </li>
         <li>
           <strong>Assign Sales Rep Name:</strong>{" "}
-          {customerGroups.assignSalesRepName}
+          {customerGroup.assignSalesRepName}
         </li>
         <li>
-          <strong>Location:</strong> {customerGroups.location}
+          <strong>Location:</strong> {customerGroup.location}
         </li>
       </ul>
       <div className="flex justify-center mt-4">

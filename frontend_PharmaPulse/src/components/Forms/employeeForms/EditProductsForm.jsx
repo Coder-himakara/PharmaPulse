@@ -262,7 +262,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           htmlFor="reorderLimit"
           className="text-[16px] text-gray-800 w-2/3"
         >
-          Record Limit By Selling Unit:
+          Reorder Limit By Selling Unit:
         </label>
         <input
           type="text"

@@ -21,7 +21,7 @@ const ViewSupplierDetails = () => {
           <strong>Supplier Address:</strong> {supplier.supplierAddress}
         </li>
         <li>
-          <strong> contactNumber:</strong> {supplier.contactNumber}
+          <strong>Contact Number:</strong> {supplier.contactNumber}
         </li>
         <li>
           <strong>Purchase Group:</strong> {supplier.purchaseGroup}

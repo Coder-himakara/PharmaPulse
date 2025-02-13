@@ -39,9 +39,15 @@ const AddProductsForm = ({ onAddProduct }) => {
     if (
       !formData.productName ||
       !formData.genericName ||
+      !formData.description ||
       !formData.purchaseGroupName ||
+      !formData.modelNo ||
+      !formData.category ||
+      !formData.dosageForm ||
+      !formData.sellingUnit ||
+      !formData.packageType ||
       !formData.status ||
-      !formData.category
+      !formData.reorderLimit
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;

@@ -27,6 +27,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
       state: { purchaseGroup },
     });
   };
+
   const handleViewPurchaseGroup = (purchaseGroup) => {
     navigate(`/view-purchase-group/${purchaseGroup.purchaseGroupId}`, {
       state: { purchaseGroup },
@@ -74,7 +75,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
                 "Purchase Group Name",
                 "Address",
                 "Contact Name",
-                "Telephone No",
+                "Phone Number",
                 "Email",
                 "Fax",
                 "Action",
@@ -102,7 +103,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
                   {purchaseGroup.contactName}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.telePhoneNo}
+                  {purchaseGroup.phoneNo}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
                   {purchaseGroup.email}

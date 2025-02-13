@@ -7,7 +7,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
     purchaseGroupName: '',
     address: '',
     contactName: '',
-    telePhoneNo: '',
+    phoneNo: '',
     email: '',
     fax: '',
   });
@@ -32,7 +32,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       !formData.purchaseGroupName.trim() ||
       !formData.address.trim() ||
       !formData.contactName.trim() ||
-      !formData.telePhoneNo.trim() ||
+      !formData.phoneNo.trim() ||
       !formData.email.trim() ||
       !formData.fax.trim()
     ) {
@@ -49,11 +49,10 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
 
     setTimeout(() => {
       setFormData({
-        purchaseGroupId: '',
         purchaseGroupName: '',
         address: '',
         contactName: '',
-        telePhoneNo: '',
+        phoneNo: '',
         email: '',
         fax: '',
       });
@@ -101,23 +100,6 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       </div>
 
       <div className='flex items-center justify-between mb-4'>
-        <label
-          htmlFor='purchaseGroupId'
-          className='text-[16px] text-gray-800 w-2/3'
-        >
-          Purchase Group Id:
-        </label>
-        <input
-          type='text'
-          id='purchaseGroupId'
-          name='purchaseGroupId'
-          value={formData.purchaseGroupId}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-        />
-      </div>
-
-      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='address' className='text-[16px] text-gray-800 w-2/3'>
           Address:
         </label>
@@ -148,19 +130,16 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
         />
       </div>
       <div className='flex items-center justify-between mb-4'>
-        <label
-          htmlFor='telePhoneNo'
-          className='text-[16px] text-gray-800 w-2/3'
-        >
-          Telephone No:
+        <label htmlFor='phoneNo' className='text-[16px] text-gray-800 w-2/3'>
+          Phone Number:
         </label>
         <input
           type='number'
-          id='telePhoneNo'
-          name='telePhoneNo'
-          value={formData.telePhoneNo}
+          id='phoneNo'
+          name='phoneNo'
+          value={formData.phoneNo}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          className='w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md'
         />
       </div>
 

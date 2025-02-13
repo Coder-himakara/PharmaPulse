@@ -9,7 +9,6 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    customerGroupId: "",
     customerGroupName: "",
     assignSalesRepId: "",
     assignSalesRepName: "",
@@ -22,7 +21,6 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   useEffect(() => {
     if (customerGroup) {
       setFormData({
-        customerGroupId: customerGroup.customerGroupId,
         customerGroupName: customerGroup.customerGroupName,
         assignSalesRepId: customerGroup.assignSalesRepId,
         assignSalesRepName: customerGroup.assignSalesRepName,
@@ -100,20 +98,6 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
           id="customerGroupName"
           name="customerGroupName"
           value={formData.customerGroupName}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-          readOnly
-        />
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="customerId" className="text-[16px] text-gray-800 w-2/3">
-          Customer Group ID:
-        </label>
-        <input
-          type="text"
-          id="customerGroupId"
-          name="customerGroupId"
-          value={formData.customerGroupId}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
           readOnly
         />

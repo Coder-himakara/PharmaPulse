@@ -15,7 +15,8 @@ const ViewPurchaseGroupDetails = () => {
       <div className="flex items-center justify-center mb-4"></div>
       <ul className="text-left ">
         <li>
-          <strong>Purchase Group Name:</strong> {purchaseGroup.supplierName}
+          <strong>Purchase Group Name:</strong>{" "}
+          {purchaseGroup.purchaseGroupName}
         </li>
         <li>
           <strong>Address:</strong> {purchaseGroup.address}
@@ -24,7 +25,7 @@ const ViewPurchaseGroupDetails = () => {
           <strong>Contact Name:</strong> {purchaseGroup.contactName}
         </li>
         <li>
-          <strong>Telephone No:</strong> {purchaseGroup.telePhoneNo}
+          <strong>Telephone No:</strong> {purchaseGroup.phoneNo}
         </li>
         <li>
           <strong>Email:</strong> {purchaseGroup.email}

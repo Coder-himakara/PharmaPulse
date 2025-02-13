@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   const [formData, setFormData] = useState({
-    customerGroupId: "",
     customerGroupName: "",
     assignSalesRepId: "",
     assignSalesRepName: "",
@@ -48,7 +47,6 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
     // Clear the form after a delay
     setTimeout(() => {
       setFormData({
-        customerGroupId: "",
         customerGroupName: "",
         assignSalesRepId: "",
         assignSalesRepName: "",
