@@ -189,7 +189,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
-      <div className='flex justify-center gap-2 mt-5'>
+      <div className='flex justify-center gap-2'>
         <button
           type='submit'
           className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'

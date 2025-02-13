@@ -182,7 +182,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
         />
       </div>
 
-      <div className="flex justify-center gap-2 mt-5">
+      <div className="flex justify-center gap-2">
         <button
           type="submit"
           className="px-5 py-2 bg-[#2a4d69] text-white rounded-md hover:bg-[#00796b]"
