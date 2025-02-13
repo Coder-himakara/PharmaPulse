@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ViewProductDetails = () => {
