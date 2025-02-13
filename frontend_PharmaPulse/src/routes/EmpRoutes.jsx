@@ -27,12 +27,15 @@ import PurchaseGroupInfoTable from "../components/Tables/employeeTables/Purchase
 import EditPurchaseGroupForm from "../components/Forms/employeeForms/EditPurchaseGroupForm";
 import ViewPurchaseGroupDetails from "../components/Tables/employeeTables/ViewPurchaseGroupDetails";
 
+import AddPurchaseInvoiceForm from "../components/Forms/employeeForms/AddPurchaseInvoiceForm";
+
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [customerGroups, setCustomerGroups] = useState([]);
   const [purchaseGroups, setPurchaseGroups] = useState([]);
+  const [purchaseInvoices, setPurchaseInvoices] = useState([]);
 
   const addProduct = (product) => {
     setProducts((prevProducts) => [...prevProducts, product]);
@@ -57,6 +60,13 @@ const EmpRoutes = () => {
     setPurchaseGroups((prevPurchaseGroups) => [
       ...prevPurchaseGroups,
       purchaseGroup,
+    ]);
+  };
+
+  const addPurchaseInvoice = (purchaseInvoice) => {
+    setPurchaseInvoices((prevPurchaseInvoices) => [
+      ...prevPurchaseInvoices,
+      purchaseInvoice,
     ]);
   };
 
@@ -196,6 +206,13 @@ const EmpRoutes = () => {
       <Route
         path="/view-purchase-group/:purchaseGroupId"
         element={<ViewPurchaseGroupDetails />}
+      />
+
+      <Route
+        path="/add-purchase-invoice"
+        element={
+          <AddPurchaseInvoiceForm onAddPurchaseInvoice={addPurchaseInvoice} />
+        }
       />
     </Routes>
   );
