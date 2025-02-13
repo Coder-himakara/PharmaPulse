@@ -29,6 +29,7 @@ import ViewPurchaseGroupDetails from "../components/Tables/employeeTables/ViewPu
 
 import AddPurchaseInvoiceForm from "../components/Forms/employeeForms/AddPurchaseInvoiceForm";
 import PurchaseInvoiceInfoTable from "../components/Tables/employeeTables/PurchaseInvoiceInfoTable";
+import EditPurchaseInvoiceForm from "../components/Forms/employeeForms/EditPurchaseInvoiceForm";
 
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
@@ -117,6 +118,17 @@ const EmpRoutes = () => {
         purchaseGroup.purchaseGroupId === updatedPurchaseGroup.purchaseGroupId
           ? updatedPurchaseGroup
           : purchaseGroup
+      )
+    );
+  };
+
+  const updatePurchaseInvoice = (updatedPurchaseInvoice) => {
+    setPurchaseInvoices((prevPurchaseInvoices) =>
+      prevPurchaseInvoices.map((purchaseInvoice) =>
+        purchaseInvoice.purchaseInvoiceId ===
+        updatedPurchaseInvoice.purchaseInvoiceId
+          ? updatedPurchaseInvoice
+          : purchaseInvoice
       )
     );
   };
@@ -219,6 +231,14 @@ const EmpRoutes = () => {
         path="/purchase-invoice-info"
         element={
           <PurchaseInvoiceInfoTable purchaseInvoices={purchaseInvoices} />
+        }
+      />
+      <Route
+        path="/edit-purchase-invoice/:purchaseInvoiceId"
+        element={
+          <EditPurchaseInvoiceForm
+            onUpdatePurchaseInvoice={updatePurchaseInvoice}
+          />
         }
       />
     </Routes>

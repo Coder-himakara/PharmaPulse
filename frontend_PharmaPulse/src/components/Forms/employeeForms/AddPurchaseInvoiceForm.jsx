@@ -111,7 +111,6 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         lineItems: [{ product: '', quantity: '', price: '' }],
       });
       setSuccessMessage('');
-      //navigate("/purchase-invoice-info");
     }, 2000);
   };
 
@@ -139,7 +138,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
 
       <div className='flex justify-between items-center mb-4'>
         <label htmlFor='purchaseNo' className='text-[16px] text-gray-800 w-2/3'>
-          Purchase Number
+          Purchase Number:
         </label>
         <input
           type='number'
@@ -152,7 +151,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
 
       <div className='flex justify-between items-center mb-4'>
         <label htmlFor='supplierId' className='text-[16px] text-gray-800 w-2/3'>
-          Supplier ID
+          Supplier ID:
         </label>
         <select
           id='supplierId'
@@ -172,7 +171,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           htmlFor='purchaseOrderRef'
           className='text-[16px] text-gray-800 w-2/3'
         >
-          Purchase Order Reference
+          Purchase Order Reference:
         </label>
         <input
           type='text'
@@ -188,7 +187,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           htmlFor='purchaseInvoiceId'
           className='text-[16px] text-gray-800 w-2/3'
         >
-          Purchase Invoice ID
+          Purchase Invoice ID:
         </label>
         <input
           type='long'
@@ -204,7 +203,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           htmlFor='invoiceStatus'
           className='text-[16px] text-gray-800 w-2/3'
         >
-          Invoice Status
+          Invoice Status:
         </label>
         <select
           id='invoiceStatus'
@@ -226,7 +225,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           htmlFor='invoiceDate'
           className='text-[16px] text-gray-800 w-2/3'
         >
-          Invoice Date
+          Invoice Date:
         </label>
         <input
           type='date'
@@ -239,7 +238,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
 
       <div className='flex justify-between items-center mb-4'>
         <label htmlFor='invoiceNo' className='text-[16px] text-gray-800 w-2/3'>
-          Invoice Number
+          Invoice Number:
         </label>
         <input
           type='number'
@@ -255,7 +254,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           htmlFor='paymentType'
           className='text-[16px] text-gray-800 w-2/3'
         >
-          Payment Type
+          Payment Type:
         </label>
         <select
           id='paymentType'
@@ -336,7 +335,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           htmlFor='discountAmount'
           className='text-[16px] text-gray-800 w-2/3'
         >
-          Discount Amount
+          Discount Amount:
         </label>
         <input
           type='number'
