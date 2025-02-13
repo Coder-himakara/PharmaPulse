@@ -28,6 +28,7 @@ import EditPurchaseGroupForm from "../components/Forms/employeeForms/EditPurchas
 import ViewPurchaseGroupDetails from "../components/Tables/employeeTables/ViewPurchaseGroupDetails";
 
 import AddPurchaseInvoiceForm from "../components/Forms/employeeForms/AddPurchaseInvoiceForm";
+import PurchaseInvoiceInfoTable from "../components/Tables/employeeTables/PurchaseInvoiceInfoTable";
 
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
@@ -212,6 +213,12 @@ const EmpRoutes = () => {
         path="/add-purchase-invoice"
         element={
           <AddPurchaseInvoiceForm onAddPurchaseInvoice={addPurchaseInvoice} />
+        }
+      />
+      <Route
+        path="/purchase-invoice-info"
+        element={
+          <PurchaseInvoiceInfoTable purchaseInvoices={purchaseInvoices} />
         }
       />
     </Routes>
