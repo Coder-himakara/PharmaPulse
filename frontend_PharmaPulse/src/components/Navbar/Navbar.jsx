@@ -93,7 +93,7 @@ const Navbar = () => {
 
             // Make only navbar main items (Partners, Products, etc.) white
             label: {
-              className: `${isDarkMode ? "text-gray-300 hover:bg-gray-700 hover:text-white active:bg-gray-700 active:text-white " : "text-gray-300 hover:bg-teal-700 hover:text-white active:bg-teal-700 active:text-white"} border-none`,
+              className: `${isDarkMode ? "text-gray-400 hover:bg-gray-700 hover:text-white active:bg-gray-700 active:text-white " : "text-gray-400 hover:bg-teal-700 hover:text-white active:bg-teal-700 active:text-white"} border-none`,
             },
             icon: { className: "text-white font-bold" },
 

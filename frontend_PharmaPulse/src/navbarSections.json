@@ -69,7 +69,10 @@
       [
         {
           "label": "Purchase",
-          "items": [{ "label": "Add Invoice" }, { "label": "Invoice Info" }]
+          "items": [
+            { "label": "Add Invoice", "url": "add-purchase-invoice" },
+            { "label": "Invoice Info", "url": "purchase-invoice-info" }
+          ]
         }
       ],
       [{ "label": "Sale Invoice", "items": [{ "label": "Invoice Info" }] }],
