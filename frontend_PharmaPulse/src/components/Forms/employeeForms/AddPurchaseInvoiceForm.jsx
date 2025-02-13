@@ -136,7 +136,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         </p>
       )}
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='purchaseNo' className='text-[16px] text-gray-800 w-2/3'>
           Purchase Number:
         </label>
@@ -145,11 +145,11 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           name='purchaseNo'
           value={invoiceData.purchaseNo}
           onChange={handleInputChange}
-          className='w-2/3 px-2 py-2 border border-red-500 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-red-500 rounded-md'
         />
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='supplierId' className='text-[16px] text-gray-800 w-2/3'>
           Supplier ID:
         </label>
@@ -158,7 +158,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           name='supplierId'
           value={invoiceData.supplierId}
           onChange={handleInputChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         >
           <option value=''>Choose a supplier</option>
           <option value='S001'>S001</option>
@@ -166,7 +166,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         </select>
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='purchaseOrderRef'
           className='text-[16px] text-gray-800 w-2/3'
@@ -178,11 +178,11 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           name='purchaseOrderRef'
           value={invoiceData.purchaseOrderRef}
           onChange={handleInputChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='purchaseInvoiceId'
           className='text-[16px] text-gray-800 w-2/3'
@@ -194,11 +194,11 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           name='purchaseInvoiceId'
           value={invoiceData.purchaseInvoiceId}
           onChange={handleInputChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='invoiceStatus'
           className='text-[16px] text-gray-800 w-2/3'
@@ -210,7 +210,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           name='invoiceStatus'
           value={invoiceData.invoiceStatus}
           onChange={handleInputChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         >
           <option value=''>Choose a status</option>
           <option value='PAID'>Paid</option>
@@ -220,7 +220,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         </select>
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='invoiceDate'
           className='text-[16px] text-gray-800 w-2/3'
@@ -232,11 +232,11 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           name='invoiceDate'
           value={invoiceData.invoiceDate}
           onChange={handleInputChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='invoiceNo' className='text-[16px] text-gray-800 w-2/3'>
           Invoice Number:
         </label>
@@ -245,11 +245,11 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           name='invoiceNo'
           value={invoiceData.invoiceNo}
           onChange={handleInputChange}
-          className='w-2/3 px-2 py-2 border border-red-500 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-red-500 rounded-md'
         />
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='paymentType'
           className='text-[16px] text-gray-800 w-2/3'
@@ -261,12 +261,12 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           name='paymentType'
           value={invoiceData.paymentType}
           onChange={handleInputChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         >
           <option value=''>Choose a payment type</option>
           <option value='CASH'>Cash</option>
-          <option value='CREDIT'>Credit</option>
           <option value='CHEQUE'>Cheque</option>
+          <option value='CONLINE TRANSACTION'>Online Transaction</option>
         </select>
       </div>
 
@@ -284,7 +284,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               onChange={(e) =>
                 handleLineItemChange(index, 'product', e.target.value)
               }
-              className='w-1/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+              className='w-1/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
             />
             <input
               type='number'
@@ -297,7 +297,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
                   parseInt(e.target.value),
                 )
               }
-              className='w-1/3 px-2 py-2 border border-red-500 rounded-md text-sm'
+              className='w-1/3 px-2 py-2 text-sm border border-red-500 rounded-md'
               min='1'
             />
             <input
@@ -307,7 +307,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               onChange={(e) =>
                 handleLineItemChange(index, 'price', parseFloat(e.target.value))
               }
-              className='w-1/3 px-2 py-2 border border-red-500 rounded-md text-sm'
+              className='w-1/3 px-2 py-2 text-sm border border-red-500 rounded-md'
               min='0'
             />
             <button
@@ -330,7 +330,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         </div>
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='discountAmount'
           className='text-[16px] text-gray-800 w-2/3'
@@ -343,16 +343,16 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           value={invoiceData.discountAmount}
           onChange={(e) => handleInputChange(e)}
           onBlur={calculateTotals}
-          className='w-2/3 px-2 py-2 border border-red-500 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-red-500 rounded-md'
           min='0'
         />
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <strong>Total Amount: </strong> {invoiceData.totalAmount.toFixed(2)}
       </div>
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <strong>Net Amount: </strong> {invoiceData.netAmount.toFixed(2)}
       </div>
 
