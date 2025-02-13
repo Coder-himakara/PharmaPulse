@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
@@ -60,10 +59,10 @@ const CustomersInfoTable = ({ customers }) => {
           <thead>
             <tr>
               <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Customer Name
+                Customer ID
               </th>
               <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Customer ID
+                Customer Name
               </th>
               <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
                 Status
@@ -92,16 +91,19 @@ const CustomersInfoTable = ({ customers }) => {
             {filteredCustomers.map((customer, index) => (
               <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
                 <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                  {customer.customerName}
+                  {customer.customerId}
                 </td>
                 <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                  {customer.customerId}
+                  {customer.customerName}
                 </td>
                 <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   {customer.status}
                 </td>
                 <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   {customer.creditLimit}
+                </td>
+                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                  {customer.creditPeriod}
                 </td>
                 <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   {customer.email}

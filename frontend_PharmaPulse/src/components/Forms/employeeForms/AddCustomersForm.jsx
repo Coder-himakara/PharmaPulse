@@ -2,6 +2,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { FaSearch } from "react-icons/fa"; // Importing search icon
 
 const AddCustomersForm = ({ onAddCustomer }) => {
   const formatDate = (date) => {
@@ -45,7 +46,20 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     e.preventDefault();
 
     // Validation: Check if all required fields are filled
-    if (Object.values(formData).some((value) => value.trim() === "")) {
+    if (
+      !formData.customerName ||
+      !formData.address ||
+      !formData.contactName ||
+      !formData.nic ||
+      !formData.brcNo ||
+      !formData.email ||
+      !formData.phoneNo ||
+      !formData.customerGroup ||
+      !formData.status ||
+      !formData.registeredDate ||
+      !formData.creditLimit ||
+      !formData.creditPeriod
+    ) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
@@ -164,22 +178,67 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         />
       </div>
 
-      {/* Registered Date - Display as text */}
+      {/* NIC */}
       <div className="flex items-center justify-between mb-4">
-        <label
-          htmlFor="registeredDate"
-          className="text-[16px] text-gray-800 w-2/3"
-        >
-          Registered Date:
+        <label htmlFor="brcNo" className="text-[16px] text-gray-800 w-2/3">
+          Businesses Registration Number:
         </label>
         <input
           type="text"
-          id="registeredDate"
-          name="registeredDate"
-          value={formData.registeredDate}
-          readOnly
-          className="w-2/3 px-2 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md"
+          id="brcNo"
+          name="brcNo"
+          value={formData.brcNo}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="email" className="text-[16px] text-gray-800 w-2/3">
+          Email:
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="phoneNo" className="text-[16px] text-gray-800 w-2/3">
+          Phone Number:
+        </label>
+        <input
+          type="number"
+          id="phoneNo"
+          name="phoneNo"
+          value={formData.phoneNo}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="customerGroup"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Customer Group:
+        </label>
+        <div className="relative w-2/3">
+          <input
+            type="text"
+            id="customerGroup"
+            name="customerGroup"
+            value={formData.customerGroup}
+            onChange={handleChange}
+            className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
+          />
+          <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
+        </div>
       </div>
 
       {/* Status */}
@@ -201,6 +260,24 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         </select>
       </div>
 
+      {/* Registered Date - Display as text */}
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="registeredDate"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Registered Date:
+        </label>
+        <input
+          type="text"
+          id="registeredDate"
+          name="registeredDate"
+          value={formData.registeredDate}
+          readOnly
+          className="w-2/3 px-2 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md"
+        />
+      </div>
+
       {/* Credit Limit */}
       <div className="flex items-center justify-between mb-4">
         <label
@@ -216,6 +293,24 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           value={formData.creditLimit}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      {/* Credit Period */}
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="creditPeriod"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Credit Period:
+        </label>
+        <input
+          type="number"
+          id="creditPeriod"
+          name="creditPeriod"
+          value={formData.creditPeriod}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
         />
       </div>
 

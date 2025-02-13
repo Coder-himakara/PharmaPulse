@@ -26,7 +26,7 @@ const ViewCustomerDetails = () => {
           <strong>NIC:</strong> {customer.nic}
         </li>
         <li>
-          <strong>BRC:</strong> {customer.brc}
+          <strong>Businesses Registration No:</strong> {customer.brcNo}
         </li>
         <li>
           <strong>Email:</strong> {customer.email}
