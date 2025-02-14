@@ -12,7 +12,7 @@ import {
 import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
 import { MegaMenu } from "primereact/megamenu";
-import navbarSections from "../../navbarSections.json"; // Import the JSON file
+
 
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
   <li>
@@ -59,6 +59,121 @@ const Navbar = () => {
       navigate(event.item.url);
     }
   };
+  const EmployeeNavbarSections=
+  [
+    
+    {
+      "label": "Partners",
+      "icon": "pi pi-users text-white",
+      "items": [
+        [
+          {
+            "label": "Customers Group",
+            "items": [
+              { "label": "Add Customer Group", "url": "add-customer-group" },
+              { "label": "Customer Group Info", "url": "customer-group-info" }
+            ]
+          }
+        ],
+        [
+          {
+            "label": "Customer",
+            "items": [
+              { "label": "Add Customer", "url": "add-customers" },
+              { "label": "Customer Info", "url": "customers-info" }
+            ]
+          }
+        ],
+        [
+          {
+            "label": "Purchase Group",
+            "items": [
+              { "label": "Add Purchase Group", "url": "add-purchase-group" },
+              { "label": "Purchase Group Info", "url": "purchase-group-info" }
+            ]
+          }
+        ],
+        [
+          {
+            "label": "Supplier",
+            "items": [
+              { "label": "Add Supplier", "url": "add-suppliers" },
+              { "label": "Supplier Info", "url": "suppliers-info" }
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "label": "Products",
+      "icon": "pi pi-shopping-cart text-white",
+      "items": [
+        [
+          {
+            "label": "Products",
+            "items": [
+              { "label": "Add Products", "url": "add-products" },
+              { "label": "Products Info", "url": "products-info" }
+            ]
+          }
+        ],
+        [
+          {
+            "label": "Product Retail Price",
+            "items": [{ "label": "Retail Price Info" }]
+          }
+        ]
+      ]
+    },
+    {
+      "label": "Invoicing",
+      "icon": "pi pi-file-edit text-white",
+      "items": [
+        [
+          {
+            "label": "Purchase",
+            "items": [
+              { "label": "Add Invoice", "url": "add-purchase-invoice" },
+              { "label": "Invoice Info", "url": "purchase-invoice-info" }
+            ]
+          }
+        ],
+        [{ "label": "Sale Invoice", "items": [{ "label": "Invoice Info" }] }],
+        [{ "label": "Purchase Return" }],
+        [{ "label": "Sales Return" }]
+      ]
+    },
+    {
+      "label": "Payment",
+      "icon": "pi pi-credit-card text-white",
+      "items": [
+        [
+          {
+            "label": "Supplier Payment",
+            "items": [{ "label": "Add Payment" }, { "label": "Payment Info" }]
+          }
+        ],
+        [{ "label": "Customer Payment" }],
+        [
+          {
+            "label": "Outstanding Balance",
+            "items": [{ "label": "Customer" }, { "label": "Supplier" }]
+          }
+        ],
+        [{ "label": "Cheque Management" }]
+      ]
+    },
+    {
+      "label": "Inventory",
+      "icon": "pi pi-box text-white"
+    },
+    {
+      "label": "Report",
+      "icon": "pi pi-chart-line text-white"
+    }
+  ]
+  
+  
 
   return (
     <div
@@ -74,8 +189,8 @@ const Navbar = () => {
       {/* Mega Menu (Icons & Text White) */}
       <div className="hidden md:block">
         <MegaMenu
-          model={navbarSections}
-          onMenuItemClick={handleMenuClick}
+         model={EmployeeNavbarSections}
+         MenuItemClick={handleMenuClick}
           breakpoint="960px"
           pt={{
             root: {

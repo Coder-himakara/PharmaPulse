@@ -2,21 +2,19 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { FaSearch } from "react-icons/fa"; // Importing search icon
 
 const AddProductsForm = ({ onAddProduct }) => {
   const [formData, setFormData] = useState({
+    purchaseGroupId:"",
+    productRefId:"",
     productName: "",
     genericName: "",
     description: "",
-    purchaseGroupName: "",
-    modelNo: "",
     category: "",
-    dosageForm: "",
-    sellingUnit: "",
     packageType: "",
-    status: "",
-    reorderLimit: "",
+    unitsPerPackage:"",
+    productStatus: "",
+    reorderLimitByPackage: "",
   });
 
   const navigate = useNavigate();
@@ -38,16 +36,16 @@ const AddProductsForm = ({ onAddProduct }) => {
     // Basic validation
     if (
       !formData.productName ||
-      !formData.genericName ||
+      !formData.purchaseGroupId||
+      !formData.productRefId||
+      !formData.productName ||
+      !formData.genericName||
       !formData.description ||
-      !formData.purchaseGroupName ||
-      !formData.modelNo ||
       !formData.category ||
-      !formData.dosageForm ||
-      !formData.sellingUnit ||
       !formData.packageType ||
-      !formData.status ||
-      !formData.reorderLimit
+      !formData.unitsPerPackage ||
+      !formData.productStatus ||
+      !formData.reorderLimitByPackage
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;
@@ -64,18 +62,17 @@ const AddProductsForm = ({ onAddProduct }) => {
     // Clear the form after a delay
     setTimeout(() => {
       setFormData({
+        purchaseGroupId:"",
+        productRefId:"",
         productName: "",
         genericName: "",
         description: "",
-        purchaseGroupName: "",
-        modelNo: "",
         category: "",
-        dosageForm: "",
-        sellingUnit: "",
         packageType: "",
-        status: "",
-        reorderLimit: "",
-      });
+        unitsPerPackage:"",
+        productStatus: "",
+        reorderLimitByPackage: "",
+       });
       setSuccessMessage("");
     }, 2000); // Wait for success message display before navigating
   };
@@ -104,10 +101,36 @@ const AddProductsForm = ({ onAddProduct }) => {
 
       <div className="flex items-center justify-between mb-4">
         <label
-          htmlFor="productName"
+          htmlFor="purchaseGroupId"
           className="text-[16px] text-gray-800 w-2/3"
         >
-          Product Name:
+          Purchase Group Id:
+        </label>
+        <input
+          type="text"
+          id="purchaseGroupId"
+          name="purchaseGroupId"
+          value={formData.purchaseGroupId}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="productRefId" className="text-[16px] text-gray-800 w-2/3">
+        Product Ref Id:
+        </label>
+        <input
+          type="text"
+          id="productRefId"
+          name="productRefId"
+          value={formData.productRefId}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="productName" className="text-[16px] text-gray-800 w-2/3">
+        Product Name:
         </label>
         <input
           type="text"
@@ -136,37 +159,24 @@ const AddProductsForm = ({ onAddProduct }) => {
         />
       </div>
 
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="modelNo" className="text-[16px] text-gray-800 w-2/3">
-          Model No:
-        </label>
-        <input
-          type="text"
-          id="modelNo"
-          name="modelNo"
-          value={formData.modelNo}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-      </div>
+     
 
       <div className="flex items-center justify-between mb-4">
         <label
-          htmlFor="purchaseGroupName"
+          htmlFor="description"
           className="text-[16px] text-gray-800 w-2/3"
         >
-          Purchase Group Name:
+         Description:
         </label>
         <div className="relative w-2/3">
           <input
             type="text"
-            id="purchaseGroupName"
-            name="purchaseGroupName"
-            value={formData.purchaseGroupName}
+            id="description"
+            name="description"
+            value={formData.description}
             onChange={handleChange}
             className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
           />
-          <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
         </div>
       </div>
 
@@ -182,56 +192,14 @@ const AddProductsForm = ({ onAddProduct }) => {
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         >
           <option value="">Choose a category</option>
-          <option value="OTC">OTC</option>
-          <option value="Prescription Medicine">Prescription Medicine</option>
+          <option value="MEDICINE">MEDICINE</option>
+          <option value="SERGICAL">SERGICAL</option>
         </select>
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="dosageForm" className="text-[16px] text-gray-800 w-2/3">
-          Dosage Form:
-        </label>
-        <select
-          id="dosageForm"
-          name="dosageForm"
-          value={formData.dosageForm}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        >
-          <option value="">Choose a dosage form</option>
-          <option value="OTC">TABLET</option>
-          <option value="Capsule">CAPSULE</option>
-          <option value="Syrup">SYRUP</option>
-        </select>
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label
-          htmlFor="sellingUnit"
-          className="text-[16px] text-gray-800 w-2/3"
-        >
-          Selling Unit:
-        </label>
-        <select
-          id="sellingUnit"
-          name="sellingUnit"
-          value={formData.sellingUnit}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        >
-          <option value="">Choose a selling unit</option>
-          <option value="vial">VIAL</option>
-          <option value="bottle">BOTTLE</option>
-          <option value="blisterPack">BLISTER PACK</option>
-        </select>
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label
-          htmlFor="packageType"
-          className="text-[16px] text-gray-800 w-2/3"
-        >
-          Package Type:
+        <label htmlFor="packageType" className="text-[16px] text-gray-800 w-2/3">
+         Package Type:
         </label>
         <select
           id="packageType"
@@ -240,20 +208,40 @@ const AddProductsForm = ({ onAddProduct }) => {
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         >
-          <option value="">Choose a package type</option>
-          <option value="carton">CARTON</option>
-          <option value="box">BOX</option>
+          <option value="">Choose a packageType</option>
+          <option value="VIAL">VIAL</option>
+          <option value="BOTTEL">BOTTEL</option>
+          <option value="BOX">BOX</option>
+          <option value="BLISTER PACK">BLISTER PACK</option>
+          <option value="POUCH">POUCH</option>
         </select>
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="status" className="text-[16px] text-gray-800 w-2/3">
-          Status:
+        <label
+          htmlFor="unitsPerPackage"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Units Per Package:
+        </label>
+        <input
+          type="number"
+          id="unitsPerPackage"
+          name="unitsPerPackage"
+          value={formData.unitsPerPackage}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="productStatus" className="text-[16px] text-gray-800 w-2/3">
+        Product Status:
         </label>
         <select
-          id="status"
-          name="status"
-          value={formData.status}
+          id="productStatus"
+          name="productStatus"
+          value={formData.productStatus}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         >
@@ -266,34 +254,18 @@ const AddProductsForm = ({ onAddProduct }) => {
 
       <div className="flex items-center justify-between mb-4">
         <label
-          htmlFor="reorderLimit"
+          htmlFor="reorderLimitByPackage"
           className="text-[16px] text-gray-800 w-2/3"
         >
-          Reorder Limit By Selling Unit:
+          Reorder Limit By Package:
         </label>
         <input
           type="number"
-          id="reorderLimit"
-          name="reorderLimit"
-          value={formData.reorderLimit}
+          id="reorderLimitByPackage"
+          name="reorderLimitByPackage"
+          value={formData.reorderLimitByPackage}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm text-gray-800 border border-red-300 rounded-md"
-        />
-      </div>
-      <div className="flex items-center justify-between mb-4">
-        <label
-          htmlFor="description"
-          className="text-[16px] text-gray-800 w-2/3"
-        >
-          Description:
-        </label>
-        <input
-          type="text"
-          id="description"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md"
         />
       </div>
 

@@ -59,7 +59,10 @@ const ProductsInfoTable = ({ products }) => {
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Product ID
+                Purchase Group Id
+              </th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Product Ref Id
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Product Name
@@ -69,13 +72,10 @@ const ProductsInfoTable = ({ products }) => {
                 Generic Name
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Purchase Group Name
+                Product Status
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Status
-              </th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Reorder Limit
+                Reorder Limit By Package
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Action
@@ -86,23 +86,23 @@ const ProductsInfoTable = ({ products }) => {
             {filteredProducts.map((product, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {product.productId}
+                  {product.purchaseGroupId}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {product.productRefId}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productName}
                 </td>
-
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.genericName}
                 </td>
+                
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {product.purchaseGroupName}
+                  {product.productStatus}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {product.status}
-                </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {product.reorderLimit}
+                  {product.reorderLimitByPackage}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
@@ -130,12 +130,12 @@ const ProductsInfoTable = ({ products }) => {
 ProductsInfoTable.propTypes = {
   products: PropTypes.arrayOf(
     PropTypes.shape({
+      purchaseGroupId: PropTypes.string.isRequired,
+      productRefId: PropTypes.string.isRequired,
       productName: PropTypes.string.isRequired,
-      productId: PropTypes.string.isRequired,
       genericName: PropTypes.string.isRequired,
-      purchaseGroupName: PropTypes.string.isRequired,
-      status: PropTypes.string.isRequired,
-      reorderLimit: PropTypes.number.isRequired,
+      productStatus: PropTypes.string.isRequired,
+      reorderLimitByPackage: PropTypes.number.isRequired,
     }),
   ).isRequired,
 };

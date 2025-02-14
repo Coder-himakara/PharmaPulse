@@ -14,6 +14,12 @@ const ViewProductDetails = () => {
       <div className="flex items-center justify-center mb-4"></div>
       <ul className="text-left ">
         <li>
+          <strong>Purchase Group Id:</strong> {product.purchaseGroupId}
+        </li>
+        <li>
+          <strong>Product Ref Id:</strong> {product.productRefId}
+        </li>
+        <li>
           <strong>Product Name:</strong> {product.productName}
         </li>
         <li>
@@ -23,31 +29,21 @@ const ViewProductDetails = () => {
           <strong>Description:</strong> {product.description}
         </li>
         <li>
-          <strong>Purchase Group Name:</strong> {product.purchaseGroupName}
-        </li>
-        <li>
-          <strong>Model No:</strong> {product.modelNo}
-        </li>
-        <li>
           <strong>Category:</strong> {product.category}
-        </li>
-        <li>
-          <strong>Dosage Form:</strong> {product.dosageForm}
-        </li>
-        <li>
-          <strong>Selling Unit:</strong>
-          {product.sellingUnit}
         </li>
         <li>
           <strong>Package Type:</strong> {product.packageType}
         </li>
         <li>
-          <strong>Status:</strong> {product.status}
+          <strong>Units Per Package:</strong> {product.unitsPerPackage}
         </li>
         <li>
-          <strong>Reorder Limit:</strong>
-          {product.reorderLimit}
+          <strong>Product Status:</strong> {product.productStatus}
         </li>
+        <li>
+          <strong>Reorder Limit By Package:</strong> {product.reorderLimitByPackage}
+        </li>
+       
       </ul>
       <div className="flex justify-center mt-4">
         <button

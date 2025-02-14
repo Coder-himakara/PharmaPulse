@@ -25,7 +25,7 @@ const EmployeeDashboard = () => {
 export default EmployeeDashboard;
 */
 
-import Navbar from '../../components/Navbar/Navbar';
+import Navbar from '../../components/Navbar/EmployeeNavbar';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import Footer from '../../components/Footer/Footer';
