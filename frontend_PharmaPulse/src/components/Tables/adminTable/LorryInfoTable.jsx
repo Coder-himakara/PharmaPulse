@@ -64,9 +64,6 @@ const LorryInfoTable = ({ lorries }) => {
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                #
-              </th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Lorry ID
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
@@ -83,9 +80,6 @@ const LorryInfoTable = ({ lorries }) => {
           <tbody>
             {sortedLorries.map((lorry, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {index + 1}
-                </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {lorry.lorryId}
                 </td>

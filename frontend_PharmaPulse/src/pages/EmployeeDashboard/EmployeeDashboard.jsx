@@ -25,8 +25,8 @@ const EmployeeDashboard = () => {
 export default EmployeeDashboard;
 */
 
-import Navbar from '../../components/Navbar/EmployeeNavbar';
-import Sidebar from '../../components/Sidebar/Sidebar';
+import EmployeeNavbar from '../../components/Navbar/EmployeeNavbar';
+import Sidebar from '../../components/Sidebar/EmployeeSidebar';
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import Footer from '../../components/Footer/Footer';
 import EmpRoutes from '../../routes/EmpRoutes';
@@ -34,7 +34,7 @@ import EmpRoutes from '../../routes/EmpRoutes';
 const EmployeeDashboard = () => {
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
-      <Navbar />
+      <EmployeeNavbar />
       <div className='flex flex-grow'>
         <Sidebar role='employee' className='w-1/5 bg-white shadow-lg' />
         <div className='flex flex-col flex-grow p-6'>

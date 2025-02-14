@@ -59,118 +59,40 @@ const Navbar = () => {
       navigate(event.item.url);
     }
   };
-  const EmployeeNavbarSections=
+  const AdminNavbarSections=
   [
     
     {
-      "label": "Partners",
+      "label": "Users",
       "icon": "pi pi-users text-white",
       "items": [
         [
           {
-            "label": "Customers Group",
+            "label": "Users",
             "items": [
-              { "label": "Add Customer Group", "url": "add-customer-group" },
-              { "label": "Customer Group Info", "url": "customer-group-info" }
-            ]
-          }
-        ],
-        [
-          {
-            "label": "Customer",
-            "items": [
-              { "label": "Add Customer", "url": "add-customers" },
-              { "label": "Customer Info", "url": "customers-info" }
-            ]
-          }
-        ],
-        [
-          {
-            "label": "Purchase Group",
-            "items": [
-              { "label": "Add Purchase Group", "url": "add-purchase-group" },
-              { "label": "Purchase Group Info", "url": "purchase-group-info" }
-            ]
-          }
-        ],
-        [
-          {
-            "label": "Supplier",
-            "items": [
-              { "label": "Add Supplier", "url": "add-suppliers" },
-              { "label": "Supplier Info", "url": "suppliers-info" }
+              { "label": "Add Users", "url": "add-users" },
+              { "label": "User Info", "url": "users-info" }
             ]
           }
         ]
       ]
     },
     {
-      "label": "Products",
-      "icon": "pi pi-shopping-cart text-white",
-      "items": [
-        [
-          {
-            "label": "Products",
-            "items": [
-              { "label": "Add Products", "url": "add-products" },
-              { "label": "Products Info", "url": "products-info" }
-            ]
-          }
-        ],
-        [
-          {
-            "label": "Product Retail Price",
-            "items": [{ "label": "Retail Price Info" }]
-          }
+        "label": "Lorry",
+        "icon": "pi pi-truck text-white",
+        "items": [
+          [
+            {
+              "label": "Lorries",
+              "items": [
+                { "label": "Add Lorry", "url": "add-lorry" },
+                { "label": "Lorry Info", "url": "lorry-info" }
+              ]
+            }
+          ]
         ]
-      ]
-    },
-    {
-      "label": "Invoicing",
-      "icon": "pi pi-file-edit text-white",
-      "items": [
-        [
-          {
-            "label": "Purchase",
-            "items": [
-              { "label": "Add Invoice", "url": "add-purchase-invoice" },
-              { "label": "Invoice Info", "url": "purchase-invoice-info" }
-            ]
-          }
-        ],
-        [{ "label": "Sale Invoice", "items": [{ "label": "Invoice Info" }] }],
-        [{ "label": "Purchase Return" }],
-        [{ "label": "Sales Return" }]
-      ]
-    },
-    {
-      "label": "Payment",
-      "icon": "pi pi-credit-card text-white",
-      "items": [
-        [
-          {
-            "label": "Supplier Payment",
-            "items": [{ "label": "Add Payment" }, { "label": "Payment Info" }]
-          }
-        ],
-        [{ "label": "Customer Payment" }],
-        [
-          {
-            "label": "Outstanding Balance",
-            "items": [{ "label": "Customer" }, { "label": "Supplier" }]
-          }
-        ],
-        [{ "label": "Cheque Management" }]
-      ]
-    },
-    {
-      "label": "Inventory",
-      "icon": "pi pi-box text-white"
-    },
-    {
-      "label": "Report",
-      "icon": "pi pi-chart-line text-white"
-    }
+      }
+    
   ]
   
   
@@ -189,7 +111,7 @@ const Navbar = () => {
       {/* Mega Menu (Icons & Text White) */}
       <div className="hidden md:block">
         <MegaMenu
-         model={EmployeeNavbarSections}
+         model={AdminNavbarSections}
          MenuItemClick={handleMenuClick}
           breakpoint="960px"
           pt={{
@@ -231,9 +153,9 @@ const Navbar = () => {
 
       <div className="relative flex items-center gap-4">
         <div>
-          <span className="text-sm font-bold ">Amali</span>
+          <span className="text-sm font-bold ">Praweena</span>
           <br />
-          <span className="text-xs italic">Employee</span>
+          <span className="text-xs italic">Admin</span>
         </div>
         <div className="relative">
           <button
