@@ -22,6 +22,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> getAllProducts() {
+        List<Product> products = productRepo.findAll();
+        if(!products.isEmpty()){
+            return productMapper.toDTOsList(products);
+        }else{
+            throw new NotFoundException("No Products found");
+        }
+    }
+
+    @Override
     public ProductDTO getProductById(Long id) {
         Optional<Product> product = productRepo.findById(id);
         return product.map(productMapper::toDTO)
@@ -44,16 +54,6 @@ public class ProductServiceImpl implements ProductService {
             return productMapper.toDTO(savedProduct);
         } else {
             throw new NotFoundException("Product not found");
-        }
-    }
-
-    @Override
-    public List<ProductDTO> getAllProducts() {
-       List<Product> products = productRepo.findAll();
-        if(!products.isEmpty()){
-            return productMapper.toDTOsList(products);
-        }else{
-            throw new NotFoundException("No Products found");
         }
     }
 

@@ -24,12 +24,12 @@ public class ProductDTO {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private ProductCategory category;
+    private ProductCategory category; //medicine or surgical
 
     @Enumerated(EnumType.STRING)
-    private PackageType packageType;
+    private PackageType packageType; //package type of the selling unit
 
-    private String unitsPerPack;
+    private String unitsPerPack; //ex: 10 tablets per pack 10x1 or 10T
 
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;

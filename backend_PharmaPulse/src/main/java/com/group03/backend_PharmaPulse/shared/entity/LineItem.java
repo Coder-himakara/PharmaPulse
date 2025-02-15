@@ -15,9 +15,8 @@ public abstract class LineItem {
     private Long lineItemId;
 
     private Long productId;
-    private Integer quantityByPackage;
+    private Integer quantity;
     private Integer freeQuantity;
-    private Integer conversionFactor;  // how many units in a package
     private BigDecimal discountAmount;
 
 }

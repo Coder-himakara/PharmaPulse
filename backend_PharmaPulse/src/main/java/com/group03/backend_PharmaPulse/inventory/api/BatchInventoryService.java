@@ -7,4 +7,6 @@ import java.util.List;
 public interface BatchInventoryService {
     BatchInventoryDTO addBatchInventory (BatchInventoryDTO batchInventoryDTO);
     List<BatchInventoryDTO> addBatchInventoryList(List<BatchInventoryDTO> batchInventoryList);
+    List<BatchInventoryDTO> getAllBatchInventories();
+    BatchInventoryDTO getBatchInventoryById(Long id);
 }

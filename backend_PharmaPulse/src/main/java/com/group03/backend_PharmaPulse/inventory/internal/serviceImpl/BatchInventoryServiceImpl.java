@@ -11,12 +11,14 @@ import com.group03.backend_PharmaPulse.product.api.ProductService;
 import com.group03.backend_PharmaPulse.product.api.dto.ProductDTO;
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseLineItemDTO;
 import com.group03.backend_PharmaPulse.purchase.api.event.PurchaseLineItemEvent;
+import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BatchInventoryServiceImpl implements BatchInventoryService {
@@ -30,6 +32,23 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
         this.batchInventoryRepo=batchInventoryRepo;
         this.batchInventoryMapper=batchInventoryMapper;
         this.productService=productService;
+    }
+
+    @Override
+    public List<BatchInventoryDTO> getAllBatchInventories() {
+        List<BatchInventory> batchInventories = batchInventoryRepo.findAll();
+        if(!batchInventories.isEmpty()){
+            return batchInventoryMapper.toDTOsList(batchInventories);
+        }else{
+            throw new NotFoundException("No Batch Inventories found");
+        }
+    }
+
+    @Override
+    public BatchInventoryDTO getBatchInventoryById(Long id) {
+        Optional<BatchInventory> batchInventory = batchInventoryRepo.findById(id);
+        return batchInventory.map(batchInventoryMapper::toDTO)
+                .orElseThrow(() -> new NotFoundException("Batch Inventory not found"));
     }
 
     @Override
@@ -55,7 +74,7 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
         return batchInventoryRepo.saveAll(batches);
     }
     private BatchInventory convertToBatchInventory(PurchaseLineItemDTO dto) {
-        Integer unitQuantity = dto.getQuantityByPackage()*dto.getConversionFactor();
+        Integer totalQuantity = dto.getQuantity() + dto.getFreeQuantity();
         //check if product exists
         ProductDTO productDTO= productService.getProductById(dto.getProductId());
         if(productDTO==null){
@@ -67,9 +86,9 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                     .purchaseInvoiceNo(dto.getPurchaseInvoice())
                     .manufactureDate(dto.getManufactureDate())
                     .expiryDate(dto.getExpiryDate())
-                    .purchasedUnitQuantity(unitQuantity)
-                    .availableUnitQuantity(unitQuantity) // Initially same as purchased
+                    .purchasedUnitQuantity(dto.getQuantity())
                     .freeQuantity(dto.getFreeQuantity())
+                    .availableUnitQuantity(totalQuantity) // Initially same as purchased
                     .wholesalePrice(dto.getUnitPrice())
                     .retailPrice(dto.getRetailPrice())
                     .discount(dto.getDiscountAmount())
