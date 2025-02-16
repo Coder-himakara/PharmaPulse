@@ -17,7 +17,7 @@ public class ProductRefIdController {
     }
     @PostMapping("/generate")
     @ResponseBody
-    public String generateProductRefId(@RequestBody String supplierId) {
+    public String generateProductRefId(@RequestBody Long supplierId) {
         return productReferenceIdGenerator.generateProductReferenceId(supplierId);
     }
 }

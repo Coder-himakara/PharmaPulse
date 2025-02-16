@@ -39,6 +39,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product getProductEntityById(Long id) {
+        return productRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Product not found"));
+    }
+
+    @Override
     public ProductDTO addProduct(ProductDTO productDTO) {
         Product savedProduct = productRepo.save(productMapper.toEntity(productDTO));
         return productMapper.toDTO(savedProduct);
@@ -56,10 +62,4 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException("Product not found");
         }
     }
-
-    public Product findProductById(Long id) {
-        return  productRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Product not found"));
-    }
-
 }

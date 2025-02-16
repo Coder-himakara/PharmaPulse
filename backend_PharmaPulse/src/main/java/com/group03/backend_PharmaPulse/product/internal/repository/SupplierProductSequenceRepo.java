@@ -13,8 +13,8 @@ import java.util.Optional;
 
 @Repository
 @EnableJpaRepositories
-public interface SupplierProductSequenceRepo extends JpaRepository<SupplierProductSequence, String> {
+public interface SupplierProductSequenceRepo extends JpaRepository<SupplierProductSequence, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})
-    Optional<SupplierProductSequence> findById(String supplierId);
+    Optional<SupplierProductSequence> findById(Long supplierId);
 }

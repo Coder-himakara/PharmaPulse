@@ -29,7 +29,7 @@ CREATE TABLE product_wholesale_price
 
 CREATE TABLE supplier_product_sequence
 (
-    supplier_id      VARCHAR(255) NOT NULL,
+    supplier_id      BIGINT NOT NULL,
     current_sequence INTEGER,
     CONSTRAINT pk_supplier_product_sequence PRIMARY KEY (supplier_id)
 );

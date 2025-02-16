@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 
 @Entity
 @Data
@@ -43,7 +45,7 @@ public class Product {
 
     private Integer reorderLimitByPackage;
 
-    //LAZY fetch type is used to avoid fetching all the product retail prices when a product is fetched
-    //@OneToMany(mappedBy="product" ,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //private Set<ProductWholesalePrice> productRetailPrices;
+    //LAZY fetch type is used to avoid fetching all the product wholesale prices when a product is fetched
+    @OneToMany(mappedBy="product" ,fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private Set<ProductWholesalePrice> productWholesalePrices;
 }

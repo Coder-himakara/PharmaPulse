@@ -1,6 +1,6 @@
 package com.group03.backend_PharmaPulse.purchase.internal.serviceImpl;
 
-import com.group03.backend_PharmaPulse.product.api.ProductWholesalePriceService;
+
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseLineItemDTO;
 import com.group03.backend_PharmaPulse.shared.InvoiceReference;
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
@@ -24,18 +24,15 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
     private final PurchaseInvoiceMapper purchaseInvoiceMapper;
     private final PurchaseLineItemMapper purchaseLineItemMapper;
     private final PurchaseLineItemService purchaseLineItemService;
-    private final ProductWholesalePriceService productWholesalePriceService;
 
     public PurchaseInvoiceServiceImpl(PurchaseInvoiceRepo purchaseInvoiceRepo,
                                       PurchaseInvoiceMapper purchaseInvoiceMapper,
                                       PurchaseLineItemMapper purchaseLineItemMapper,
-                                      PurchaseLineItemService purchaseLineItemService,
-                                      ProductWholesalePriceService productWholesalePriceService) {
+                                      PurchaseLineItemService purchaseLineItemService) {
         this.purchaseInvoiceRepo = purchaseInvoiceRepo;
         this.purchaseInvoiceMapper = purchaseInvoiceMapper;
         this.purchaseLineItemMapper = purchaseLineItemMapper;
         this.purchaseLineItemService = purchaseLineItemService;
-        this.productWholesalePriceService = productWholesalePriceService;
     }
 
     @Override
@@ -74,11 +71,6 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
                 //Add the Purchase LineItems to the database
                 //This will publish an event
                 purchaseLineItemService.addPurchaseLineItems(purchaseLineItemMapper.toEntityList(purchaseLineItems));
-                //Check and Update the Wholesale Price of the Product
-                for(PurchaseLineItemDTO lineItemDTO : purchaseLineItems){
-                    productWholesalePriceService.checkAndUpdateWholesalePrice
-                            (lineItemDTO.getProductId(),lineItemDTO.getUnitPrice());
-                }
             }else{
                 throw new NotFoundException("Purchase Line Items not found");
             }

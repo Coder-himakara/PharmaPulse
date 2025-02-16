@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class SupplierProductSequence {
     @Id
     @Column(name = "supplier_id")
-    private String supplierId;
+    private Long supplierId;
 
     @Column(name = "current_sequence")
     private Integer currentSequence;

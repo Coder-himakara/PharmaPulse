@@ -14,12 +14,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ProductDTO {
     //private Long productId;
-
     private Long purchaseGroupId;
     private String productRefId;
-
     private String productName;
-
     private String genericName;
     private String description;
 
