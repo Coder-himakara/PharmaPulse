@@ -22,7 +22,7 @@ public class ProductController {
     public ResponseEntity<StandardResponse> getAllProducts() {
         List<ProductDTO> productDTOS  = productService.getAllProducts();
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",productDTOS),
+                new StandardResponse(200,"Success",productDTOS),
                 HttpStatus.OK
         );
     }
@@ -30,8 +30,8 @@ public class ProductController {
     public ResponseEntity<StandardResponse> getProductsById(@PathVariable Long id) {
         ProductDTO selectedProduct = productService.getProductById(id);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",selectedProduct),
-                HttpStatus.FOUND
+                new StandardResponse(200,"Success",selectedProduct),
+                HttpStatus.OK
         );
     }
     @PostMapping("/add")

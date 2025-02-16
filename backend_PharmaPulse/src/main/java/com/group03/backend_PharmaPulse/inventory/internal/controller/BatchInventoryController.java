@@ -25,7 +25,7 @@ public class BatchInventoryController {
     public ResponseEntity<StandardResponse> getAllBatchInventories() {
         List<BatchInventoryDTO> batchInventoryDTOS  = batchInventoryService.getAllBatchInventories();
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",batchInventoryDTOS),
+                new StandardResponse(200,"Success",batchInventoryDTOS),
                 HttpStatus.OK
         );
     }
@@ -34,8 +34,8 @@ public class BatchInventoryController {
     public ResponseEntity<StandardResponse> getBatchInventoryById(@PathVariable Long id) {
         BatchInventoryDTO selectedBatchInventory = batchInventoryService.getBatchInventoryById(id);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",selectedBatchInventory),
-                HttpStatus.FOUND
+                new StandardResponse(200,"Success",selectedBatchInventory),
+                HttpStatus.OK
         );
     }
 }

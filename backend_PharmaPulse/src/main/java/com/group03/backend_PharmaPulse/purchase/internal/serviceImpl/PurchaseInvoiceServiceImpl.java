@@ -2,6 +2,7 @@ package com.group03.backend_PharmaPulse.purchase.internal.serviceImpl;
 
 
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseLineItemDTO;
+import com.group03.backend_PharmaPulse.purchase.api.dto.response.PurchaseInvoiceResponse;
 import com.group03.backend_PharmaPulse.shared.InvoiceReference;
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 
@@ -15,6 +16,7 @@ import com.group03.backend_PharmaPulse.purchase.api.PurchaseLineItemService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -41,8 +43,10 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
     }
 
     @Override
-    public PurchaseInvoiceDTO getPurchaseInvoicesById(int purchaseNo) {
-        return null;
+    public PurchaseInvoiceResponse getPurchaseInvoicesById(Long invoiceId) {
+        Optional<PurchaseInvoice> purchaseInvoice = purchaseInvoiceRepo.findById(invoiceId);
+        return purchaseInvoice.map(purchaseInvoiceMapper::toResponseDTO)
+                .orElseThrow(() -> new NotFoundException("Purchase Invoice not found"));
     }
 
 /**
@@ -68,8 +72,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
                 lineItem.setPurchaseInvoice(purchaseInvoice.getInvoiceId());
             }
             if(!purchaseLineItems.isEmpty()){
-                //Add the Purchase LineItems to the database
-                //This will publish an event
+                //Add the Purchase LineItems to the database.This will publish an event.
                 purchaseLineItemService.addPurchaseLineItems(purchaseLineItemMapper.toEntityList(purchaseLineItems));
             }else{
                 throw new NotFoundException("Purchase Line Items not found");

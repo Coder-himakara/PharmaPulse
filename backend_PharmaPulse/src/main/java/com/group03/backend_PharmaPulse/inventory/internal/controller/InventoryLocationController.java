@@ -23,7 +23,7 @@ public class InventoryLocationController {
         List<InventoryLocationResponse> inventoryLocationResponseList  = inventoryLocationService
                 .getAllInventoryLocations();
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",inventoryLocationResponseList),
+                new StandardResponse(200,"Success",inventoryLocationResponseList),
                 HttpStatus.OK
         );
     }
@@ -31,8 +31,8 @@ public class InventoryLocationController {
     public ResponseEntity<StandardResponse> getInventoryLocationById(@PathVariable Long id) {
         InventoryLocationResponse selectedInventoryLocation = inventoryLocationService.getInventoryLocationById(id);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",selectedInventoryLocation),
-                HttpStatus.FOUND
+                new StandardResponse(200,"Success",selectedInventoryLocation),
+                HttpStatus.OK
         );
     }
     @PostMapping("/add")

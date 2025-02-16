@@ -2,6 +2,7 @@ package com.group03.backend_PharmaPulse.purchase.internal.controller;
 
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseInvoiceDTO;
 import com.group03.backend_PharmaPulse.purchase.api.PurchaseInvoiceService;
+import com.group03.backend_PharmaPulse.purchase.api.dto.response.PurchaseInvoiceResponse;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +22,16 @@ public class PurchaseInvoiceController {
     public ResponseEntity<StandardResponse> getAllPurchaseInvoices() {
         List<PurchaseInvoiceDTO> purchaseInvoiceDTOS  = purchaseInvoiceService.getAllPurchaseInvoices();
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",purchaseInvoiceDTOS),
+                new StandardResponse(200,"Success",purchaseInvoiceDTOS),
                 HttpStatus.OK
         );
     }
-    @GetMapping("/{purchaseNo}")
-    public ResponseEntity<StandardResponse> getPurchaseInvoicesById(@PathVariable int purchaseNo) {
-        PurchaseInvoiceDTO selectedPurchaseInvoice = purchaseInvoiceService.getPurchaseInvoicesById(purchaseNo);
+    @GetMapping("/{invoiceId}")
+    public ResponseEntity<StandardResponse> getPurchaseInvoicesById(@PathVariable Long invoiceId) {
+        PurchaseInvoiceResponse selectedPurchaseInvoice = purchaseInvoiceService.getPurchaseInvoicesById(invoiceId);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",selectedPurchaseInvoice),
-                HttpStatus.FOUND
+                new StandardResponse(200,"Success",selectedPurchaseInvoice),
+                HttpStatus.OK
         );
     }
     @PostMapping("/add")
