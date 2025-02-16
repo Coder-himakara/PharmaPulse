@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Data
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 public class BatchInventory {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "batch_id_seq")
+    @Column(name = "batch_id",length = 50)
     private Long batchId;
 
     private Long productId;
@@ -43,4 +45,6 @@ public class BatchInventory {
 
     private LocalDate dateReceived;
 
+    @OneToMany(mappedBy ="batch",fetch =FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Inventory> inventoryRecords;
 }
