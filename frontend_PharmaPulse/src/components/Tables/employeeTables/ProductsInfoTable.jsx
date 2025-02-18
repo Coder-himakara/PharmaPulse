@@ -14,11 +14,9 @@ const ProductsInfoTable = ({ products }) => {
     navigate('/home');
   };
 
-  const handleEdit = (productId) => {
-    const product = products.find((p) => p.productId === productId); // Find the specific product
-    navigate(`/edit-product/${productId}`, { state: { product } }); // Pass the product data to the Edit form
+  const handleEdit = (product) => {
+    navigate("/edit-product", { state: { product } }); // Pass correct product data
   };
-
   const handleViewProducts = (product) => {
     navigate(`/view-product/${product.productId}`, { state: { product } });
   };
@@ -97,7 +95,7 @@ const ProductsInfoTable = ({ products }) => {
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.genericName}
                 </td>
-                
+
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productStatus}
                 </td>
@@ -107,7 +105,7 @@ const ProductsInfoTable = ({ products }) => {
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
                     className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
-                    onClick={() => handleEdit(product.productId)}
+                    onClick={() => handleEdit(product)}
                   >
                     Edit
                   </button>
