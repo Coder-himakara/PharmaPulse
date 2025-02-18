@@ -66,6 +66,9 @@ const SuppliersInfoTable = ({ suppliers }) => {
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Supplier Id
+              </th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Supplier Name
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
@@ -91,6 +94,9 @@ const SuppliersInfoTable = ({ suppliers }) => {
           <tbody>
             {sortedSuppliers.map((supplier, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {supplier.supplierId}
+                </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {supplier.supplierName}
                 </td>
@@ -135,6 +141,7 @@ const SuppliersInfoTable = ({ suppliers }) => {
 SuppliersInfoTable.propTypes = {
   suppliers: PropTypes.arrayOf(
     PropTypes.shape({
+      supplierId: PropTypes.string.isRequired,
       supplierName: PropTypes.string.isRequired,
       supplierAddress: PropTypes.string.isRequired,
       contactNumber: PropTypes.string.isRequired,

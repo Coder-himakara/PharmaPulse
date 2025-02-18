@@ -14,9 +14,11 @@ const ProductsInfoTable = ({ products }) => {
     navigate('/home');
   };
 
-  const handleEdit = (product) => {
-    navigate("/edit-product", { state: { product } }); // Pass correct product data
+  const handleEdit = (productId) => {
+    const product = products.find((p) => p.productId === productId); // Find the specific product
+    navigate(`/edit-product/${productId}`, { state: { product } }); // Pass the product data to the Edit form
   };
+
   const handleViewProducts = (product) => {
     navigate(`/view-product/${product.productId}`, { state: { product } });
   };
@@ -57,6 +59,9 @@ const ProductsInfoTable = ({ products }) => {
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Product Id
+              </th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Purchase Group Id
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
@@ -84,6 +89,9 @@ const ProductsInfoTable = ({ products }) => {
             {filteredProducts.map((product, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {product.productId}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.purchaseGroupId}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
@@ -105,7 +113,7 @@ const ProductsInfoTable = ({ products }) => {
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
                     className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
-                    onClick={() => handleEdit(product)}
+                    onClick={() => handleEdit(product.productId)}
                   >
                     Edit
                   </button>
@@ -128,6 +136,7 @@ const ProductsInfoTable = ({ products }) => {
 ProductsInfoTable.propTypes = {
   products: PropTypes.arrayOf(
     PropTypes.shape({
+      productId: PropTypes.string.isRequired,
       purchaseGroupId: PropTypes.string.isRequired,
       productRefId: PropTypes.string.isRequired,
       productName: PropTypes.string.isRequired,
