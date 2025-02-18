@@ -109,7 +109,7 @@ const Navbar = () => {
       </div>
 
       {/* Mega Menu (Icons & Text White) */}
-      <div className="hidden md:block">
+      <div className="justify-center hidden w-full md:flex">
         <MegaMenu
          model={AdminNavbarSections}
          MenuItemClick={handleMenuClick}
