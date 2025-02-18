@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SuppliersInfoTable = ({ suppliers }) => {
   const [search, setSearch] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc');
+  const [sortDirection] = useState('asc');
   const navigate = useNavigate();
 
   const filteredSuppliers = suppliers.filter((supplier) =>
@@ -17,12 +17,6 @@ const SuppliersInfoTable = ({ suppliers }) => {
     return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
-  const toggleSort = () => {
-    setSortDirection((prevDirection) =>
-      prevDirection === 'asc' ? 'desc' : 'asc',
-    );
-  };
-
   const handleClose = () => {
     navigate('/home');
   };
@@ -32,10 +26,14 @@ const SuppliersInfoTable = ({ suppliers }) => {
     navigate(`/edit-supplier/${supplierId}`, { state: { supplier } }); // Pass the supplier data to the Edit form
   };
 
+  const handleViewSupplier = (supplier) => {
+    navigate(`/view-supplier/${supplier.supplierId}`, { state: { supplier } });
+  };
+
   return (
     <div className='bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative'>
       <div className='bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative'>
-        <h1 className='m-1 p-1 text-2xl'>Suppliers Management</h1>
+        <h1 className='p-1 m-1 text-2xl'>Suppliers Management</h1>
         <button
           className='absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1] mr-4'
           onClick={handleClose}
@@ -44,7 +42,7 @@ const SuppliersInfoTable = ({ suppliers }) => {
         </button>
       </div>
 
-      <div className='m-2 p-2 flex justify-between items-center'>
+      <div className='flex items-center justify-between p-2 m-2'>
         <h2 className='text-2xl font-bold text-[#1a5353]'>Suppliers</h2>
         <div className='relative'>
           <input
@@ -63,33 +61,27 @@ const SuppliersInfoTable = ({ suppliers }) => {
         </div>
       )}
 
-      <div className='m-2 p-2'>
+      <div className='p-2 m-2'>
         <table className='w-full border-collapse'>
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                #
-              </th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Supplier Name
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Supplier ID
+                Supplier Address
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Contact Number
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Address
+                Purchase Group
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Email
+                Credit Period
               </th>
-              <th
-                onClick={toggleSort}
-                className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer underline font-bold'
-              >
-                Date of Connected {sortDirection === 'asc' ? '▲' : '▼'}
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Credit Limit
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Action
@@ -100,32 +92,35 @@ const SuppliersInfoTable = ({ suppliers }) => {
             {sortedSuppliers.map((supplier, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {index + 1}
-                </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {supplier.supplierName}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {supplier.supplierId}
+                  {supplier.supplierAddress}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {supplier.contactNumber}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {supplier.address}
+                  {supplier.purchaseGroup}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {supplier.email}
+                  {supplier.creditPeriod}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {supplier.dateOfConnected}
+                  {supplier.creditLimit}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
-                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]'
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
                     onClick={() => handleEdit(supplier.supplierId)}
                   >
                     Edit
+                  </button>
+                  <button
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                    onClick={() => handleViewSupplier(supplier)}
+                  >
+                    View
                   </button>
                 </td>{' '}
               </tr>
@@ -141,11 +136,11 @@ SuppliersInfoTable.propTypes = {
   suppliers: PropTypes.arrayOf(
     PropTypes.shape({
       supplierName: PropTypes.string.isRequired,
-      supplierId: PropTypes.string.isRequired,
+      supplierAddress: PropTypes.string.isRequired,
       contactNumber: PropTypes.string.isRequired,
-      address: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-      dateOfConnected: PropTypes.string.isRequired,
+      purchaseGroup: PropTypes.string.isRequired,
+      creditPeriod: PropTypes.string.isRequired,
+      creditLimit: PropTypes.string.isRequired,
     }),
   ).isRequired,
 };

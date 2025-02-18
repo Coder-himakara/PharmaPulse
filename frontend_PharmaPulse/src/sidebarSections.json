@@ -19,6 +19,13 @@
         { "to": "/add-suppliers", "name": "Add Suppliers" },
         { "to": "/suppliers-info", "name": "Suppliers Info" }
       ]
+    },
+    {
+      "title": "Purchase Invoices",
+      "links": [
+        { "to": "/add-purchase-invoice", "name": "Add Purchase Invoice" },
+        { "to": "/purchase-invoice-info", "name": "Purchase Invoice Info" }
+      ]
     }
   ],
   "salerep": [
@@ -29,7 +36,6 @@
         { "to": "/order-creation", "name": "Order Creation" }
       ]
     }
-    
   ],
   "admin": [
     {
@@ -46,7 +52,5 @@
         { "to": "/lorry-info", "name": "Lorry Info" }
       ]
     }
-
   ]
-  
 }

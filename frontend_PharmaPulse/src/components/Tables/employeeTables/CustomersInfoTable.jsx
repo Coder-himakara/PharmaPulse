@@ -1,36 +1,26 @@
-/* eslint-disable prettier/prettier */
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 const CustomersInfoTable = ({ customers }) => {
   const [search, setSearch] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc');
   const navigate = useNavigate();
 
   const filteredCustomers = customers.filter((customer) =>
     customer.customerName.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const sortedCustomers = filteredCustomers.sort((a, b) => {
-    const dateA = new Date(a.dateOfConnected);
-    const dateB = new Date(b.dateOfConnected);
-    return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
-  });
-
-  const toggleSort = () => {
-    setSortDirection((prevDirection) =>
-      prevDirection === 'asc' ? 'desc' : 'asc',
-    );
-  };
-
   const handleClose = () => {
     navigate('/home');
   };
 
   const handleEdit = (customerId) => {
-    const customer = customers.find((c) => c.customerId === customerId); // Find the specific customer
-    navigate(`/edit-customer/${customerId}`, { state: { customer } }); // Pass the customer data to the Edit form
+    const customer = customers.find((c) => c.customerId === customerId);
+    navigate(`/edit-customer/${customerId}`, { state: { customer } });
+  };
+
+  const handleViewCustomer = (customer) => {
+    navigate(`/view-customer/${customer.customerId}`, { state: { customer } });
   };
 
   return (
@@ -58,7 +48,7 @@ const CustomersInfoTable = ({ customers }) => {
         </div>
       </div>
 
-      {sortedCustomers.length === 0 && search && (
+      {filteredCustomers.length === 0 && search && (
         <div className='text-[#991919] text-sm text-center mt-2 font-bold'>
           No customers found matching your search.
         </div>
@@ -69,28 +59,28 @@ const CustomersInfoTable = ({ customers }) => {
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                #
+                Customer ID
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Customer Name
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Customer ID
+                Status
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Contact Number
+                Credit Limit
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Address
+                Credit Period
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Email
               </th>
-              <th
-                onClick={toggleSort}
-                className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm cursor-pointer underline font-bold'
-              >
-                Date of Connected {sortDirection === 'asc' ? '▲' : '▼'}
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Phone Number
+              </th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Contact Name
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Action
@@ -98,35 +88,44 @@ const CustomersInfoTable = ({ customers }) => {
             </tr>
           </thead>
           <tbody>
-            {sortedCustomers.map((customer, index) => (
+            {filteredCustomers.map((customer, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {index + 1}
+                  {customer.customerId}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {customer.customerName}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {customer.customerId}
+                  {customer.status}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {customer.contactNumber}
+                  {customer.creditLimit}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {customer.address}
+                  {customer.creditPeriod}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {customer.email}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {customer.dateOfConnected}
+                  {customer.phoneNo}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {customer.contactName}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
-                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]'
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
                     onClick={() => handleEdit(customer.customerId)}
                   >
                     Edit
+                  </button>
+                  <button
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                    onClick={() => handleViewCustomer(customer)}
+                  >
+                    View
                   </button>
                 </td>
               </tr>
@@ -143,10 +142,11 @@ CustomersInfoTable.propTypes = {
     PropTypes.shape({
       customerName: PropTypes.string.isRequired,
       customerId: PropTypes.string.isRequired,
-      contactNumber: PropTypes.string.isRequired,
-      address: PropTypes.string.isRequired,
+      status: PropTypes.string.isRequired,
+      creditLimit: PropTypes.string.isRequired,
       email: PropTypes.string.isRequired,
-      dateOfConnected: PropTypes.string.isRequired,
+      phoneNo: PropTypes.string.isRequired,
+      contactName: PropTypes.string.isRequired,
     }),
   ).isRequired,
 };

@@ -9,13 +9,12 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    purchaseGroupId: "",
     purchaseGroupName: "",
     address: "",
     contactName: "",
-    telePhoneNo: "",
+    phoneNo: "",
     email: "",
-    supplierId: "",
+    fax: "",
   });
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -24,13 +23,12 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   useEffect(() => {
     if (purchaseGroup) {
       setFormData({
-        purchaseGroupId: purchaseGroup.purchaseGroupId,
         purchaseGroupName: purchaseGroup.purchaseGroupName,
         address: purchaseGroup.address,
         contactName: purchaseGroup.contactName,
-        telePhoneNo: purchaseGroup.telePhoneNo,
+        phoneNo: purchaseGroup.phoneNo,
         email: purchaseGroup.email,
-        supplierId: purchaseGroup.supplierId,
+        fax: purchaseGroup.fax,
       });
     }
   }, [purchaseGroup]);
@@ -46,7 +44,14 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   const handleSubmit = (pg) => {
     pg.preventDefault();
 
-    if (!formData.email || !formData.supplierId || !formData.telePhoneNo) {
+    if (
+      !formData.purchaseGroupName ||
+      !formData.address ||
+      !formData.contactName ||
+      !formData.phoneNo ||
+      !formData.email ||
+      !formData.fax
+    ) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
@@ -74,7 +79,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
       onSubmit={handleSubmit}
       className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
     >
-      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg">
+      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
         Edit Purchase Group
       </h2>
 
@@ -99,23 +104,6 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
           id="purchaseGroupName"
           name="purchaseGroupName"
           value={formData.purchaseGroupName}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-          readOnly
-        />
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label
-          htmlFor="purchaseGroupId"
-          className="text-[16px] text-gray-800 w-2/3"
-        >
-          Purchase Group Id:
-        </label>
-        <input
-          type="text"
-          id="purchaseGroupId"
-          name="purchaseGroupId"
-          value={formData.purchaseGroupId}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
           readOnly
         />
@@ -151,18 +139,16 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
+
       <div className="flex items-center justify-between mb-4">
-        <label
-          htmlFor="telePhoneNo"
-          className="text-[16px] text-gray-800 w-2/3"
-        >
-          Telephone No:
+        <label htmlFor="phoneNo" className="text-[16px] text-gray-800 w-2/3">
+          Phone Number:
         </label>
         <input
           type="number"
-          id="telePhoneNo"
-          name="telePhoneNo"
-          value={formData.telePhoneNo}
+          id="phoneNo"
+          name="phoneNo"
+          value={formData.phoneNo}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
@@ -183,23 +169,20 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="supplierId" className="text-[16px] text-gray-800 w-2/3">
-          Supplier Id
+        <label htmlFor="fax" className="text-[16px] text-gray-800 w-2/3">
+          Fax:
         </label>
-        <select
-          id="supplierId"
-          name="supplierId"
-          value={formData.supplierId}
+        <input
+          type="fax"
+          id="fax"
+          name="fax"
+          value={formData.fax}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md"
-        >
-          <option value="">Choose a supplier</option>
-          <option value="S001">S001</option>
-          <option value="S002">S002</option>
-        </select>
+        />
       </div>
 
-      <div className="flex justify-center gap-2 mt-5">
+      <div className="flex justify-center gap-2">
         <button
           type="submit"
           className="px-5 py-2 bg-[#2a4d69] text-white rounded-md hover:bg-[#00796b]"

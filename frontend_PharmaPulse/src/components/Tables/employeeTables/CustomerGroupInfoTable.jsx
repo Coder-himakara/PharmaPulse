@@ -26,6 +26,12 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
     });
   };
 
+  const handleViewCustomerGroup = (customerGroup) => {
+    navigate(`/view-customer-group/${customerGroup.customerGroupId}`, {
+      state: { customerGroup },
+    });
+  };
+
   return (
     <div className="bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative">
       <div className="bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative">
@@ -64,7 +70,6 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
           <thead>
             <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
               {[
-                "#",
                 "Customer Group Name",
                 "Sales Rep ID",
                 "Sales Rep Name",
@@ -82,12 +87,10 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
           </thead>
           <tbody>
             {filteredCustomerGroups.map((customerGroup, index) => (
-              <tr key={index}
+              <tr
+                key={index}
                 className="bg-[#c6dceb] hover:bg-[#dce4e9] border border-gray-400"
               >
-                <td className="p-2 text-center border border-gray-400">
-                  {index + 1}
-                </td>
                 <td className="p-2 text-center border border-gray-400">
                   {customerGroup.customerGroupName}
                 </td>
@@ -102,10 +105,16 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
                 </td>
                 <td className="p-2 text-center border border-gray-400">
                   <button
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]"
                     onClick={() => handleEdit(customerGroup.customerGroupId)}
+                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
                   >
                     Edit
+                  </button>
+                  <button
+                    onClick={() => handleViewCustomerGroup(customerGroup)}
+                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  >
+                    View
                   </button>
                 </td>
               </tr>
