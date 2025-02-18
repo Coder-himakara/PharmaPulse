@@ -176,7 +176,7 @@ const Navbar = () => {
 
       {/* Mega Menu centered dropdown */}
       <div className="justify-center hidden w-full md:flex">
-        <MegaMenu
+      <MegaMenu
           model={EmployeeNavbarSections}
           MenuItemClick={handleMenuClick}
           breakpoint="960px"
@@ -190,13 +190,36 @@ const Navbar = () => {
             panel: {
               className: "absolute left-1/2 top-20 transform -translate-x-1/2 bg-white shadow-lg rounded-md", // Centering dropdown panel
             },
+            submenu: {
+              className: `${isDarkMode ? "text-white" : "text-black"} border-none`,
+            },
+            content: {
+              className: `${isDarkMode ? "hover:bg-gray-700" : "hover:bg-teal-700"} border-none`,
+            },
+
+            // Make only navbar main items (Partners, Products, etc.) white
             label: {
-              className: `${isDarkMode ? "text-gray-400 hover:bg-gray-700 hover:text-white" : "text-gray-400 hover:bg-teal-700 hover:text-white"}`,
+              className: `${isDarkMode ? "text-gray-400 hover:bg-gray-700 hover:text-white active:bg-gray-700 active:text-white " : "text-gray-400 hover:bg-teal-700 hover:text-white active:bg-teal-700 active:text-white"} border-none`,
             },
             icon: { className: "text-white font-bold" },
+
+            // Keep dropdown menu text black
+            menuitem: {
+              className: "hover:bg-transparent text-black",
+            },
+            action: {
+              className: "hover:bg-transparent text-black",
+            },
+            link: {
+              className: "hover:bg-transparent text-black",
+            },
+            submenuitem: {
+              className: "hover:bg-transparent text-black",
+            }
           }}
         />
       </div>
+ 
 
       <div className="relative flex items-center gap-4">
         <div>
