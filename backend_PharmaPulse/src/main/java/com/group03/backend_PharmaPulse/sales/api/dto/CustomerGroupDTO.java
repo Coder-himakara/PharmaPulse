@@ -1,11 +1,17 @@
 package com.group03.backend_PharmaPulse.sales.api.dto;
 
 
+import com.group03.backend_PharmaPulse.sales.internal.entity.Customer;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -13,13 +19,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CustomerGroupDTO {
 
-    @NotBlank(message = "Customer Group Name is required")
-    private String customer_group_name;
+    //private Long customerGroupId;
 
-    @NotBlank(message = "Assign Sales Rep is required")
-    private String assigned_sales_rep;
+    private String customerGroupName;
+
+    private String assignedSalesRep;
 
     private String descriptions;
 
-    //customer Id List Should Include
+    //private Set<Customer> customers;
 }

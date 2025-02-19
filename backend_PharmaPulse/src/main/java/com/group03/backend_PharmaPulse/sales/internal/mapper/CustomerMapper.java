@@ -1,8 +1,6 @@
 package com.group03.backend_PharmaPulse.sales.internal.mapper;
 
-import com.group03.backend_PharmaPulse.purchase.api.dto.SupplierDTO;
-import com.group03.backend_PharmaPulse.purchase.internal.entity.PurchaseGroup;
-import com.group03.backend_PharmaPulse.purchase.internal.entity.Supplier;
+
 import com.group03.backend_PharmaPulse.sales.api.dto.CustomerDTO;
 import com.group03.backend_PharmaPulse.sales.internal.entity.Customer;
 import com.group03.backend_PharmaPulse.sales.internal.entity.CustomerGroup;

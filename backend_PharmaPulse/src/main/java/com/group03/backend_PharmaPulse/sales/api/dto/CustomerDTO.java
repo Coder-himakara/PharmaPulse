@@ -42,8 +42,4 @@ public class CustomerDTO {
 
     private Double outstanding_balance;
 
-
-
-
-
 }
