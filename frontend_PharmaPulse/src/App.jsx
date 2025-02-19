@@ -20,7 +20,7 @@ function App() {
     <ThemeProvider>
       <Router>
         {/* <AdminDashboard /> */}
-        {/*<LoginPage />*/}
+        {/* <LoginPage /> */}
         <EmployeeDashboard />
         {/* <SalesRepDashboard /> */}
       </Router>

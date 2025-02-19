@@ -84,9 +84,7 @@ const UsersInfoTable = ({ users }) => {
           <tbody>
             {sortedUsers.map((user, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {index + 1}
-                </td>
+                
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {user.userId}
                 </td>
