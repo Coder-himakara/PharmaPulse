@@ -8,6 +8,8 @@ import com.group03.backend_PharmaPulse.sales.internal.mapper.CustomerGroupMapper
 import com.group03.backend_PharmaPulse.sales.internal.repository.CustomerGroupRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CustomerGroupServiceImpl implements CustomerGroupService {
 
@@ -23,5 +25,20 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
     public CustomerGroupDTO addCustomerGroup(CustomerGroupDTO customerGroupDTO) {
         CustomerGroup savedCustomerGroup= customerGroupRepo.save(customerGroupMapper.toEntity(customerGroupDTO));
         return customerGroupMapper.toDTO(savedCustomerGroup);
+    }
+
+    @Override
+    public List<CustomerGroupDTO> getAllCustomerGroups() {
+        return List.of();
+    }
+
+    @Override
+    public CustomerGroupDTO getCustomerGroupById(Long id) {
+        return null;
+    }
+
+    @Override
+    public CustomerGroupDTO updateCustomerGroup(Long id, CustomerGroupDTO customerGroupDTO) {
+        return null;
     }
 }

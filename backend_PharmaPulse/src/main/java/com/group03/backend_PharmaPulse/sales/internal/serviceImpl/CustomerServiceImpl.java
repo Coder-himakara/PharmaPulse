@@ -7,6 +7,8 @@ import com.group03.backend_PharmaPulse.sales.internal.mapper.CustomerMapper;
 import com.group03.backend_PharmaPulse.sales.internal.repository.CustomerRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -25,6 +27,21 @@ public class CustomerServiceImpl implements CustomerService {
         Customer savedCustomer =customerRepo.save(customerMapper.toEntity(customerDTO));
         return customerMapper.toDTO(savedCustomer);
    }
+
+    @Override
+    public List<CustomerDTO> getAllCustomers() {
+        return List.of();
+    }
+
+    @Override
+    public CustomerDTO getCustomerById(Long id) {
+        return null;
+    }
+
+    @Override
+    public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
+        return null;
+    }
 
 }
 
