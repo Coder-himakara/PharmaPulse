@@ -50,21 +50,11 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
         return batchInventory.map(batchInventoryMapper::toDTO)
                 .orElseThrow(() -> new NotFoundException("Batch Inventory not found"));
     }
-
-    @Override
-    public BatchInventoryDTO addBatchInventory(BatchInventoryDTO batchInventoryDTO) {
-        BatchInventory savedBatchInventory = batchInventoryRepo.
-                save(batchInventoryMapper.toEntity(batchInventoryDTO));
-        return batchInventoryMapper.toDTO(savedBatchInventory);
-    }
-
-    @Override
-    public List<BatchInventoryDTO> addBatchInventoryList(List<BatchInventoryDTO> batchInventoryList) {
-        List<BatchInventory> savedList = batchInventoryRepo.saveAll(batchInventoryMapper
-                .toEntityList(batchInventoryList));
-        return batchInventoryMapper.toDTOsList(savedList);
-    }
-
+    /**
+     * Event listener for PurchaseLineItemEvent.
+     * BatchInventory record is created for each PurchaseLineItem.
+     * @return List<BatchInventory>
+     */
     @EventListener
     public List<BatchInventory> batchInventoryListener(PurchaseLineItemEvent purchaseLineItemEvent) {
         List<BatchInventory> batches=purchaseLineItemEvent.getPurchaseLineItemDTOS()
