@@ -9,6 +9,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    purchaseGroupId:"",
     purchaseGroupName: "",
     address: "",
     contactName: "",
@@ -23,6 +24,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   useEffect(() => {
     if (purchaseGroup) {
       setFormData({
+        purchaseGroupId:purchaseGroup.purchaseGroupId,
         purchaseGroupName: purchaseGroup.purchaseGroupName,
         address: purchaseGroup.address,
         contactName: purchaseGroup.contactName,
@@ -45,6 +47,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
     pg.preventDefault();
 
     if (
+      !formData.purchaseGroupId ||
       !formData.purchaseGroupName ||
       !formData.address ||
       !formData.contactName ||
@@ -91,6 +94,22 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
           {successMessage}
         </p>
       )}
+       <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="purchaseGroupId"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Purchase Group Id:
+        </label>
+        <input
+          type="text"
+          id="purchaseGroupId"
+          name="purchaseGroupId"
+          value={formData.purchaseGroupId}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          readOnly
+        />
+      </div>
 
       <div className="flex items-center justify-between mb-4">
         <label

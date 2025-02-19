@@ -13,6 +13,7 @@ const ViewProductDetails = () => {
       </h2>
       <div className="flex items-center justify-center mb-4"></div>
       <ul className="text-left ">
+     
         <li>
           <strong>Purchase Group Id:</strong> {product.purchaseGroupId}
         </li>

@@ -9,6 +9,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    customerGroup:"",
     customerGroupName: "",
     assignSalesRepId: "",
     assignSalesRepName: "",
@@ -21,6 +22,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   useEffect(() => {
     if (customerGroup) {
       setFormData({
+        customerGroupId: customerGroup.customerGroupId,
         customerGroupName: customerGroup.customerGroupName,
         assignSalesRepId: customerGroup.assignSalesRepId,
         assignSalesRepName: customerGroup.assignSalesRepName,
@@ -41,6 +43,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
     cg.preventDefault();
 
     if (
+      !formData.customerGroupId.trim() ||
       !formData.customerGroupName.trim() ||
       !formData.assignSalesRepId.trim() ||
       !formData.assignSalesRepName.trim() ||
@@ -85,7 +88,23 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
           {successMessage}
         </p>
       )}
-
+      
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="customerGroupId"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Customer Group Id:
+        </label>
+        <input
+          type="text"
+          id="customerGroupId"
+          name="customerGroupId"
+          value={formData.customerGroupId}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          readOnly
+        />
+      </div>
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="customerGroupName"

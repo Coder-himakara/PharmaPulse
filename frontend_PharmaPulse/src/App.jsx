@@ -12,17 +12,17 @@ import "primeicons/primeicons.css"; // Icons
 
 //import LoginPage from "./pages/LoginPage/LoginPage";
 //import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
-//import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
-import SalesRepDashboard from "./pages/SalesRepDashboard/SalesRepDashboard";
+import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
+//import SalesRepDashboard from "./pages/SalesRepDashboard/SalesRepDashboard";
 
 function App() {
   return (
     <ThemeProvider>
       <Router>
         {/* <AdminDashboard /> */}
-        {/*<LoginPage />*/}
-        {/* <EmployeeDashboard /> */}
-        <SalesRepDashboard />
+        {/* <LoginPage /> */}
+        <EmployeeDashboard />
+        {/* <SalesRepDashboard /> */}
       </Router>
     </ThemeProvider>
   );

@@ -6,6 +6,7 @@ import { FaSearch } from "react-icons/fa"; // Importing search icon
 
 const AddSuppliersForm = ({ onAddSupplier }) => {
   const [formData, setFormData] = useState({
+    supplierId:"",
     supplierName: "",
     supplierAddress: "",
     contactNumber: "",
@@ -32,6 +33,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
 
     // Basic validation
     if (
+      !formData.supplierId ||
       !formData.supplierName ||
       !formData.supplierAddress ||
       !formData.contactNumber ||
@@ -54,6 +56,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
     // Clear the form after a delay
     setTimeout(() => {
       setFormData({
+        supplierId:"",
         supplierName: "",
         supplierAddress: "",
         contactNumber: "",
@@ -86,7 +89,22 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           {successMessage}
         </p>
       )}
-
+       <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="supplierId"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Supplier Id:
+        </label>
+        <input
+          type="text"
+          id="supplierId"
+          name="supplierId"
+          value={formData.supplierId}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="supplierName"

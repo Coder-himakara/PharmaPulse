@@ -59,6 +59,9 @@ const ProductsInfoTable = ({ products }) => {
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                Product Id
+              </th>
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Purchase Group Id
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
@@ -86,6 +89,9 @@ const ProductsInfoTable = ({ products }) => {
             {filteredProducts.map((product, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                  {product.productId}
+                </td>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.purchaseGroupId}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
@@ -97,7 +103,7 @@ const ProductsInfoTable = ({ products }) => {
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.genericName}
                 </td>
-                
+
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productStatus}
                 </td>
@@ -130,6 +136,7 @@ const ProductsInfoTable = ({ products }) => {
 ProductsInfoTable.propTypes = {
   products: PropTypes.arrayOf(
     PropTypes.shape({
+      productId: PropTypes.string.isRequired,
       purchaseGroupId: PropTypes.string.isRequired,
       productRefId: PropTypes.string.isRequired,
       productName: PropTypes.string.isRequired,

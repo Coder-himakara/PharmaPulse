@@ -140,8 +140,8 @@ const CustomersInfoTable = ({ customers }) => {
 CustomersInfoTable.propTypes = {
   customers: PropTypes.arrayOf(
     PropTypes.shape({
-      customerName: PropTypes.string.isRequired,
       customerId: PropTypes.string.isRequired,
+      customerName: PropTypes.string.isRequired,
       status: PropTypes.string.isRequired,
       creditLimit: PropTypes.string.isRequired,
       email: PropTypes.string.isRequired,
