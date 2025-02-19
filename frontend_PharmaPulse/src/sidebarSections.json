@@ -4,7 +4,7 @@
       "title": "Products",
       "links": [
         { "to": "/add-products", "name": "Add Products" },
-        { "to": "/products-info", "name": "Produts Info" }
+        { "to": "/products-info", "name": "Products Info" }
       ]
     },
     {
@@ -25,28 +25,25 @@
     {
       "title": "Options",
       "links": [
-        { "to": "/price-list-view", "name": "Price List" },
-        { "to": "/order-creation", "name": "Order Creation" }
+        { "to": "/sales-dashboard/price-list-view", "name": "Price List" },
+        { "to": "/sales-dashboard/order-creation", "name": "Order Creation" }
       ]
     }
-    
   ],
   "admin": [
     {
       "title": "Users",
       "links": [
-        { "to": "/add-users", "name": "Add Users" },
-        { "to": "/users-info", "name": "User info" }
+        { "to": "/admin-dashboard/add-users", "name": "Add Users" },
+        { "to": "/admin-dashboard/users-info", "name": "User Info" }
       ]
     },
     {
       "title": "Lorry",
       "links": [
-        { "to": "/add-lorry", "name": "Add Lorry" },
-        { "to": "/lorry-info", "name": "Lorry Info" }
+        { "to": "/admin-dashboard/add-lorry", "name": "Add Lorry" },
+        { "to": "/admin-dashboard/lorry-info", "name": "Lorry Info" }
       ]
     }
-
   ]
-  
 }
