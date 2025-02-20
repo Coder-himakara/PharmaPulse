@@ -22,16 +22,16 @@ const UsersInfoTable = ({ users }) => {
 
 
   const handleClose = () => {
-    navigate('/home');
+    navigate('/admin-dashboard');
   };
 
   const handleEdit = (userId) => {
     const user = users.find((u) => u.userId === userId);
-    navigate(`/edit-user/${userId}`, { state: { user } });
+    navigate(`/admin-dashboard/edit-user/${userId}`, { state: { user } });
   };
 
   const handleViewUser = (user) => {
-    navigate(`/view-user/${user.userId}`, { state: { user } });
+    navigate(`/admin-dashboard/view-user/${user.userId}`, { state: { user } });
   };
 
   return (

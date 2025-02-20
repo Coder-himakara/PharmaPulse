@@ -18,7 +18,7 @@ const LorryInfoTable = ({ lorries }) => {
   });
 
   const handleClose = () => {
-    navigate('/home');
+    navigate('/admin-dashboard');
   };
 
   const handleEdit = (lorryId) => {

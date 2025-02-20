@@ -14,9 +14,8 @@ const AddUsersForm = ({ onAddUser }) => {
     password: '',
     confirmPassword: '',
     dateOfJoined: '',
-    lastLoginDate:'',
     profilePicture: null,
-    status:'',
+    status: '',
   });
 
   const navigate = useNavigate();
@@ -51,9 +50,7 @@ const AddUsersForm = ({ onAddUser }) => {
       !formData.password ||
       !formData.confirmPassword ||
       !formData.dateOfJoined ||
-      !formData.lastLoginDate ||
       !formData.status
-     
     ) {
       setErrorMessage('Please fill out all required fields.');
       return;
@@ -87,16 +84,15 @@ const AddUsersForm = ({ onAddUser }) => {
         password: '',
         confirmPassword: '',
         dateOfJoined: '',
-        lastLoginDate:'',
         profilePicture: null,
-        status:'',
+        status: '',
       });
       setSuccessMessage('');
     }, 2000);
   };
 
   const handleCancel = () => {
-    navigate('/home');
+    navigate('/admin-dashboard');
   };
 
   return (
@@ -127,8 +123,6 @@ const AddUsersForm = ({ onAddUser }) => {
         ['Password', 'password', 'password'],
         ['Confirm Password', 'confirmPassword', 'password'],
         ['Date of Joined', 'dateOfJoined', 'date'],
-        ['Last Login Date', 'lastLoginDate', 'date'],
-       
       ].map(([label, name, type]) => (
         <div key={name} className='flex items-center justify-between mb-4'>
           <label htmlFor={name} className='text-[16px] text-gray-800 w-2/3'>
@@ -163,10 +157,7 @@ const AddUsersForm = ({ onAddUser }) => {
       </div>
 
       <div className='flex items-center justify-between mb-4'>
-        <label
-          htmlFor='profilePicture'
-          className='text-[16px] text-gray-800 w-2/3'
-        >
+        <label htmlFor='profilePicture' className='text-[16px] text-gray-800 w-2/3'>
           Profile Picture:
         </label>
         <input
@@ -177,6 +168,7 @@ const AddUsersForm = ({ onAddUser }) => {
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
+
       <div className='flex items-center justify-between mb-4'>
         <label htmlFor='status' className='text-[16px] text-gray-800 w-2/3'>
           Status:
@@ -197,17 +189,10 @@ const AddUsersForm = ({ onAddUser }) => {
       </div>
 
       <div className='flex justify-center gap-2 mt-5'>
-        <button
-          type='submit'
-          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
-        >
+        <button type='submit' className='px-5 py-2 bg-[#2a4d69] text-white rounded-md hover:bg-[#00796b]'>
           Sign Up
         </button>
-        <button
-          type='button'
-          onClick={handleCancel}
-          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
-        >
+        <button type='button' onClick={handleCancel} className='px-5 py-2 bg-[#2a4d69] text-white rounded-md hover:bg-[#00796b]'>
           Cancel
         </button>
       </div>

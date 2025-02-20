@@ -60,8 +60,9 @@ const ViewUserDetails = () => {
       </ul>
       <div className='flex justify-center mt-4'>
         <button
-          className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
-          onClick={() => navigate('/users-info')}
+          className='px-4 py-2 text-white bg-gray-500 rounded-md hover:bg-gray-600'
+          onClick={() => navigate('/admin-dashboard/users-info')}
+
         >
           Back
         </button>
