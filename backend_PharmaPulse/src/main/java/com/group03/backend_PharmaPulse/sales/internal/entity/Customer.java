@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Entity
+@Entity //Marks this class as a JPA entity (maps it to a database table).
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Table(name="customer")
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//Uses auto-increment in the database.
     @Column(name = "customer_id",length = 50)
     private Long customer_id;
 
@@ -36,7 +36,7 @@ public class Customer {
     private Double outstanding_balance;
 
     @ManyToOne
-    @JoinColumn(name="customer_group_id",nullable=false)
+    @JoinColumn(name="customer_group_id",nullable=false)//Maps customer_group_id as a foreign key in the customer table.
     private CustomerGroup customer_group;
 
 

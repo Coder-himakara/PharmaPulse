@@ -1,6 +1,5 @@
 package com.group03.backend_PharmaPulse.sales.internal.controller;
 
-import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseGroupDTO;
 import com.group03.backend_PharmaPulse.sales.api.dto.CustomerGroupDTO;
 import com.group03.backend_PharmaPulse.sales.api.event.CustomerGroupService;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
