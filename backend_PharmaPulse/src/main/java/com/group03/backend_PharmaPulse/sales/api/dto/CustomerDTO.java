@@ -33,7 +33,7 @@ public class CustomerDTO {
     private Integer customer_phone_no;
 
     @NotNull(message = "Please select a customer group")
-    private String customer_group;
+    private Long customer_group;
 
     private LocalDate registered_date;//Stores the date the customer was registered.
 
