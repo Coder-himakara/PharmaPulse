@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @EnableJpaRepositories
 public interface BatchInventoryRepo extends JpaRepository<BatchInventory, Long> {
+
 }
