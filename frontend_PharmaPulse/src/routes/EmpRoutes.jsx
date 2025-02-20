@@ -136,15 +136,15 @@ const EmpRoutes = () => {
   return (
     <Routes>
       <Route
-        path="employee-dashboard/add-products"
+        path="/add-products"
         element={<AddProductsForm onAddProduct={addProduct} />}
       />
       <Route
-        path="employee-dashboard/products-info"
+        path="/products-info"
         element={<ProductsInfoTable products={products} />}
       />
       <Route
-        path="employee-dashboard/edit-product/:productId"
+        path="/edit-product/:productId"
         element={<EditProductsForm onUpdateProduct={updateProduct} />}
       />
       <Route path="/view-product/:productId" element={<ViewProductDetails />} />

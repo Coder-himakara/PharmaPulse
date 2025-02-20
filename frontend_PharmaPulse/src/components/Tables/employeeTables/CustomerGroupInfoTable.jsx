@@ -13,7 +13,7 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
   );
 
   const handleClose = () => {
-    navigate("/home");
+    navigate("/employee-dashboard");
   };
 
   // Fix handleEdit function

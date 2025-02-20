@@ -66,7 +66,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
   };
 
   const handleCancel = () => {
-    navigate("/home");
+    navigate("/employee-dashboard");
   };
 
   return (
