@@ -8,9 +8,9 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
     purchaseGroupName: '',
     address: '',
     contactName: '',
-    telePhoneNo: '',
+    phoneNo: '',
     email: '',
-    supplierId: '',
+    fax: '',
   });
 
   const navigate = useNavigate();
@@ -30,13 +30,13 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
     pg.preventDefault();
 
     if (
-      !formData.purchaseGroupId ||
+      !formData.purchaseGroupId.trim() ||
       !formData.purchaseGroupName.trim() ||
       !formData.address.trim() ||
       !formData.contactName.trim() ||
-      !formData.telePhoneNo.trim() ||
+      !formData.phoneNo.trim() ||
       !formData.email.trim() ||
-      !formData.supplierId.trim()
+      !formData.fax.trim()
     ) {
       setErrorMessage('Please fill out all required fields.');
       return;
@@ -55,9 +55,9 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
         purchaseGroupName: '',
         address: '',
         contactName: '',
-        telePhoneNo: '',
+        phoneNo: '',
         email: '',
-        supplierId: '',
+        fax: '',
       });
       setSuccessMessage('');
     }, 2000);
@@ -72,7 +72,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       onSubmit={handleSubmit}
       className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'
     >
-      <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
+      <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg'>
         Add Purchase Group
       </h2>
 
@@ -84,24 +84,6 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           {successMessage}
         </p>
       )}
-
-      <div className='flex items-center justify-between mb-4'>
-        <label
-          htmlFor='purchaseGroupName'
-          className='text-[16px] text-gray-800 w-2/3'
-        >
-          Purchase Group Name:
-        </label>
-        <input
-          type='text'
-          id='purchaseGroupName'
-          name='purchaseGroupName'
-          value={formData.purchaseGroupName}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-        />
-      </div>
-
       <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='purchaseGroupId'
@@ -114,6 +96,22 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           id='purchaseGroupId'
           name='purchaseGroupId'
           value={formData.purchaseGroupId}
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+        />
+      </div>
+      <div className='flex items-center justify-between mb-4'>
+        <label
+          htmlFor='purchaseGroupName'
+          className='text-[16px] text-gray-800 w-2/3'
+        >
+          Purchase Group Name:
+        </label>
+        <input
+          type='text'
+          id='purchaseGroupName'
+          name='purchaseGroupName'
+          value={formData.purchaseGroupName}
           onChange={handleChange}
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
@@ -150,19 +148,16 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
         />
       </div>
       <div className='flex items-center justify-between mb-4'>
-        <label
-          htmlFor='telePhoneNo'
-          className='text-[16px] text-gray-800 w-2/3'
-        >
-          Telephone No:
+        <label htmlFor='phoneNo' className='text-[16px] text-gray-800 w-2/3'>
+          Phone Number:
         </label>
         <input
           type='number'
-          id='telePhoneNo'
-          name='telePhoneNo'
-          value={formData.telePhoneNo}
+          id='phoneNo'
+          name='phoneNo'
+          value={formData.phoneNo}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          className='w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md'
         />
       </div>
 
@@ -181,23 +176,19 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       </div>
 
       <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='supplierId' className='text-[16px] text-gray-800 w-2/3'>
-          Supplier Id
+        <label htmlFor='fax' className='text-[16px] text-gray-800 w-2/3'>
+          Fax:
         </label>
-        <select
-          id='supplierId'
-          name='supplierId'
-          value={formData.supplierId}
+        <input
+          id='fax'
+          name='fax'
+          value={formData.fax}
           onChange={handleChange}
           className='w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md'
-        >
-          <option value=''>Choose a supplier</option>
-          <option value='S001'>S001</option>
-          <option value='S002'>S002</option>
-        </select>
+        />
       </div>
 
-      <div className='flex justify-center gap-2 mt-5'>
+      <div className='flex justify-center gap-2'>
         <button
           type='submit'
           className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'

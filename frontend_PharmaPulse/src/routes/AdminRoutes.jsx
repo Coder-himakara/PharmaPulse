@@ -38,14 +38,14 @@ const AdminRoutes = () => {
 
   return (
     <Routes>
-      <Route path='/add-users' element={<AddUsersForm onAddUser={addUser} />} />
-      <Route path='/users-info' element={<UsersInfoTable users={users} />} />
+      <Route path='add-users' element={<AddUsersForm onAddUser={addUser} />} />
+      <Route path='users-info' element={<UsersInfoTable users={users} />} />
 
       <Route
-        path='/edit-user/:userId'
+        path='edit-user/:userId'
         element={<EditUsersForm onUpdateUser={updateuser} />}
       />
-      <Route path='/view-user/:userId' element={<ViewUserDetails />} />
+      <Route path='view-user/:userId' element={<ViewUserDetails />} />
 
       <Route
         path='/add-lorry'

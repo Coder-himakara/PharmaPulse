@@ -9,7 +9,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    customerGroupId: "",
+    customerGroup:"",
     customerGroupName: "",
     assignSalesRepId: "",
     assignSalesRepName: "",
@@ -43,6 +43,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
     cg.preventDefault();
 
     if (
+      !formData.customerGroupId.trim() ||
       !formData.customerGroupName.trim() ||
       !formData.assignSalesRepId.trim() ||
       !formData.assignSalesRepName.trim() ||
@@ -75,7 +76,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
       onSubmit={handleSubmit}
       className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
     >
-      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg">
+      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
         Edit Customer Group
       </h2>
 
@@ -87,7 +88,23 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
           {successMessage}
         </p>
       )}
-
+      
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="customerGroupId"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Customer Group Id:
+        </label>
+        <input
+          type="text"
+          id="customerGroupId"
+          name="customerGroupId"
+          value={formData.customerGroupId}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          readOnly
+        />
+      </div>
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="customerGroupName"
@@ -100,20 +117,6 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
           id="customerGroupName"
           name="customerGroupName"
           value={formData.customerGroupName}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-          readOnly
-        />
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="customerId" className="text-[16px] text-gray-800 w-2/3">
-          Customer Group ID:
-        </label>
-        <input
-          type="text"
-          id="customerGroupId"
-          name="customerGroupId"
-          value={formData.customerGroupId}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
           readOnly
         />
@@ -160,7 +163,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
         />
       </div>
 
-      <div className="flex justify-center gap-2 mt-5">
+      <div className="flex justify-center gap-2">
         <button
           type="submit"
           className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
