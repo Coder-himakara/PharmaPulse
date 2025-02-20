@@ -78,10 +78,10 @@ const SuppliersInfoTable = ({ suppliers }) => {
                 Purchase Group
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Credit Period
+                Credit Period (Months)
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Credit Limit
+                Credit Limit (Rs.)
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Action
@@ -125,6 +125,113 @@ const SuppliersInfoTable = ({ suppliers }) => {
                 </td>{' '}
               </tr>
             ))}
+
+            {/* Dummy Row */}
+            <tr className='bg-[#f9f9f9] text-black italic'>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                ABC Distributors
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Main Street, Panadura
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                0784567812
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PG-005
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                3
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                5,000
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                <button
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleEdit('dummy')}
+                >
+                  Edit
+                </button>
+                <button
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleViewSupplier({ productId: 'dummy' })}
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+
+            {/* Dummy Row */}
+            <tr className='bg-[#f9f9f9] text-black italic'>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Pharma Distributors
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Galle Road, Matara
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                0761237895
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PG-012
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                8
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                25,000
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                <button
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleEdit('dummy')}
+                >
+                  Edit
+                </button>
+                <button
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleViewSupplier({ productId: 'dummy' })}
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+            {/* Dummy Row */}
+            <tr className='bg-[#f9f9f9] text-black italic'>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Medi Pharma Agencies
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                2nd Cross Road, Ahangama
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                0671236784
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PG-001
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                2
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                10,000
+              </td>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                <button
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleEdit('dummy')}
+                >
+                  Edit
+                </button>
+                <button
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleViewSupplier({ productId: 'dummy' })}
+                >
+                  View
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
