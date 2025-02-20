@@ -1,4 +1,4 @@
-import Navbar from '../../components/Navbar/Navbar';
+import SalesRepNavbar from '../../components/Navbar/SalesRepNavbar';
 
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import Footer from '../../components/Footer/Footer';
@@ -8,7 +8,7 @@ import SalesRepSidebar from '../../components/Sidebar/SalesRepSidebar';
 const SalesRepDashboard = () => {
   return (
     <div className='flex flex-col h-screen bg-gray-100'>
-      <Navbar />
+      <SalesRepNavbar />
       <div className='flex flex-grow'>
         <SalesRepSidebar role='salerep' className='w-1/5 bg-white shadow-lg' />
         <div className='flex flex-col flex-grow p-6'>

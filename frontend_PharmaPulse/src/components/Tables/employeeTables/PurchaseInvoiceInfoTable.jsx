@@ -3,14 +3,14 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
+const PurchaseInvoiceInfoTable = ({ purchaseInvoices }) => {
   const [search, setSearch] = useState("");
 
   const navigate = useNavigate();
 
-  // Filter the purchase groups based on the search term
-  const filteredPurchaseGroups = purchaseGroups.filter((purchaseGroup) =>
-    purchaseGroup.purchaseGroupName.toLowerCase().includes(search.toLowerCase())
+  // Filter the purchase invoices based on the search term
+  const filteredPurchaseInvoices = purchaseInvoices.filter((purchaseInvoice) =>
+    purchaseInvoice.invoiceNo.toLowerCase().includes(search.toLowerCase())
   );
 
   // Close button action
@@ -19,25 +19,25 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
   };
 
   // Edit button action
-  const handleEdit = (purchaseGroupId) => {
-    const purchaseGroup = purchaseGroups.find(
-      (pg) => pg.purchaseGroupId === purchaseGroupId
+  const handleEdit = (purchaseInvoiceId) => {
+    const purchaseInvoice = purchaseInvoices.find(
+      (pi) => pi.purchaseInvoiceId === purchaseInvoiceId
     );
-    navigate(`/edit-purchase-group/${purchaseGroupId}`, {
-      state: { purchaseGroup },
+    navigate(`/edit-purchase-invoice/${purchaseInvoiceId}`, {
+      state: { purchaseInvoice },
     });
   };
 
-  const handleViewPurchaseGroup = (purchaseGroup) => {
-    navigate(`/view-purchase-group/${purchaseGroup.purchaseGroupId}`, {
-      state: { purchaseGroup },
+  const handleViewPurchaseInvoice = (purchaseInvoice) => {
+    navigate(`/view-purchase-invoice/${purchaseInvoice.purchaseInvoiceId}`, {
+      state: { purchaseInvoice },
     });
   };
 
   return (
     <div className="bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative">
       <div className="bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative">
-        <h1 className="p-1 m-1 text-2xl">Purchase Groups Management</h1>
+        <h1 className="p-1 m-1 text-2xl">Purchase Invoices Management</h1>
         <button
           className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1] mr-4"
           onClick={handleClose}
@@ -47,38 +47,38 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
       </div>
 
       <div className="flex items-center justify-between p-2 m-2">
-        <h2 className="text-2xl font-bold text-[#1a5353]">Purchase Groups</h2>
+        <h2 className="text-2xl font-bold text-[#1a5353]">Purchase Invoices</h2>
         <div className="relative">
           <input
             type="text"
-            placeholder="Search Purchase Group..."
+            placeholder="Search Purchase Invoice..."
             value={search}
-            onChange={(pg) => setSearch(pg.target.value)}
+            onChange={(pi) => setSearch(pi.target.value)}
             className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"
           />
         </div>
       </div>
 
       {/* Display message when no search results */}
-      {filteredPurchaseGroups.length === 0 && search && (
+      {filteredPurchaseInvoices.length === 0 && search && (
         <div className="text-[#991919] text-sm text-center mt-2 font-bold">
-          No purchase groups found matching your search.
+          No purchase invoices found matching your search.
         </div>
       )}
 
-      {/* Table displaying purchase groups */}
+      {/* Table displaying purchase invoices */}
       <div className="p-2 overflow-x-auto">
         <table className="w-full border border-collapse border-gray-400">
           <thead>
             <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
               {[
-                "Purchase Group Id",
-                "Purchase Group Name",
-                "Address",
-                "Contact Name",
-                "Phone Number",
-                "Email",
-                "Fax",
+                "Invoice No",
+                "Supplier ID",
+                "Purchase Order Ref",
+                "Invoice Date",
+                "Total Amount",
+                "Discount",
+                "Net Amount",
                 "Action",
               ].map((header, index) => (
                 <th
@@ -92,39 +92,41 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
           </thead>
 
           <tbody>
-            {filteredPurchaseGroups.map((purchaseGroup, index) => (
+            {filteredPurchaseInvoices.map((purchaseInvoice, index) => (
               <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
-                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.purchaseGroupId}
+                <td className="p-2 text-center border border-gray-400">
+                  {purchaseInvoice.invoiceNo}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.purchaseGroupName}
+                  {purchaseInvoice.supplierId}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.address}
+                  {purchaseInvoice.purchaseOrderRef}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.contactName}
+                  {purchaseInvoice.invoiceDate}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.phoneNo}
+                  {purchaseInvoice.totalAmount}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.email}
+                  {purchaseInvoice.discountAmount}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.fax}
+                  {purchaseInvoice.netAmount}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
                   <button
-                    onClick={() => handleEdit(purchaseGroup.purchaseGroupId)}
+                    onClick={() =>
+                      handleEdit(purchaseInvoice.purchaseInvoiceId)
+                    }
                     className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
                   >
                     Edit
                   </button>
                   <button
                     className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                    onClick={() => handleViewPurchaseGroup(purchaseGroup)}
+                    onClick={() => handleViewPurchaseInvoice(purchaseInvoice)}
                   >
                     View
                   </button>
@@ -138,18 +140,18 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
   );
 };
 
-PurchaseGroupInfoTable.propTypes = {
-  purchaseGroups: PropTypes.arrayOf(
+PurchaseInvoiceInfoTable.propTypes = {
+  purchaseInvoices: PropTypes.arrayOf(
     PropTypes.shape({
-      purchaseGroupId: PropTypes.string.isRequired,
-      purchaseGroupName: PropTypes.string.isRequired,
-      address: PropTypes.string.isRequired,
-      contactName: PropTypes.string.isRequired,
-      telePhoneNo: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
+      invoiceNo: PropTypes.string.isRequired,
       supplierId: PropTypes.string.isRequired,
+      purchaseOrderRef: PropTypes.string.isRequired,
+      invoiceDate: PropTypes.string.isRequired,
+      totalAmount: PropTypes.number.isRequired,
+      discountAmount: PropTypes.number.isRequired,
+      netAmount: PropTypes.number.isRequired,
     })
   ).isRequired,
 };
 
-export default PurchaseGroupInfoTable;
+export default PurchaseInvoiceInfoTable;
