@@ -10,7 +10,7 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-image: url("./loginBg.webp"); /* Path to the image */
+  background-image: url("./loginbg.webp"); /* Path to the image */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
