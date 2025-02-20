@@ -69,8 +69,8 @@ const Navbar = () => {
           {
             "label": "Users",
             "items": [
-              { "label": "Add Users", "url": "add-users" },
-              { "label": "User Info", "url": "users-info" }
+              { "label": "Add Users", "url": "admin-dashboard/add-users" },
+              { "label": "User Info", "url": "admin-dashboard/users-info" }
             ]
           }
         ]
@@ -84,8 +84,8 @@ const Navbar = () => {
             {
               "label": "Lorries",
               "items": [
-                { "label": "Add Lorry", "url": "add-lorry" },
-                { "label": "Lorry Info", "url": "lorry-info" }
+                { "label": "Add Lorry", "url": "admin-dashboard/add-lorry" },
+                { "label": "Lorry Info", "url": "admin-dashboard/lorry-info" }
               ]
             }
           ]
