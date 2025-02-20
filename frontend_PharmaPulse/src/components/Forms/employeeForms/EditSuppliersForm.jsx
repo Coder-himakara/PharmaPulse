@@ -8,7 +8,6 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
   const supplier = state?.supplier; // Get supplier from the state
 
   const [formData, setFormData] = useState({
-    supplierId: '',
     supplierName: '',
     supplierAddress: '',
     contactNumber: '',
@@ -25,7 +24,6 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
   useEffect(() => {
     if (supplier) {
       setFormData({
-        supplierId: supplier.supplierId,
         supplierName: supplier.supplierName,
         supplierAddress: supplier.supplierAddress,
         contactNumber: supplier.contactNumber,
@@ -90,19 +88,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
           {successMessage}
         </p>
       )}
-      <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='supplierId' className='text-[16px] text-gray-800 w-2/3'>
-          Supplier Name:
-        </label>
-        <input
-          type='text'
-          id='supplierId'
-          name='supplierId'
-          value={formData.supplierId}
-          onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-        />
-      </div>
+
       <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='supplierName'
