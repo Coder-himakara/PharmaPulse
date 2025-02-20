@@ -212,9 +212,9 @@ const Navbar = () => {
             menu: {
               className: "bg-transparent gap-2 border-none shadow-md flex justify-right w-full",
             },
-            panel: (item) => ({
-              className: `absolute ${item.label !== "Partners" ? "left-1/2 top-20 transform -translate-x-1/2" : "left-0"} bg-white shadow-lg rounded-md`,
-            }),
+            panel:{
+              className: "absolute bg-white shadow-lg rounded-md",
+            },
             submenu: {
               className: `${isDarkMode ? "text-white" : "text-black"} border-none`,
             },

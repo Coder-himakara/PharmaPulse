@@ -7,7 +7,15 @@ const LorryInfoTable = ({ lorries }) => {
   const [sortDirection] = useState('asc');
   const navigate = useNavigate();
 
-  const filteredLorries = lorries.filter((lorry) =>
+  const dummyLorries = [
+    { lorryId: 'L001', numberPlate: 'ABC-1234', representativeId: 'R001', dateOfAdded: '2024-02-15' },
+    { lorryId: 'L002', numberPlate: 'XYZ-5678', representativeId: 'R002', dateOfAdded: '2024-02-18' },
+    { lorryId: 'L003', numberPlate: 'DEF-9101', representativeId: 'R003', dateOfAdded: '2024-02-20' },
+  ];
+
+  const combinedLorries = [...dummyLorries, ...lorries];
+
+  const filteredLorries = combinedLorries.filter((lorry) =>
     lorry.numberPlate.toLowerCase().includes(search.toLowerCase()),
   );
 
@@ -22,7 +30,7 @@ const LorryInfoTable = ({ lorries }) => {
   };
 
   const handleEdit = (lorryId) => {
-    const lorry = lorries.find((l) => l.lorryId === lorryId);
+    const lorry = combinedLorries.find((l) => l.lorryId === lorryId);
     navigate(`/edit-truck/${lorryId}`, { state: { lorry } });
   };
 

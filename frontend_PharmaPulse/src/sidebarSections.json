@@ -33,7 +33,7 @@
       "title": "Options",
       "links": [
         { "to": "/sales-dashboard/price-list-view", "name": "Price List" },
-        { "to": "/sales-dashboard/order-creation", "name": "Order Creation" }
+        { "to": "/sales-dashboard/order-creation", "name": "Create Order " }
       ]
     }
   ],

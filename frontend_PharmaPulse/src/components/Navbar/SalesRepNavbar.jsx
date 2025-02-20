@@ -62,20 +62,27 @@ const Navbar = () => {
   [
     
     {
-      "label": "Options",
+      "label": "Price List",
       "icon": "pi pi-dollar text-white",
-      "items": [
-        [
-          {
-            "label": "Options",
-            "items": [
-              { "label": "Price List", "url": "sales-dashboard/price-list-view" },
-              { "label": "Order Creation", "url": "order-creation" }
-            ]
-          }
-        ]
-      ]
+       "url": "sales-dashboard/price-list-view" 
+       
+    },
+    {
+      "label": "Create Order",
+      "icon": "pi pi-shopping-cart  text-white",
+      "url": "order-creation" 
+    
+    },
+    {
+      "label": "Order History",
+      "icon": "pi pi-history  text-white",
+      
+    },
+    {
+      "label": "Create Sale Invoice",
+      "icon": "pi pi-file text-white",
     }
+    
     
   ]
   
