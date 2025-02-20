@@ -1,17 +1,17 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const ProductsInfoTable = ({ products }) => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   const filteredProducts = products.filter((product) =>
-    product.productName.toLowerCase().includes(search.toLowerCase())
+    product.productName.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleClose = () => {
-    navigate("/employee-dashboard");
+    navigate('/employee-dashboard');
   };
 
   const handleEdit = (productId) => {
@@ -24,94 +24,93 @@ const ProductsInfoTable = ({ products }) => {
   };
 
   return (
-    <div className="bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative">
-      <div className="bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative">
-        <h1 className="p-1 m-1 text-2xl">Products Management</h1>
+    <div className='bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative'>
+      <div className='bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative'>
+        <h1 className='p-1 m-1 text-2xl'>Products Management</h1>
         <button
-          className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1] mr-4"
+          className='absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1] mr-4'
           onClick={handleClose}
         >
           X
         </button>
       </div>
 
-      <div className="flex items-center justify-between p-2 m-2">
-        <h2 className="text-2xl font-bold text-[#1a5353]">Products</h2>
-        <div className="relative">
+      <div className='flex items-center justify-between p-2 m-2'>
+        <h2 className='text-2xl font-bold text-[#1a5353]'>Products</h2>
+        <div className='relative'>
           <input
-            type="text"
-            placeholder="Search Products..."
+            type='text'
+            placeholder='Search Products...'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"
+            className='px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]'
           />
         </div>
       </div>
 
       {filteredProducts.length === 0 && search && (
-        <div className="text-[#991919] text-sm text-center mt-2 font-bold">
+        <div className='text-[#991919] text-sm text-center mt-2 font-bold'>
           No products found matching your search.
         </div>
       )}
 
-      <div className="p-2 m-2">
-        <table className="w-full border-collapse">
+      <div className='p-2 m-2'>
+        <table className='w-full border-collapse'>
           <thead>
             <tr>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Purchase Group
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Product Ref Id
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Product Name
               </th>
-
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Generic Name
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Product Status
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Reorder Limit By Package
               </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
             {filteredProducts.map((product, index) => (
-              <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.purchaseGroup}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productRefId}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productName}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.genericName}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productStatus}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.reorderLimitByPackage}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
                     onClick={() => handleEdit(product.productId)}
                   >
                     Edit
                   </button>
                   <button
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
                     onClick={() => handleViewProducts(product)}
                   >
                     View
@@ -121,35 +120,35 @@ const ProductsInfoTable = ({ products }) => {
             ))}
 
             {/* Dummy Row */}
-            <tr className="bg-[#f9f9f9] text-black italic">
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PG-000
+            <tr className='bg-[#f9f9f9] text-black italic'>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PG-001
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PR-000
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PR-001
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Sample Product
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Panadol
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Generic
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Panadol
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                10
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                50
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleEdit("dummy")}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleEdit('dummy')}
                 >
                   Edit
                 </button>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleViewProducts({ productId: "dummy" })}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleViewProducts({ productId: 'dummy' })}
                 >
                   View
                 </button>
@@ -157,70 +156,70 @@ const ProductsInfoTable = ({ products }) => {
             </tr>
 
             {/* Dummy Row */}
-            <tr className="bg-[#f9f9f9] text-black italic">
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PG-000
+            <tr className='bg-[#f9f9f9] text-black italic'>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PG-005
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PR-000
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PR-005
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Sample Product
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Cough Syrup
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Generic
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Syrup
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                10
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                25
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleEdit("dummy")}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleEdit('dummy')}
                 >
                   Edit
                 </button>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleViewProducts({ productId: "dummy" })}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleViewProducts({ productId: 'dummy' })}
                 >
                   View
                 </button>
               </td>
             </tr>
             {/* Dummy Row */}
-            <tr className="bg-[#f9f9f9] text-black italic">
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PG-000
+            <tr className='bg-[#f9f9f9] text-black italic'>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PG-007
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PR-000
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PR-007
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Sample Product
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Vitamin C
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Generic
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Vitamin Tablet
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Active
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Discontinued
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 10
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleEdit("dummy")}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleEdit('dummy')}
                 >
                   Edit
                 </button>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleViewProducts({ productId: "dummy" })}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleViewProducts({ productId: 'dummy' })}
                 >
                   View
                 </button>
@@ -243,7 +242,7 @@ ProductsInfoTable.propTypes = {
       genericName: PropTypes.string.isRequired,
       productStatus: PropTypes.string.isRequired,
       reorderLimitByPackage: PropTypes.number.isRequired,
-    })
+    }),
   ).isRequired,
 };
 
