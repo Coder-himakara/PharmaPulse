@@ -69,8 +69,8 @@ const Navbar = () => {
           {
             "label": "Options",
             "items": [
-              { "label": "Price List", "url": "price-list-view" },
-              { "label": "Order Creation", "url": "order-creation" }
+              { "label": "Price List", "url": "sales-dashboard/price-list-view" },
+              { "label": "Order Creation", "url": "sales-dashboard/order-creation" }
             ]
           }
         ]
