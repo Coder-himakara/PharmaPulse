@@ -51,5 +51,4 @@ const SalesRepDashboard = () => {
   );
 };
 
-export default  SalesRepDashboard;
-
+export default SalesRepDashboard;

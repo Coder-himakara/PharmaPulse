@@ -8,9 +8,24 @@ const LorryInfoTable = ({ lorries }) => {
   const navigate = useNavigate();
 
   const dummyLorries = [
-    { lorryId: 'L001', numberPlate: 'ABC-1234', representativeId: 'R001', dateOfAdded: '2024-02-15' },
-    { lorryId: 'L002', numberPlate: 'XYZ-5678', representativeId: 'R002', dateOfAdded: '2024-02-18' },
-    { lorryId: 'L003', numberPlate: 'DEF-9101', representativeId: 'R003', dateOfAdded: '2024-02-20' },
+    {
+      lorryId: 'L001',
+      numberPlate: 'ABC-1234',
+      representativeId: 'R001',
+      dateOfAdded: '2024-02-15',
+    },
+    {
+      lorryId: 'L002',
+      numberPlate: 'XYZ-5678',
+      representativeId: 'R002',
+      dateOfAdded: '2024-02-18',
+    },
+    {
+      lorryId: 'L003',
+      numberPlate: 'DEF-9101',
+      representativeId: 'R003',
+      dateOfAdded: '2024-02-20',
+    },
   ];
 
   const combinedLorries = [...dummyLorries, ...lorries];
