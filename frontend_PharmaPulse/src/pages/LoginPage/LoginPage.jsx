@@ -22,7 +22,7 @@ function LoginPage() {
 
   return (
     <div className='flex items-center justify-center w-full h-screen bg-center bg-no-repeat bg-cover'>
-      <div className='flex flex-col items-center w-full max-w-md p-5 text-center bg-white rounded-lg shadow-lg bg-opacity-80'>
+      <div className='flex flex-col items-center w-full max-w-md p-5 text-center bg-white rounded-lg shadow-lg bg-opacity-95'>
         <h1 className='mb-5 text-2xl font-bold text-teal-900'>
           Welcome to PharmaPulse
         </h1>

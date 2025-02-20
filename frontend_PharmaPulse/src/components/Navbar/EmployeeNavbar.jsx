@@ -194,7 +194,7 @@ const Navbar = () => {
 
   return (
     <div className={`flex justify-between items-center px-6 py-4 fixed top-0 left-0 w-full z-10 h-[100px] transition-colors duration-300 ${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"}`}>
-      <div className="flex items-center">
+      <div className="flex items-right">
         <img src={logo} alt="Logo" className="h-10 mr-4" />
         <span className="text-lg font-bold">Home</span>
       </div>
@@ -210,11 +210,11 @@ const Navbar = () => {
               className: `${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-black"} border-none`,
             },
             menu: {
-              className: "bg-transparent gap-2 border-none shadow-md flex justify-center w-full",
+              className: "bg-transparent gap-2 border-none shadow-md flex justify-right w-full",
             },
-            panel: {
-              className: "absolute left-1/2 top-20 transform -translate-x-1/2 bg-white shadow-lg rounded-md", // Centering dropdown panel
-            },
+            panel: (item) => ({
+              className: `absolute ${item.label !== "Partners" ? "left-1/2 top-20 transform -translate-x-1/2" : "left-0"} bg-white shadow-lg rounded-md`,
+            }),
             submenu: {
               className: `${isDarkMode ? "text-white" : "text-black"} border-none`,
             },
@@ -230,7 +230,7 @@ const Navbar = () => {
 
             // Keep dropdown menu text black
             menuitem: {
-              className: "hover:bg-transparent text-black",
+              className: "hover:bg-transparent text-black text-left",
             },
             action: {
               className: "hover:bg-transparent text-black",
@@ -239,7 +239,7 @@ const Navbar = () => {
               className: "hover:bg-transparent text-black",
             },
             submenuitem: {
-              className: "hover:bg-transparent text-black",
+              className: "hover:bg-transparent text-black text-left",
             }
           }}
         />
