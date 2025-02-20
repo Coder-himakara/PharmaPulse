@@ -61,7 +61,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   };
 
   const handleCancel = () => {
-    navigate('/home');
+    navigate('/employee-dashboard');
   };
 
   return (

@@ -115,7 +115,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
   };
 
   const handleCancel = () => {
-    navigate('/home');
+    navigate('/employee-dashboard');
   };
 
   return (

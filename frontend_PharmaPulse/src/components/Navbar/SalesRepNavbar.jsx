@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import {
   FaUser,
   FaSignOutAlt,
-  FaTachometerAlt,
   FaSun,
   FaMoon,
 } from "react-icons/fa";
@@ -157,13 +156,7 @@ const Navbar = () => {
                   : "bg-white text-black border-gray-300"
               }`}
             >
-              <DropdownLink
-                to="/dashboard"
-                icon={FaTachometerAlt}
-                onClick={closeDropdown}
-              >
-                Dashboard
-              </DropdownLink>
+            
               <DropdownLink
                 to="/update-profile"
                 icon={FaUser}

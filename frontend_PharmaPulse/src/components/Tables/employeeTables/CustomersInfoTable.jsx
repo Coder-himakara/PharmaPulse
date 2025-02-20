@@ -11,16 +11,20 @@ const CustomersInfoTable = ({ customers }) => {
   );
 
   const handleClose = () => {
-    navigate('/home');
+    navigate('/employee-dashboard');
   };
 
   const handleEdit = (customerId) => {
     const customer = customers.find((c) => c.customerId === customerId);
-    navigate(`/edit-customer/${customerId}`, { state: { customer } });
+    navigate(`/edit-customer/${customerId}`, {
+      state: { customer },
+    });
   };
 
   const handleViewCustomer = (customer) => {
-    navigate(`/view-customer/${customer.customerId}`, { state: { customer } });
+    navigate(`/view-customer/${customer.customerId}`, {
+      state: { customer },
+    });
   };
 
   return (

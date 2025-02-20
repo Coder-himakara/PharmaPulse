@@ -78,7 +78,7 @@ const AddProductsForm = ({ onAddProduct }) => {
   };
 
   const handleCancel = () => {
-    navigate("/home");
+    navigate("/employee-dashboard");
   };
 
   return (
@@ -104,13 +104,13 @@ const AddProductsForm = ({ onAddProduct }) => {
           htmlFor="purchaseGroupId"
           className="text-[16px] text-gray-800 w-2/3"
         >
-          Purchase Group Id:
+          Purchase Group :
         </label>
         <input
           type="text"
-          id="purchaseGroupId"
-          name="purchaseGroupId"
-          value={formData.purchaseGroupId}
+          id="purchaseGroup"
+          name="purchaseGroup"
+          value={formData.purchaseGroup}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />

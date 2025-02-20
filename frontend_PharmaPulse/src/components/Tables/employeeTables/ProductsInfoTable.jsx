@@ -11,16 +11,20 @@ const ProductsInfoTable = ({ products }) => {
   );
 
   const handleClose = () => {
-    navigate('/home');
+    navigate('/employee-dashboard');
   };
 
   const handleEdit = (productId) => {
     const product = products.find((p) => p.productId === productId); // Find the specific product
-    navigate(`/edit-product/${productId}`, { state: { product } }); // Pass the product data to the Edit form
+    navigate(`/edit-product/${productId}`, {
+      state: { product },
+    }); // Pass the product data to the Edit form
   };
 
   const handleViewProducts = (product) => {
-    navigate(`/view-product/${product.productId}`, { state: { product } });
+    navigate(`/view-product/${product.productId}`, {
+      state: { product },
+    });
   };
 
   return (
@@ -84,35 +88,34 @@ const ProductsInfoTable = ({ products }) => {
           </thead>
           <tbody>
             {filteredProducts.map((product, index) => (
-              <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+              <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
+                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   {product.purchaseGroupId}
                 </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   {product.productRefId}
                 </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   {product.productName}
                 </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   {product.genericName}
                 </td>
-
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   {product.productStatus}
                 </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   {product.reorderLimitByPackage}
                 </td>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                   <button
-                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
                     onClick={() => handleEdit(product.productId)}
                   >
                     Edit
                   </button>
                   <button
-                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
                     onClick={() => handleViewProducts(product)}
                   >
                     View
@@ -120,6 +123,113 @@ const ProductsInfoTable = ({ products }) => {
                 </td>
               </tr>
             ))}
+
+            {/* Dummy Row */}
+            <tr className="bg-[#f9f9f9] text-black italic">
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                PG-000
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                PR-000
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                Sample Product
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                Generic
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                Active
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                10
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() => handleEdit("dummy")}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() => handleViewProducts({ productId: "dummy" })}
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+
+            {/* Dummy Row */}
+            <tr className="bg-[#f9f9f9] text-black italic">
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                PG-000
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                PR-000
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                Sample Product
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                Generic
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                Active
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                10
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() => handleEdit("dummy")}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() => handleViewProducts({ productId: "dummy" })}
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+            {/* Dummy Row */}
+            <tr className="bg-[#f9f9f9] text-black italic">
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                PG-000
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                PR-000
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                Sample Product
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                Generic
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                Active
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                10
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() => handleEdit("dummy")}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() => handleViewProducts({ productId: "dummy" })}
+                >
+                  View
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
