@@ -6,9 +6,11 @@ import com.group03.backend_PharmaPulse.sales.api.event.CustomerGroupService;
 import com.group03.backend_PharmaPulse.sales.internal.entity.CustomerGroup;
 import com.group03.backend_PharmaPulse.sales.internal.mapper.CustomerGroupMapper;
 import com.group03.backend_PharmaPulse.sales.internal.repository.CustomerGroupRepo;
+import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerGroupServiceImpl implements CustomerGroupService {
@@ -29,16 +31,31 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
 
     @Override
     public List<CustomerGroupDTO> getAllCustomerGroups() {
-        return List.of();
+        List<CustomerGroup> customerGroups= customerGroupRepo.findAll();
+        if(!customerGroups.isEmpty()){
+            return customerGroupMapper.toDTOsList(customerGroups);
+        }else{
+            throw new NotFoundException("No Customer Groups found");
+        }
     }
 
     @Override
     public CustomerGroupDTO getCustomerGroupById(Long id) {
-        return null;
+        Optional<CustomerGroup> customerGroup= customerGroupRepo.findById(Math.toIntExact(id));
+        return customerGroup.map(customerGroupMapper::toDTO)
+                .orElseThrow(() -> new NotFoundException("CustomerGroup not found"));
     }
 
     @Override
     public CustomerGroupDTO updateCustomerGroup(Long id, CustomerGroupDTO customerGroupDTO) {
-        return null;
+        Optional<CustomerGroup> customerGroup = customerGroupRepo.findById(Math.toIntExact(id));
+        if (customerGroup.isPresent()) {
+            CustomerGroup updatedCustomerGroup = customerGroupMapper.toEntity(customerGroupDTO);
+            updatedCustomerGroup.setCustomerGroupId(id); // Ensure the ID is set to the existing entity's ID
+            CustomerGroup savedCustomerGroup = customerGroupRepo.save(updatedCustomerGroup);
+            return customerGroupMapper.toDTO(savedCustomerGroup);
+        } else {
+            throw new NotFoundException("CustomerGroup not found");
+        }
     }
 }

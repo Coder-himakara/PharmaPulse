@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,5 +27,7 @@ public class CustomerGroup {
     private String descriptions;
 
     @OneToMany(mappedBy = "customer_group", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    //cascade  means that all cascade operations (e.g., persist, merge, remove) will be propagated from the CustomerGroup to the Customer entities.
+    //For example, if a CustomerGroup is deleted, all associated Customer entities will also be deleted automatically.
     private Set<Customer> customers;
 }

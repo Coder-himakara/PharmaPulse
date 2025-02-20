@@ -26,7 +26,7 @@ public interface CustomerMapper {
     List<Customer> toEntitiesList(List<CustomerDTO> customerDTOs);
 
     // Custom method to map int to CustomerGroup
-    @Named("mapCustomerGroup")
+    @Named("mapCustomerGroup") //assign a custom method in the CustomerMapper interface for handling a specific mapping.
     default CustomerGroup mapCustomerGroup(Long customerGroupId) {
         CustomerGroup customerGroup = new CustomerGroup();
         customerGroup.setCustomerGroupId(customerGroupId);
