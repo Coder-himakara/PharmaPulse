@@ -69,7 +69,7 @@ const EditLorryForm = ({ onUpdateLorry }) => {
   };
 
   const handleCancel = () => {
-    navigate('/lorry-info');
+    navigate('/admin-dashboard/lorry-info');
   };
 
   return (

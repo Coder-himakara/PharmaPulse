@@ -59,7 +59,7 @@ const AddLorryForm = ({ onAddLorry }) => {
   };
 
   const handleCancel = () => {
-    navigate('/home');
+    navigate('/admin-dashboard');
   };
 
   return (

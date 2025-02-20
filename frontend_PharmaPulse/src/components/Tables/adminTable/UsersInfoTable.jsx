@@ -22,16 +22,16 @@ const UsersInfoTable = ({ users }) => {
 
 
   const handleClose = () => {
-    navigate('/home');
+    navigate('/admin-dashboard');
   };
 
   const handleEdit = (userId) => {
     const user = users.find((u) => u.userId === userId);
-    navigate(`/edit-user/${userId}`, { state: { user } });
+    navigate(`/admin-dashboard/edit-user/${userId}`, { state: { user } });
   };
 
   const handleViewUser = (user) => {
-    navigate(`/view-user/${user.userId}`, { state: { user } });
+    navigate(`/admin-dashboard/view-user/${user.userId}`, { state: { user } });
   };
 
   return (
@@ -68,9 +68,6 @@ const UsersInfoTable = ({ users }) => {
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                #
-              </th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 User ID
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
@@ -87,9 +84,7 @@ const UsersInfoTable = ({ users }) => {
           <tbody>
             {sortedUsers.map((user, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {index + 1}
-                </td>
+                
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {user.userId}
                 </td>

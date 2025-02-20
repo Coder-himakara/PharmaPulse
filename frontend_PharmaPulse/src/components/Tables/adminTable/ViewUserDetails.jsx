@@ -5,22 +5,8 @@ const ViewUserDetails = () => {
   const navigate = useNavigate();
   const user = location.state?.user;
 
-  if (!user) {
-    return (
-      <div className='p-5 text-center text-red-500'>
-        <h2>User not found</h2>
-        <button
-          className='px-4 py-2 mt-4 text-white bg-blue-500 rounded-md hover:bg-blue-600'
-          onClick={() => navigate('/users-info')}
-        >
-          Go Back
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className='max-w-md p-6 mx-auto mt-10 bg-white rounded-lg shadow-md'>
+    <div className='max-w-md p-6 mx-auto mt-10 bg-[#e6eef3] rounded-lg shadow-md'>
       <h2 className='mb-4 text-xl font-bold text-center text-[var(--card-text-color)]'>
         User Details
       </h2>
@@ -61,7 +47,7 @@ const ViewUserDetails = () => {
           <strong>Password:</strong>
           {user.password}
         </li>
-        
+
         <li>
           <strong>Date of Joined:</strong> {user.dateOfJoined}
         </li>
@@ -71,12 +57,12 @@ const ViewUserDetails = () => {
         <li>
           <strong>Status:</strong> {user.status}
         </li>
-        
       </ul>
       <div className='flex justify-center mt-4'>
         <button
           className='px-4 py-2 text-white bg-gray-500 rounded-md hover:bg-gray-600'
-          onClick={() => navigate('/users-info')}
+          onClick={() => navigate('/admin-dashboard/users-info')}
+
         >
           Back
         </button>

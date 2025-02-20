@@ -93,7 +93,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
   };
 
   const handleCancel = () => {
-    navigate('/users-info');
+    navigate('/admin-dashboard/users-info');
   };
 
   return (
