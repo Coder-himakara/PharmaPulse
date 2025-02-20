@@ -72,7 +72,6 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
           <thead>
             <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
               {[
-                "Purchase Group Id",
                 "Purchase Group Name",
                 "Address",
                 "Contact Name",
@@ -94,9 +93,6 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
           <tbody>
             {filteredPurchaseGroups.map((purchaseGroup, index) => (
               <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
-                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.purchaseGroupId}
-                </td>
                 <td className="p-2 text-center border border-gray-400">
                   {purchaseGroup.purchaseGroupName}
                 </td>

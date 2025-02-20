@@ -8,15 +8,14 @@ const EditProductsForm = ({ onUpdateProduct }) => {
   const product = state?.product; // Get product from the state
 
   const [formData, setFormData] = useState({
-    productId:"",
-    purchaseGroupId:"",
-    productRefId:"",
+    purchaseGroupId: "",
+    productRefId: "",
     productName: "",
     genericName: "",
     description: "",
     category: "",
     packageType: "",
-    unitsPerPackage:"",
+    unitsPerPackage: "",
     productStatus: "",
     reorderLimitByPackage: "",
   });
@@ -29,7 +28,6 @@ const EditProductsForm = ({ onUpdateProduct }) => {
   useEffect(() => {
     if (product) {
       setFormData({
-        productId: product.productId,
         purchaseGroupId: product.purchaseGroupId,
         productRefId: product.productRefId,
         productName: product.productName,
@@ -98,22 +96,8 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           {successMessage}
         </p>
       )}
+
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="productRefId" className="text-[16px] text-gray-800 w-2/3">
-        Product Id:
-        </label>
-        <input
-          type="text"
-          id="productId"
-          name="productId"
-          value={formData.productId}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-      </div>
-
-<div className="flex items-center justify-between mb-4">
-
         <label
           htmlFor="purchaseGroupId"
           className="text-[16px] text-gray-800 w-2/3"
@@ -130,8 +114,11 @@ const EditProductsForm = ({ onUpdateProduct }) => {
         />
       </div>
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="productRefId" className="text-[16px] text-gray-800 w-2/3">
-        Product Ref Id:
+        <label
+          htmlFor="productRefId"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Product Ref Id:
         </label>
         <input
           type="text"
@@ -143,8 +130,11 @@ const EditProductsForm = ({ onUpdateProduct }) => {
         />
       </div>
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="productName" className="text-[16px] text-gray-800 w-2/3">
-        Product Name:
+        <label
+          htmlFor="productName"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Product Name:
         </label>
         <input
           type="text"
@@ -173,14 +163,12 @@ const EditProductsForm = ({ onUpdateProduct }) => {
         />
       </div>
 
-     
-
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="description"
           className="text-[16px] text-gray-800 w-2/3"
         >
-         Description:
+          Description:
         </label>
         <div className="relative w-2/3">
           <input
@@ -207,13 +195,16 @@ const EditProductsForm = ({ onUpdateProduct }) => {
         >
           <option value="">Choose a category</option>
           <option value="MEDICINE">MEDICINE</option>
-          <option value="SERGICAL">SERGICAL</option>
+          <option value="SURGICAL">SURGICAL</option>
         </select>
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="packageType" className="text-[16px] text-gray-800 w-2/3">
-         Package Type:
+        <label
+          htmlFor="packageType"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Package Type:
         </label>
         <select
           id="packageType"
@@ -224,7 +215,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
         >
           <option value="">Choose a packageType</option>
           <option value="VIAL">VIAL</option>
-          <option value="BOTTEL">BOTTEL</option>
+          <option value="BOTTLE">BOTTLE</option>
           <option value="BOX">BOX</option>
           <option value="BLISTER PACK">BLISTER PACK</option>
           <option value="POUCH">POUCH</option>
@@ -249,8 +240,11 @@ const EditProductsForm = ({ onUpdateProduct }) => {
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="productStatus" className="text-[16px] text-gray-800 w-2/3">
-        Product Status:
+        <label
+          htmlFor="productStatus"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Product Status:
         </label>
         <select
           id="productStatus"

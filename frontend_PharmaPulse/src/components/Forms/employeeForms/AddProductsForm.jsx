@@ -5,14 +5,14 @@ import { useNavigate } from "react-router-dom";
 
 const AddProductsForm = ({ onAddProduct }) => {
   const [formData, setFormData] = useState({
-    purchaseGroupId:"",
-    productRefId:"",
+    purchaseGroupId: "",
+    productRefId: "",
     productName: "",
     genericName: "",
     description: "",
     category: "",
     packageType: "",
-    unitsPerPackage:"",
+    unitsPerPackage: "",
     productStatus: "",
     reorderLimitByPackage: "",
   });
@@ -36,10 +36,10 @@ const AddProductsForm = ({ onAddProduct }) => {
     // Basic validation
     if (
       !formData.productName ||
-      !formData.purchaseGroupId||
-      !formData.productRefId||
+      !formData.purchaseGroupId ||
+      !formData.productRefId ||
       !formData.productName ||
-      !formData.genericName||
+      !formData.genericName ||
       !formData.description ||
       !formData.category ||
       !formData.packageType ||
@@ -62,17 +62,17 @@ const AddProductsForm = ({ onAddProduct }) => {
     // Clear the form after a delay
     setTimeout(() => {
       setFormData({
-        purchaseGroupId:"",
-        productRefId:"",
+        purchaseGroupId: "",
+        productRefId: "",
         productName: "",
         genericName: "",
         description: "",
         category: "",
         packageType: "",
-        unitsPerPackage:"",
+        unitsPerPackage: "",
         productStatus: "",
         reorderLimitByPackage: "",
-       });
+      });
       setSuccessMessage("");
     }, 2000); // Wait for success message display before navigating
   };
@@ -116,8 +116,11 @@ const AddProductsForm = ({ onAddProduct }) => {
         />
       </div>
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="productRefId" className="text-[16px] text-gray-800 w-2/3">
-        Product Ref Id:
+        <label
+          htmlFor="productRefId"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Product Ref Id:
         </label>
         <input
           type="text"
@@ -129,8 +132,11 @@ const AddProductsForm = ({ onAddProduct }) => {
         />
       </div>
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="productName" className="text-[16px] text-gray-800 w-2/3">
-        Product Name:
+        <label
+          htmlFor="productName"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Product Name:
         </label>
         <input
           type="text"
@@ -159,14 +165,12 @@ const AddProductsForm = ({ onAddProduct }) => {
         />
       </div>
 
-     
-
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="description"
           className="text-[16px] text-gray-800 w-2/3"
         >
-         Description:
+          Description:
         </label>
         <div className="relative w-2/3">
           <input
@@ -193,13 +197,16 @@ const AddProductsForm = ({ onAddProduct }) => {
         >
           <option value="">Choose a category</option>
           <option value="MEDICINE">MEDICINE</option>
-          <option value="SERGICAL">SERGICAL</option>
+          <option value="SURGICAL">SURGICAL</option>
         </select>
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="packageType" className="text-[16px] text-gray-800 w-2/3">
-         Package Type:
+        <label
+          htmlFor="packageType"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Package Type:
         </label>
         <select
           id="packageType"
@@ -210,7 +217,7 @@ const AddProductsForm = ({ onAddProduct }) => {
         >
           <option value="">Choose a packageType</option>
           <option value="VIAL">VIAL</option>
-          <option value="BOTTEL">BOTTEL</option>
+          <option value="BOTTLE">BOTTLE</option>
           <option value="BOX">BOX</option>
           <option value="BLISTER PACK">BLISTER PACK</option>
           <option value="POUCH">POUCH</option>
@@ -235,8 +242,11 @@ const AddProductsForm = ({ onAddProduct }) => {
       </div>
 
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="productStatus" className="text-[16px] text-gray-800 w-2/3">
-        Product Status:
+        <label
+          htmlFor="productStatus"
+          className="text-[16px] text-gray-800 w-2/3"
+        >
+          Product Status:
         </label>
         <select
           id="productStatus"

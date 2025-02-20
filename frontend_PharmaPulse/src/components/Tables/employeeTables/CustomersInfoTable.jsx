@@ -59,9 +59,6 @@ const CustomersInfoTable = ({ customers }) => {
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Customer ID
-              </th>
-              <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Customer Name
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
@@ -90,9 +87,6 @@ const CustomersInfoTable = ({ customers }) => {
           <tbody>
             {filteredCustomers.map((customer, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
-                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {customer.customerId}
-                </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {customer.customerName}
                 </td>
