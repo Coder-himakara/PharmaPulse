@@ -88,34 +88,34 @@ const ProductsInfoTable = ({ products }) => {
           </thead>
           <tbody>
             {filteredProducts.map((product, index) => (
-              <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.purchaseGroupId}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productRefId}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productName}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.genericName}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productStatus}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.reorderLimitByPackage}
                 </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
                     onClick={() => handleEdit(product.productId)}
                   >
                     Edit
                   </button>
                   <button
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                    className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
                     onClick={() => handleViewProducts(product)}
                   >
                     View
@@ -125,35 +125,35 @@ const ProductsInfoTable = ({ products }) => {
             ))}
 
             {/* Dummy Row */}
-            <tr className="bg-[#f9f9f9] text-black italic">
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PG-000
+            <tr className='bg-[#f9f9f9] text-black italic'>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PG-001
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PR-000
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PR-001
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Sample Product
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Sample Product1
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Generic
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 10
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleEdit("dummy")}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleEdit('dummy')}
                 >
                   Edit
                 </button>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleViewProducts({ productId: "dummy" })}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleViewProducts({ productId: 'dummy' })}
                 >
                   View
                 </button>
@@ -161,70 +161,70 @@ const ProductsInfoTable = ({ products }) => {
             </tr>
 
             {/* Dummy Row */}
-            <tr className="bg-[#f9f9f9] text-black italic">
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PG-000
+            <tr className='bg-[#f9f9f9] text-black italic'>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PG-002
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PR-000
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PR-002
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Sample Product
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Sample Product2
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Generic
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 10
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleEdit("dummy")}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleEdit('dummy')}
                 >
                   Edit
                 </button>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleViewProducts({ productId: "dummy" })}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleViewProducts({ productId: 'dummy' })}
                 >
                   View
                 </button>
               </td>
             </tr>
             {/* Dummy Row */}
-            <tr className="bg-[#f9f9f9] text-black italic">
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PG-000
+            <tr className='bg-[#f9f9f9] text-black italic'>
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PG-003
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PR-000
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                PR-003
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Sample Product
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                Sample Product3
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Generic
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 10
               </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleEdit("dummy")}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleEdit('dummy')}
                 >
                   Edit
                 </button>
                 <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleViewProducts({ productId: "dummy" })}
+                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
+                  onClick={() => handleViewProducts({ productId: 'dummy' })}
                 >
                   View
                 </button>
