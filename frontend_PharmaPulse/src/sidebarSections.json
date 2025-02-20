@@ -3,7 +3,7 @@
     {
       "title": "Products",
       "links": [
-        { "to": "/add-products", "name": "Add Products" },
+        { "to": "/employee-dashboard/add-products", "name": "Add Products" },
         { "to": "/products-info", "name": "Products Info" }
       ]
     },
