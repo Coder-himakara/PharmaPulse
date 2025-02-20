@@ -23,7 +23,7 @@ public class SupplierController {
     public ResponseEntity<StandardResponse> getAllSuppliers() {
         List<SupplierDTO> supplierDTOS  = supplierService.getAllSuppliers();
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",supplierDTOS),
+                new StandardResponse(200,"Success",supplierDTOS),
                 HttpStatus.OK
         );
     }
@@ -32,8 +32,8 @@ public class SupplierController {
     public ResponseEntity<StandardResponse> getSuppliersById(@PathVariable Long id) {
         SupplierDTO selectedSupplier = supplierService.getSupplierById(id);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",selectedSupplier),
-                HttpStatus.FOUND
+                new StandardResponse(200,"Success",selectedSupplier),
+                HttpStatus.OK
         );
     }
     // This method is used to add a purchase group

@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductRetailPriceDTO {
+public class ProductWholesalePriceDTO {
     //private Long priceId;
-    private String product;
+    private Long product;
     private String createdBy;
     private LocalDateTime effectiveDate;
     private LocalDateTime endDate;
-    private BigDecimal retailPrice;
+    private BigDecimal wholesalePrice;
 }
