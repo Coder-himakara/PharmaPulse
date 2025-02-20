@@ -67,29 +67,47 @@ const Navbar = () => {
       "items": [
         [
           {
-            "label": "Users",
             "items": [
               { "label": "Add Users", "url": "admin-dashboard/add-users" },
-              { "label": "User Info", "url": "admin-dashboard/users-info" }
+              { "label": "User Info", "url": "users-info" }
             ]
           }
         ]
       ]
     },
     {
-        "label": "Lorry",
+        "label": "Trucks",
         "icon": "pi pi-truck text-white",
         "items": [
           [
             {
-              "label": "Lorries",
               "items": [
-                { "label": "Add Lorry", "url": "admin-dashboard/add-lorry" },
-                { "label": "Lorry Info", "url": "admin-dashboard/lorry-info" }
+                { "label": "Add Truck", "url": "add-truck" },
+                { "label": "Truck Info", "url": "truck-info" }
               ]
             }
           ]
         ]
+      },
+       {
+        "label": "Ware House",
+       "icon": "pi pi-warehouse text-white",
+        "items": [
+          [
+            {
+              "items": [
+                { "label": "Add Warehouse", "url": "add-warehouse" },
+                { "label": "Truck Info", "url": "warehouse-info" }
+              ]
+            }
+          ]
+        ]
+      },
+      {
+        
+        "label": "Log Details",
+       "icon": "pi pi-history text-white",
+       
       }
     
   ]

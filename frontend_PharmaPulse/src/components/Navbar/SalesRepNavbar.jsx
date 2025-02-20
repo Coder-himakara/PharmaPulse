@@ -70,7 +70,7 @@ const Navbar = () => {
             "label": "Options",
             "items": [
               { "label": "Price List", "url": "sales-dashboard/price-list-view" },
-              { "label": "Order Creation", "url": "sales-dashboard/order-creation" }
+              { "label": "Order Creation", "url": "order-creation" }
             ]
           }
         ]
@@ -165,7 +165,7 @@ const Navbar = () => {
                 Profile
               </DropdownLink>
               <DropdownLink
-                to="/home"
+                to="/"
                 icon={FaSignOutAlt}
                 onClick={closeDropdown}
               >

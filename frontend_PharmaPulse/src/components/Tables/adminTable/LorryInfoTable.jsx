@@ -23,11 +23,11 @@ const LorryInfoTable = ({ lorries }) => {
 
   const handleEdit = (lorryId) => {
     const lorry = lorries.find((l) => l.lorryId === lorryId);
-    navigate(`/edit-lorry/${lorryId}`, { state: { lorry } });
+    navigate(`/edit-truck/${lorryId}`, { state: { lorry } });
   };
 
   const handleViewLorry = (lorry) => {
-    navigate(`/view-lorry/${lorry.lorryId}`, { state: { lorry } });
+    navigate(`/view-truck/${lorry.lorryId}`, { state: { lorry } });
   };
 
   return (

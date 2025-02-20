@@ -46,11 +46,22 @@
       ]
     },
     {
-      "title": "Lorry",
+      "title": "Trucks",
       "links": [
-        { "to": "/admin-dashboard/add-lorry", "name": "Add Lorry" },
-        { "to": "/admin-dashboard/lorry-info", "name": "Lorry Info" }
+        { "to": "/admin-dashboard/add-truck", "name": "Add Lorry" },
+        { "to": "/admin-dashboard/truck-info", "name": "Lorry Info" }
       ]
+    },
+    {
+      "title": "Ware House",
+      "links": [
+        { "to": "/admin-dashboard/add-warehouse", "name": "Add Warehouse" },
+        { "to": "/admin-dashboard/warehouse-info", "name": "Warehouse Info" }
+      ]
+    },
+    {
+      "title": "Log Details"
+     
     }
   ]
 }

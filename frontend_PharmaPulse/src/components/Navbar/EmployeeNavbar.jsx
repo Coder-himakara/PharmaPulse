@@ -64,7 +64,7 @@ const Navbar = () => {
             "label": "Customers Group",
             "items": [
               { "label": "Add Customer Group", "url": "employee-dashboard/add-customer-group" },
-              { "label": "Customer Group Info", "url": "employee-dashboard/customer-group-info" }
+              { "label": "Customer Group Info", "url": "customer-group-info" }
             ]
           }
         ],
@@ -72,8 +72,8 @@ const Navbar = () => {
           {
             "label": "Customer",
             "items": [
-              { "label": "Add Customer", "url": "employee-dashboard/add-customers" },
-              { "label": "Customer Info", "url": "employee-dashboard/customers-info" }
+              { "label": "Add Customer", "url": "add-customers" },
+              { "label": "Customer Info", "url": "customers-info" }
             ]
           }
         ],
@@ -81,8 +81,8 @@ const Navbar = () => {
           {
             "label": "Purchase Group",
             "items": [
-              { "label": "Add Purchase Group", "url": "employee-dashboard/add-purchase-group" },
-              { "label": "Purchase Group Info", "url": "employee-dashboard/purchase-group-info" }
+              { "label": "Add Purchase Group", "url": "add-purchase-group" },
+              { "label": "Purchase Group Info", "url": "purchase-group-info" }
             ]
           }
         ],
@@ -90,8 +90,8 @@ const Navbar = () => {
           {
             "label": "Supplier",
             "items": [
-              { "label": "Add Supplier", "url": "employee-dashboard/add-suppliers" },
-              { "label": "Supplier Info", "url": "employee-dashboard/suppliers-info" }
+              { "label": "Add Supplier", "url": "add-suppliers" },
+              { "label": "Supplier Info", "url": "suppliers-info" }
             ]
           }
         ]
@@ -105,8 +105,8 @@ const Navbar = () => {
           {
             "label": "Products",
             "items": [
-              { "label": "Add Products", "url": "employee-dashboard/add-products" },
-              { "label": "Products Info", "url": "employee-dashboard/products-info" }
+              { "label": "Add Products", "url": "add-products" },
+              { "label": "Products Info", "url": "products-info" }
             ]
           }
         ],
@@ -126,39 +126,64 @@ const Navbar = () => {
           {
             "label": "Purchase",
             "items": [
-              { "label": "Add Invoice", "url": "employee-dashboard/add-purchase-invoice" },
-              { "label": "Invoice Info", "url": "employee-dashboard/purchase-invoice-info" }
+              { "label": "Add Invoice", "url": "add-purchase-invoice" },
+              { "label": "Invoice Info", "url": "purchase-invoice-info" }
             ]
           }
         ],
-        [{ "label": "Sale Invoice", "items": [{ "label": "Invoice Info" }] }],
-        [{ "label": "Purchase Return" }],
-        [{ "label": "Sales Return" }]
-      ]
-    },
-    {
-      "label": "Payment",
-      "icon": "pi pi-credit-card text-white",
-      "items": [
-        [
-          {
-            "label": "Supplier Payment",
-            "items": [{ "label": "Add Payment" }, { "label": "Payment Info" }]
-          }
+        [{ "label": "Sale ",
+           "items": [
+            { "label": "Orders", "url": "orders" },
+            { "label": "Invoice Info", "url": "purchase-invoice-info" }
+          ]
+         }
         ],
-        [{ "label": "Customer Payment" }],
-        [
-          {
-            "label": "Outstanding Balance",
-            "items": [{ "label": "Customer" }, { "label": "Supplier" }]
-          }
+        [{ "label": "Purchase Return",
+            "items": [
+              { "label": "Return Invoice", "url": "purchase-return-invoice" },
+              { "label": "Invoice Info", "url": "purchase-invoice-info" }
+            ]
+         }
         ],
-        [{ "label": "Cheque Management" }]
+        
+        [{ "label": "Sales Return",
+          "items": [
+            { "label": "Return Invoice", "url": "sales-return-invoice" },
+            { "label": "Invoice Info", "url": "sales-invoice-info" }
+          ]
+         }]
       ]
     },
     {
       "label": "Inventory",
-      "icon": "pi pi-box text-white"
+      "icon": "pi pi-warehouse  text-white",
+      "items": [
+        [
+          {
+            "label": "Batch Wise",
+            "items": [{ "label": "Batch Inventory" }]
+          }
+        ],
+        [
+          { "label": "Inventory Wise",
+            "items": [
+              { "label": "Warehouse Inventory" },
+              { "label": "Truck Transfer" },
+              { "label": "Stock Adjustment" }
+            ]
+          }
+          ],
+        [
+          {
+            "label": "Product Wise",
+            "items": [{ "label": "Stock Register" }]
+          }
+        ]
+      ]
+    },
+    {
+      "label": "Payment",
+      "icon": "pi pi-credit-card text-white"
     },
     {
       "label": "Report",

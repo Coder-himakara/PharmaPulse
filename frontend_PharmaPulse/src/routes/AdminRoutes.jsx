@@ -48,15 +48,15 @@ const AdminRoutes = () => {
       <Route path='view-user/:userId' element={<ViewUserDetails />} />
 
       <Route
-        path='/add-lorry'
+        path='add-truck'
         element={<AddLorryForm onAddLorry={addLorry} />}
       />
-      <Route path='/lorry-info' element={<LorryInfoTable lorries={lorry} />} />
+      <Route path='truck-info' element={<LorryInfoTable lorries={lorry} />} />
       <Route
-        path='/edit-lorry/:lorryId'
+        path='edit-truck/:lorryId'
         element={<EditLorryForm onUpdateLorry={updatelorry} />}
       />
-      <Route path='/view-lorry/:lorryId' element={<ViewLorryDetails />} />
+      <Route path='view-lorry/:lorryId' element={<ViewLorryDetails />} />
 
       <Route path='/home' element={<AdminSidebar role='admin' />} />
       <Route path='/dashboard' element={<AdminSidebar role='admin' />} />
