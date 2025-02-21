@@ -63,7 +63,7 @@ const ProductsInfoTable = ({ products }) => {
           <thead>
             <tr>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                Purchase Group Id
+                Purchase Group
               </th>
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Product Ref Id
@@ -71,7 +71,6 @@ const ProductsInfoTable = ({ products }) => {
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Product Name
               </th>
-
               <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                 Generic Name
               </th>
@@ -90,7 +89,7 @@ const ProductsInfoTable = ({ products }) => {
             {filteredProducts.map((product, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                  {product.purchaseGroupId}
+                  {product.purchaseGroup}
                 </td>
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {product.productRefId}
@@ -133,16 +132,16 @@ const ProductsInfoTable = ({ products }) => {
                 PR-001
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Sample Product1
+                Panadol
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Generic
+                Panadol
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                10
+                50
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
@@ -163,22 +162,22 @@ const ProductsInfoTable = ({ products }) => {
             {/* Dummy Row */}
             <tr className='bg-[#f9f9f9] text-black italic'>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                PG-002
+                PG-005
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                PR-002
+                PR-005
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Sample Product2
+                Cough Syrup
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Generic
+                Syrup
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                10
+                25
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
@@ -198,19 +197,19 @@ const ProductsInfoTable = ({ products }) => {
             {/* Dummy Row */}
             <tr className='bg-[#f9f9f9] text-black italic'>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                PG-003
+                PG-007
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                PR-003
+                PR-007
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Sample Product3
+                Vitamin C
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Generic
+                Vitamin Tablet
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Active
+                Discontinued
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 10
@@ -241,7 +240,7 @@ ProductsInfoTable.propTypes = {
   products: PropTypes.arrayOf(
     PropTypes.shape({
       productId: PropTypes.string.isRequired,
-      purchaseGroupId: PropTypes.string.isRequired,
+      purchaseGroup: PropTypes.string.isRequired,
       productRefId: PropTypes.string.isRequired,
       productName: PropTypes.string.isRequired,
       genericName: PropTypes.string.isRequired,
