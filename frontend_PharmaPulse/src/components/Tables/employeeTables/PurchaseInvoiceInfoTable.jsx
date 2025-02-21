@@ -15,7 +15,7 @@ const PurchaseInvoiceInfoTable = ({ purchaseInvoices }) => {
 
   // Close button action
   const handleClose = () => {
-    navigate("/home");
+    navigate("/employee-dashboard");
   };
 
   // Edit button action

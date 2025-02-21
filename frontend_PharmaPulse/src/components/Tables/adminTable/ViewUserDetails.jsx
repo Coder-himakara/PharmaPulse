@@ -62,7 +62,6 @@ const ViewUserDetails = () => {
         <button
           className='px-4 py-2 text-white bg-gray-500 rounded-md hover:bg-gray-600'
           onClick={() => navigate('/admin-dashboard/users-info')}
-
         >
           Back
         </button>

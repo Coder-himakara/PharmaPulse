@@ -6,21 +6,78 @@ const CustomersInfoTable = ({ customers }) => {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
-  const filteredCustomers = customers.filter((customer) =>
+  const dummyCustomers = [
+    {
+      customerId: '1',
+      customerName: 'Lanka Distributors',
+      status: 'Active',
+      creditLimit: 'LKR 1,000,000',
+      creditPeriod: '30 days',
+      email: 'lanka.distributors@example.lk',
+      phoneNo: '+94 11 2345678',
+      contactName: 'Nalin Perera',
+    },
+    {
+      customerId: '2',
+      customerName: 'Ceylon Traders',
+      status: 'Inactive',
+      creditLimit: 'LKR 500,000',
+      creditPeriod: '15 days',
+      email: 'ceylon.traders@example.lk',
+      phoneNo: '+94 77 9876543',
+      contactName: 'Kasun Silva',
+    },
+    {
+      customerId: '3',
+      customerName: 'Sri Lanka Tea Exporters',
+      status: 'Active',
+      creditLimit: 'LKR 2,500,000',
+      creditPeriod: '45 days',
+      email: 'tea.exporters@example.lk',
+      phoneNo: '+94 11 5551234',
+      contactName: 'Dilani Fernando',
+    },
+    {
+      customerId: '4',
+      customerName: 'Colombo Electronics',
+      status: 'Active',
+      creditLimit: 'LKR 750,000',
+      creditPeriod: '30 days',
+      email: 'colombo.electronics@example.lk',
+      phoneNo: '+94 71 2345678',
+      contactName: 'Roshan Wijesekera',
+    },
+    {
+      customerId: '5',
+      customerName: 'Sri Lankan Fashion Hub',
+      status: 'Active',
+      creditLimit: 'LKR 1,200,000',
+      creditPeriod: '30 days',
+      email: 'fashionhub@example.lk',
+      phoneNo: '+94 77 8765432',
+      contactName: 'Shirani Perera',
+    },
+  ];
+
+  const filteredCustomers = dummyCustomers.filter((customer) =>
     customer.customerName.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleClose = () => {
-    navigate('/home');
+    navigate('/employee-dashboard');
   };
 
   const handleEdit = (customerId) => {
     const customer = customers.find((c) => c.customerId === customerId);
-    navigate(`/edit-customer/${customerId}`, { state: { customer } });
+    navigate(`/edit-customer/${customerId}`, {
+      state: { customer },
+    });
   };
 
   const handleViewCustomer = (customer) => {
-    navigate(`/view-customer/${customer.customerId}`, { state: { customer } });
+    navigate(`/view-customer/${customer.customerId}`, {
+      state: { customer },
+    });
   };
 
   return (

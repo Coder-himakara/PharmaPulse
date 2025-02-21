@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import {
   FaUser,
   FaSignOutAlt,
-  FaTachometerAlt,
   FaSun,
   FaMoon,
 } from "react-icons/fa";
@@ -63,20 +62,27 @@ const Navbar = () => {
   [
     
     {
-      "label": "Options",
+      "label": "Price List",
       "icon": "pi pi-dollar text-white",
-      "items": [
-        [
-          {
-            "label": "Options",
-            "items": [
-              { "label": "Price List", "url": "price-list-view" },
-              { "label": "Order Creation", "url": "order-creation" }
-            ]
-          }
-        ]
-      ]
+       "url": "sales-dashboard/price-list-view" 
+       
+    },
+    {
+      "label": "Create Order",
+      "icon": "pi pi-shopping-cart  text-white",
+      "url": "order-creation" 
+    
+    },
+    {
+      "label": "Order History",
+      "icon": "pi pi-history  text-white",
+      
+    },
+    {
+      "label": "Create Sale Invoice",
+      "icon": "pi pi-file text-white",
     }
+    
     
   ]
   
@@ -157,13 +163,7 @@ const Navbar = () => {
                   : "bg-white text-black border-gray-300"
               }`}
             >
-              <DropdownLink
-                to="/dashboard"
-                icon={FaTachometerAlt}
-                onClick={closeDropdown}
-              >
-                Dashboard
-              </DropdownLink>
+            
               <DropdownLink
                 to="/update-profile"
                 icon={FaUser}
@@ -172,7 +172,7 @@ const Navbar = () => {
                 Profile
               </DropdownLink>
               <DropdownLink
-                to="/home"
+                to="/"
                 icon={FaSignOutAlt}
                 onClick={closeDropdown}
               >

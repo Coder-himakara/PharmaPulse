@@ -22,12 +22,19 @@ function LoginPage() {
 
   return (
     <div className='flex items-center justify-center w-full h-screen bg-center bg-no-repeat bg-cover'>
-      <div className='flex flex-col items-center w-full max-w-md p-5 text-center bg-white rounded-lg shadow-lg bg-opacity-80'>
-        <h1 className='mb-5 text-2xl font-bold text-teal-900'>Welcome to PharmaPulse</h1>
+      <div className='flex flex-col items-center w-full max-w-md p-5 text-center bg-white rounded-lg shadow-lg bg-opacity-95'>
+        <h1 className='mb-5 text-2xl font-bold text-teal-900'>
+          Welcome to PharmaPulse
+        </h1>
         <h2 className='mb-5 text-lg font-medium text-gray-800'>Login</h2>
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='mb-4 text-left'>
-            <label htmlFor='username' className='block mb-1 font-bold text-gray-600'>Username:</label>
+            <label
+              htmlFor='username'
+              className='block mb-1 font-bold text-gray-600'
+            >
+              Username:
+            </label>
             <input
               type='text'
               id='username'
@@ -40,7 +47,12 @@ function LoginPage() {
             />
           </div>
           <div className='mb-4 text-left'>
-            <label htmlFor='password' className='block mb-1 font-bold text-gray-600'>Password:</label>
+            <label
+              htmlFor='password'
+              className='block mb-1 font-bold text-gray-600'
+            >
+              Password:
+            </label>
             <input
               type='password'
               id='password'
@@ -51,7 +63,10 @@ function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <NavLink to='/forgot-password' className='block mt-1 text-xs text-red-500 hover:underline'>
+            <NavLink
+              to='/forgot-password'
+              className='block mt-1 text-xs text-red-500 hover:underline'
+            >
               Forgot Password?
             </NavLink>
           </div>

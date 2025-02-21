@@ -57,7 +57,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   };
 
   const handleCancel = () => {
-    navigate("/home");
+    navigate("/employee-dashboard");
   };
 
   return (

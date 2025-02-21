@@ -158,7 +158,7 @@ const EmpRoutes = () => {
         element={<SuppliersInfoTable suppliers={suppliers} />}
       />
       <Route
-        path="/edit-supplier/:supplierId"
+        path="edit-supplier/:supplierId"
         element={<EditSuppliersForm onUpdateSupplier={updateSupplier} />}
       />
       <Route

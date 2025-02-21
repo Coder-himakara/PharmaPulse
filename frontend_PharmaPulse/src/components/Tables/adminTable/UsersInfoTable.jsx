@@ -9,7 +9,15 @@ const UsersInfoTable = ({ users }) => {
   const [sortDirection] = useState('asc');
   const navigate = useNavigate();
 
-  const filteredUsers = users.filter((user) =>
+  const dummyUsers = [
+    { userId: 'U001', username: 'john_doe', role: 'Admin', dateOfJoined: '2024-01-10' },
+    { userId: 'U002', username: 'jane_smith', role: 'Employee', dateOfJoined: '2023-12-15' },
+    { userId: 'U003', username: 'michael_brown', role: 'Sales Representative', dateOfJoined: '2024-02-05' },
+  ];
+
+  const allUsers = [...users, ...dummyUsers];
+
+  const filteredUsers = allUsers.filter((user) =>
     user.username.toLowerCase().includes(search.toLowerCase()),
   );
 
@@ -19,14 +27,12 @@ const UsersInfoTable = ({ users }) => {
     return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
 
-
-
   const handleClose = () => {
     navigate('/admin-dashboard');
   };
 
   const handleEdit = (userId) => {
-    const user = users.find((u) => u.userId === userId);
+    const user = allUsers.find((u) => u.userId === userId);
     navigate(`/admin-dashboard/edit-user/${userId}`, { state: { user } });
   };
 
@@ -84,7 +90,6 @@ const UsersInfoTable = ({ users }) => {
           <tbody>
             {sortedUsers.map((user, index) => (
               <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
-                
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {user.userId}
                 </td>
@@ -94,7 +99,6 @@ const UsersInfoTable = ({ users }) => {
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   {user.role}
                 </td>
-               
                 <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                   <button
                     className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
@@ -108,7 +112,6 @@ const UsersInfoTable = ({ users }) => {
                   >
                     View
                   </button>
-                 
                 </td>
               </tr>
             ))}
@@ -125,6 +128,7 @@ UsersInfoTable.propTypes = {
       userId: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
       role: PropTypes.string.isRequired,
+      dateOfJoined: PropTypes.string,
     }),
   ).isRequired,
 };
