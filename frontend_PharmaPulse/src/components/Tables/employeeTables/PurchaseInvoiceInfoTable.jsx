@@ -76,9 +76,9 @@ const PurchaseInvoiceInfoTable = ({ purchaseInvoices }) => {
                 "Supplier ID",
                 "Purchase Order Ref",
                 "Invoice Date",
-                "Total Amount",
-                "Discount",
-                "Net Amount",
+                "Total Amount (Rs.)",
+                "Discount (Rs.)",
+                "Net Amount (Rs.)",
                 "Action",
               ].map((header, index) => (
                 <th
@@ -133,6 +133,129 @@ const PurchaseInvoiceInfoTable = ({ purchaseInvoices }) => {
                 </td>
               </tr>
             ))}
+
+            {/* Dummy Row */}
+            <tr className="bg-[#f9f9f9] text-black italic">
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                IV-001
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                S-001
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                PO-001
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                2025-02-23
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                2,000
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                500
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                1,500
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() => handleEdit("dummy")}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() =>
+                    handleViewPurchaseInvoice({ productId: "dummy" })
+                  }
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+
+            {/* Dummy Row */}
+            <tr className="bg-[#f9f9f9] text-black italic">
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                IV-002
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                S-001
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                PO-002
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                2025-02-24
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                5,000
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                500
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                4,500
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() => handleEdit("dummy")}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() =>
+                    handleViewPurchaseInvoice({ productId: "dummy" })
+                  }
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+
+            {/* Dummy Row */}
+            <tr className="bg-[#f9f9f9] text-black italic">
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                IV-003
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                S-005
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                PO-003
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                2025-04-20
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                12,500
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                2,000
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                10,500
+              </td>
+              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() => handleEdit("dummy")}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                  onClick={() =>
+                    handleViewPurchaseInvoice({ productId: "dummy" })
+                  }
+                >
+                  View
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

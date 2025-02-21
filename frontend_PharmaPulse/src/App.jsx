@@ -12,7 +12,6 @@ import EmployeeDashboard from "./pages/EmployeeDashboard/EmployeeDashboard";
 import SalesRepDashboard from "./pages/SalesRepDashboard/SalesRepDashboard";
 import LoginPage from "./pages/LoginPage/LoginPage";
 
-
 function App() {
   return (
     <ThemeProvider>
@@ -23,7 +22,6 @@ function App() {
           <Route path="/employee-dashboard/*" element={<EmployeeDashboard />} />
           <Route path="/sales-dashboard/*" element={<SalesRepDashboard />} />
         </Routes>
-
       </Router>
     </ThemeProvider>
   );
