@@ -143,9 +143,7 @@ const ProductsInfoTable = ({ products }) => {
                 Active
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-
                 50
-
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
