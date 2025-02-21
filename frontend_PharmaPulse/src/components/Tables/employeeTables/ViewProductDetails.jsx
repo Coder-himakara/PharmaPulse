@@ -13,9 +13,8 @@ const ViewProductDetails = () => {
       </h2>
       <div className="flex items-center justify-center mb-4"></div>
       <ul className="text-left ">
-     
         <li>
-          <strong>Purchase Group Id:</strong> {product.purchaseGroupId}
+          <strong>Purchase Group:</strong> {product.purchaseGroup}
         </li>
         <li>
           <strong>Product Ref Id:</strong> {product.productRefId}
@@ -42,9 +41,9 @@ const ViewProductDetails = () => {
           <strong>Product Status:</strong> {product.productStatus}
         </li>
         <li>
-          <strong>Reorder Limit By Package:</strong> {product.reorderLimitByPackage}
+          <strong>Reorder Limit By Package:</strong>{" "}
+          {product.reorderLimitByPackage}
         </li>
-       
       </ul>
       <div className="flex justify-center mt-4">
         <button

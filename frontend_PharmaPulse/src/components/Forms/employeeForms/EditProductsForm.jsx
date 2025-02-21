@@ -8,7 +8,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
   const product = state?.product; // Get product from the state
 
   const [formData, setFormData] = useState({
-    purchaseGroupId: "",
+    purchaseGroup: "",
     productRefId: "",
     productName: "",
     genericName: "",
@@ -28,7 +28,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
   useEffect(() => {
     if (product) {
       setFormData({
-        purchaseGroupId: product.purchaseGroupId,
+        purchaseGroup: product.purchaseGroup,
         productRefId: product.productRefId,
         productName: product.productName,
         genericName: product.genericName,
@@ -99,16 +99,16 @@ const EditProductsForm = ({ onUpdateProduct }) => {
 
       <div className="flex items-center justify-between mb-4">
         <label
-          htmlFor="purchaseGroupId"
+          htmlFor="purchaseGroup"
           className="text-[16px] text-gray-800 w-2/3"
         >
-          Purchase Group Id:
+          Purchase Group:
         </label>
         <input
           type="text"
-          id="purchaseGroupId"
-          name="purchaseGroupId"
-          value={formData.purchaseGroupId}
+          id="purchaseGroup"
+          name="purchaseGroup"
+          value={formData.purchaseGroup}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />

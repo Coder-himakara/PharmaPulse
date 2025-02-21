@@ -4,7 +4,9 @@
       "title": "Products",
       "links": [
         { "to": "/employee-dashboard/add-products", "name": "Add Products" },
+
         { "to": "/employee-dashboard/products-info", "name": "Products Info" }
+
       ]
     },
     {
