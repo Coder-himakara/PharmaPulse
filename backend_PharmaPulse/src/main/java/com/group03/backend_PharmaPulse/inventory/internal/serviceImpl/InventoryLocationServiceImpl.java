@@ -1,0 +1,49 @@
+package com.group03.backend_PharmaPulse.inventory.internal.serviceImpl;
+
+import com.group03.backend_PharmaPulse.inventory.api.InventoryLocationService;
+import com.group03.backend_PharmaPulse.inventory.api.dto.InventoryLocationDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.InventoryLocationResponse;
+import com.group03.backend_PharmaPulse.inventory.internal.entity.InventoryLocation;
+import com.group03.backend_PharmaPulse.inventory.internal.mapper.InventoryLocationMapper;
+import com.group03.backend_PharmaPulse.inventory.internal.repository.InventoryLocationRepo;
+import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class InventoryLocationServiceImpl implements InventoryLocationService {
+    private final InventoryLocationRepo inventoryLocationRepo;
+    private final InventoryLocationMapper inventoryLocationMapper;
+
+    public InventoryLocationServiceImpl(InventoryLocationRepo inventoryLocationRepo,
+                                        InventoryLocationMapper inventoryLocationMapper){
+        this.inventoryLocationRepo=inventoryLocationRepo;
+        this.inventoryLocationMapper=inventoryLocationMapper;
+    }
+
+    @Override
+    public InventoryLocationResponse addInventoryLocation(InventoryLocationDTO inventoryLocationDTO) {
+        InventoryLocation savedInventoryLocation = inventoryLocationRepo.
+                save(inventoryLocationMapper.toEntity(inventoryLocationDTO));
+        return inventoryLocationMapper.toResponseDTO(savedInventoryLocation);
+    }
+
+    @Override
+    public InventoryLocationResponse getInventoryLocationById(Long id) {
+        Optional<InventoryLocation> inventoryLocation = inventoryLocationRepo.findById(id);
+        return inventoryLocation.map(inventoryLocationMapper::toResponseDTO)
+                .orElseThrow(() -> new NotFoundException("Inventory Location not found"));
+    }
+
+    @Override
+    public List<InventoryLocationResponse> getAllInventoryLocations() {
+       List<InventoryLocation> inventoryLocations = inventoryLocationRepo.findAll();
+       if (!inventoryLocations.isEmpty()) {
+           return inventoryLocationMapper.toResponseDTOsList(inventoryLocations);
+       }else{
+              throw new NotFoundException("No Inventory Locations found");
+       }
+    }
+}

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Data
@@ -20,9 +21,10 @@ import java.time.LocalDate;
 public class BatchInventory {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "batch_id_seq")
+    @Column(name = "batch_id",length = 50)
     private Long batchId;
 
-    private String productId;
+    private Long productId;
 
     private Long purchaseInvoiceNo;
 
@@ -32,8 +34,9 @@ public class BatchInventory {
     private LocalDate manufactureDate;
     private LocalDate expiryDate;
     private Integer purchasedUnitQuantity;
+    private Integer freeQuantity;
     private Integer availableUnitQuantity;
-    private BigDecimal costPerUnit;
+    private BigDecimal wholesalePrice;
     private BigDecimal retailPrice;
     private BigDecimal discount;
 
@@ -42,4 +45,6 @@ public class BatchInventory {
 
     private LocalDate dateReceived;
 
+    @OneToMany(mappedBy ="batch",fetch =FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Inventory> inventoryRecords;
 }

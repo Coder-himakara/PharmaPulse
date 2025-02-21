@@ -14,7 +14,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class PurchaseInvoiceDTO extends InvoiceDTO {
 
-    private Long purchaseNo;
     private Long supplierId;
     private String purchaseOrderRef;
     private List<PurchaseLineItemDTO> lineItemsList;

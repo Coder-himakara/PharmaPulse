@@ -13,28 +13,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProductDTO {
-    private String productId;
-
+    //private Long productId;
+    private Long purchaseGroupId;
+    private String productRefId;
     private String productName;
-    private Integer purchaseGroupId;
     private String genericName;
     private String description;
-    private String productModelNo;
 
     @Enumerated(EnumType.STRING)
-    private ProductCategory category;
+    private ProductCategory category; //medicine or surgical
 
     @Enumerated(EnumType.STRING)
-    private DosageForm dosageForm;
+    private PackageType packageType; //package type of the selling unit
 
-    @Enumerated(EnumType.STRING)
-    private SellingUnit sellingUnit;
-
-    @Enumerated(EnumType.STRING)
-    private PackageType packageType;
+    private String unitsPerPack; //ex: 10 tablets per pack 10x1 or 10T
 
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
-    private Integer reorderLimitBySellingUnit;
+    private Integer reorderLimitByPackage;
 }
