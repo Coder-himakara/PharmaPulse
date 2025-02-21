@@ -64,12 +64,12 @@ const EditLorryForm = ({ onUpdateLorry }) => {
 
     setTimeout(() => {
       setSuccessMessage('');
-      navigate('/lorry-info');
+      navigate('/truck-info');
     }, 2000);
   };
 
   const handleCancel = () => {
-    navigate('/admin-dashboard/lorry-info');
+    navigate('/admin-dashboard/truck-info');
   };
 
   return (

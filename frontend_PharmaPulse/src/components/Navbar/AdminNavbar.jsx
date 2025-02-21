@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import {
   FaUser,
   FaSignOutAlt,
-  FaTachometerAlt,
   FaSun,
   FaMoon,
 } from "react-icons/fa";
@@ -68,9 +67,8 @@ const Navbar = () => {
       "items": [
         [
           {
-            "label": "Users",
             "items": [
-              { "label": "Add Users", "url": "add-users" },
+              { "label": "Add Users", "url": "admin-dashboard/add-users" },
               { "label": "User Info", "url": "users-info" }
             ]
           }
@@ -78,19 +76,38 @@ const Navbar = () => {
       ]
     },
     {
-        "label": "Lorry",
+        "label": "Trucks",
         "icon": "pi pi-truck text-white",
         "items": [
           [
             {
-              "label": "Lorries",
               "items": [
-                { "label": "Add Lorry", "url": "add-lorry" },
-                { "label": "Lorry Info", "url": "lorry-info" }
+                { "label": "Add Truck", "url": "add-truck" },
+                { "label": "Truck Info", "url": "truck-info" }
               ]
             }
           ]
         ]
+      },
+       {
+        "label": "Ware House",
+       "icon": "pi pi-warehouse text-white",
+        "items": [
+          [
+            {
+              "items": [
+                { "label": "Add Warehouse", "url": "add-warehouse" },
+                { "label": "Truck Info", "url": "warehouse-info" }
+              ]
+            }
+          ]
+        ]
+      },
+      {
+        
+        "label": "Log Details",
+       "icon": "pi pi-history text-white",
+       
       }
     
   ]
@@ -172,13 +189,7 @@ const Navbar = () => {
                   : "bg-white text-black border-gray-300"
               }`}
             >
-              <DropdownLink
-                to="/dashboard"
-                icon={FaTachometerAlt}
-                onClick={closeDropdown}
-              >
-                Dashboard
-              </DropdownLink>
+              
               <DropdownLink
                 to="/update-profile"
                 icon={FaUser}
@@ -187,7 +198,7 @@ const Navbar = () => {
                 Profile
               </DropdownLink>
               <DropdownLink
-                to="/home"
+                to="/"
                 icon={FaSignOutAlt}
                 onClick={closeDropdown}
               >

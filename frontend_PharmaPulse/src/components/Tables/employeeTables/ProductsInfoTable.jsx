@@ -16,11 +16,15 @@ const ProductsInfoTable = ({ products }) => {
 
   const handleEdit = (productId) => {
     const product = products.find((p) => p.productId === productId); // Find the specific product
-    navigate(`/edit-product/${productId}`, { state: { product } }); // Pass the product data to the Edit form
+    navigate(`/edit-product/${productId}`, {
+      state: { product },
+    }); // Pass the product data to the Edit form
   };
 
   const handleViewProducts = (product) => {
-    navigate(`/view-product/${product.productId}`, { state: { product } });
+    navigate(`/view-product/${product.productId}`, {
+      state: { product },
+    });
   };
 
   return (
@@ -128,16 +132,20 @@ const ProductsInfoTable = ({ products }) => {
                 PR-001
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+
                 Panadol
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Panadol
+
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+
                 50
+
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
@@ -158,6 +166,7 @@ const ProductsInfoTable = ({ products }) => {
             {/* Dummy Row */}
             <tr className='bg-[#f9f9f9] text-black italic'>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+
                 PG-005
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
@@ -168,12 +177,15 @@ const ProductsInfoTable = ({ products }) => {
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Syrup
+
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+
                 25
+
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
@@ -193,6 +205,7 @@ const ProductsInfoTable = ({ products }) => {
             {/* Dummy Row */}
             <tr className='bg-[#f9f9f9] text-black italic'>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+
                 PG-007
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
@@ -206,6 +219,7 @@ const ProductsInfoTable = ({ products }) => {
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Discontinued
+
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 10

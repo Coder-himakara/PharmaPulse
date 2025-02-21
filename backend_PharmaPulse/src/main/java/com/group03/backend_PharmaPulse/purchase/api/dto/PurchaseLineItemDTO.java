@@ -16,10 +16,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PurchaseLineItemDTO extends LineItemDTO {
-    private BigDecimal costPerUnit;
-    private BigDecimal totalCost;
     private LocalDate manufactureDate;
     private LocalDate  expiryDate;
-    private BigDecimal unitPrice; //check and rename.Retail price of the product
+    private BigDecimal unitPrice;
+    private BigDecimal totalPrice;
+    private BigDecimal retailPrice;
     private Long purchaseInvoice;
 }

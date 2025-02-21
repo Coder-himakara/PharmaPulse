@@ -22,9 +22,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO getProductById(String id) {
+    public List<ProductDTO> getAllProducts() {
+        List<Product> products = productRepo.findAll();
+        if(!products.isEmpty()){
+            return productMapper.toDTOsList(products);
+        }else{
+            throw new NotFoundException("No Products found");
+        }
+    }
+
+    @Override
+    public ProductDTO getProductById(Long id) {
         Optional<Product> product = productRepo.findById(id);
         return product.map(productMapper::toDTO)
+                .orElseThrow(() -> new NotFoundException("Product not found"));
+    }
+
+    @Override
+    public Product getProductEntityById(Long id) {
+        return productRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Product not found"));
     }
 
@@ -35,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO updateProduct(String id, ProductDTO productDTO) {
+    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
        Optional<Product> product = productRepo.findById(id);
         if (product.isPresent()) {
             Product updatedProduct = productMapper.toEntity(productDTO);
@@ -46,19 +62,4 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException("Product not found");
         }
     }
-
-    @Override
-    public List<ProductDTO> getAllProducts() {
-       List<Product> products = productRepo.findAll();
-        if(!products.isEmpty()){
-            return productMapper.toDTOsList(products);
-        }else{
-            throw new NotFoundException("No Products found");
-        }
-    }
-    public Product findProductById(String id) {
-        return  productRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Product not found"));
-    }
-
 }

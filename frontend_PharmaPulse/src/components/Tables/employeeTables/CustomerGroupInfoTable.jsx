@@ -7,8 +7,52 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
   const [search, setSearch] = useState("");
 
   const navigate = useNavigate();
+  const dummyCustomerGroups = [
+    {
+      customerGroupId: "1",
+      customerGroupName: "Premium Customers",
+      assignSalesRepId: "SR001",
+      assignSalesRepName: "Nalin Perera",
+      email: "nalin.perera@example.lk",
+      location: "Colombo",
+    },
+    {
+      customerGroupId: "2",
+      customerGroupName: "Regular Customers",
+      assignSalesRepId: "SR002",
+      assignSalesRepName: "Kasun Silva",
+      email: "kasun.silva@example.lk",
+      location: "Kandy",
+    },
+    {
+      customerGroupId: "3",
+      customerGroupName: "VIP Customers",
+      assignSalesRepId: "SR003",
+      assignSalesRepName: "Dilani Fernando",
+      email: "dilani.fernando@example.lk",
+      location: "Galle",
+    },
+    {
+      customerGroupId: "4",
+      customerGroupName: "Wholesale Customers",
+      assignSalesRepId: "SR004",
+      assignSalesRepName: "Roshan Wijesekera",
+      email: "roshan.wijesekera@example.lk",
+      location: "Negombo",
+    },
+    {
+      customerGroupId: "5",
+      customerGroupName: "Online Shoppers",
+      assignSalesRepId: "SR005",
+      assignSalesRepName: "Shirani Perera",
+      email: "shirani.perera@example.lk",
+      location: "Jaffna",
+    },
+  ];
+  
+  
 
-  const filteredCustomerGroups = customerGroups.filter((customerGroup) =>
+  const filteredCustomerGroups = dummyCustomerGroups.filter((customerGroup) =>
     customerGroup.customerGroupName.toLowerCase().includes(search.toLowerCase())
   );
 

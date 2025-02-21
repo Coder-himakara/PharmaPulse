@@ -11,6 +11,7 @@ import java.util.List;
 public interface BatchInventoryMapper {
     @Mapping(target = "batchId",ignore = true)
     @Mapping(target = "purchaseInvoice", ignore = true)
+    @Mapping(target = "inventoryRecords",ignore = true)
     BatchInventory toEntity(BatchInventoryDTO batchInventoryDTO);
 
 

@@ -104,7 +104,8 @@ const AddProductsForm = ({ onAddProduct }) => {
           htmlFor="purchaseGroup"
           className="text-[16px] text-gray-800 w-2/3"
         >
-          Purchase Group:
+
+          Purchase Group :
         </label>
         <input
           type="text"

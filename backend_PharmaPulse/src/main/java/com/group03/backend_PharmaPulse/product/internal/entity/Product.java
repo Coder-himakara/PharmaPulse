@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 
 @Entity
 @Data
@@ -17,33 +19,33 @@ import lombok.NoArgsConstructor;
 public class Product {
     @Id
     @Column(name = "product_id",length = 50)
-    private String productId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_seq")
+    private Long productId;
+
+    private Long purchaseGroupId;
+
+    @Column(name = "product_ref_id", unique = true, nullable = false)
+    private String productRefId;
 
     private String productName;
-    private Integer purchaseGroupId;
+
     private String genericName;
     private String description;
-    private String productModelNo;
 
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
 
     @Enumerated(EnumType.STRING)
-    private DosageForm dosageForm;
-
-    @Enumerated(EnumType.STRING)
-    private SellingUnit sellingUnit;
-
-    @Enumerated(EnumType.STRING)
     private PackageType packageType;
+
+    private String unitsPerPack;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus productStatus;
 
-    private Integer reorderLimitBySellingUnit;
+    private Integer reorderLimitByPackage;
 
-
-    //LAZY fetch type is used to avoid fetching all the product retail prices when a product is fetched
-    //@OneToMany(mappedBy="product" ,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //private Set<ProductRetailPrice> productRetailPrices;
+    //LAZY fetch type is used to avoid fetching all the product wholesale prices when a product is fetched
+    @OneToMany(mappedBy="product" ,fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private Set<ProductWholesalePrice> productWholesalePrices;
 }

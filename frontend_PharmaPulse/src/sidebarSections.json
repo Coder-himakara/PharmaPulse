@@ -4,27 +4,29 @@
       "title": "Products",
       "links": [
         { "to": "/employee-dashboard/add-products", "name": "Add Products" },
-        { "to": "/products-info", "name": "Products Info" }
+
+        { "to": "/employee-dashboard/products-info", "name": "Products Info" }
+
       ]
     },
     {
       "title": "Accounts",
       "links": [
-        { "to": "/add-customer-group", "name": "Add Customer Group" },
-        { "to": "/customer-group-info", "name": "Customer Group Info" },
-        { "to": "/add-customers", "name": "Add Customers" },
-        { "to": "/customers-info", "name": "Customers Info" },
-        { "to": "/add-purchase-group", "name": "Add Purchase Group" },
-        { "to": "/purchase-group-info", "name": "Purchase Group Info" },
-        { "to": "/add-suppliers", "name": "Add Suppliers" },
-        { "to": "/suppliers-info", "name": "Suppliers Info" }
+        { "to": "/employee-dashboard/add-customer-group", "name": "Add Customer Group" },
+        { "to": "/employee-dashboard/customer-group-info", "name": "Customer Group Info" },
+        { "to": "/employee-dashboard/add-customers", "name": "Add Customers" },
+        { "to": "/employee-dashboard/customers-info", "name": "Customers Info" },
+        { "to": "/employee-dashboard/add-purchase-group", "name": "Add Purchase Group" },
+        { "to": "/employee-dashboard/purchase-group-info", "name": "Purchase Group Info" },
+        { "to": "/employee-dashboard/add-suppliers", "name": "Add Suppliers" },
+        { "to": "/employee-dashboard/suppliers-info", "name": "Suppliers Info" }
       ]
     },
     {
       "title": "Purchase Invoices",
       "links": [
-        { "to": "/add-purchase-invoice", "name": "Add Purchase Invoice" },
-        { "to": "/purchase-invoice-info", "name": "Purchase Invoice Info" }
+        { "to": "/employee-dashboard/add-purchase-invoice", "name": "Add Purchase Invoice" },
+        { "to": "/employee-dashboard/purchase-invoice-info", "name": "Purchase Invoice Info" }
       ]
     }
   ],
@@ -33,7 +35,7 @@
       "title": "Options",
       "links": [
         { "to": "/sales-dashboard/price-list-view", "name": "Price List" },
-        { "to": "/sales-dashboard/order-creation", "name": "Order Creation" }
+        { "to": "/sales-dashboard/order-creation", "name": "Create Order " }
       ]
     }
   ],
@@ -46,11 +48,22 @@
       ]
     },
     {
-      "title": "Lorry",
+      "title": "Trucks",
       "links": [
-        { "to": "/admin-dashboard/add-lorry", "name": "Add Lorry" },
-        { "to": "/admin-dashboard/lorry-info", "name": "Lorry Info" }
+        { "to": "/admin-dashboard/add-truck", "name": "Add Lorry" },
+        { "to": "/admin-dashboard/truck-info", "name": "Lorry Info" }
       ]
+    },
+    {
+      "title": "Ware House",
+      "links": [
+        { "to": "/admin-dashboard/add-warehouse", "name": "Add Warehouse" },
+        { "to": "/admin-dashboard/warehouse-info", "name": "Warehouse Info" }
+      ]
+    },
+    {
+      "title": "Log Details"
+     
     }
   ]
 }

@@ -2,13 +2,9 @@
 import { useState, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import {
-  FaUser,
-  FaSignOutAlt,
-  FaTachometerAlt,
-  FaSun,
-  FaMoon,
-} from "react-icons/fa";
+
+import { FaUser, FaSignOutAlt,FaSun, FaMoon } from "react-icons/fa";
+
 import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
 import { MegaMenu } from "primereact/megamenu";
@@ -65,18 +61,14 @@ const Navbar = () => {
       items: [
         [
           {
-            label: "Customers Group",
-            items: [
-              {
-                label: "Add Customer Group",
-                url: "employee-dashboard/add-customer-group",
-              },
-              {
-                label: "Customer Group Info",
-                url: "employee-dashboard/customer-group-info",
-              },
-            ],
-          },
+
+            "label": "Customers Group",
+            "items": [
+              { "label": "Add Customer Group", "url": "employee-dashboard/add-customer-group" },
+              { "label": "Customer Group Info", "url": "customer-group-info" }
+            ]
+          }
+
         ],
         [
           {
@@ -168,34 +160,61 @@ const Navbar = () => {
             ],
           },
         ],
-        [{ label: "Sale Invoice", items: [{ label: "Invoice Info" }] }],
-        [{ label: "Purchase Return" }],
-        [{ label: "Sales Return" }],
-      ],
+
+        [{ "label": "Sale ",
+           "items": [
+            { "label": "Orders", "url": "orders" },
+            { "label": "Invoice Info", "url": "purchase-invoice-info" }
+          ]
+         }
+        ],
+        [{ "label": "Purchase Return",
+            "items": [
+              { "label": "Return Invoice", "url": "purchase-return-invoice" },
+              { "label": "Invoice Info", "url": "purchase-invoice-info" }
+            ]
+         }
+        ],
+        
+        [{ "label": "Sales Return",
+          "items": [
+            { "label": "Return Invoice", "url": "sales-return-invoice" },
+            { "label": "Invoice Info", "url": "sales-invoice-info" }
+          ]
+         }]
+      ]
     },
     {
-      label: "Payment",
-      icon: "pi pi-credit-card text-white",
-      items: [
+      "label": "Inventory",
+      "icon": "pi pi-warehouse  text-white",
+      "items": [
         [
           {
-            label: "Supplier Payment",
-            items: [{ label: "Add Payment" }, { label: "Payment Info" }],
-          },
+            "label": "Batch Wise",
+            "items": [{ "label": "Batch Inventory" }]
+          }
         ],
-        [{ label: "Customer Payment" }],
+        [
+          { "label": "Inventory Wise",
+            "items": [
+              { "label": "Warehouse Inventory" },
+              { "label": "Truck Transfer" },
+              { "label": "Stock Adjustment" }
+            ]
+          }
+          ],
         [
           {
-            label: "Outstanding Balance",
-            items: [{ label: "Customer" }, { label: "Supplier" }],
-          },
-        ],
-        [{ label: "Cheque Management" }],
-      ],
+            "label": "Product Wise",
+            "items": [{ "label": "Stock Register" }]
+          }
+        ]
+      ]
     },
     {
-      label: "Inventory",
-      icon: "pi pi-box text-white",
+      "label": "Payment",
+      "icon": "pi pi-credit-card text-white"
+
     },
     {
       label: "Report",
@@ -204,10 +223,10 @@ const Navbar = () => {
   ];
 
   return (
-    <div
-      className={`flex justify-between items-center px-6 py-4 fixed top-0 left-0 w-full z-10 h-[100px] transition-colors duration-300 ${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"}`}
-    >
-      <div className="flex items-center">
+
+    <div className={`flex justify-between items-center px-6 py-4 fixed top-0 left-0 w-full z-10 h-[100px] transition-colors duration-300 ${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"}`}>
+      <div className="flex items-right">
+
         <img src={logo} alt="Logo" className="h-10 mr-4" />
         <span className="text-lg font-bold">Home</span>
       </div>
@@ -223,12 +242,12 @@ const Navbar = () => {
               className: `${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-black"} border-none`,
             },
             menu: {
-              className:
-                "bg-transparent gap-2 border-none shadow-md flex justify-center w-full",
+
+              className: "bg-transparent gap-2 border-none shadow-md flex justify-right w-full",
             },
-            panel: {
-              className:
-                "absolute left-1/2 top-20 transform -translate-x-1/2 bg-white shadow-lg rounded-md", // Centering dropdown panel
+            panel:{
+              className: "absolute bg-white shadow-lg rounded-md",
+
             },
             submenu: {
               className: `${isDarkMode ? "text-white" : "text-black"} border-none`,
@@ -245,7 +264,7 @@ const Navbar = () => {
 
             // Keep dropdown menu text black
             menuitem: {
-              className: "hover:bg-transparent text-black",
+              className: "hover:bg-transparent text-black text-left",
             },
             action: {
               className: "hover:bg-transparent text-black",
@@ -254,8 +273,10 @@ const Navbar = () => {
               className: "hover:bg-transparent text-black",
             },
             submenuitem: {
-              className: "hover:bg-transparent text-black",
-            },
+
+              className: "hover:bg-transparent text-black text-left",
+            }
+
           }}
         />
       </div>
@@ -274,30 +295,11 @@ const Navbar = () => {
             ▼
           </button>
           {isDropdownVisible && (
-            <ul
-              className={`absolute top-full right-0 mt-2 border rounded-md min-w-[150px] shadow-lg z-10 list-none ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
-            >
-              <DropdownLink
-                to="/dashboard"
-                icon={FaTachometerAlt}
-                onClick={closeDropdown}
-              >
-                Dashboard
-              </DropdownLink>
-              <DropdownLink
-                to="/update-profile"
-                icon={FaUser}
-                onClick={closeDropdown}
-              >
-                Profile
-              </DropdownLink>
-              <DropdownLink
-                to="/home"
-                icon={FaSignOutAlt}
-                onClick={closeDropdown}
-              >
-                Log Out
-              </DropdownLink>
+
+            <ul className={`absolute top-full right-0 mt-2 border rounded-md min-w-[150px] shadow-lg z-10 list-none ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"}`}>
+              <DropdownLink to="/update-profile" icon={FaUser} onClick={closeDropdown}>Profile</DropdownLink>
+              <DropdownLink to="/" icon={FaSignOutAlt} onClick={closeDropdown}>Log Out</DropdownLink>
+
             </ul>
           )}
         </div>

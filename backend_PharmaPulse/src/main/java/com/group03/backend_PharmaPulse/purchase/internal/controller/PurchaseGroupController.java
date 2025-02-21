@@ -22,7 +22,7 @@ public class PurchaseGroupController {
     public ResponseEntity<StandardResponse> getAllPurchaseGroups() {
         List<PurchaseGroupDTO> purchaseGroupDTOS  = purchaseGroupService.getAllPurchaseGroups();
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",purchaseGroupDTOS),
+                new StandardResponse(200,"Success",purchaseGroupDTOS),
                 HttpStatus.OK
         );
     }
@@ -31,8 +31,8 @@ public class PurchaseGroupController {
     public ResponseEntity<StandardResponse> getPurchaseGroupsById(@PathVariable Long id) {
         PurchaseGroupDTO selectedPurchaseGroup = purchaseGroupService.getPurchaseGroupById(id);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",selectedPurchaseGroup),
-                HttpStatus.FOUND
+                new StandardResponse(200,"Success",selectedPurchaseGroup),
+                HttpStatus.OK
         );
     }
     // This method is used to add a purchase group
