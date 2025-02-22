@@ -65,13 +65,13 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
     const customerGroup = customerGroups.find(
       (cg) => cg.customerGroupId === customerGroupId
     );
-    navigate(`/edit-customer-group/${customerGroupId}`, {
+    navigate(`/employee-dashboard/edit-customer-group/${customerGroupId}`, {
       state: { customerGroup },
     });
   };
 
   const handleViewCustomerGroup = (customerGroup) => {
-    navigate(`/view-customer-group/${customerGroup.customerGroupId}`, {
+    navigate(`/employee-dashboard/view-customer-group/${customerGroup.customerGroupId}`, {
       state: { customerGroup },
     });
   };

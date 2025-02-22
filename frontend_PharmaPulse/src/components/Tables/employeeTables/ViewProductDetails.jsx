@@ -48,7 +48,7 @@ const ViewProductDetails = () => {
       <div className="flex justify-center mt-4">
         <button
           className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
-          onClick={() => navigate("/products-info")}
+          onClick={() => navigate("/employee-dashboard/products-info")}
         >
           Back
         </button>

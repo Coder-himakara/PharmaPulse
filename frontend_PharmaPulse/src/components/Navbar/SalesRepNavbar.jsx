@@ -39,7 +39,7 @@ DropdownLink.propTypes = {
   onClick: PropTypes.func,
 };
 
-const Navbar = () => {
+const SalesRepNavbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -64,13 +64,13 @@ const Navbar = () => {
     {
       "label": "Price List",
       "icon": "pi pi-dollar text-white",
-       "url": "sales-dashboard/price-list-view" 
+       "url": "/sales-dashboard/price-list-view" 
        
     },
     {
       "label": "Create Order",
       "icon": "pi pi-shopping-cart  text-white",
-      "url": "order-creation" 
+      "url": "/sales-dashboard/order-creation" 
     
     },
     {
@@ -197,4 +197,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default SalesRepNavbar;

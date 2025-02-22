@@ -69,13 +69,13 @@ const CustomersInfoTable = ({ customers }) => {
 
   const handleEdit = (customerId) => {
     const customer = customers.find((c) => c.customerId === customerId);
-    navigate(`/edit-customer/${customerId}`, {
+    navigate(`/employee-dashboard/edit-customer/${customerId}`, {
       state: { customer },
     });
   };
 
   const handleViewCustomer = (customer) => {
-    navigate(`/view-customer/${customer.customerId}`, {
+    navigate(`/employee-dashboard/view-customer/${customer.customerId}`, {
       state: { customer },
     });
   };
@@ -182,122 +182,6 @@ const CustomersInfoTable = ({ customers }) => {
               </tr>
             ))}
 
-            {/* Dummy Row */}
-            <tr className='bg-[#f9f9f9] text-black italic'>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                K.Raja
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Active
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                5,000
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                5
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                raja12@gmail.com
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                0342222432
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Raja
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                <button
-                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
-                  onClick={() => handleEdit('dummy')}
-                >
-                  Edit
-                </button>
-                <button
-                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
-                  onClick={() => handleViewCustomer({ productId: 'dummy' })}
-                >
-                  View
-                </button>
-              </td>
-            </tr>
-
-            {/* Dummy Row */}
-            <tr className='bg-[#f9f9f9] text-black italic'>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                R.M.Amila Silva
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Inactive
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                10,000
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                7
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                amilasilva234@gmail.com
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                0777767546
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Amila
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                <button
-                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
-                  onClick={() => handleEdit('dummy')}
-                >
-                  Edit
-                </button>
-                <button
-                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
-                  onClick={() => handleViewCustomer({ productId: 'dummy' })}
-                >
-                  View
-                </button>
-              </td>
-            </tr>
-
-            {/* Dummy Row */}
-            <tr className='bg-[#f9f9f9] text-black italic'>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                P.M.K.Naveen Perera
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Suspended
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                7,000
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                3
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                pmknaveenperera11@gmail.com
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                0401234568
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                Naveen
-              </td>
-              <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                <button
-                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
-                  onClick={() => handleEdit('dummy')}
-                >
-                  Edit
-                </button>
-                <button
-                  className='bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2'
-                  onClick={() => handleViewCustomer({ productId: 'dummy' })}
-                >
-                  View
-                </button>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>

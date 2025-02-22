@@ -93,7 +93,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
   };
 
   const handleCancel = () => {
-    navigate('/customers-info');
+    navigate('/employee-dashboard/customers-info');
   };
 
   return (

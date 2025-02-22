@@ -35,7 +35,7 @@ DropdownLink.propTypes = {
   onClick: PropTypes.func,
 };
 
-const Navbar = () => {
+const EmployeeNavbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const navigate = useNavigate();
@@ -64,8 +64,8 @@ const Navbar = () => {
 
             "label": "Customers Group",
             "items": [
-              { "label": "Add Customer Group", "url": "add-customer-group" },
-              { "label": "Customer Group Info", "url": "customer-group-info" }
+              { "label": "Add Customer Group", "url": "/employee-dashboard/add-customer-group" },
+              { "label": "Customer Group Info", "url": "/employee-dashboard/customer-group-info" }
             ]
           }
 
@@ -76,11 +76,11 @@ const Navbar = () => {
             items: [
               {
                 label: "Add Customer",
-                url: "add-customers",
+                url: "/employee-dashboard/add-customers",
               },
               {
                 label: "Customer Info",
-                url: "customers-info",
+                url: "/employee-dashboard/customers-info",
               },
             ],
           },
@@ -91,11 +91,11 @@ const Navbar = () => {
             items: [
               {
                 label: "Add Purchase Group",
-                url: "add-purchase-group",
+                url: "/employee-dashboard/add-purchase-group",
               },
               {
                 label: "Purchase Group Info",
-                url: "purchase-group-info",
+                url: "/employee-dashboard/purchase-group-info",
               },
             ],
           },
@@ -106,11 +106,11 @@ const Navbar = () => {
             items: [
               {
                 label: "Add Supplier",
-                url: "add-suppliers",
+                url: "/employee-dashboard/add-suppliers",
               },
               {
                 label: "Supplier Info",
-                url: "suppliers-info",
+                url: "/employee-dashboard/suppliers-info",
               },
             ],
           },
@@ -125,10 +125,10 @@ const Navbar = () => {
           {
             label: "Products",
             items: [
-              { label: "Add Products", url: "add-products" },
+              { label: "Add Products", url: "/employee-dashboard/add-products" },
               {
                 label: "Products Info",
-                url: "products-info",
+                url: "/employee-dashboard/products-info",
               },
             ],
           },
@@ -151,11 +151,11 @@ const Navbar = () => {
             items: [
               {
                 label: "Add Invoice",
-                url: "add-purchase-invoice",
+                url: "/employee-dashboard/add-purchase-invoice",
               },
               {
                 label: "Invoice Info",
-                url: "purchase-invoice-info",
+                url: "/employee-dashboard/purchase-invoice-info",
               },
             ],
           },
@@ -164,22 +164,22 @@ const Navbar = () => {
         [{ "label": "Sale ",
            "items": [
             { "label": "Orders", "url": "orders" },
-            { "label": "Invoice Info", "url": "purchase-invoice-info" }
+            { "label": "Invoice Info", "url": "/employee-dashboard/purchase-invoice-info" }
           ]
          }
         ],
         [{ "label": "Purchase Return",
             "items": [
-              { "label": "Return Invoice", "url": "purchase-return-invoice" },
-              { "label": "Invoice Info", "url": "purchase-invoice-info" }
+              { "label": "Return Invoice", "url": "/employee-dashboard/purchase-return-invoice" },
+              { "label": "Invoice Info", "url": "/employee-dashboard/purchase-invoice-info" }
             ]
          }
         ],
         
         [{ "label": "Sales Return",
           "items": [
-            { "label": "Return Invoice", "url": "sales-return-invoice" },
-            { "label": "Invoice Info", "url": "sales-invoice-info" }
+            { "label": "Return Invoice", "url": "/employee-dashboard/sales-return-invoice" },
+            { "label": "Invoice Info", "url": "/employee-dashboard/sales-invoice-info" }
           ]
          }]
       ]
@@ -319,4 +319,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default EmployeeNavbar;

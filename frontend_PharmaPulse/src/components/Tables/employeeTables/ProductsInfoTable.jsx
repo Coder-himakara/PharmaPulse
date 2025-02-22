@@ -16,13 +16,13 @@ const ProductsInfoTable = ({ products }) => {
 
   const handleEdit = (productId) => {
     const product = products.find((p) => p.productId === productId); // Find the specific product
-    navigate(`/edit-product/${productId}`, {
+    navigate(`/employee-dashboard/edit-product/${productId}`, {
       state: { product },
     }); // Pass the product data to the Edit form
   };
 
   const handleViewProducts = (product) => {
-    navigate(`/view-product/${product.productId}`, {
+    navigate(`/employee-dashboard/view-product/${product.productId}`, {
       state: { product },
     });
   };

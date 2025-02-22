@@ -65,7 +65,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   };
 
   const handleCancel = () => {
-    navigate("/customer-group-info");
+    navigate("/employee-dashboard/customer-group-info");
   };
 
   return (
