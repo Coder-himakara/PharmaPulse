@@ -6,19 +6,19 @@ import AddUsersForm from '../components/Forms/adminForm/AddUsersForm';
 import UsersInfoTable from '../components/Tables/adminTable/UsersInfoTable';
 import EditUsersForm from '../components/Forms/adminForm/EditUsersForm';
 import ViewUserDetails from '../components/Tables/adminTable/ViewUserDetails';
-import AddLorryForm from '../components/Forms/adminForm/AddLorryForm';
-import LorryInfoTable from '../components/Tables/adminTable/LorryInfoTable';
-import EditLorryForm from '../components/Forms/adminForm/EditLorryForm';
-import ViewLorryDetails from '../components/Tables/adminTable/ViewLorryDetails';
+import AddTruckForm from '../components/Forms/adminForm/AddTruckForm';
+import TruckInfoTable from '../components/Tables/adminTable/TruckInfoTable';
+import EditTruckForm from '../components/Forms/adminForm/EditTruckForm';
+import ViewTruckDetails from '../components/Tables/adminTable/ViewTruckDetails';
 const AdminRoutes = () => {
   const [users, setUsers] = useState([]);
-  const [lorry, setLorry] = useState([]);
+  const [truck, setTruck] = useState([]);
 
   const addUser = (user) => {
     setUsers((prevUsers) => [...prevUsers, user]);
   };
-  const addLorry = (lorry) => {
-    setLorry((prevLorry) => [...prevLorry, lorry]);
+  const addTruck = (truck) => {
+    setTruck((prevTruck) => [...prevTruck, truck]);
   };
 
   const updateuser = (updateduser) => {
@@ -28,10 +28,10 @@ const AdminRoutes = () => {
       ),
     );
   };
-  const updatelorry = (updatedlorry) => {
-    setLorry((prevLorry) =>
-      prevLorry.map((lorry) =>
-        lorry.lorryId === updatedlorry.lorryId ? updatedlorry : lorry,
+  const updatetruck = (updatedtruck) => {
+    setTruck((prevTruck) =>
+      prevTruck.map((truck) =>
+        truck.truckId === updatedtruck.truckId ? updatedtruck : truck,
       ),
     );
   };
@@ -44,11 +44,11 @@ const AdminRoutes = () => {
       <Route path='edit-user/:userId' element={<EditUsersForm onUpdateUser={updateuser} />} />
       <Route path='view-user/:userId' element={<ViewUserDetails />} />
 
-      <Route path='add-truck' element={<AddLorryForm onAddLorry={addLorry} />}   />
-      <Route path='truck-info' element={<LorryInfoTable lorries={lorry} />} />
+      <Route path='add-truck' element={<AddTruckForm onAddTruck={addTruck} />}   />
+      <Route path='truck-info' element={<TruckInfoTable trucks={truck} />} />
 
-      <Route path='edit-truck/:lorryId' element={<EditLorryForm onUpdateLorry={updatelorry} />} />
-      <Route path='view-truck/:lorryId' element={<ViewLorryDetails />} />
+      <Route path='edit-truck/:truckId' element={<EditTruckForm onUpdateTruck={updatetruck} />} />
+      <Route path='view-truck/:truckId' element={<ViewTruckDetails />} />
 
       
     </Routes>

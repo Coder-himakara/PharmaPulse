@@ -2,25 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/*  App.css */
-html,
-body {
+/* Base Styling */
+html, body {
   margin: 0;
   font-family: "Arial", sans-serif;
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-image: url('/loginbg.webp'); /* Path to the image */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed; /* Fix the background */
-  background-color: black; /* Fallback color */
-  overflow: hidden;
+  background-color: black; /* Default fallback */
   color: var(--text-color);
   background-color: var(--bg-color);
+  overflow: hidden;
+  background-attachment: fixed;
 }
 
+/* Background Wrapper - Dynamically controlled */
+.background-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url('/loginbg.webp') no-repeat center center fixed;
+  background-size: cover;
+  z-index: -1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Hide Background When Labels Are Clicked */
+.background-hidden {
+  opacity: 0; /* Make it disappear */
+  pointer-events: none; /* Prevent interactions */
+}
+
+/* App Root */
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -28,6 +43,7 @@ body {
   text-align: center;
 }
 
+/* Logo */
 .logo {
   height: 6em;
   padding: 1.5em;

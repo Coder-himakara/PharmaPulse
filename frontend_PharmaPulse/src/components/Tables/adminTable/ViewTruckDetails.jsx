@@ -1,34 +1,34 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const ViewLorryDetails = () => {
+const ViewTruckDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const lorry = location.state?.lorry;
+  const truck = location.state?.truck;
 
   return (
     <div className='max-w-md p-6 mx-auto mt-10 bg-[#e6eef3] rounded-lg shadow-md'>
       <h2 className='mb-4 text-xl font-bold text-center text-[var(--card-text-color)]'>
-        Lorry Details
+        Truck Details
       </h2>
 
       <ul className='text-left '>
         <li>
-          <strong>Lorry Id:</strong> {lorry.lorryId}
+          <strong>Truck Id:</strong> {truck.lorryId}
         </li>
         <li>
-          <strong>Number Plate:</strong> {lorry.numberPlate}
+          <strong>Number Plate:</strong> {truck.numberPlate}
         </li>
         <li>
-          <strong>Representative Id:</strong> {lorry.representativeId}
+          <strong>Representative Id:</strong> {truck.representativeId}
         </li>
         <li>
-          <strong>Capacity:</strong> {lorry.capacity}
+          <strong>Capacity:</strong> {truck.capacity}
         </li>
         <li>
-          <strong>Date Of Added:</strong> {lorry.dateOfAdded}
+          <strong>Date Of Added:</strong> {truck.dateOfAdded}
         </li>
         <li>
-          <strong>Status:</strong> {lorry.status}
+          <strong>Status:</strong> {truck.status}
         </li>
       </ul>
       <div className='flex justify-center mt-4'>
@@ -43,4 +43,4 @@ const ViewLorryDetails = () => {
   );
 };
 
-export default ViewLorryDetails;
+export default ViewTruckDetails;
