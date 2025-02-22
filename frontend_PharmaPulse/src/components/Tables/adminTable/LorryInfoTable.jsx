@@ -46,11 +46,11 @@ const LorryInfoTable = ({ lorries }) => {
 
   const handleEdit = (lorryId) => {
     const lorry = combinedLorries.find((l) => l.lorryId === lorryId);
-    navigate(`/edit-truck/${lorryId}`, { state: { lorry } });
+    navigate(`/admin-dashboard/edit-truck/${lorryId}`, { state: { lorry } });
   };
 
   const handleViewLorry = (lorry) => {
-    navigate(`/view-truck/${lorry.lorryId}`, { state: { lorry } });
+    navigate(`/admin-dashboard/view-truck/${lorry.lorryId}`, { state: { lorry } });
   };
 
   return (

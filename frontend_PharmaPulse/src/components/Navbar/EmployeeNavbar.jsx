@@ -64,7 +64,7 @@ const Navbar = () => {
 
             "label": "Customers Group",
             "items": [
-              { "label": "Add Customer Group", "url": "employee-dashboard/add-customer-group" },
+              { "label": "Add Customer Group", "url": "add-customer-group" },
               { "label": "Customer Group Info", "url": "customer-group-info" }
             ]
           }
@@ -76,11 +76,11 @@ const Navbar = () => {
             items: [
               {
                 label: "Add Customer",
-                url: "employee-dashboard/add-customers",
+                url: "add-customers",
               },
               {
                 label: "Customer Info",
-                url: "employee-dashboard/customers-info",
+                url: "customers-info",
               },
             ],
           },
@@ -91,11 +91,11 @@ const Navbar = () => {
             items: [
               {
                 label: "Add Purchase Group",
-                url: "employee-dashboard/add-purchase-group",
+                url: "add-purchase-group",
               },
               {
                 label: "Purchase Group Info",
-                url: "employee-dashboard/purchase-group-info",
+                url: "purchase-group-info",
               },
             ],
           },
@@ -106,11 +106,11 @@ const Navbar = () => {
             items: [
               {
                 label: "Add Supplier",
-                url: "employee-dashboard/add-suppliers",
+                url: "add-suppliers",
               },
               {
                 label: "Supplier Info",
-                url: "employee-dashboard/suppliers-info",
+                url: "suppliers-info",
               },
             ],
           },
@@ -125,10 +125,10 @@ const Navbar = () => {
           {
             label: "Products",
             items: [
-              { label: "Add Products", url: "employee-dashboard/add-products" },
+              { label: "Add Products", url: "add-products" },
               {
                 label: "Products Info",
-                url: "employee-dashboard/products-info",
+                url: "products-info",
               },
             ],
           },
@@ -151,11 +151,11 @@ const Navbar = () => {
             items: [
               {
                 label: "Add Invoice",
-                url: "employee-dashboard/add-purchase-invoice",
+                url: "add-purchase-invoice",
               },
               {
                 label: "Invoice Info",
-                url: "employee-dashboard/purchase-invoice-info",
+                url: "purchase-invoice-info",
               },
             ],
           },

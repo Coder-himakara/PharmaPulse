@@ -39,7 +39,7 @@ DropdownLink.propTypes = {
   onClick: PropTypes.func,
 };
 
-const Navbar = () => {
+const AdminNavbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -68,8 +68,8 @@ const Navbar = () => {
         [
           {
             "items": [
-              { "label": "Add Users", "url": "admin-dashboard/add-users" },
-              { "label": "User Info", "url": "users-info" }
+              { "label": "Add Users","url": "/admin-dashboard/add-users" },
+              { "label": "User Info","url": "/admin-dashboard/users-info"}
             ]
           }
         ]
@@ -82,8 +82,8 @@ const Navbar = () => {
           [
             {
               "items": [
-                { "label": "Add Truck", "url": "add-truck" },
-                { "label": "Truck Info", "url": "truck-info" }
+                { "label": "Add Truck", "url": "/admin-dashboard/add-truck" },
+                { "label": "Truck Info", "url": "/admin-dashboard/truck-info" }
               ]
             }
           ]
@@ -96,8 +96,8 @@ const Navbar = () => {
           [
             {
               "items": [
-                { "label": "Add Warehouse", "url": "add-warehouse" },
-                { "label": "Truck Info", "url": "warehouse-info" }
+                { "label": "Add Warehouse", "url": "/admin-dashboard/add-warehouse" },
+                { "label": "Truck Info", "url": "/admin-dashboard/warehouse-info" }
               ]
             }
           ]
@@ -223,4 +223,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default AdminNavbar;

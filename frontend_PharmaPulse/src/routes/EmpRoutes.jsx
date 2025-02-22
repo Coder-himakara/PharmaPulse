@@ -136,25 +136,25 @@ const EmpRoutes = () => {
   return (
     <Routes>
       <Route
-        path="/add-products"
+        path="add-products"
         element={<AddProductsForm onAddProduct={addProduct} />}
       />
       <Route
-        path="/products-info"
+        path="products-info"
         element={<ProductsInfoTable products={products} />}
       />
       <Route
-        path="/edit-product/:productId"
+        path="edit-product/:productId"
         element={<EditProductsForm onUpdateProduct={updateProduct} />}
       />
-      <Route path="/view-product/:productId" element={<ViewProductDetails />} />
+      <Route path="view-product/:productId" element={<ViewProductDetails />} />
 
       <Route
-        path="/add-suppliers"
+        path="add-suppliers"
         element={<AddSuppliersForm onAddSupplier={addSupplier} />}
       />
       <Route
-        path="/suppliers-info"
+        path="suppliers-info"
         element={<SuppliersInfoTable suppliers={suppliers} />}
       />
       <Route
@@ -162,79 +162,79 @@ const EmpRoutes = () => {
         element={<EditSuppliersForm onUpdateSupplier={updateSupplier} />}
       />
       <Route
-        path="/view-supplier/:supplierId"
+        path="view-supplier/:supplierId"
         element={<ViewSupplierDetails />}
       />
 
       <Route
-        path="/add-customers"
+        path="add-customers"
         element={<AddCustomersForm onAddCustomer={addCustomer} />}
       />
       <Route
-        path="/customers-info"
+        path="customers-info"
         element={<CustomersInfoTable customers={customers} />}
       />
       <Route
-        path="/edit-customer/:customerId"
+        path="edit-customer/:customerId"
         element={<EditCustomersForm onUpdateCustomer={updateCustomer} />}
       />
       <Route
-        path="/view-customer/:customerId"
+        path="view-customer/:customerId"
         element={<ViewCustomerDetails />}
       />
 
       <Route
-        path="/add-customer-group"
+        path="add-customer-group"
         element={<AddCustomerGroupForm onAddCustomerGroup={addCustomerGroup} />}
       />
       <Route
-        path="/customer-group-info"
+        path="customer-group-info"
         element={<CustomerGroupInfoTable customerGroups={customerGroups} />}
       />
       <Route
-        path="/edit-customer-group/:customerGroupId"
+        path="edit-customer-group/:customerGroupId"
         element={
           <EditCustomerGroupForm onUpdateCustomerGroup={updateCustomerGroup} />
         }
       />
       <Route
-        path="/view-customer-group/:customerGroupId"
+        path="view-customer-group/:customerGroupId"
         element={<ViewCustomerGroupDetails />}
       />
 
       <Route
-        path="/add-purchase-group"
+        path="add-purchase-group"
         element={<AddPurchaseGroupForm onAddPurchaseGroup={addPurchaseGroup} />}
       />
       <Route
-        path="/purchase-group-info"
+        path="purchase-group-info"
         element={<PurchaseGroupInfoTable purchaseGroups={purchaseGroups} />}
       />
       <Route
-        path="/edit-purchase-group/:purchaseGroupId"
+        path="edit-purchase-group/:purchaseGroupId"
         element={
           <EditPurchaseGroupForm onUpdatePurchaseGroup={updatePurchaseGroup} />
         }
       />
       <Route
-        path="/view-purchase-group/:purchaseGroupId"
+        path="view-purchase-group/:purchaseGroupId"
         element={<ViewPurchaseGroupDetails />}
       />
 
       <Route
-        path="/add-purchase-invoice"
+        path="add-purchase-invoice"
         element={
           <AddPurchaseInvoiceForm onAddPurchaseInvoice={addPurchaseInvoice} />
         }
       />
       <Route
-        path="/purchase-invoice-info"
+        path="purchase-invoice-info"
         element={
           <PurchaseInvoiceInfoTable purchaseInvoices={purchaseInvoices} />
         }
       />
       <Route
-        path="/edit-purchase-invoice/:purchaseInvoiceId"
+        path="edit-purchase-invoice/:purchaseInvoiceId"
         element={
           <EditPurchaseInvoiceForm
             onUpdatePurchaseInvoice={updatePurchaseInvoice}

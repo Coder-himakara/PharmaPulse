@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import AdminSidebar from '../components/Sidebar/AdminSidebar';
+
 import AddUsersForm from '../components/Forms/adminForm/AddUsersForm';
 import UsersInfoTable from '../components/Tables/adminTable/UsersInfoTable';
 import EditUsersForm from '../components/Forms/adminForm/EditUsersForm';
@@ -41,25 +41,16 @@ const AdminRoutes = () => {
       <Route path='add-users' element={<AddUsersForm onAddUser={addUser} />} />
       <Route path='users-info' element={<UsersInfoTable users={users} />} />
 
-      <Route
-        path='edit-user/:userId'
-        element={<EditUsersForm onUpdateUser={updateuser} />}
-      />
+      <Route path='edit-user/:userId' element={<EditUsersForm onUpdateUser={updateuser} />} />
       <Route path='view-user/:userId' element={<ViewUserDetails />} />
 
-      <Route
-        path='add-truck'
-        element={<AddLorryForm onAddLorry={addLorry} />}
-      />
+      <Route path='add-truck' element={<AddLorryForm onAddLorry={addLorry} />}   />
       <Route path='truck-info' element={<LorryInfoTable lorries={lorry} />} />
-      <Route
-        path='edit-truck/:lorryId'
-        element={<EditLorryForm onUpdateLorry={updatelorry} />}
-      />
-      <Route path='view-lorry/:lorryId' element={<ViewLorryDetails />} />
 
-      <Route path='/home' element={<AdminSidebar role='admin' />} />
-      <Route path='/dashboard' element={<AdminSidebar role='admin' />} />
+      <Route path='edit-truck/:lorryId' element={<EditLorryForm onUpdateLorry={updatelorry} />} />
+      <Route path='view-truck/:lorryId' element={<ViewLorryDetails />} />
+
+      
     </Routes>
   );
 };
