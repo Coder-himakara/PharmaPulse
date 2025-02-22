@@ -1,5 +1,6 @@
 package com.group03.backend_PharmaPulse.purchase.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.group03.backend_PharmaPulse.shared.dto.LineItemDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,5 +22,6 @@ public class PurchaseLineItemDTO extends LineItemDTO {
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
     private BigDecimal retailPrice;
+    @JsonIgnore
     private Long purchaseInvoice;
 }
