@@ -68,7 +68,6 @@ CREATE TABLE purchase_invoice
     total_amount       DECIMAL,
     discount_amount    DECIMAL,
     net_amount         DECIMAL,
-    purchase_no        BIGINT NOT NULL,
     supplier_id        BIGINT NOT NULL,
     purchase_order_ref VARCHAR(255),
     CONSTRAINT pk_purchase_invoice PRIMARY KEY (invoice_id)
