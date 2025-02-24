@@ -7,7 +7,7 @@ const TruckInfoTable = ({ trucks }) => {
   const [sortDirection] = useState('asc');
   const navigate = useNavigate();
 
-  const dummyTrucks= [
+  const dummyTrucks = [
     {
       truckId: 'L001',
       numberPlate: 'ABC-1234',
@@ -50,7 +50,9 @@ const TruckInfoTable = ({ trucks }) => {
   };
 
   const handleViewTruck = (truck) => {
-    navigate(`/admin-dashboard/view-truck/${truck.truckId}`, { state: { truck } });
+    navigate(`/admin-dashboard/view-truck/${truck.truckId}`, {
+      state: { truck },
+    });
   };
 
   return (

@@ -24,7 +24,6 @@ const EmployeeDashboard = () => {
 
 export default EmployeeDashboard;
 
-
 /*import EmployeeNavbar from '../../components/Navbar/EmployeeNavbar';
 
 import Sidebar from '../../components/Sidebar/EmployeeSidebar';
@@ -54,4 +53,3 @@ const EmployeeDashboard = () => {
 
 export default EmployeeDashboard;
 */
-

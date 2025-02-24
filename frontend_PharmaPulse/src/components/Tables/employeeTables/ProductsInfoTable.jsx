@@ -132,12 +132,10 @@ const ProductsInfoTable = ({ products }) => {
                 PR-001
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-
                 Panadol
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Panadol
-
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
@@ -164,7 +162,6 @@ const ProductsInfoTable = ({ products }) => {
             {/* Dummy Row */}
             <tr className='bg-[#f9f9f9] text-black italic'>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-
                 PG-005
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
@@ -175,15 +172,12 @@ const ProductsInfoTable = ({ products }) => {
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Syrup
-
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Active
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-
                 25
-
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 <button
@@ -203,7 +197,6 @@ const ProductsInfoTable = ({ products }) => {
             {/* Dummy Row */}
             <tr className='bg-[#f9f9f9] text-black italic'>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-
                 PG-007
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
@@ -217,7 +210,6 @@ const ProductsInfoTable = ({ products }) => {
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 Discontinued
-
               </td>
               <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                 10

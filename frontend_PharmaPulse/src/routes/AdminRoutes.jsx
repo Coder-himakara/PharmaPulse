@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-
 import AddUsersForm from '../components/Forms/adminForm/AddUsersForm';
 import UsersInfoTable from '../components/Tables/adminTable/UsersInfoTable';
 import EditUsersForm from '../components/Forms/adminForm/EditUsersForm';
@@ -41,16 +40,23 @@ const AdminRoutes = () => {
       <Route path='add-users' element={<AddUsersForm onAddUser={addUser} />} />
       <Route path='users-info' element={<UsersInfoTable users={users} />} />
 
-      <Route path='edit-user/:userId' element={<EditUsersForm onUpdateUser={updateuser} />} />
+      <Route
+        path='edit-user/:userId'
+        element={<EditUsersForm onUpdateUser={updateuser} />}
+      />
       <Route path='view-user/:userId' element={<ViewUserDetails />} />
 
-      <Route path='add-truck' element={<AddTruckForm onAddTruck={addTruck} />}   />
+      <Route
+        path='add-truck'
+        element={<AddTruckForm onAddTruck={addTruck} />}
+      />
       <Route path='truck-info' element={<TruckInfoTable trucks={truck} />} />
 
-      <Route path='edit-truck/:truckId' element={<EditTruckForm onUpdateTruck={updatetruck} />} />
+      <Route
+        path='edit-truck/:truckId'
+        element={<EditTruckForm onUpdateTruck={updatetruck} />}
+      />
       <Route path='view-truck/:truckId' element={<ViewTruckDetails />} />
-
-      
     </Routes>
   );
 };

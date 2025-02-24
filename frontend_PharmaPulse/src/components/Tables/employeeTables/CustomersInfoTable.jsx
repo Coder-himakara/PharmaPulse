@@ -181,7 +181,6 @@ const CustomersInfoTable = ({ customers }) => {
                 </td>
               </tr>
             ))}
-
           </tbody>
         </table>
       </div>

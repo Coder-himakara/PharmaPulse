@@ -41,7 +41,7 @@ DropdownLink.propTypes = {
 const AdminNavbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [hideBackground, setHideBackground] = useState(false);
+  const [hideBackground] = useState(false);
 
   const navigate = useNavigate();
 
@@ -55,11 +55,7 @@ const AdminNavbar = () => {
 
   const handleMenuClick = (event) => {
     if (event.item.url) {
-      setHideBackground(true);
-      setTimeout(() => {
-        navigate(event.item.url);
-        setHideBackground(false);
-      }, 10);
+      navigate(event.item.url); // Directly navigate without background flicker
     }
   };
 
