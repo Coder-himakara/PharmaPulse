@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink ,useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
   FaUser,
@@ -42,8 +42,9 @@ const AdminNavbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [hideBackground] = useState(false);
-
   const navigate = useNavigate();
+
+
 
   const toggleDropdown = () => {
     setIsDropdownVisible((prev) => !prev);
@@ -52,38 +53,66 @@ const AdminNavbar = () => {
   const closeDropdown = () => {
     setIsDropdownVisible(false);
   };
-
+   
   const handleMenuClick = (event) => {
-    if (event.item.url) {
-      navigate(event.item.url); // Directly navigate without background flicker
+    if (event.item.command) {
+      event.item.command();
     }
   };
+  
+  
 
   const AdminNavbarSections = [
+      
     {
       label: "Users",
       icon: "pi pi-users text-white",
-      items: [[{ items: [
-        { label: "Add Users", url: "/admin-dashboard/add-users" },
-        { label: "User Info", url: "/admin-dashboard/users-info" }
-      ] }]]
+      items: [
+        [
+          {
+            label: "User",
+            items: [
+              { label: "Add Users", command: () => navigate("/admin-dashboard/add-users") },
+              { label: "User Info", command: () => navigate("/admin-dashboard/users-info") },
+            ],
+          },
+        ],
+       
+      ],
     },
     {
       label: "Trucks",
-      icon: "pi pi-truck text-white",
-      items: [[{ items: [
-        { label: "Add Truck", url: "/admin-dashboard/add-truck" },
-        { label: "Truck Info", url: "/admin-dashboard/truck-info" }
-      ] }]]
+      icon: "pi pi-truck  text-white",
+      items: [
+        [
+          {
+            label: "Trucks",
+            items: [
+              { label: "Add Trucks", command: () => navigate("/admin-dashboard/add-truck") },
+              { label: "Trucks Info", command: () => navigate("/admin-dashboard/truck-info") },
+            ],
+          },
+        ],
+       
+      ],
     },
     {
       label: "Ware House",
       icon: "pi pi-warehouse text-white",
-      items: [[{ items: [
-        { label: "Add Warehouse", url: "/admin-dashboard/add-warehouse" },
-        { label: "Warehouse Info", url: "/admin-dashboard/warehouse-info" }
-      ] }]]
+      items: [
+        [
+          {
+            label: "Ware House",
+            items: [
+              { label: "Add Warehouse", command: () => navigate("/admin-dashboard/add-warehouse") },
+              { label: "Warehouse Info", command: () => navigate("/admin-dashboard/warehouse-info") },
+            ],
+          },
+        ],
+       
+      ],
     },
+  
     {
       label: "Log Details",
       icon: "pi pi-history text-white",
@@ -105,7 +134,7 @@ const AdminNavbar = () => {
         <div className="justify-center hidden w-full md:flex">
           <MegaMenu
             model={AdminNavbarSections}
-            MenuItemClick={handleMenuClick}
+            onMenuClick={handleMenuClick}
             breakpoint="960px"
             pt={{
               root: {

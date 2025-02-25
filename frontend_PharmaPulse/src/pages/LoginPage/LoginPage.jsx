@@ -21,59 +21,63 @@ function LoginPage() {
   };
 
   return (
-    <div className='flex items-center justify-center w-full h-screen bg-center bg-no-repeat bg-cover'>
-      <div className='flex flex-col items-center w-full max-w-md p-5 text-center bg-white rounded-lg shadow-lg bg-opacity-95'>
-        <h1 className='mb-5 text-2xl font-bold text-teal-900'>
+    <div className="relative flex items-center justify-center w-full h-screen overflow-hidden">
+    
+
+     {/* Login Form Container */}
+     <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+          maxWidth: "400px",
+          padding: "20px",
+          textAlign: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderRadius: "10px",
+          boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h1 className="mb-5 text-2xl font-bold text-teal-900">
           Welcome to PharmaPulse
         </h1>
-        <h2 className='mb-5 text-lg font-medium text-gray-800'>Login</h2>
-        <form onSubmit={handleSubmit} className='space-y-4'>
-          <div className='mb-4 text-left'>
-            <label
-              htmlFor='username'
-              className='block mb-1 font-bold text-gray-600'
-            >
+        <h2 className="mb-5 text-lg font-medium text-gray-800">Login</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="mb-4 text-left">
+            <label htmlFor="username" className="block mb-1 font-bold text-gray-600">
               Username:
             </label>
             <input
-              type='text'
-              id='username'
-              name='username'
-              placeholder='Enter your username'
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter your username"
               required
-              className='w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500'
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
-          <div className='mb-4 text-left'>
-            <label
-              htmlFor='password'
-              className='block mb-1 font-bold text-gray-600'
-            >
+          <div className="mb-4 text-left">
+            <label htmlFor="password" className="block mb-1 font-bold text-gray-600">
               Password:
             </label>
             <input
-              type='password'
-              id='password'
-              name='password'
-              placeholder='Enter your password'
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
               required
-              className='w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500'
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <NavLink
-              to='/forgot-password'
-              className='block mt-1 text-xs text-red-500 hover:underline'
-            >
+            <NavLink to="/forgot-password" className="block mt-1 text-xs text-red-500 hover:underline">
               Forgot Password?
             </NavLink>
           </div>
-          <button
-            type='submit'
-            className='w-full py-2 bg-teal-700 text-white rounded-md hover:bg-[#003d33]'
-          >
+          <button type="submit" className="w-full py-2 bg-teal-700 text-white rounded-md hover:bg-[#003d33]">
             Login
           </button>
         </form>
