@@ -76,7 +76,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
   };
 
   const handleCancel = () => {
-    navigate("/products-info");
+    navigate("/employee-dashboard/products-info");
   };
 
   return (

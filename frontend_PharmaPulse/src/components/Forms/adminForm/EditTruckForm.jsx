@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const EditLorryForm = ({ onUpdateLorry }) => {
+const EditTruckForm = ({ onUpdateTruck }) => {
   const { state } = useLocation();
-  const lorry = state?.lorry;
+  const truck = state?.truck;
 
   const [formData, setFormData] = useState({
-    lorryId: '',
+    truckId: '',
     numberPlate: '',
     representativeId: '',
     capacity: '',
@@ -20,17 +20,17 @@ const EditLorryForm = ({ onUpdateLorry }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    if (lorry) {
+    if (truck) {
       setFormData({
-        lorryId: lorry.lorryId,
-        numberPlate: lorry.numberPlate,
-        representativeId: lorry.representativeId,
-        capacity: lorry.capacity,
-        dateOfAdded: lorry.dateOfAdded,
-        status: lorry.status,
+        truckId: truck.lorryId,
+        numberPlate: truck.numberPlate,
+        representativeId: truck.representativeId,
+        capacity: truck.capacity,
+        dateOfAdded: truck.dateOfAdded,
+        status: truck.status,
       });
     }
-  }, [lorry]);
+  }, [truck]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,7 +44,7 @@ const EditLorryForm = ({ onUpdateLorry }) => {
     e.preventDefault();
 
     if (
-      !formData.lorryId ||
+      !formData.truckId ||
       !formData.numberPlate ||
       !formData.representativeId ||
       !formData.capacity ||
@@ -56,11 +56,11 @@ const EditLorryForm = ({ onUpdateLorry }) => {
     }
 
     setErrorMessage('');
-    if (onUpdateLorry) {
-      onUpdateLorry(formData);
+    if (onUpdateTruck) {
+      onUpdateTruck(formData);
     }
 
-    setSuccessMessage('Lorry updated successfully!');
+    setSuccessMessage('Truck updated successfully!');
 
     setTimeout(() => {
       setSuccessMessage('');
@@ -78,7 +78,7 @@ const EditLorryForm = ({ onUpdateLorry }) => {
       className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'
     >
       <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
-        Edit Lorry
+        Edit Truck
       </h2>
 
       {errorMessage && (
@@ -91,7 +91,7 @@ const EditLorryForm = ({ onUpdateLorry }) => {
       )}
 
       {[
-        ['Lorry ID', 'lorryId', 'text'],
+        ['Truck ID', 'truckId', 'text'],
         ['Number Plate', 'numberPlate', 'text'],
         ['Representative ID', 'representativeId', 'text'],
         ['Capacity(t)', 'capacity', 'number'],
@@ -149,8 +149,8 @@ const EditLorryForm = ({ onUpdateLorry }) => {
   );
 };
 
-EditLorryForm.propTypes = {
-  onUpdateLorry: PropTypes.func.isRequired,
+EditTruckForm.propTypes = {
+  onUpdateTruck: PropTypes.func.isRequired,
 };
 
-export default EditLorryForm;
+export default EditTruckForm;

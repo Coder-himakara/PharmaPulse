@@ -2,9 +2,9 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-const AddLorryForm = ({ onAddLorry }) => {
+const AddTruckForm = ({ onAddTruck }) => {
   const [formData, setFormData] = useState({
-    lorryId: '',
+    truckId: '',
     numberPlate: '',
     representativeId: '',
     capacity: '',
@@ -28,7 +28,7 @@ const AddLorryForm = ({ onAddLorry }) => {
     e.preventDefault();
 
     if (
-      !formData.lorryId ||
+      !formData.truckId ||
       !formData.numberPlate ||
       !formData.representativeId ||
       !formData.capacity ||
@@ -41,13 +41,13 @@ const AddLorryForm = ({ onAddLorry }) => {
 
     setErrorMessage('');
     setSuccessMessage('Lorry added successfully!');
-    if (onAddLorry) {
-      onAddLorry(formData);
+    if (onAddTruck) {
+      onAddTruck(formData);
     }
 
     setTimeout(() => {
       setFormData({
-        lorryId: '',
+        truckId: '',
         numberPlate: '',
         representativeId: '',
         capacity: '',
@@ -68,26 +68,26 @@ const AddLorryForm = ({ onAddLorry }) => {
       className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md'
     >
       <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
-        Add Lorry
+        Add Truck
       </h2>
 
       {errorMessage && (
-        <p className='text-red-600 text-sm font-bold mb-4'>{errorMessage}</p>
+        <p className='mb-4 text-sm font-bold text-red-600'>{errorMessage}</p>
       )}
       {successMessage && (
-        <p className='text-green-600 text-sm font-bold mb-4'>
+        <p className='mb-4 text-sm font-bold text-green-600'>
           {successMessage}
         </p>
       )}
 
       {[
-        ['Lorry ID', 'lorryId', 'text'],
+        ['Truck ID', 'truckId', 'text'],
         ['Number Plate', 'numberPlate', 'text'],
         ['Representative ID', 'representativeId', 'text'],
         ['Capacity(t)', 'capacity', 'number'],
         ['Date of Added', 'dateOfAdded', 'date'],
       ].map(([label, name, type]) => (
-        <div key={name} className='flex justify-between items-center mb-4'>
+        <div key={name} className='flex items-center justify-between mb-4'>
           <label htmlFor={name} className='text-[16px] text-gray-800 w-2/3'>
             {label}:
           </label>
@@ -97,12 +97,12 @@ const AddLorryForm = ({ onAddLorry }) => {
             name={name}
             value={formData[name]}
             onChange={handleChange}
-            className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
           />
         </div>
       ))}
 
-      <div className='flex justify-between items-center mb-4'>
+      <div className='flex items-center justify-between mb-4'>
         <label htmlFor='status' className='text-[16px] text-gray-800 w-2/3'>
           Status:
         </label>
@@ -111,7 +111,7 @@ const AddLorryForm = ({ onAddLorry }) => {
           name='status'
           value={formData.status}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 border border-gray-300 rounded-md text-sm'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         >
           <option value=''>Choose a status</option>
           <option value='Active'>Active</option>
@@ -139,8 +139,8 @@ const AddLorryForm = ({ onAddLorry }) => {
   );
 };
 
-AddLorryForm.propTypes = {
-  onAddLorry: PropTypes.func.isRequired,
+AddTruckForm.propTypes = {
+  onAddTruck: PropTypes.func.isRequired,
 };
 
-export default AddLorryForm;
+export default AddTruckForm;

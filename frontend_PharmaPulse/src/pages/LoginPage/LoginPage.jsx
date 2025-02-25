@@ -21,8 +21,22 @@ function LoginPage() {
   };
 
   return (
-    <div className='flex items-center justify-center w-full h-screen bg-center bg-no-repeat bg-cover'>
-      <div className='flex flex-col items-center w-full max-w-md p-5 text-center bg-white rounded-lg shadow-lg bg-opacity-95'>
+    <div className='relative flex items-center justify-center w-full h-screen overflow-hidden'>
+      {/* Login Form Container */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '400px',
+          padding: '20px',
+          textAlign: 'center',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '10px',
+          boxShadow: '0px 4px 6px rgba(0,0,0,0.1)',
+        }}
+      >
         <h1 className='mb-5 text-2xl font-bold text-teal-900'>
           Welcome to PharmaPulse
         </h1>

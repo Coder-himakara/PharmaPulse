@@ -1,66 +1,93 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import AdminSidebar from '../components/Sidebar/AdminSidebar';
-import AddUsersForm from '../components/Forms/adminForm/AddUsersForm';
-import UsersInfoTable from '../components/Tables/adminTable/UsersInfoTable';
-import EditUsersForm from '../components/Forms/adminForm/EditUsersForm';
-import ViewUserDetails from '../components/Tables/adminTable/ViewUserDetails';
-import AddLorryForm from '../components/Forms/adminForm/AddLorryForm';
-import LorryInfoTable from '../components/Tables/adminTable/LorryInfoTable';
-import EditLorryForm from '../components/Forms/adminForm/EditLorryForm';
-import ViewLorryDetails from '../components/Tables/adminTable/ViewLorryDetails';
+// Lazy load components for better performance
+const AddUsersForm = lazy(
+  () => import('../components/Forms/adminForm/AddUsersForm'),
+);
+const UsersInfoTable = lazy(
+  () => import('../components/Tables/adminTable/UsersInfoTable'),
+);
+const EditUsersForm = lazy(
+  () => import('../components/Forms/adminForm/EditUsersForm'),
+);
+const ViewUserDetails = lazy(
+  () => import('../components/Tables/adminTable/ViewUserDetails'),
+);
+const AddTruckForm = lazy(
+  () => import('../components/Forms/adminForm/AddTruckForm'),
+);
+const TruckInfoTable = lazy(
+  () => import('../components/Tables/adminTable/TruckInfoTable'),
+);
+const EditTruckForm = lazy(
+  () => import('../components/Forms/adminForm/EditTruckForm'),
+);
+const ViewTruckDetails = lazy(
+  () => import('../components/Tables/adminTable/ViewTruckDetails'),
+);
+
+// Loading screen component (for suspense fallback)
+const LoadingScreen = () => (
+  <div className='flex items-center justify-center h-screen bg-gray-100'>
+    <p className='text-lg font-bold text-gray-600'>Loading...</p>
+  </div>
+);
+
 const AdminRoutes = () => {
   const [users, setUsers] = useState([]);
-  const [lorry, setLorry] = useState([]);
+  const [trucks, setTrucks] = useState([]);
 
-  const addUser = (user) => {
-    setUsers((prevUsers) => [...prevUsers, user]);
-  };
-  const addLorry = (lorry) => {
-    setLorry((prevLorry) => [...prevLorry, lorry]);
-  };
+  // Function to add a new user
+  const addUser = (user) => setUsers((prevUsers) => [...prevUsers, user]);
 
-  const updateuser = (updateduser) => {
+  // Function to add a new truck
+  const addTruck = (truck) => setTrucks((prevTrucks) => [...prevTrucks, truck]);
+
+  // Function to update an existing user
+  const updateUser = (updatedUser) => {
     setUsers((prevUsers) =>
       prevUsers.map((user) =>
-        user.userId === updateduser.userId ? updateduser : user,
+        user.userId === updatedUser.userId ? updatedUser : user,
       ),
     );
   };
-  const updatelorry = (updatedlorry) => {
-    setLorry((prevLorry) =>
-      prevLorry.map((lorry) =>
-        lorry.lorryId === updatedlorry.lorryId ? updatedlorry : lorry,
+
+  // Function to update an existing truck
+  const updateTruck = (updatedTruck) => {
+    setTrucks((prevTrucks) =>
+      prevTrucks.map((truck) =>
+        truck.truckId === updatedTruck.truckId ? updatedTruck : truck,
       ),
     );
   };
 
   return (
-    <Routes>
-      <Route path='add-users' element={<AddUsersForm onAddUser={addUser} />} />
-      <Route path='users-info' element={<UsersInfoTable users={users} />} />
+    <Suspense fallback={<LoadingScreen />}>
+      <Routes>
+        <Route
+          path='add-users'
+          element={<AddUsersForm onAddUser={addUser} />}
+        />
+        <Route path='users-info' element={<UsersInfoTable users={users} />} />
+        <Route
+          path='edit-user/:userId'
+          element={<EditUsersForm onUpdateUser={updateUser} />}
+        />
+        <Route path='view-user/:userId' element={<ViewUserDetails />} />
 
-      <Route
-        path='edit-user/:userId'
-        element={<EditUsersForm onUpdateUser={updateuser} />}
-      />
-      <Route path='view-user/:userId' element={<ViewUserDetails />} />
-
-      <Route
-        path='add-truck'
-        element={<AddLorryForm onAddLorry={addLorry} />}
-      />
-      <Route path='truck-info' element={<LorryInfoTable lorries={lorry} />} />
-      <Route
-        path='edit-truck/:lorryId'
-        element={<EditLorryForm onUpdateLorry={updatelorry} />}
-      />
-      <Route path='view-lorry/:lorryId' element={<ViewLorryDetails />} />
-
-      <Route path='/home' element={<AdminSidebar role='admin' />} />
-      <Route path='/dashboard' element={<AdminSidebar role='admin' />} />
-    </Routes>
+        <Route
+          path='add-truck'
+          element={<AddTruckForm onAddTruck={addTruck} />}
+        />
+        <Route path='truck-info' element={<TruckInfoTable trucks={trucks} />} />
+        <Route
+          path='edit-truck/:truckId'
+          element={<EditTruckForm onUpdateTruck={updateTruck} />}
+        />
+        <Route path='view-truck/:truckId' element={<ViewTruckDetails />} />
+      </Routes>
+    </Suspense>
   );
 };
 

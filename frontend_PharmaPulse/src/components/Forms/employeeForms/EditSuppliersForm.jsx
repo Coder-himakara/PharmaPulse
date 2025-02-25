@@ -68,7 +68,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
   };
 
   const handleCancel = () => {
-    navigate('/suppliers-info');
+    navigate('/employee-dashboard/suppliers-info');
   };
 
   return (

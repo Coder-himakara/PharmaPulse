@@ -23,13 +23,13 @@ const PurchaseInvoiceInfoTable = ({ purchaseInvoices }) => {
     const purchaseInvoice = purchaseInvoices.find(
       (pi) => pi.purchaseInvoiceId === purchaseInvoiceId
     );
-    navigate(`/edit-purchase-invoice/${purchaseInvoiceId}`, {
+    navigate(`/employee-dashboard/edit-purchase-invoice/${purchaseInvoiceId}`, {
       state: { purchaseInvoice },
     });
   };
 
   const handleViewPurchaseInvoice = (purchaseInvoice) => {
-    navigate(`/view-purchase-invoice/${purchaseInvoice.purchaseInvoiceId}`, {
+    navigate(`/employee-dashboard/view-purchase-invoice/${purchaseInvoice.purchaseInvoiceId}`, {
       state: { purchaseInvoice },
     });
   };

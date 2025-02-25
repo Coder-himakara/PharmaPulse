@@ -71,7 +71,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   };
 
   const handleCancel = () => {
-    navigate("/purchase-group-info");
+    navigate("/employee-dashboard/purchase-group-info");
   };
 
   return (

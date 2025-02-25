@@ -2,38 +2,119 @@
 @tailwind components;
 @tailwind utilities;
 
-/*  App.css */
-html,
-body {
+/* General Reset */
+html, body {
   margin: 0;
+  padding: 0;
   font-family: "Arial", sans-serif;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  background-image: url("./loginbg.webp"); /* Path to the image */
+  background-image: url('/loginbg.webp'); /* Path to the image */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed; /* Fix the background */
-  background-color: black; /* Fallback color */
-  overflow: hidden;
+  background-attachment: fixed;
+  background-color: black;
+  will-change: background-image;
   color: var(--text-color);
   background-color: var(--bg-color);
+  overflow-x: hidden;
 }
 
+/* Root Container */
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  flex-grow: 1;
 }
 
+/* Responsive Logo */
 .logo {
-  height: 6em;
+  height: clamp(4em, 10vw, 6em);
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+/* Responsive Typography */
+h1 {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+/* Small Screens (Phones) */
+@media (max-width: 480px) {
+  body {
+    background-position: top center;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+  }
+  
+  #root {
+    padding: 0.8rem;
+  }
+}
+
+/* Tablets (Portrait & Landscape) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  body {
+    background-size: cover;
+  }
+  
+  #root {
+    padding: 1.5rem;
+  }
+  
+  .logo {
+    height: 5em;
+  }
+  
+  h1 {
+    font-size: 2.2rem;
+  }
+}
+
+/* Laptops & Desktops */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  body {
+    background-size: cover;
+  }
+  
+  #root {
+    max-width: 1400px;
+    padding: 2.5rem;
+  }
+  
+  h1 {
+    font-size: 2.8rem;
+  }
+}
+
+/* Large Screens & Smart Displays */
+@media (min-width: 1441px) {
+  body {
+    background-size: cover;
+    background-position: center;
+  }
+  
+  #root {
+    max-width: 1600px;
+    padding: 3rem;
+  }
+  
+  h1 {
+    font-size: 3.2rem;
+  }
 }

@@ -23,13 +23,13 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
     const purchaseGroup = purchaseGroups.find(
       (pg) => pg.purchaseGroupId === purchaseGroupId
     );
-    navigate(`/edit-purchase-group/${purchaseGroupId}`, {
+    navigate(`/employee-dashboard/edit-purchase-group/${purchaseGroupId}`, {
       state: { purchaseGroup },
     });
   };
 
   const handleViewPurchaseGroup = (purchaseGroup) => {
-    navigate(`/view-purchase-group/${purchaseGroup.purchaseGroupId}`, {
+    navigate(`/employee-dashboard/view-purchase-group/${purchaseGroup.purchaseGroupId}`, {
       state: { purchaseGroup },
     });
   };
@@ -147,81 +147,6 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
               </td>
               <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                 (123)-456-7890
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleEdit("dummy")}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() =>
-                    handleViewPurchaseGroup({ productId: "dummy" })
-                  }
-                >
-                  View
-                </button>
-              </td>
-            </tr>
-
-            {/* Dummy Row */}
-            <tr className="bg-[#f9f9f9] text-black italic">
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PG-002
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Silver Street, Dehiwala
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                John
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                0342234567
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                johmsmith@gmail.com
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                (238)-134-2390
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleEdit("dummy")}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() =>
-                    handleViewPurchaseGroup({ productId: "dummy" })
-                  }
-                >
-                  View
-                </button>
-              </td>
-            </tr>
-            {/* Dummy Row */}
-            <tr className="bg-[#f9f9f9] text-black italic">
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PG-003
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Galle Road, Colombo 7
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Viraj
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                0777778954
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                virajperera56@gamil.com
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                (101)-234-1278
               </td>
               <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                 <button

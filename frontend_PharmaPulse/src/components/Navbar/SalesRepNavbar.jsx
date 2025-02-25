@@ -39,7 +39,7 @@ DropdownLink.propTypes = {
   onClick: PropTypes.func,
 };
 
-const Navbar = () => {
+const SalesRepNavbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -54,29 +54,28 @@ const Navbar = () => {
   };
 
   const handleMenuClick = (event) => {
-    if (event.item.url) {
-      navigate(event.item.url);
+    if (event.item.command) {
+      event.item.command();
     }
   };
+  
   const SalesRepNavbarSections=
   [
-    
     {
-      "label": "Price List",
-      "icon": "pi pi-dollar text-white",
-       "url": "sales-dashboard/price-list-view" 
+      label: "Price List",
+      icon: "pi pi-dollar text-white",
+      command: () => navigate("/sales-dashboard/price-list-view"),
+    },
        
-    },
     {
-      "label": "Create Order",
-      "icon": "pi pi-shopping-cart  text-white",
-      "url": "order-creation" 
-    
-    },
+      label: "Create Order",
+      icon: "pi-shopping-cart text-white",
+      command: () => navigate("/sales-dashboard/order-creation"),
+    }, 
     {
-      "label": "Order History",
-      "icon": "pi pi-history  text-white",
-      
+      label: "Order History",
+      icon: "pi pi-history text-white",
+  
     },
     {
       "label": "Create Sale Invoice",
@@ -197,4 +196,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default SalesRepNavbar;

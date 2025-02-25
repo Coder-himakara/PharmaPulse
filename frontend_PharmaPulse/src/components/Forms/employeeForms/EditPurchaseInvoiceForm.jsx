@@ -132,7 +132,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
   };
 
   const handleCancel = () => {
-    navigate("/purchase-invoice-info");
+    navigate("/employee-dashboard/purchase-invoice-info");
   };
 
   return (

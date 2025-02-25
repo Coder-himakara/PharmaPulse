@@ -23,13 +23,13 @@ const SuppliersInfoTable = ({ suppliers }) => {
 
   const handleEdit = (supplierId) => {
     const supplier = suppliers.find((s) => s.supplierId === supplierId); // Find the specific supplier
-    navigate(`/edit-supplier/${supplierId}`, {
+    navigate(`/employee-dashboard/edit-supplier/${supplierId}`, {
       state: { supplier },
     }); // Pass the supplier data to the Edit form
   };
 
   const handleViewSupplier = (supplier) => {
-    navigate(`/view-supplier/${supplier.supplierId}`, {
+    navigate(`/employee-dashboard/view-supplier/${supplier.supplierId}`, {
       state: { supplier },
     });
   };
