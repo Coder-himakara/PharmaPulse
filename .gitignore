@@ -43,6 +43,7 @@ desktop.ini                   # Windows desktop metadata
 # IDE-specific files
 .vscode/                      # Visual Studio Code settings
 .idea/                        # IntelliJ IDEA settings
+.idea
 *.iml                         # IntelliJ IDEA module files
 *.suo                         # Visual Studio solution user options
 *.user                        # Visual Studio user settings
