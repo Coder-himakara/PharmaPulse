@@ -7,9 +7,10 @@ const ViewTruckDetails = () => {
 
   return (
     <div className='max-w-md p-6 mx-auto mt-10 bg-[#e6eef3] rounded-lg shadow-md'>
-      <h2 className='mb-4 text-xl font-bold text-center text-[var(--card-text-color)]'>
-        Truck Details
+      <h2 className='mb-4 text-xl font-bold text-center text-[var(--card-text-color)] dark:text-black'>
+          Truck Details
       </h2>
+
 
       <ul className='text-left '>
         <li>
