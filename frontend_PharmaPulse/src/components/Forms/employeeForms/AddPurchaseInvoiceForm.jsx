@@ -16,7 +16,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
     totalAmount: 0,
     discountAmount: 0,
     netAmount: 0,
-    lineItems: [{ product: "", quantity: "", price: "" }],
+    lineItems: [{ product: "", quantity: "", price: "", focQty: 0 }],
   });
 
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
       ...invoiceData,
       lineItems: [
         ...invoiceData.lineItems,
-        { product: "", quantity: "", price: "" },
+        { product: "", quantity: "", price: "", focQty: 0 },
       ],
     });
   };
@@ -109,7 +109,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         totalAmount: 0,
         discountAmount: 0,
         netAmount: 0,
-        lineItems: [{ product: "", quantity: "", price: "" }],
+        lineItems: [{ product: "", quantity: "", price: "", focQty: 0 }],
       });
       setSuccessMessage("");
     }, 2000);
@@ -122,32 +122,28 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-4xl mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md border border-gray-300"
+      className="max-w-4xl mx-auto p-5 bg-[#e6eef3] border border-gray-300 rounded-lg shadow-md"
     >
-      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
+      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md mb-5 text-lg">
         Add Purchase Invoice
       </h2>
 
       {errorMessage && (
-        <p className="text-[#991919] text-sm font-bold mb-4 text-center">
+        <p className="mb-4 text-sm font-bold text-center text-[#991919]">
           {errorMessage}
         </p>
       )}
       {successMessage && (
-        <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">
+        <p className="mb-4 text-sm font-bold text-center text-[#3c5f3c]">
           {successMessage}
         </p>
       )}
 
-      {/* Form Grid Layout */}
-      <div className="grid grid-cols-2 gap-10">
-        {/* Left Column */}
-        <div className="space-y-4">
-          <div className="flex items-center">
-            <label
-              htmlFor="purchaseNo"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+      {/* Header Section (Top Fields in a Single Line) */}
+      <div className="p-4 mb-4 bg-white border border-gray-300 rounded-md">
+        <div className="flex items-center justify-between gap-4">
+          <div className="w-1/3">
+            <label className="w-full text-sm text-gray-800">
               Purchase Number:
             </label>
             <input
@@ -155,35 +151,26 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               name="purchaseNo"
               value={invoiceData.purchaseNo}
               onChange={handleInputChange}
-              className="w-1/2 px-2 py-2 text-sm border border-red-500 rounded-md"
+              className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             />
           </div>
-
-          <div className="flex items-center">
-            <label
-              htmlFor="supplierId"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+          <div className="w-1/3">
+            <label className="w-full text-sm text-gray-800">
               Supplier ID:
             </label>
             <select
-              id="supplierId"
               name="supplierId"
               value={invoiceData.supplierId}
               onChange={handleInputChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             >
               <option value="">Choose a supplier</option>
               <option value="S001">S001</option>
               <option value="S002">S002</option>
             </select>
           </div>
-
-          <div className="flex items-center">
-            <label
-              htmlFor="purchaseOrderRef"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+          <div className="w-1/3">
+            <label className="w-full text-sm text-gray-800">
               Purchase Order Reference:
             </label>
             <input
@@ -191,15 +178,25 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               name="purchaseOrderRef"
               value={invoiceData.purchaseOrderRef}
               onChange={handleInputChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             />
           </div>
-
-          <div className="flex items-center">
-            <label
-              htmlFor="purchaseInvoiceId"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+          <div className="w-1/3">
+            <label className="w-full text-sm text-gray-800">
+              Invoice Number:
+            </label>
+            <input
+              type="number"
+              name="invoiceNo"
+              value={invoiceData.invoiceNo}
+              onChange={handleInputChange}
+              className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-4">
+          <div className="w-1/3">
+            <label className="w-full text-sm text-gray-800">
               Purchase Invoice ID:
             </label>
             <input
@@ -207,15 +204,12 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               name="purchaseInvoiceId"
               value={invoiceData.purchaseInvoiceId}
               onChange={handleInputChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             />
           </div>
 
-          <div className="flex items-center">
-            <label
-              htmlFor="invoiceStatus"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+          <div className="w-1/3">
+            <label className="w-full text-sm text-gray-800">
               Invoice Status:
             </label>
             <select
@@ -223,7 +217,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               name="invoiceStatus"
               value={invoiceData.invoiceStatus}
               onChange={handleInputChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             >
               <option value="">Choose a status</option>
               <option value="PAID">Paid</option>
@@ -233,11 +227,8 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             </select>
           </div>
 
-          <div className="flex items-center">
-            <label
-              htmlFor="invoiceDate"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+          <div className="w-1/3">
+            <label className="w-full text-sm text-gray-800">
               Invoice Date:
             </label>
             <input
@@ -245,34 +236,11 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               name="invoiceDate"
               value={invoiceData.invoiceDate}
               onChange={handleInputChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             />
           </div>
-        </div>
-
-        {/* Right Column */}
-        <div className="space-y-4">
-          <div className="flex items-center">
-            <label
-              htmlFor="invoiceNo"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
-              Invoice Number:
-            </label>
-            <input
-              type="number"
-              name="invoiceNo"
-              value={invoiceData.invoiceNo}
-              onChange={handleInputChange}
-              className="w-1/2 px-2 py-2 text-sm border border-red-500 rounded-md"
-            />
-          </div>
-
-          <div className="flex items-center">
-            <label
-              htmlFor="paymentType"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+          <div className="w-1/3">
+            <label className="w-full text-sm text-gray-800">
               Payment Type:
             </label>
             <select
@@ -280,129 +248,197 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               name="paymentType"
               value={invoiceData.paymentType}
               onChange={handleInputChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             >
               <option value="">Choose a payment type</option>
               <option value="CASH">Cash</option>
               <option value="CHEQUE">Cheque</option>
-              <option value="CONLINE TRANSACTION">Online Transaction</option>
+              <option value="ONLINE TRANSACTION">Online Transaction</option>
             </select>
           </div>
+        </div>
+        <div className="mt-4">
+          <label className="text-sm text-gray-800">
+            Notes:
+          </label>
+          <input
+            type="text"
+            name="notes"
+            value=""
+            readOnly
+            className="w-full px-2 py-1 mt-1 text-sm bg-white border border-gray-300 rounded-md"
+          />
+        </div>
+      </div>
 
-          <div className="flex items-center">
-            <label
-              htmlFor="discountAmount"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
-              Discount Amount:
-            </label>
+      {/* Line Items Table */}
+      <div className="mb-4">
+        <table className="w-full border border-collapse border-gray-300">
+          <thead className="bg-[#1a5353] text-white">
+            <tr>
+              <th className="p-2 text-left border border-gray-300">Product ID</th>
+              <th className="p-2 text-left border border-gray-300">Name</th>
+              <th className="p-2 text-left border border-gray-300">Quantity</th>
+              <th className="p-2 text-left border border-gray-300">FOC Qty</th>
+              <th className="p-2 text-left border border-gray-300">Cost Price</th>
+              <th className="p-2 text-left border border-gray-300">Disc %</th>
+              <th className="p-2 text-left border border-gray-300">Value</th>
+              <th className="p-2 text-left border border-gray-300">Unit</th>
+              <th className="p-2 text-left border border-gray-300">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {invoiceData.lineItems.map((item, index) => (
+              <tr key={index} className="border border-gray-300">
+                <td className="p-2 border border-gray-300">
+                  <input
+                    type="text"
+                    placeholder="Product ID"
+                    value={item.product}
+                    onChange={(e) => handleLineItemChange(index, "product", e.target.value)}
+                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md"
+                  />
+                </td>
+                <td className="p-2 border border-gray-300">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={item.name || ""}
+                    onChange={(e) => handleLineItemChange(index, "name", e.target.value)}
+                    className="w-full px-2 py-1 text-sm bg-white border border-gray-300 rounded-md"
+                  />
+                </td>
+                <td className="p-2 border border-gray-300">
+                  <input
+                    type="number"
+                    placeholder="Quantity"
+                    value={item.quantity}
+                    onChange={(e) => handleLineItemChange(index, "quantity", parseInt(e.target.value) || 0)}
+                    className="w-full px-2 py-1 text-sm border border-red-500 rounded-md"
+                    min="1"
+                  />
+                </td>
+                <td className="p-2 border border-gray-300">
+                  <input
+                    type="number"
+                    placeholder="FOC Qty"
+                    value={item.focQty}
+                    onChange={(e) => handleLineItemChange(index, "focQty", parseInt(e.target.value) || 0)}
+                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md"
+                    min="0"
+                  />
+                </td>
+                <td className="p-2 border border-gray-300">
+                  <input
+                    type="number"
+                    placeholder="Cost Price"
+                    value={item.price}
+                    onChange={(e) => handleLineItemChange(index, "price", parseFloat(e.target.value) || 0)}
+                    className="w-full px-2 py-1 text-sm border border-red-500 rounded-md"
+                    min="0"
+                  />
+                </td>
+                <td className="p-2 border border-gray-300">
+                  <input
+                    type="number"
+                    placeholder="Disc %"
+                    value={item.discount || 0}
+                    onChange={(e) => handleLineItemChange(index, "discount", parseFloat(e.target.value) || 0)}
+                    className="w-full px-2 py-1 text-sm bg-white border border-gray-300 rounded-md"
+                    min="0"
+                  />
+                </td>
+                <td className="p-2 border border-gray-300">
+                  <span>{((item.quantity * item.price) * (1 - (item.discount || 0) / 100)).toFixed(2)}</span>
+                </td>
+                <td className="p-2 border border-gray-300">
+                  <input
+                    type="text"
+                    placeholder="Unit"
+                    value={item.unit || ""}
+                    onChange={(e) => handleLineItemChange(index, "unit", e.target.value)}
+                    className="w-full px-2 py-1 text-sm bg-white border border-gray-300 rounded-md"
+                  />
+                </td>
+                <td className="p-2 border border-gray-300">
+                  <button
+                    type="button"
+                    onClick={() => removeLineItem(index)}
+                    className="bg-[#4c85a6] text-white py-1 px-2 rounded-md text-sm hover:bg-[#15375c]"
+                  >
+                    X
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="flex justify-end mt-2">
+          <button
+            type="button"
+            onClick={addLineItem}
+            className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]"
+          >
+            + Add Line Item
+          </button>
+        </div>
+      </div>
+
+      {/* Footer Section (Totals, Discount, Adjustment, Net Total) */}
+      <div className="p-4 mb-4 bg-white border border-gray-300 rounded-md">
+        <div className="grid grid-cols-4 gap-4">
+          <div>
+            <label className="text-sm text-gray-800">Total:</label>
+            <span className="w-full px-2 py-1 mt-1 text-sm bg-white border border-gray-300 rounded-md">
+              {invoiceData.totalAmount.toFixed(2)}
+            </span>
+          </div>
+          <div>
+            <label className="text-sm text-gray-800">Discount %:</label>
             <input
               type="number"
               name="discountAmount"
               value={invoiceData.discountAmount}
               onChange={(e) => handleInputChange(e)}
               onBlur={calculateTotals}
-              className="w-1/2 px-2 py-2 text-sm border border-red-500 rounded-md"
+              className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
               min="0"
             />
           </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="lineItems"
-              className="text-[16px] text-gray-800 block mb-2 text-left"
-            >
-              Line Items:
-            </label>
-            {invoiceData.lineItems.map((item, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 mb-2"
-              >
-                <input
-                  type="text"
-                  placeholder="Product"
-                  value={item.product}
-                  onChange={(e) =>
-                    handleLineItemChange(index, "product", e.target.value)
-                  }
-                  className="w-1/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-                />
-                <input
-                  type="number"
-                  placeholder="Quantity"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    handleLineItemChange(
-                      index,
-                      "quantity",
-                      parseInt(e.target.value) || 0
-                    )
-                  }
-                  className="w-1/3 px-2 py-2 text-sm border border-red-500 rounded-md"
-                  min="1"
-                />
-                <input
-                  type="number"
-                  placeholder="Price"
-                  value={item.price}
-                  onChange={(e) =>
-                    handleLineItemChange(
-                      index,
-                      "price",
-                      parseFloat(e.target.value) || 0
-                    )
-                  }
-                  className="w-1/3 px-2 py-2 text-sm border border-red-500 rounded-md"
-                  min="0"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeLineItem(index)}
-                  className="bg-[#4c85a6] text-white py-1 px-2 rounded-md text-sm hover:bg-[#15375c]"
-                >
-                  X
-                </button>
-              </div>
-            ))}
-            <div className="mt-2">
-              <button
-                type="button"
-                onClick={addLineItem}
-                className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]"
-              >
-                Add Line Item
-              </button>
-            </div>
+          <div>
+            <label className="text-sm text-gray-800">Adjustment:</label>
+            <input
+              type="number"
+              name="adjustment"
+              value="0"
+              readOnly
+              className="w-full px-2 py-1 mt-1 text-sm bg-white border border-gray-300 rounded-md"
+            />
           </div>
-
-          <div className="flex items-center justify-between mb-2">
-            <strong className="text-[16px] text-gray-800">Total Amount:</strong>
-            <span>{invoiceData.totalAmount.toFixed(2)}</span>
-          </div>
-
-          <div className="flex items-center justify-between mb-4">
-            <strong className="text-[16px] text-gray-800">Net Amount:</strong>
-            <span>{invoiceData.netAmount.toFixed(2)}</span>
-          </div>
-
-          {/* Buttons at Bottom-Right */}
-          <div className="flex justify-end gap-2 mt-4">
-            <button
-              type="submit"
-              className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
-            >
-              Add
-            </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
-            >
-              Cancel
-            </button>
+          <div>
+            <label className="text-sm text-gray-800">Net Total:</label>
+            <span className="w-full px-2 py-1 mt-1 text-sm bg-white border border-gray-300 rounded-md">
+              {invoiceData.netAmount.toFixed(2)}
+            </span>
           </div>
         </div>
+      </div>
+
+      {/* Buttons at Bottom */}
+      <div className="flex justify-end gap-2 mt-4">
+        <button
+          type="submit"
+          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+        >
+          Add
+        </button>
+        <button
+          type="button"
+          onClick={handleCancel}
+          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+        >
+          Cancel
+        </button>
       </div>
     </form>
   );
