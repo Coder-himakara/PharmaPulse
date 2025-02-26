@@ -82,4 +82,11 @@ public class AppWideExceptionHandler{
                 HttpStatus.UNAUTHORIZED
         );
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(400, "Bad Request", e.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
 }

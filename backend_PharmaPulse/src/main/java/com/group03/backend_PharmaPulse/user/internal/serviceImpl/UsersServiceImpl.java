@@ -35,9 +35,13 @@ public class UsersServiceImpl implements UsersService {
     }
 
     public UsersDTO registerUser(UsersDTO usersDTO) {
-        usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
-        Users registeredUser = usersRepo.save(usersMapper.toEntity(usersDTO));
-        return usersMapper.toDTO(registeredUser);
+        if (usersRepo.existsByUsername(usersDTO.getUsername())) {
+            throw new IllegalArgumentException("User already exists");
+        } else {
+            usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
+            Users registeredUser = usersRepo.save(usersMapper.toEntity(usersDTO));
+            return usersMapper.toDTO(registeredUser);
+        }
     }
 
     @Override
@@ -48,7 +52,7 @@ public class UsersServiceImpl implements UsersService {
         if (authentication.isAuthenticated()) {
             //Create user info
             LoginSuccessResponse loginSuccess = usersMapper.
-                    toLoginSucessResponse(usersRepo.findByUsername(userLoginDTO.getUsername()));
+                    toLoginSuccessResponse(usersRepo.findByUsername(userLoginDTO.getUsername()));
             //Create a JWT
             String token =jwtService.generateToken(userLoginDTO.getUsername());
             Map<String, Object> loginResultMap = new HashMap<>();
