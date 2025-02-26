@@ -12,7 +12,7 @@ const AdminDashboard = () => {
         content={<AdminRoutes />}
         className='p-4 bg-white rounded-lg '
       />
-      <Footer className='py-4 text-center bg-gray-200' />
+      <Footer/>
     </div>
   );
 };

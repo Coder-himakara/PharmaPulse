@@ -41,7 +41,7 @@ const SalesRepDashboard = () => {
             content={<RepRoutes />}
             className='bg-white rounded-lg '
           />
-      <Footer className='py-4 text-center bg-gray-200' />
+      <Footer  />
     </div>
   );
 };
