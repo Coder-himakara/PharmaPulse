@@ -27,6 +27,14 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
     }));
   };
 
+  const handleSearch = () => {
+    // Mock search action: You can implement navigation to a search page, filter results, or show a dialog
+    console.log("Searching for purchase group:", formData.purchaseGroup);
+    // Example: Navigate to a search page or filter results
+    // navigate(`/search-purchase-group?query=${formData.purchaseGroup}`);
+    alert(`Searching for purchase group: ${formData.purchaseGroup}`);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -145,7 +153,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
         >
           Purchase Group:
         </label>
-        <div className="relative w-2/3">
+        <div className="relative flex items-center w-2/3">
           <input
             type="text"
             id="purchaseGroup"
@@ -154,7 +162,13 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
             onChange={handleChange}
             className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
           />
-          <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
+          <button
+            onClick={handleSearch}
+            className="absolute text-green-500 cursor-pointer right-2"
+            aria-label="Search purchase group"
+          >
+            <FaSearch />
+          </button>
         </div>
       </div>
 
@@ -174,6 +188,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="creditLimit"

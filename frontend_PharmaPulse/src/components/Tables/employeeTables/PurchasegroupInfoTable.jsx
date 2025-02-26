@@ -8,8 +8,58 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
 
   const navigate = useNavigate();
 
+  // Combine the existing purchase groups with the dummy data
+  const allPurchaseGroups = [
+    ...purchaseGroups, // Existing purchase groups from props
+    {
+      purchaseGroupId: "PG-001",
+      purchaseGroupName: "PG-001",
+      address: "Main Road, Matara",
+      contactName: "Arun",
+      phoneNo: "0783456781",
+      email: "arunde11@gmail.com",
+      fax: "(123)-456-7890",
+    },
+    {
+      purchaseGroupId: "PG-002",
+      purchaseGroupName: "PG-002",
+      address: "High Street, Colombo",
+      contactName: "Lila",
+      phoneNo: "0771234567",
+      email: "lila@example.com",
+      fax: "(234)-567-8901",
+    },
+    {
+      purchaseGroupId: "PG-003",
+      purchaseGroupName: "PG-003",
+      address: "Park Lane, Kandy",
+      contactName: "Ravi",
+      phoneNo: "0769876543",
+      email: "ravi@example.com",
+      fax: "(345)-678-9012",
+    },
+    {
+      purchaseGroupId: "PG-004",
+      purchaseGroupName: "PG-004",
+      address: "Beach Road, Galle",
+      contactName: "Nisha",
+      phoneNo: "0714567890",
+      email: "nisha@example.com",
+      fax: "(456)-789-0123",
+    },
+    {
+      purchaseGroupId: "PG-005",
+      purchaseGroupName: "PG-005",
+      address: "Market Street, Jaffna",
+      contactName: "Suren",
+      phoneNo: "0702345678",
+      email: "suren@example.com",
+      fax: "(567)-890-1234",
+    },
+  ];
+
   // Filter the purchase groups based on the search term
-  const filteredPurchaseGroups = purchaseGroups.filter((purchaseGroup) =>
+  const filteredPurchaseGroups = allPurchaseGroups.filter((purchaseGroup) =>
     purchaseGroup.purchaseGroupName.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -20,7 +70,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
 
   // Edit button action
   const handleEdit = (purchaseGroupId) => {
-    const purchaseGroup = purchaseGroups.find(
+    const purchaseGroup = allPurchaseGroups.find(
       (pg) => pg.purchaseGroupId === purchaseGroupId
     );
     navigate(`/employee-dashboard/edit-purchase-group/${purchaseGroupId}`, {
@@ -29,9 +79,12 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
   };
 
   const handleViewPurchaseGroup = (purchaseGroup) => {
-    navigate(`/employee-dashboard/view-purchase-group/${purchaseGroup.purchaseGroupId}`, {
-      state: { purchaseGroup },
-    });
+    navigate(
+      `/employee-dashboard/view-purchase-group/${purchaseGroup.purchaseGroupId}`,
+      {
+        state: { purchaseGroup },
+      }
+    );
   };
 
   return (
@@ -53,7 +106,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
             type="text"
             placeholder="Search Purchase Group..."
             value={search}
-            onChange={(pg) => setSearch(pg.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"
           />
         </div>
@@ -109,7 +162,7 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
                   {purchaseGroup.email}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
-                  {purchaseGroup.fax}
+                  {purchaseGroup.fax || "N/A"} {/* Handle fax if not provided */}
                 </td>
                 <td className="p-2 text-center border border-gray-400">
                   <button
@@ -127,44 +180,6 @@ const PurchaseGroupInfoTable = ({ purchaseGroups }) => {
                 </td>
               </tr>
             ))}
-
-            {/* Dummy Row */}
-            <tr className="bg-[#f9f9f9] text-black italic">
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                PG-001
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Main Road, Matara
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                Arun
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                0783456781
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                arunde11@gmal.com
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                (123)-456-7890
-              </td>
-              <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() => handleEdit("dummy")}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  onClick={() =>
-                    handleViewPurchaseGroup({ productId: "dummy" })
-                  }
-                >
-                  View
-                </button>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -179,9 +194,9 @@ PurchaseGroupInfoTable.propTypes = {
       purchaseGroupName: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
       contactName: PropTypes.string.isRequired,
-      telePhoneNo: PropTypes.string.isRequired,
+      phoneNo: PropTypes.string.isRequired,
       email: PropTypes.string.isRequired,
-      supplierId: PropTypes.string.isRequired,
+      fax: PropTypes.string, // Optional, as it’s not always provided
     })
   ).isRequired,
 };

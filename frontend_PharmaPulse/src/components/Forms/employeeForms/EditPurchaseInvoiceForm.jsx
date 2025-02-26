@@ -156,7 +156,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
       )}
 
       {/* Form Grid Layout mimicking the invoice structure */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-10">
         {/* Left Column */}
         <div className="space-y-4">
           <div className="flex items-center">
