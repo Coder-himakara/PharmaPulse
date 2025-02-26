@@ -164,7 +164,6 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
 };
 
 EditCustomerGroupForm.propTypes = {
-  customerGroup: PropTypes.object.isRequired,
   onUpdateCustomerGroup: PropTypes.func.isRequired,
 };
 

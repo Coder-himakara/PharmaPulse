@@ -202,7 +202,6 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
 };
 
 EditPurchaseGroupForm.propTypes = {
-  purchaseGroups: PropTypes.object.isRequired,
   onUpdatePurchaseGroup: PropTypes.func.isRequired,
 };
 

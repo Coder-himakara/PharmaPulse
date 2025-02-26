@@ -209,7 +209,6 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
 };
 
 EditSuppliersForm.propTypes = {
-  supplier: PropTypes.object.isRequired,
   onUpdateSupplier: PropTypes.func.isRequired,
 };
 

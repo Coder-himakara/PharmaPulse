@@ -297,7 +297,6 @@ const EditProductsForm = ({ onUpdateProduct }) => {
 };
 
 EditProductsForm.propTypes = {
-  product: PropTypes.object.isRequired,
   onUpdateProduct: PropTypes.func.isRequired,
 };
 

@@ -21,6 +21,17 @@ const AddProductsForm = ({ onAddProduct }) => {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isRefIdGenerated, setIsRefIdGenerated] = useState(false); // Track if Ref ID is generated
+
+  // Simulate backend data for the last product reference ID (e.g., "RepId003" for this example)
+  const lastRefId = "RepId003"; // This would typically come from a backend API
+  const getNextRefId = () => {
+    // Extract the numeric part from the last Ref ID (e.g., "003" from "RepId003")
+    const numericPart = parseInt(lastRefId.replace("RefId", ""), 10) || 0;
+    // Generate the next ID (e.g., "004" after "003")
+    const nextNumber = (numericPart + 1).toString().padStart(3, "0");
+    return `RefId${nextNumber}`; // e.g., "RefId004"
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +39,17 @@ const AddProductsForm = ({ onAddProduct }) => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleGenerateRefId = () => {
+    if (!formData.purchaseGroup || isRefIdGenerated) return; // Prevent generating if no purchase group or already generated
+
+    const newRefId = getNextRefId(); // Generate the next sequential ID
+    setFormData((prevData) => ({
+      ...prevData,
+      productRefId: newRefId,
+    }));
+    setIsRefIdGenerated(true); // Mark as generated
   };
 
   const handleSubmit = (e) => {
@@ -51,6 +73,11 @@ const AddProductsForm = ({ onAddProduct }) => {
       return;
     }
 
+    if (!isRefIdGenerated) {
+      setErrorMessage("Please generate a Product Ref Id before submitting.");
+      return;
+    }
+
     setErrorMessage(""); // Clear errors
     setSuccessMessage("Product added successfully!");
 
@@ -59,7 +86,7 @@ const AddProductsForm = ({ onAddProduct }) => {
       onAddProduct(formData);
     }
 
-    // Clear the form after a delay
+    // Clear the form and reset generation state after a delay
     setTimeout(() => {
       setFormData({
         purchaseGroup: "",
@@ -74,6 +101,7 @@ const AddProductsForm = ({ onAddProduct }) => {
         reorderLimitByPackage: "",
       });
       setSuccessMessage("");
+      setIsRefIdGenerated(false); // Reset for a new product
     }, 2000); // Wait for success message display before navigating
   };
 
@@ -104,18 +132,23 @@ const AddProductsForm = ({ onAddProduct }) => {
           htmlFor="purchaseGroup"
           className="text-[16px] text-gray-800 w-2/3"
         >
-
-          Purchase Group :
+          Purchase Group:
         </label>
-        <input
-          type="text"
+        <select
           id="purchaseGroup"
           name="purchaseGroup"
           value={formData.purchaseGroup}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
+        >
+          <option value="">Select a Purchase Group</option>
+          <option value="PG001">PG001</option>
+          <option value="PG002">PG002</option>
+          <option value="PG003">PG003</option>
+          {/* Add more options as needed */}
+        </select>
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="productRefId"
@@ -123,15 +156,31 @@ const AddProductsForm = ({ onAddProduct }) => {
         >
           Product Ref Id:
         </label>
-        <input
-          type="text"
-          id="productRefId"
-          name="productRefId"
-          value={formData.productRefId}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
+        <div className="relative w-2/3">
+          <input
+            type="text"
+            id="productRefId"
+            name="productRefId"
+            value={formData.productRefId}
+            onChange={handleChange} // Disabled, but kept for form consistency
+            disabled // Prevent editing of Product Ref Id
+            className="w-full px-2 py-2 pr-20 text-sm border border-gray-300 rounded-md" // Increased padding-right for button overlap
+          />
+          <button
+            type="button"
+            onClick={handleGenerateRefId}
+            disabled={!formData.purchaseGroup || isRefIdGenerated} // Disable if no purchase group or already generated
+            className={`absolute right-0 top-0 px-3 py-2 text-white rounded-r-md text-[14px] cursor-pointer h-full ${
+              !formData.purchaseGroup || isRefIdGenerated
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#2a4d69] hover:bg-[#00796b]"
+            }`}
+          >
+            Generate
+          </button>
+        </div>
       </div>
+
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="productName"

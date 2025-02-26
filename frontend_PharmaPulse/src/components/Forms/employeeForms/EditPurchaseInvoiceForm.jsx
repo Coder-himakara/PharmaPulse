@@ -393,7 +393,6 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
 };
 
 EditPurchaseInvoiceForm.propTypes = {
-  purchaseInvoices: PropTypes.object.isRequired,
   onUpdatePurchaseInvoice: PropTypes.func.isRequired,
 };
 
