@@ -1,4 +1,4 @@
-package com.group03.backend_PharmaPulse.user.api.dto;
+package com.group03.backend_PharmaPulse.user.api.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UsersDTO {
-    //private Long id;
+public class LoginSuccessResponse {
     private String username;
-    private String password;
     private String role;
 }

@@ -2,6 +2,7 @@ package com.group03.backend_PharmaPulse.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,10 +31,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request ->request
-                        .requestMatchers("register").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/users/register").hasAuthority("ROLE_admin")
+                        .requestMatchers(HttpMethod.POST,"/api/users/login").permitAll()
                         .anyRequest().authenticated())
+                .csrf(customizer -> customizer.disable())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -41,7 +43,7 @@ public class SecurityConfig {
     }
     /**
      * This method is used to create an instance of DaoAuthenticationProvider.
-     * Use Database to authenticate the user
+     * Configure default authentication and Use Database to authenticate the user
      * @return DaoAuthenticationProvider
      */
     @Bean
