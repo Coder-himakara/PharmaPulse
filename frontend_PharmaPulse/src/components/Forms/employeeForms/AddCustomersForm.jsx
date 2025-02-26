@@ -43,17 +43,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   };
 
   const handleSearch = () => {
-    // Mock search action: You can implement navigation to a search page, filter results, or show a dialog
     console.log("Searching for customer group:", formData.customerGroup);
-    // Example: Navigate to a search page or filter results
-    // navigate(`/search-customer-group?query=${formData.customerGroup}`);
     alert(`Searching for customer group: ${formData.customerGroup}`);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation: Check if all required fields are filled
     if (
       !formData.customerName ||
       !formData.address ||
@@ -122,14 +118,14 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         </p>
       )}
 
-      {/* Form Grid Layout mimicking the invoice structure */}
+      {/* Form Grid Layout */}
       <div className="grid grid-cols-2 gap-4">
         {/* Left Column */}
         <div className="space-y-4">
           <div className="flex items-center">
             <label
               htmlFor="customerName"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Customer Name:
             </label>
@@ -144,7 +140,10 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="address" className="text-[16px] text-gray-800 w-1/2">
+            <label
+              htmlFor="address"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
+            >
               Address:
             </label>
             <input
@@ -160,7 +159,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="contactName"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Contact Name:
             </label>
@@ -175,7 +174,10 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="nic" className="text-[16px] text-gray-800 w-1/2">
+            <label
+              htmlFor="nic"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
+            >
               NIC:
             </label>
             <input
@@ -189,7 +191,10 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="brcNo" className="text-[16px] text-gray-800 w-1/2">
+            <label
+              htmlFor="brcNo"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
+            >
               Businesses Registration Number:
             </label>
             <input
@@ -203,7 +208,10 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="email" className="text-[16px] text-gray-800 w-1/2">
+            <label
+              htmlFor="email"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
+            >
               Email:
             </label>
             <input
@@ -217,10 +225,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           </div>
         </div>
 
-        {/* Right Column with Buttons at the Bottom */}
+        {/* Right Column */}
         <div className="space-y-4">
           <div className="flex items-center">
-            <label htmlFor="phoneNo" className="text-[16px] text-gray-800 w-1/2">
+            <label
+              htmlFor="phoneNo"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
+            >
               Phone Number:
             </label>
             <input
@@ -236,7 +247,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="customerGroup"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Customer Group:
             </label>
@@ -260,7 +271,10 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="status" className="text-[16px] text-gray-800 w-1/2">
+            <label
+              htmlFor="status"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
+            >
               Status:
             </label>
             <select
@@ -280,7 +294,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="registeredDate"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Registered Date:
             </label>
@@ -297,7 +311,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="creditLimit"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Credit Limit:
             </label>
@@ -314,7 +328,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="creditPeriod"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Credit Period:
             </label>

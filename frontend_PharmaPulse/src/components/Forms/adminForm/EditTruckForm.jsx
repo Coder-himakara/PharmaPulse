@@ -95,7 +95,7 @@ const EditTruckForm = ({ onUpdateTruck }) => {
         ["Date of Added", "dateOfAdded", "date"],
       ].map(([label, name, type]) => (
         <div key={name} className="flex items-center justify-between mb-4">
-          <label htmlFor={name} className="text-[16px] text-gray-800 w-2/3">
+          <label htmlFor={name} className="text-[16px] text-gray-800 w-2/3 text-left">
             {label}:
           </label>
           <input
@@ -110,7 +110,7 @@ const EditTruckForm = ({ onUpdateTruck }) => {
       ))}
 
       <div className="flex items-center justify-between mb-4">
-        <label htmlFor="status" className="text-[16px] text-gray-800 w-2/3">
+        <label htmlFor="status" className="text-[16px] text-gray-800 w-2/3 text-left">
           Status:
         </label>
         <select

@@ -85,7 +85,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='purchaseGroupName'
-          className='text-[16px] text-gray-800 w-2/3'
+          className='text-[16px] text-gray-800 w-2/3  text-left'
         >
           Purchase Group Name:
         </label>
@@ -100,7 +100,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       </div>
 
       <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='address' className='text-[16px] text-gray-800 w-2/3'>
+        <label htmlFor='address' className='text-[16px] text-gray-800 w-2/3  text-left'>
           Address:
         </label>
         <input
@@ -116,7 +116,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='contactName'
-          className='text-[16px] text-gray-800 w-2/3'
+          className='text-[16px] text-gray-800 w-2/3  text-left'
         >
           Contact Name:
         </label>
@@ -130,7 +130,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
         />
       </div>
       <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='phoneNo' className='text-[16px] text-gray-800 w-2/3'>
+        <label htmlFor='phoneNo' className='text-[16px] text-gray-800 w-2/3  text-left'>
           Phone Number:
         </label>
         <input
@@ -144,7 +144,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       </div>
 
       <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='email' className='text-[16px] text-gray-800 w-2/3'>
+        <label htmlFor='email' className='text-[16px] text-gray-800 w-2/3  text-left'>
           Email:
         </label>
         <input
@@ -158,7 +158,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       </div>
 
       <div className='flex items-center justify-between mb-4'>
-        <label htmlFor='fax' className='text-[16px] text-gray-800 w-2/3'>
+        <label htmlFor='fax' className='text-[16px] text-gray-800 w-2/3  text-left'>
           Fax:
         </label>
         <input

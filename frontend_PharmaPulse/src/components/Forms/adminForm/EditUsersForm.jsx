@@ -139,7 +139,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
             <div key={name} className="flex items-center">
               <label
                 htmlFor={name}
-                className="text-[16px] text-gray-800 w-1/2"
+                className="text-[16px] text-gray-800 w-1/2 text-left"
               >
                 {label}:
               </label>
@@ -182,7 +182,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
             <div key={name} className="flex items-center">
               <label
                 htmlFor={name}
-                className="text-[16px] text-gray-800 w-1/2"
+                className="text-[16px] text-gray-800 w-1/2 text-left"
               >
                 {label}:
               </label>
@@ -198,7 +198,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
           ))}
 
           <div className="flex items-center">
-            <label htmlFor="role" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="role" className="text-[16px] text-gray-800 w-1/2 text-left">
               Role:
             </label>
             <select
@@ -217,7 +217,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
           <div className="flex items-center">
             <label
               htmlFor="profilePicture"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Profile Picture:
             </label>
@@ -231,7 +231,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="password" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="password" className="text-[16px] text-gray-800 w-1/2 text-left">
               Password:
             </label>
             <input
@@ -248,7 +248,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
           <div className="flex items-center">
             <label
               htmlFor="confirmPassword"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Confirm Password:
             </label>

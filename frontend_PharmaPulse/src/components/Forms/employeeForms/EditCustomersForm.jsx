@@ -137,7 +137,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="customerName"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Customer Name:
             </label>
@@ -152,7 +152,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="address" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="address" className="text-[16px] text-gray-800 w-1/2 text-left">
               Address:
             </label>
             <input
@@ -168,7 +168,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="contactName"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Contact Name:
             </label>
@@ -183,7 +183,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="nic" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="nic" className="text-[16px] text-gray-800 w-1/2 text-left">
               NIC:
             </label>
             <input
@@ -197,7 +197,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="brcNo" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="brcNo" className="text-[16px] text-gray-800 w-1/2 text-left">
               Businesses Registration Number:
             </label>
             <input
@@ -210,7 +210,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
             />
           </div>
           <div className="flex items-center">
-            <label htmlFor="email" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="email" className="text-[16px] text-gray-800 w-1/2 text-left">
               Email:
             </label>
             <input
@@ -231,7 +231,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="phoneNo"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Phone Number:
             </label>
@@ -248,7 +248,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="customerGroup"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Customer Group:
             </label>
@@ -266,7 +266,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="status" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="status" className="text-[16px] text-gray-800 w-1/2 text-left">
               Status:
             </label>
             <select
@@ -286,7 +286,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="registeredDate"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Registered Date:
             </label>
@@ -303,7 +303,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="creditLimit"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Credit Limit:
             </label>
@@ -320,7 +320,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           <div className="flex items-center">
             <label
               htmlFor="creditPeriod"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Credit Period:
             </label>

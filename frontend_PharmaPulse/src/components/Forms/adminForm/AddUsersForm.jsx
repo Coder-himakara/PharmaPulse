@@ -131,7 +131,7 @@ const AddUsersForm = ({ onAddUser }) => {
             <div key={name} className="flex items-center">
               <label
                 htmlFor={name}
-                className="text-[16px] text-gray-800 w-1/2"
+                className="text-[16px] text-gray-800 w-1/2 text-left"
               >
                 {label}:
               </label>
@@ -157,7 +157,7 @@ const AddUsersForm = ({ onAddUser }) => {
             <div key={name} className="flex items-center">
               <label
                 htmlFor={name}
-                className="text-[16px] text-gray-800 w-1/2"
+                className="text-[16px] text-gray-800 w-1/ text-left"
               >
                 {label}:
               </label>
@@ -175,7 +175,7 @@ const AddUsersForm = ({ onAddUser }) => {
           ))}
 
           <div className="flex items-center">
-            <label htmlFor="role" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="role" className="text-[16px] text-gray-800 w-1/2 text-left">
               Role:
             </label>
             <select
@@ -194,7 +194,7 @@ const AddUsersForm = ({ onAddUser }) => {
           <div className="flex items-center">
             <label
               htmlFor="profilePicture"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Profile Picture:
             </label>
@@ -208,7 +208,7 @@ const AddUsersForm = ({ onAddUser }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="status" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="status" className="text-[16px] text-gray-800 w-1/2 text-left">
               Status:
             </label>
             <select

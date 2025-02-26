@@ -139,14 +139,14 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         </p>
       )}
 
-      {/* Form Grid Layout mimicking the invoice structure */}
+      {/* Form Grid Layout */}
       <div className="grid grid-cols-2 gap-10">
         {/* Left Column */}
         <div className="space-y-4">
           <div className="flex items-center">
             <label
               htmlFor="purchaseNo"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Purchase Number:
             </label>
@@ -162,7 +162,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="supplierId"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Supplier ID:
             </label>
@@ -182,7 +182,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="purchaseOrderRef"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Purchase Order Reference:
             </label>
@@ -198,7 +198,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="purchaseInvoiceId"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Purchase Invoice ID:
             </label>
@@ -214,7 +214,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="invoiceStatus"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Invoice Status:
             </label>
@@ -236,7 +236,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="invoiceDate"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Invoice Date:
             </label>
@@ -250,12 +250,12 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           </div>
         </div>
 
-        {/* Right Column with Line Items and Buttons at the Bottom */}
+        {/* Right Column */}
         <div className="space-y-4">
           <div className="flex items-center">
             <label
               htmlFor="invoiceNo"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Invoice Number:
             </label>
@@ -271,7 +271,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="paymentType"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Payment Type:
             </label>
@@ -292,7 +292,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="discountAmount"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Discount Amount:
             </label>
@@ -310,7 +310,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div className="mb-4">
             <label
               htmlFor="lineItems"
-              className="text-[16px] text-gray-800 block mb-2"
+              className="text-[16px] text-gray-800 block mb-2 text-left"
             >
               Line Items:
             </label>

@@ -156,13 +156,13 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
       )}
 
       {/* Form Grid Layout mimicking the invoice structure */}
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid grid-cols-2 gap-12">
         {/* Left Column */}
         <div className="space-y-4">
           <div className="flex items-center">
             <label
               htmlFor="purchaseNo"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Purchase Number:
             </label>
@@ -178,7 +178,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="supplierId"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Supplier ID:
             </label>
@@ -198,7 +198,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="purchaseOrderRef"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Purchase Order Reference:
             </label>
@@ -214,7 +214,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="purchaseInvoiceId"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Purchase Invoice ID:
             </label>
@@ -230,7 +230,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="invoiceStatus"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Invoice Status:
             </label>
@@ -252,7 +252,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="invoiceDate"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Invoice Date:
             </label>
@@ -271,7 +271,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="invoiceNo"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Invoice Number:
             </label>
@@ -287,7 +287,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="paymentType"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Payment Type:
             </label>
@@ -308,7 +308,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
           <div className="flex items-center">
             <label
               htmlFor="discountAmount"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Discount Amount:
             </label>
@@ -326,7 +326,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
           <div className="mb-4">
             <label
               htmlFor="lineItems"
-              className="text-[16px] text-gray-800 block mb-2"
+              className="text-[16px] text-gray-800 block mb-2 text-left"
             >
               Line Items:
             </label>

@@ -26,9 +26,7 @@ const AddProductsForm = ({ onAddProduct }) => {
   // Simulate backend data for the last product reference ID (e.g., "RepId003" for this example)
   const lastRefId = "RepId003"; // This would typically come from a backend API
   const getNextRefId = () => {
-    // Extract the numeric part from the last Ref ID (e.g., "003" from "RepId003")
     const numericPart = parseInt(lastRefId.replace("RefId", ""), 10) || 0;
-    // Generate the next ID (e.g., "004" after "003")
     const nextNumber = (numericPart + 1).toString().padStart(3, "0");
     return `RefId${nextNumber}`; // e.g., "RefId004"
   };
@@ -55,7 +53,6 @@ const AddProductsForm = ({ onAddProduct }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Basic validation
     if (
       !formData.productName ||
       !formData.purchaseGroup ||
@@ -81,12 +78,10 @@ const AddProductsForm = ({ onAddProduct }) => {
     setErrorMessage(""); // Clear errors
     setSuccessMessage("Product added successfully!");
 
-    // Pass the new product data to the parent
     if (onAddProduct) {
       onAddProduct(formData);
     }
 
-    // Clear the form and reset generation state after a delay
     setTimeout(() => {
       setFormData({
         purchaseGroup: "",
@@ -102,7 +97,7 @@ const AddProductsForm = ({ onAddProduct }) => {
       });
       setSuccessMessage("");
       setIsRefIdGenerated(false); // Reset for a new product
-    }, 2000); // Wait for success message display before navigating
+    }, 2000);
   };
 
   const handleCancel = () => {
@@ -129,14 +124,14 @@ const AddProductsForm = ({ onAddProduct }) => {
         </p>
       )}
 
-      {/* Form Grid Layout mimicking the invoice structure */}
+      {/* Form Grid Layout */}
       <div className="grid grid-cols-2 gap-4">
         {/* Left Column */}
         <div className="space-y-4">
           <div className="flex items-center">
             <label
               htmlFor="purchaseGroup"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Purchase Group:
             </label>
@@ -158,7 +153,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="productName"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Product Name:
             </label>
@@ -175,7 +170,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="genericName"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Generic Name:
             </label>
@@ -192,7 +187,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="description"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Description:
             </label>
@@ -207,7 +202,10 @@ const AddProductsForm = ({ onAddProduct }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="category" className="text-[16px] text-gray-800 w-1/2">
+            <label
+              htmlFor="category"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
+            >
               Category:
             </label>
             <select
@@ -224,12 +222,12 @@ const AddProductsForm = ({ onAddProduct }) => {
           </div>
         </div>
 
-        {/* Right Column with Buttons at the Bottom */}
+        {/* Right Column */}
         <div className="space-y-4">
           <div className="flex items-center">
             <label
               htmlFor="productRefId"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Product Ref Id:
             </label>
@@ -261,7 +259,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="packageType"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Package Type:
             </label>
@@ -284,7 +282,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="unitsPerPackage"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Units Per Package:
             </label>
@@ -301,7 +299,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="productStatus"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Product Status:
             </label>
@@ -322,7 +320,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="reorderLimitByPackage"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Reorder Limit By Package:
             </label>

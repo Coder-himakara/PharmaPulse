@@ -117,7 +117,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="purchaseGroup"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Purchase Group:
             </label>
@@ -134,7 +134,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="productName"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Product Name:
             </label>
@@ -151,7 +151,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="genericName"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Generic Name:
             </label>
@@ -168,7 +168,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="description"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Description:
             </label>
@@ -183,7 +183,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="category" className="text-[16px] text-gray-800 w-1/2">
+            <label htmlFor="category" className="text-[16px] text-gray-800 w-1/2 text-left">
               Category:
             </label>
             <select
@@ -205,7 +205,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="productRefId"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Product Ref Id:
             </label>
@@ -222,7 +222,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="packageType"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Package Type:
             </label>
@@ -245,7 +245,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="unitsPerPackage"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Units Per Package:
             </label>
@@ -262,7 +262,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="productStatus"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Product Status:
             </label>
@@ -283,7 +283,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex items-center">
             <label
               htmlFor="reorderLimitByPackage"
-              className="text-[16px] text-gray-800 w-1/2"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Reorder Limit By Package:
             </label>

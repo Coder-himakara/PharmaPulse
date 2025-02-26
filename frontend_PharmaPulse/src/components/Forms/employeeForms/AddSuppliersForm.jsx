@@ -98,7 +98,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="supplierName"
-          className="text-[16px] text-gray-800 w-2/3"
+          className="text-[16px] text-gray-800 w-2/3  text-left"
         >
           Supplier Name:
         </label>
@@ -115,7 +115,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="supplierAddress"
-          className="text-[16px] text-gray-800 w-2/3"
+          className="text-[16px] text-gray-800 w-2/3  text-left"
         >
           Supplier Address:
         </label>
@@ -132,7 +132,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="contactNumber"
-          className="text-[16px] text-gray-800 w-2/3"
+          className="text-[16px] text-gray-800 w-2/3  text-left"
         >
           Contact Number:
         </label>
@@ -149,7 +149,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="purchaseGroup"
-          className="text-[16px] text-gray-800 w-2/3"
+          className="text-[16px] text-gray-800 w-2/3  text-left"
         >
           Purchase Group:
         </label>
@@ -175,7 +175,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="creditPeriod"
-          className="text-[16px] text-gray-800 w-2/3"
+          className="text-[16px] text-gray-800 w-2/3  text-left"
         >
           Credit Period:
         </label>
@@ -192,7 +192,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       <div className="flex items-center justify-between mb-4">
         <label
           htmlFor="creditLimit"
-          className="text-[16px] text-gray-800 w-2/3"
+          className="text-[16px] text-gray-800 w-2/3  text-left"
         >
           Credit Limit:
         </label>
