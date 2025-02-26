@@ -12,32 +12,36 @@ const Footer = () => {
         isDarkMode ? "bg-gray-900 text-gray-200" : "bg-green-200 text-gray-800"
       } 
       p-4 w-full box-border flex items-center z-50 h-[70px] 
-      relative md:fixed bottom-0 left-0`
-    }
+      relative md:fixed bottom-0 left-0`}
     >
-    <div className="grid w-full grid-cols-1 gap-2 px-4 mx-auto text-center max-w-7xl md:px-6 md:flex md:justify-between md:items-center md:text-left">
-    {/* Left Section - Logo */}
+      <div
+        className="grid w-full grid-cols-1 gap-2 px-4 mx-auto text-center max-w-7xl sm:grid-cols-2 md:grid-cols-3 md:px-6 md:flex md:justify-between md:items-center md:text-left"
+      >
+        {/* Left Section - Logo */}
         <div className="flex items-center justify-center gap-2 md:justify-start">
-          <img src={logo} alt="Logo" className="h-8" />
-          <span className="text-sm font-semibold whitespace-nowrap">
+          <img src={logo} alt="Logo" className="h-6 sm:h-8" />
+          <span className="text-xs font-semibold sm:text-sm whitespace-nowrap">
             PharmaPulse
           </span>
         </div>
 
-    {/* Center Section - Copyright---Shows the current year dynamically (new Date().getFullYear()).*/}
-        <div className="text-sm font-medium break-words">
-          &copy; {new Date().getFullYear()} A & K Agencies PharmaPulse. 
-          <span className="block md:inline"> All Rights Reserved.</span>
+        {/* Center Section - Copyright */}
+        <div className="text-xs font-medium break-words sm:text-sm">
+          © {new Date().getFullYear()} A & K Agencies PharmaPulse.
+          <span className="block sm:inline"> All Rights Reserved.</span>
         </div>
 
-    {/* Right Section - Developed By */}
+        {/* Right Section - Developed By */}
         <div className="flex items-center justify-center gap-2 md:justify-end">
-          <span>Developed by:</span>
-          <span className={`font-semibold ${isDarkMode ? "text-green-400" : "text-green-600"}`}>
+          <span className="text-xs sm:text-sm">Developed by:</span>
+          <span
+            className={`font-semibold ${
+              isDarkMode ? "text-green-400" : "text-green-600"
+            }`}
+          >
             Team PharmaPulse
           </span>
         </div>
-        
       </div>
     </footer>
   );

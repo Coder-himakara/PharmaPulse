@@ -157,7 +157,7 @@ const AddUsersForm = ({ onAddUser }) => {
             <div key={name} className="flex items-center">
               <label
                 htmlFor={name}
-                className="text-[16px] text-gray-800 w-1/ text-left"
+                className="text-[16px] text-gray-800 w-1/2 text-left"
               >
                 {label}:
               </label>

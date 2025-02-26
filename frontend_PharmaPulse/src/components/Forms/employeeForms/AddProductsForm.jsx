@@ -125,7 +125,7 @@ const AddProductsForm = ({ onAddProduct }) => {
       )}
 
       {/* Form Grid Layout */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-12">
         {/* Left Column */}
         <div className="space-y-4">
           <div className="flex items-center">
