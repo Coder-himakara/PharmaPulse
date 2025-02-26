@@ -42,6 +42,14 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     }));
   };
 
+  const handleSearch = () => {
+    // Mock search action: You can implement navigation to a search page, filter results, or show a dialog
+    console.log("Searching for customer group:", formData.customerGroup);
+    // Example: Navigate to a search page or filter results
+    // navigate(`/search-customer-group?query=${formData.customerGroup}`);
+    alert(`Searching for customer group: ${formData.customerGroup}`);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -232,7 +240,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
             >
               Customer Group:
             </label>
-            <div className="relative w-1/2">
+            <div className="relative flex items-center w-1/2">
               <input
                 type="text"
                 id="customerGroup"
@@ -241,7 +249,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 onChange={handleChange}
                 className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
               />
-              <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
+              <button
+                onClick={handleSearch}
+                className="absolute text-green-500 cursor-pointer right-2"
+                aria-label="Search customer group"
+              >
+                <FaSearch />
+              </button>
             </div>
           </div>
 
