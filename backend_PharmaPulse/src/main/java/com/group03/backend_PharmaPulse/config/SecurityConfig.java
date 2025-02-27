@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/users/login").permitAll()
                         .anyRequest().authenticated())
                 .csrf(customizer -> customizer.disable())
+                .cors(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

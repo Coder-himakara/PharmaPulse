@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,6 +89,20 @@ public class AppWideExceptionHandler{
         return new ResponseEntity<>(
                 new ErrorResponseDto(400, "Bad Request", e.getMessage()),
                 HttpStatus.BAD_REQUEST
+        );
+    }
+    @ExceptionHandler(AccountStatusException.class)
+    public ResponseEntity<ErrorResponseDto> handleAccountStatusException(AccountStatusException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(401, "User Account is abnormal", e.getMessage()),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(403, "No Permission", e.getMessage()),
+                HttpStatus.FORBIDDEN
         );
     }
 }
