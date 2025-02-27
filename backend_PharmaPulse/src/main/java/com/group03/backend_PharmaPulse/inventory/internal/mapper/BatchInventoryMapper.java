@@ -4,6 +4,7 @@ import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
 import com.group03.backend_PharmaPulse.inventory.internal.entity.BatchInventory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ public interface BatchInventoryMapper {
     @Mapping(target = "purchaseInvoice", ignore = true)
     @Mapping(target = "inventoryRecords",ignore = true)
     BatchInventory toEntity(BatchInventoryDTO batchInventoryDTO);
+    //new
+    void updateBatchFromDto(BatchInventoryDTO dto, @MappingTarget BatchInventory entity);
 
 
     BatchInventoryDTO toDTO(BatchInventory batchInventory);

@@ -1,0 +1,13 @@
+package com.group03.backend_PharmaPulse.order.internal.mapper;
+
+import com.group03.backend_PharmaPulse.order.api.dto.SalesInvoiceItemDTO;
+import com.group03.backend_PharmaPulse.order.internal.entity.SalesInvoiceItem;
+import org.mapstruct.Mapper;
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface SalesInvoiceItemMapper {
+    SalesInvoiceItemDTO toDTO(SalesInvoiceItem item);
+    SalesInvoiceItem toEntity(SalesInvoiceItemDTO dto);
+    List<SalesInvoiceItemDTO> toDTOList(List<SalesInvoiceItem> items);
+}

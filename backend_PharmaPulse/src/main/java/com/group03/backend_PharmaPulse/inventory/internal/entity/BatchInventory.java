@@ -45,6 +45,10 @@ public class BatchInventory {
 
     private LocalDate dateReceived;
 
+
+    // New field for temporary reservation
+    private Integer reservedQuantity;
+
     @OneToMany(mappedBy ="batch",fetch =FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Inventory> inventoryRecords;
 }

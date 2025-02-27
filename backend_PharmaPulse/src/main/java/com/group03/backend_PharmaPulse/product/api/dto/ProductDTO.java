@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProductDTO {
-    //private Long productId;
+    private Long productId;
     private Long purchaseGroupId;
     private String productRefId;
     private String productName;
