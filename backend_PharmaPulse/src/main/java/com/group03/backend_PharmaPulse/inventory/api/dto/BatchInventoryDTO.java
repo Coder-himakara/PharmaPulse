@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class BatchInventoryDTO {
-    //private Long batchId;
+    private Long batchId;
     private Long productId;
     private Long purchaseInvoiceNo;
     private LocalDate manufactureDate;
@@ -32,4 +32,7 @@ public class BatchInventoryDTO {
     private BatchStatus batchStatus;
 
     private LocalDate dateReceived;
+
+    // New field for reserved quantity
+    private Integer reservedQuantity;
 }

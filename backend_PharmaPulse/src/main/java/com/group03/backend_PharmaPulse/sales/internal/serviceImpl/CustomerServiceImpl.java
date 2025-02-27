@@ -1,13 +1,15 @@
 package com.group03.backend_PharmaPulse.sales.internal.serviceImpl;
 
-import com.group03.backend_PharmaPulse.sales.api.event.CustomerService;
+import com.group03.backend_PharmaPulse.sales.api.CustomerService;
 import com.group03.backend_PharmaPulse.sales.api.dto.CustomerDTO;
 import com.group03.backend_PharmaPulse.sales.internal.entity.Customer;
 import com.group03.backend_PharmaPulse.sales.internal.mapper.CustomerMapper;
 import com.group03.backend_PharmaPulse.sales.internal.repository.CustomerRepo;
+import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -28,14 +30,19 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.toDTO(savedCustomer);
    }
 
-    @Override
+    /*@Override
     public List<CustomerDTO> getAllCustomers() {
-        return List.of();
-    }
+        List<Customer> customers = customerRepo.findAll();
+        return customerMapper.toDTOList(customers);
+
+    }*/
 
     @Override
     public CustomerDTO getCustomerById(Long id) {
-        return null;
+        Optional<Customer> customer = customerRepo.findById(id);
+        return customer.map(customerMapper::toDTO)
+                .orElseThrow(()->
+                        new NotFoundException("Customer not found"));
     }
 
     @Override
@@ -43,5 +50,17 @@ public class CustomerServiceImpl implements CustomerService {
         return null;
     }
 
+
+    //new
+    @Override
+    public boolean existsById(Long customerId) {
+        return customerRepo.existsById(customerId);
+    }
+
+    @Override
+    public Customer getCustomerEntityById(Long id) {
+        return customerRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Customer not found with ID: " + id));
+    }
 }
 
