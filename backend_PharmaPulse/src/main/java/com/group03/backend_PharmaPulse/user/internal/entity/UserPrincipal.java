@@ -1,25 +1,28 @@
 package com.group03.backend_PharmaPulse.user.internal.entity;
 
+import com.group03.backend_PharmaPulse.user.api.enumeration.Role;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
-
 
 public class UserPrincipal implements UserDetails {
 
-    private  Users user;
+    private Users user;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public UserPrincipal(Users user) {
         this.user = user;
+        this.role = user.getRole();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_"+user.getRole()));
+        return role.getAuthorities();
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,9 +19,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import static com.group03.backend_PharmaPulse.user.api.enumeration.Permission.ADMIN_CREATE;
+import static com.group03.backend_PharmaPulse.user.api.enumeration.Role.ADMIN;
+
+
 @Configuration
 @EnableWebMvc
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
@@ -35,8 +41,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(request ->request
-                        .requestMatchers(HttpMethod.POST,"/api/users/register").hasAuthority("ROLE_admin")
                         .requestMatchers(HttpMethod.POST,"/api/users/login").permitAll()
+                        .requestMatchers("/api/users/register").hasRole(ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/api/users/register").hasAuthority(ADMIN_CREATE.name())
                         .anyRequest().authenticated())
                 .csrf(customizer -> customizer.disable())
                 .cors(Customizer.withDefaults())
@@ -54,7 +61,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
+        provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }

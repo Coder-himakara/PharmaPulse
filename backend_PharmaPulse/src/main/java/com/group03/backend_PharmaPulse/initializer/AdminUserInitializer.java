@@ -5,6 +5,9 @@ import com.group03.backend_PharmaPulse.user.api.dto.UsersDTO;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import static com.group03.backend_PharmaPulse.user.api.enumeration.Role.ADMIN;
+import static com.group03.backend_PharmaPulse.user.api.enumeration.Role.EMPLOYEE;
+
 @Component
 public class AdminUserInitializer implements CommandLineRunner {
     private final UsersService usersService;
@@ -20,10 +23,10 @@ public class AdminUserInitializer implements CommandLineRunner {
             UsersDTO admin = new UsersDTO();
             admin.setUsername("admin");
             admin.setPassword("admin123");
-            admin.setRole("ADMIN");
+            admin.setRole(ADMIN);
             usersService.registerUser(admin);
         }catch(IllegalArgumentException ex){
-            System.out.println("Admin already exists");
+            System.out.println("Admin and User already exist");
         }
 
     }

@@ -1,5 +1,6 @@
 package com.group03.backend_PharmaPulse.user.internal.entity;
 
+import com.group03.backend_PharmaPulse.user.api.enumeration.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,7 @@ public class Users {
 
     private String username;
     private String password;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

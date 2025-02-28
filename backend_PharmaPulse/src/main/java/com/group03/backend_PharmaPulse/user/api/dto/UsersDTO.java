@@ -1,5 +1,6 @@
 package com.group03.backend_PharmaPulse.user.api.dto;
 
+import com.group03.backend_PharmaPulse.user.api.enumeration.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +14,5 @@ public class UsersDTO {
     //private Long id;
     private String username;
     private String password;
-    private String role;
+    private Role role;
 }

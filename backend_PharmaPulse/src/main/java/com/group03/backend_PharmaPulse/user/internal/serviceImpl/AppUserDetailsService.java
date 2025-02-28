@@ -3,6 +3,7 @@ package com.group03.backend_PharmaPulse.user.internal.serviceImpl;
 import com.group03.backend_PharmaPulse.user.internal.entity.UserPrincipal;
 import com.group03.backend_PharmaPulse.user.internal.entity.Users;
 import com.group03.backend_PharmaPulse.user.internal.repository.UsersRepo;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,7 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     @Override
+    @Cacheable("users")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users user = usersRepo.findByUsername(username);
         if(user==null){
@@ -24,4 +26,5 @@ public class AppUserDetailsService implements UserDetailsService {
         }
         return new UserPrincipal(user);
     }
+
 }
