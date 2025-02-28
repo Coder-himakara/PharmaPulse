@@ -16,6 +16,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
     totalAmount: 0,
     discountAmount: 0,
     netAmount: 0,
+    notes: "", // Added notes to the initial state
     lineItems: [{ product: "", quantity: "", price: "", focQty: 0 }],
   });
 
@@ -109,6 +110,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         totalAmount: 0,
         discountAmount: 0,
         netAmount: 0,
+        notes: "", // Reset notes field
         lineItems: [{ product: "", quantity: "", price: "", focQty: 0 }],
       });
       setSuccessMessage("");
@@ -264,9 +266,10 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <input
             type="text"
             name="notes"
-            value=""
-            readOnly
+            value={invoiceData.notes} // Bind to state
+            onChange={handleInputChange} // Handle changes
             className="w-full px-2 py-1 mt-1 text-sm bg-white border border-gray-300 rounded-md"
+            placeholder="Enter any additional notes"
           />
         </div>
       </div>
