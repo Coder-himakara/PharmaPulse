@@ -6,7 +6,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,10 +30,13 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final JwtFilter jwtFilter;
+    private final BasicAuthenticationEntryPoint basicAuthenticationEntryPoint;
 
-    public SecurityConfig(UserDetailsService userDetailsService, JwtFilter jwtFilter) {
+    public SecurityConfig(UserDetailsService userDetailsService, JwtFilter jwtFilter,
+                          BasicAuthenticationEntryPoint basicAuthenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.jwtFilter = jwtFilter;
+        this.basicAuthenticationEntryPoint = basicAuthenticationEntryPoint;
     }
 
     @Bean
@@ -45,9 +47,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/register").hasRole(ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/api/users/register").hasAuthority(ADMIN_CREATE.name())
                         .anyRequest().authenticated())
+
                 .csrf(customizer -> customizer.disable())
-                .cors(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(httpBasic ->httpBasic.
+                        authenticationEntryPoint(this.basicAuthenticationEntryPoint))
                 .sessionManagement(session -> session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

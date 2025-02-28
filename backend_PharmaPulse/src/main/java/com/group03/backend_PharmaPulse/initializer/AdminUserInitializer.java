@@ -6,7 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import static com.group03.backend_PharmaPulse.user.api.enumeration.Role.ADMIN;
-import static com.group03.backend_PharmaPulse.user.api.enumeration.Role.EMPLOYEE;
+
 
 @Component
 public class AdminUserInitializer implements CommandLineRunner {

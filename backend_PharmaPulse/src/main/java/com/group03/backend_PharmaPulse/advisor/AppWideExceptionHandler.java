@@ -2,8 +2,13 @@ package com.group03.backend_PharmaPulse.advisor;
 
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.util.api.dto.ErrorResponseDto;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.AccountStatusException;
@@ -77,6 +82,7 @@ public class AppWideExceptionHandler{
                 HttpStatus.NOT_FOUND
         );
     }
+    // Handle authentication exceptions (e.g. invalid credentials)
     @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
     public ResponseEntity<ErrorResponseDto> handleAuthenticationException(Exception e) {
         return new ResponseEntity<>(
@@ -98,6 +104,23 @@ public class AppWideExceptionHandler{
                 HttpStatus.UNAUTHORIZED
         );
     }
+    // Handle JWT token signature exceptions
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorResponseDto> handleSignatureException(SignatureException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(401, "The access token provided is " +
+                        "revoked, malformed or invalid", e.getMessage()),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+    // Handle JWT token expiration exceptions
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponseDto> handleExpiredJwtException(ExpiredJwtException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(401, "The access token provided is expired", e.getMessage()),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException e) {
         return new ResponseEntity<>(
@@ -105,4 +128,25 @@ public class AppWideExceptionHandler{
                 HttpStatus.FORBIDDEN
         );
     }
+
+//    @ExceptionHandler(SecurityException.class)
+//    public ProblemDetail handleSecurityException(Exception ex){
+//        ProblemDetail errorDetail=null;
+//        if(ex instanceof AccessDeniedException){
+//            errorDetail=ProblemDetail
+//                    .forStatusAndDetail(HttpStatusCode.valueOf(403),ex.getMessage());
+//            errorDetail.setProperty("access-denied","No Permission");
+//        }
+//        if(ex instanceof SignatureException){
+//            errorDetail=ProblemDetail
+//                    .forStatusAndDetail(HttpStatusCode.valueOf(403),ex.getMessage());
+//            errorDetail.setProperty("access-denied","JWT Signature is not valid");
+//        }
+//        if(ex instanceof ExpiredJwtException){
+//            errorDetail=ProblemDetail
+//                    .forStatusAndDetail(HttpStatusCode.valueOf(403),ex.getMessage());
+//            errorDetail.setProperty("access-denied","JWT token is expired");
+//        }
+//        return errorDetail;
+//    }
 }
