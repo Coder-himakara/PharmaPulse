@@ -3,28 +3,28 @@ import { Routes, Route } from 'react-router-dom';
 
 // Lazy load components for better performance
 const AddUsersForm = lazy(
-  () => import('../components/Forms/adminForm/AddUsersForm'),
+  () => import('../components/Forms/adminForms/users/AddUsersForm'),
 );
 const UsersInfoTable = lazy(
-  () => import('../components/Tables/adminTable/UsersInfoTable'),
+  () => import('../components/Tables/adminTable/users/UsersInfoTable'),
 );
 const EditUsersForm = lazy(
-  () => import('../components/Forms/adminForm/EditUsersForm'),
+  () => import('../components/Forms/adminForms/users/EditUsersForm'),
 );
 const ViewUserDetails = lazy(
-  () => import('../components/Tables/adminTable/ViewUserDetails'),
+  () => import('../components/Tables/adminTable/users/ViewUserDetails'),
 );
 const AddTruckForm = lazy(
-  () => import('../components/Forms/adminForm/AddTruckForm'),
+  () => import('../components/Forms/adminForms/trucks/AddTruckForm'),
 );
 const TruckInfoTable = lazy(
-  () => import('../components/Tables/adminTable/TruckInfoTable'),
+  () => import('../components/Tables/adminTable/truck/TruckInfoTable'),
 );
 const EditTruckForm = lazy(
-  () => import('../components/Forms/adminForm/EditTruckForm'),
+  () => import('../components/Forms/adminForms/trucks/EditTruckForm'),
 );
 const ViewTruckDetails = lazy(
-  () => import('../components/Tables/adminTable/ViewTruckDetails'),
+  () => import('../components/Tables/adminTable/truck/ViewTruckDetails'),
 );
 
 // Loading screen component (for suspense fallback)

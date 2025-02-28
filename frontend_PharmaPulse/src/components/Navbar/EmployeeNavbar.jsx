@@ -169,7 +169,7 @@ const EmployeeNavbar = () => {
             label: "Inventory Wise",
             items: [
               { label: "Warehouse Inventory" },
-              { label: "Truck Transfer" },
+              { label: "Stock Transfer", command: () => navigate("/employee-dashboard/stock-transfer") },
               { label: "Stock Adjustment" },
             ],
           },

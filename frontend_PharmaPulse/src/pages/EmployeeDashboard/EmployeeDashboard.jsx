@@ -3,7 +3,6 @@ import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import Footer from '../../components/Footer/Footer';
 import EmpRoutes from '../../routes/EmpRoutes';
 
-
 const EmployeeDashboard = () => {
   return (
     <div className='bg-gray-100 '>
@@ -13,7 +12,7 @@ const EmployeeDashboard = () => {
         content={<EmpRoutes />}
         className='p-4 bg-white rounded-lg '
       />
-      <Footer/>
+      <Footer />
     </div>
   );
 };
