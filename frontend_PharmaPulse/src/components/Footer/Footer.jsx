@@ -15,30 +15,29 @@ const Footer = () => {
       relative md:fixed bottom-0 left-0`}
     >
       <div
-        className="grid w-full grid-cols-1 gap-2 px-4 mx-auto text-center max-w-7xl sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 md:flex md:justify-between md:items-center md:text-left tablet:grid-cols-2 tablet:gap-4 tablet:px-6 mobile:grid-cols-1 mobile:gap-2 mobile:px-2"
+        className="flex flex-col items-center justify-between w-full px-4 mx-auto max-w-7xl md:flex-row sm:px-6 lg:px-8"
       >
-        {/* Left Section - Logo (Forced to Start at Beginning) */}
-        <div className="flex items-center justify-start gap-2 md:flex md:items-center md:justify-start tablet:flex tablet:items-center tablet:justify-start tablet:order-1 mobile:flex mobile:items-center mobile:justify-center mobile:order-1">
-          <img src={logo} alt="Logo" className="h-6 sm:h-8 md:h-8 lg:h-8 xl:h-8 tablet:h-7 mobile:h-6" />
-          <span className="text-xs font-semibold sm:text-sm md:text-sm lg:text-sm xl:text-sm tablet:text-sm mobile:text-xs whitespace-nowrap">
+        {/* Left Section - Logo */}
+        <div className="flex items-center justify-center gap-2 md:justify-start">
+          <img src={logo} alt="Logo" className="h-6 sm:h-8 md:h-10 lg:h-12 xl:h-14" />
+          <span className="text-xs font-semibold sm:text-sm md:text-base lg:text-lg xl:text-xl whitespace-nowrap">
             PharmaPulse
           </span>
         </div>
 
         {/* Center Section - Copyright */}
-        <div className="text-xs font-medium break-words sm:text-sm md:text-sm lg:text-sm xl:text-sm md:order-2 md:self-center tablet:text-sm tablet:order-2 tablet:self-center mobile:text-xs mobile:order-2 mobile:self-center">
-          © {new Date().getFullYear()} A & K Agencies PharmaPulse.
-          <span className="block sm:inline md:inline lg:inline xl:inline tablet:block tablet:ml-0 mobile:block mobile:ml-0"> All Rights Reserved.</span>
+        <div className="mt-2 text-xs font-medium text-center sm:text-sm md:text-base lg:text-lg xl:text-lg md:mt-0">
+          © {new Date().getFullYear()} A & K Agencies PharmaPulse.  
+          <span className="block md:inline"> All Rights Reserved.</span>
         </div>
 
-        {/* Right Section - Developed By (Moved to End) */}
-        <div className="flex items-center justify-end gap-2 md:flex md:items-center md:justify-end md:order-3 tablet:flex tablet:items-center tablet:justify-end tablet:order-3 mobile:flex mobile:items-center mobile:justify-center mobile:order-3">
-          <span className="text-xs sm:text-sm md:text-sm lg:text-sm xl:text-sm tablet:text-sm mobile:text-xs">Developed by:</span>
+        {/* Right Section - Developed By */}
+        <div className="flex items-center justify-center gap-2 mt-2 md:justify-end md:mt-0">
+          <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-lg">Developed by:</span>
           <span
             className={`font-semibold ${
               isDarkMode ? "text-green-400" : "text-green-600"
-            } text-xs sm:text-sm md:text-sm lg:text-sm xl:text-sm 
-            tablet:text-sm mobile:text-xs`}
+            }`}
           >
             Team PharmaPulse
           </span>
