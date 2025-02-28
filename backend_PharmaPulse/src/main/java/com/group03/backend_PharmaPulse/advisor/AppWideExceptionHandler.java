@@ -7,10 +7,9 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 
-import java.nio.file.AccessDeniedException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -104,7 +103,7 @@ public class AppWideExceptionHandler{
                 HttpStatus.UNAUTHORIZED
         );
     }
-    // Handle JWT token signature exceptions
+    // Handle JWT token signature invalid exceptions
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<ErrorResponseDto> handleSignatureException(SignatureException e) {
         return new ResponseEntity<>(
@@ -121,6 +120,7 @@ public class AppWideExceptionHandler{
                 HttpStatus.UNAUTHORIZED
         );
     }
+    //Handle unauthorized access exceptions
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException e) {
         return new ResponseEntity<>(
@@ -128,25 +128,4 @@ public class AppWideExceptionHandler{
                 HttpStatus.FORBIDDEN
         );
     }
-
-//    @ExceptionHandler(SecurityException.class)
-//    public ProblemDetail handleSecurityException(Exception ex){
-//        ProblemDetail errorDetail=null;
-//        if(ex instanceof AccessDeniedException){
-//            errorDetail=ProblemDetail
-//                    .forStatusAndDetail(HttpStatusCode.valueOf(403),ex.getMessage());
-//            errorDetail.setProperty("access-denied","No Permission");
-//        }
-//        if(ex instanceof SignatureException){
-//            errorDetail=ProblemDetail
-//                    .forStatusAndDetail(HttpStatusCode.valueOf(403),ex.getMessage());
-//            errorDetail.setProperty("access-denied","JWT Signature is not valid");
-//        }
-//        if(ex instanceof ExpiredJwtException){
-//            errorDetail=ProblemDetail
-//                    .forStatusAndDetail(HttpStatusCode.valueOf(403),ex.getMessage());
-//            errorDetail.setProperty("access-denied","JWT token is expired");
-//        }
-//        return errorDetail;
-//    }
 }
