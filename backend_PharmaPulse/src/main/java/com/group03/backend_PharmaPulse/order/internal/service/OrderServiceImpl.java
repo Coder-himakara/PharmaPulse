@@ -1,5 +1,6 @@
-package com.group03.backend_PharmaPulse.order.internal.serviceImpl;
+package com.group03.backend_PharmaPulse.order.internal.service;
 
+import com.group03.backend_PharmaPulse.inventory.api.InventoryReservationService;
 import com.group03.backend_PharmaPulse.order.api.OrderService;
 import com.group03.backend_PharmaPulse.order.api.dto.OrderDTO;
 import com.group03.backend_PharmaPulse.order.internal.entity.Order;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -21,45 +23,60 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     // Used to check available stock and reserve inventory temporarily
     private final BatchInventoryService batchInventoryService;
+    private final InventoryReservationService inventoryReservationService;
 
     public OrderServiceImpl(OrderRepository orderRepository,
                             OrderMapper orderMapper,
-                            BatchInventoryService batchInventoryService) {
+                            BatchInventoryService batchInventoryService,InventoryReservationService inventoryReservationService) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.batchInventoryService = batchInventoryService;
+        this.inventoryReservationService = inventoryReservationService;
     }
 
     @Override
     @Transactional
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        // Validate each order item against available stock and reserve temporary inventory
-        orderDTO.getOrderItems().forEach(item -> {
-            List<BatchInventoryDTO> batches = batchInventoryService.getAllBatchInventories();
-            boolean available = batches.stream()
-                    .filter(b -> b.getProductId().equals(item.getProductId()))
-                    .anyMatch(b -> b.getAvailableUnitQuantity() >= item.getQuantity());
-            if (!available) {
-                throw new RuntimeException("Insufficient stock for product id: " + item.getProductId());
-            }
-            // Reserve temporary inventory for this order item
-            batchInventoryService.reserveInventory(item.getProductId(), item.getQuantity());
-        });
-
-        // Calculate order total
-        BigDecimal totalAmount = orderDTO.getOrderItems().stream()
-                .map(item -> item.getUnitPrice().multiply(new BigDecimal(item.getQuantity()))
-                        .subtract(item.getDiscount() != null ? item.getDiscount() : BigDecimal.ZERO))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        orderDTO.setTotalAmount(totalAmount);
+        // Generate order details
         orderDTO.setOrderDate(LocalDateTime.now());
         orderDTO.setStatus("PENDING");
         orderDTO.setOrderNumber("ORD-" + UUID.randomUUID().toString());
 
+        // Save order first to obtain an orderId
         Order order = orderMapper.toEntity(orderDTO);
+
+        //new
+        if (order.getOrderItems() != null) {
+            order.getOrderItems().forEach(item -> item.setOrder(order));
+        }
         Order savedOrder = orderRepository.save(order);
+
+        // For each order item, validate effective available stock and reserve inventory
+        orderDTO.getOrderItems().forEach(item -> {
+            // Retrieve batches for the product
+            List<BatchInventoryDTO> batches = batchInventoryService.getAllBatchInventories()
+                    .stream()
+                    .filter(b -> b.getProductId().equals(item.getProductId()))
+                    .collect(Collectors.toList());
+
+            // Sum available units from all batches (assuming here availableUnitQuantity is not altered)
+            int totalAvailable = batches.stream().mapToInt(BatchInventoryDTO::getAvailableUnitQuantity).sum();
+            // Get already reserved quantity from the reservation table
+            int totalReserved = inventoryReservationService.getTotalReservedForProduct(item.getProductId());
+            int effectiveAvailable = totalAvailable - totalReserved;
+
+            if (effectiveAvailable < item.getQuantity()) {
+                throw new RuntimeException("Insufficient effective stock for product id: " + item.getProductId());
+            }
+
+            // Reserve inventory in the separate reservation table
+            inventoryReservationService.reserveInventory(item.getProductId(), item.getQuantity(), savedOrder.getOrderId());
+        });
+
         return orderMapper.toDTO(savedOrder);
     }
+
+
 
     @Override
     public OrderDTO getOrderById(Long orderId) {

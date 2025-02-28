@@ -94,12 +94,9 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
     }
 
     //new
-    /**
-     * Deduct sold quantity from available inventory.
-     * Processes batches sorted by expiry date (FIFO).
-     */
     @Override
     public void deductInventory(Long productId, Integer quantity) {
+        // Retrieve batches for the product (sorted by expiry date)
         List<BatchInventory> batches = batchInventoryRepo.findByProductId(productId)
                 .stream()
                 .filter(b -> b.getAvailableUnitQuantity() != null && b.getAvailableUnitQuantity() > 0)
@@ -124,31 +121,5 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
         }
     }
 
-    /**
-     * Reserve inventory temporarily by reducing available quantity and increasing reserved quantity.
-     */
-    @Override
-    public void reserveInventory(Long productId, Integer quantity) {
-        List<BatchInventory> batches = batchInventoryRepo.findByProductId(productId)
-                .stream()
-                .filter(b -> b.getAvailableUnitQuantity() != null && b.getAvailableUnitQuantity() > 0)
-                .sorted(Comparator.comparing(BatchInventory::getExpiryDate))
-                .collect(Collectors.toList());
-
-        int remaining = quantity;
-        for (BatchInventory batch : batches) {
-            if (remaining <= 0) break;
-            int available = batch.getAvailableUnitQuantity();
-            int reserveFromThisBatch = Math.min(available, remaining);
-            batch.setAvailableUnitQuantity(available - reserveFromThisBatch);
-            int currentReserved = batch.getReservedQuantity() == null ? 0 : batch.getReservedQuantity();
-            batch.setReservedQuantity(currentReserved + reserveFromThisBatch);
-            remaining -= reserveFromThisBatch;
-            batchInventoryRepo.save(batch);
-        }
-        if (remaining > 0) {
-            throw new RuntimeException("Not enough inventory to reserve " + quantity + " units for product id " + productId);
-        }
-    }
 
 }

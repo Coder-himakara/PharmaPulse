@@ -34,5 +34,5 @@ public class BatchInventoryDTO {
     private LocalDate dateReceived;
 
     // New field for reserved quantity
-    private Integer reservedQuantity;
+    //private Integer reservedQuantity;
 }
