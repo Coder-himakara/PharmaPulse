@@ -54,12 +54,6 @@ const AdminNavbar = () => {
     setIsDropdownVisible(false);
   };
    
-  const handleMenuClick = (event) => {
-    if (event.item.command) {
-      event.item.command();
-    }
-  };
-  
   
 
   const AdminNavbarSections = [
@@ -134,7 +128,6 @@ const AdminNavbar = () => {
         <div className="justify-center hidden w-full md:flex">
           <MegaMenu
             model={AdminNavbarSections}
-            onMenuClick={handleMenuClick}
             breakpoint="960px"
             pt={{
               root: {

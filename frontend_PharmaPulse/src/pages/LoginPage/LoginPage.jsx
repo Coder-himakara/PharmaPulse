@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 
+// If the image is in src/assets, import it like this:
+// import loginBg from '../assets/loginbg.webp'; // Adjust path as needed
+
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -21,7 +24,18 @@ function LoginPage() {
   };
 
   return (
-    <div className='relative flex items-center justify-center w-full h-screen overflow-hidden'>
+    <div
+      className='relative flex items-center justify-center w-full h-screen overflow-hidden'
+      style={{
+        backgroundImage: `url('/loginbg.webp')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed', // Note: 'fixed' may not work as expected in some contexts
+        backgroundColor: 'black', // Fallback color
+        willChange: 'background-image',
+      }}
+    >
       {/* Login Form Container */}
       <div
         style={{

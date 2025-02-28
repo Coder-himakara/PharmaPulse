@@ -1,0 +1,208 @@
+/* eslint-disable prettier/prettier */
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useNavigate, useLocation } from "react-router-dom";
+
+const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
+  const { state } = useLocation();
+  const purchaseGroup = state?.purchaseGroup;
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    purchaseGroupName: "",
+    address: "",
+    contactName: "",
+    phoneNo: "",
+    email: "",
+    fax: "",
+  });
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (purchaseGroup) {
+      setFormData({
+        purchaseGroupName: purchaseGroup.purchaseGroupName,
+        address: purchaseGroup.address,
+        contactName: purchaseGroup.contactName,
+        phoneNo: purchaseGroup.phoneNo,
+        email: purchaseGroup.email,
+        fax: purchaseGroup.fax,
+      });
+    }
+  }, [purchaseGroup]);
+
+  const handleChange = (pg) => {
+    const { name, value } = pg.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (pg) => {
+    pg.preventDefault();
+
+    if (
+      !formData.purchaseGroupName ||
+      !formData.address ||
+      !formData.contactName ||
+      !formData.phoneNo ||
+      !formData.email ||
+      !formData.fax
+    ) {
+      setErrorMessage("Please fill out all required fields.");
+      return;
+    }
+
+    setErrorMessage("");
+
+    if (onUpdatePurchaseGroup) {
+      onUpdatePurchaseGroup(formData);
+    }
+
+    setSuccessMessage("Purchase Group updated successfully!");
+
+    setTimeout(() => {
+      setSuccessMessage("");
+      navigate("/purchase-group-info");
+    }, 2000);
+  };
+
+  const handleCancel = () => {
+    navigate("/employee-dashboard/purchase-group-info");
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
+    >
+      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
+        Edit Purchase Group
+      </h2>
+
+      {errorMessage && (
+        <p className="text-[#991919] text-sm font-bold mb-4">{errorMessage}</p>
+      )}
+      {successMessage && (
+        <p className="text-[#3c5f3c] text-sm font-bold mb-4">
+          {successMessage}
+        </p>
+      )}
+
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="purchaseGroupName"
+          className="text-[16px] text-gray-800 w-2/3 text-left"
+        >
+          Purchase Group Name:
+        </label>
+        <input
+          type="text"
+          id="purchaseGroupName"
+          name="purchaseGroupName"
+          value={formData.purchaseGroupName}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          readOnly
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="address" className="text-[16px] text-gray-800 w-2/3 text-left">
+          Address:
+        </label>
+        <input
+          type="text"
+          id="address"
+          name="address"
+          value={formData.address}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label
+          htmlFor="contactName"
+          className="text-[16px] text-gray-800 w-2/3 text-left"
+        >
+          Contact Name:
+        </label>
+        <input
+          type="text"
+          id="contactName"
+          name="contactName"
+          value={formData.contactName}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="phoneNo" className="text-[16px] text-gray-800 w-2/3 text-left">
+          Phone Number:
+        </label>
+        <input
+          type="number"
+          id="phoneNo"
+          name="phoneNo"
+          value={formData.phoneNo}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="email" className="text-[16px] text-gray-800 w-2/3 text-left">
+          Email:
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <label htmlFor="fax" className="text-[16px] text-gray-800 w-2/3 text-left">
+          Fax:
+        </label>
+        <input
+          type="fax"
+          id="fax"
+          name="fax"
+          value={formData.fax}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md"
+        />
+      </div>
+
+      <div className="flex justify-center gap-2">
+        <button
+          type="submit"
+          className="px-5 py-2 bg-[#2a4d69] text-white rounded-md hover:bg-[#00796b]"
+        >
+          Update
+        </button>
+        <button
+          type="button"
+          onClick={handleCancel}
+          className="px-5 py-2 bg-[#2a4d69] text-white rounded-md hover:bg-[#00796b]"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+};
+
+EditPurchaseGroupForm.propTypes = {
+  onUpdatePurchaseGroup: PropTypes.func.isRequired,
+};
+
+export default EditPurchaseGroupForm;
