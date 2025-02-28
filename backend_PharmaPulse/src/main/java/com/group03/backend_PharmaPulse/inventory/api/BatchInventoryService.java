@@ -11,5 +11,5 @@ public interface BatchInventoryService {
     BatchInventoryDTO getBatchInventoryById(Long id);
     // New methods
     void deductInventory(Long productId, Integer quantity);
-    void reserveInventory(Long productId, Integer quantity);
+    //void reserveInventory(Long productId, Integer quantity);
 }

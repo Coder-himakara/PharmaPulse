@@ -112,4 +112,3 @@ ALTER TABLE supplier
     ADD CONSTRAINT FK_SUPPLIER_ON_PURCHASE_GROUP FOREIGN KEY (purchase_group_id) REFERENCES purchase_group (purchase_group_id);
 
 
-ALTER  TABLE batch_inventory ADD COLUMN reserved_quantity INTEGER;

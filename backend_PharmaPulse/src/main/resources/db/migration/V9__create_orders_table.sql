@@ -69,3 +69,14 @@ CREATE TABLE price_list (
                             wholesale_price NUMERIC(19,2),
                             updated_at TIMESTAMP
 );
+-- Create a sequence for generating unique reservation IDs
+CREATE SEQUENCE reservation_seq START WITH 1 INCREMENT BY 1;
+
+-- Create the inventory_reservation table
+CREATE TABLE inventory_reservation (
+                                       reservation_id BIGINT PRIMARY KEY DEFAULT nextval('reservation_seq'),
+                                       product_id BIGINT NOT NULL,
+                                       reserved_quantity INTEGER NOT NULL,
+                                       order_id BIGINT NOT NULL,
+                                       reservation_time TIMESTAMP NOT NULL
+);

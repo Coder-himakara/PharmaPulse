@@ -1,4 +1,4 @@
-package com.group03.backend_PharmaPulse.order.internal.serviceImpl;
+package com.group03.backend_PharmaPulse.order.internal.service;
 
 import com.group03.backend_PharmaPulse.order.api.PriceListService;
 import com.group03.backend_PharmaPulse.order.api.dto.PriceListDTO;

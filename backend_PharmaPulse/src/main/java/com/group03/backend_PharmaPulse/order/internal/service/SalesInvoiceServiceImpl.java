@@ -1,5 +1,6 @@
-package com.group03.backend_PharmaPulse.order.internal.serviceImpl;
+package com.group03.backend_PharmaPulse.order.internal.service;
 
+import com.group03.backend_PharmaPulse.inventory.api.InventoryReservationService;
 import com.group03.backend_PharmaPulse.order.api.SalesInvoiceService;
 import com.group03.backend_PharmaPulse.order.api.dto.SalesInvoiceDTO;
 import com.group03.backend_PharmaPulse.order.internal.entity.SalesInvoice;
@@ -19,13 +20,15 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
     private final SalesInvoiceRepository salesInvoiceRepository;
     private final SalesInvoiceMapper salesInvoiceMapper;
     private final BatchInventoryService batchInventoryService;
+    private final InventoryReservationService inventoryReservationService;
 
     public SalesInvoiceServiceImpl(SalesInvoiceRepository salesInvoiceRepository,
                                    SalesInvoiceMapper salesInvoiceMapper,
-                                   BatchInventoryService batchInventoryService) {
+                                   BatchInventoryService batchInventoryService,InventoryReservationService inventoryReservationService) {
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.salesInvoiceMapper = salesInvoiceMapper;
         this.batchInventoryService = batchInventoryService;
+        this.inventoryReservationService = inventoryReservationService;
     }
 
     @Override
@@ -33,22 +36,21 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
     public SalesInvoiceDTO createSalesInvoice(SalesInvoiceDTO salesInvoiceDTO) {
         salesInvoiceDTO.setInvoiceNumber("INV-" + UUID.randomUUID().toString());
         salesInvoiceDTO.setInvoiceDate(LocalDateTime.now());
-        BigDecimal totalAmount = salesInvoiceDTO.getInvoiceItems().stream()
-                .map(item -> item.getUnitPrice().multiply(new BigDecimal(item.getQuantity()))
-                        .subtract(item.getDiscount() != null ? item.getDiscount() : BigDecimal.ZERO))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        salesInvoiceDTO.setTotalAmount(totalAmount);
-
+        // Calculate totals, etc.
         SalesInvoice salesInvoice = salesInvoiceMapper.toEntity(salesInvoiceDTO);
         SalesInvoice savedInvoice = salesInvoiceRepository.save(salesInvoice);
 
-        // Finalize the sale by deducting the reserved quantities from the inventory
+        // For each invoice item, finalize reservation and update inventory
         salesInvoiceDTO.getInvoiceItems().forEach(item -> {
+            // Deduct inventory from BatchInventory (using FIFO or your existing deduct logic)
             batchInventoryService.deductInventory(item.getProductId(), item.getQuantity());
+            // Remove the corresponding reservation records
+            inventoryReservationService.finalizeReservation(item.getProductId(), item.getQuantity(), savedInvoice.getOrderId());
         });
 
         return salesInvoiceMapper.toDTO(savedInvoice);
     }
+
 
     @Override
     public SalesInvoiceDTO getSalesInvoiceById(Long invoiceId) {
