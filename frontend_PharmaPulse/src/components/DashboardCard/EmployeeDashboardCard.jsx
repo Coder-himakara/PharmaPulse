@@ -133,19 +133,19 @@ const EmployeeDashboardCard = ({ content}) => {
         {/* Quantity Indicators */}
         <div className='grid grid-cols-2 gap-4 mb-8 md:grid-cols-4'>
           <div className='p-4 text-center transition-colors duration-200 bg-blue-100 rounded-lg shadow-md hover:bg-blue-200'>
-            <p className='text-sm text-blue-800'>6 Months Supply</p>
+            <p className='text-sm text-blue-800'>6 Months Expire</p>
             <p className='text-2xl font-bold text-blue-900'>{quantityData.sixMonths}</p>
           </div>
           <div className='p-4 text-center transition-colors duration-200 bg-green-100 rounded-lg shadow-md hover:bg-green-200'>
-            <p className='text-sm text-green-800'>3 Months Supply</p>
+            <p className='text-sm text-green-800'>3 Months Expire</p>
             <p className='text-2xl font-bold text-green-900'>{quantityData.threeMonths}</p>
           </div>
           <div className='p-4 text-center transition-colors duration-200 bg-yellow-100 rounded-lg shadow-md hover:bg-yellow-200'>
-            <p className='text-sm text-yellow-800'>1 Month Supply</p>
+            <p className='text-sm text-yellow-800'>1 Month Expire</p>
             <p className='text-2xl font-bold text-yellow-900'>{quantityData.oneMonth}</p>
           </div>
           <div className='p-4 text-center transition-colors duration-200 bg-red-100 rounded-lg shadow-md hover:bg-red-200'>
-            <p className='text-sm text-red-800'>1 Week Supply</p>
+            <p className='text-sm text-red-800'>1 Week Expire</p>
             <p className='text-2xl font-bold text-red-900'>{quantityData.oneWeek}</p>
           </div>
         </div>
