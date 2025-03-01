@@ -2,15 +2,23 @@ package com.group03.backend_PharmaPulse.advisor;
 
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.util.api.dto.ErrorResponseDto;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
 
 
 import java.util.HashMap;
@@ -73,5 +81,51 @@ public class AppWideExceptionHandler{
                 HttpStatus.NOT_FOUND
         );
     }
-
+    // Handle authentication exceptions (e.g. invalid credentials)
+    @ExceptionHandler({UsernameNotFoundException.class, BadCredentialsException.class})
+    public ResponseEntity<ErrorResponseDto> handleAuthenticationException(Exception e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(401, "Username or Password is incorrect", e.getMessage()),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(400, "Bad Request", e.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+    @ExceptionHandler(AccountStatusException.class)
+    public ResponseEntity<ErrorResponseDto> handleAccountStatusException(AccountStatusException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(401, "User Account is abnormal", e.getMessage()),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+    // Handle JWT token signature invalid exceptions
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorResponseDto> handleSignatureException(SignatureException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(401, "The access token provided is " +
+                        "revoked, malformed or invalid", e.getMessage()),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+    // Handle JWT token expiration exceptions
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorResponseDto> handleExpiredJwtException(ExpiredJwtException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(401, "The access token provided is expired", e.getMessage()),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+    //Handle unauthorized access exceptions
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(403, "No Permission", e.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
 }
