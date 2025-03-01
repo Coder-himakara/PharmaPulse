@@ -198,9 +198,25 @@ const EmployeeNavbar = () => {
         isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"
       }`}
     >
-      <div className="flex items-right">
+      <div className="flex items-center gap-6">
         <img src={logo} alt="Logo" className="h-10 mr-4" />
-        <span className="text-lg font-bold">Home</span>
+      
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `text-lg font-bold transition-colors duration-300 ${
+              isActive ? "text-teal-300" : "hover:text-teal-300"
+            }`
+          }
+        >
+          Home
+        </NavLink>
+        <button
+          onClick={() => navigate("/employee-dashboard")}
+          className="text-lg font-bold bg-transparent border-none cursor-pointer hover:text-teal-300"
+        >
+          Dashboard
+        </button>
       </div>
 
       {/* Mega Menu centered dropdown */}
