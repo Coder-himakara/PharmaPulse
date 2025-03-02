@@ -14,9 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class OrderDTO {
-    private Long orderId;
+    //private Long orderId;
     private String orderNumber;
-    private CustomerDTO customer;  // Customer details from Sales module
+    private Long customer_id;
+    private String customer_name;  // Customer details from Sales module
     private List<OrderItemDTO> orderItems;
     private BigDecimal totalAmount;
     private BigDecimal totalDiscount;

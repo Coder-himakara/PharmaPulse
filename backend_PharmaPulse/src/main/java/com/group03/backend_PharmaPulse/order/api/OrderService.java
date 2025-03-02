@@ -7,5 +7,5 @@ public interface OrderService {
     OrderDTO createOrder(OrderDTO orderDTO);
     OrderDTO getOrderById(Long orderId);
     List<OrderDTO> getAllOrders();
-    OrderDTO updateOrder(Long orderId, OrderDTO orderDTO);
+    //OrderDTO updateOrder(Long orderId, OrderDTO orderDTO);
 }
