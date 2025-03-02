@@ -127,6 +127,11 @@ public class OrderServiceImpl implements OrderService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setTotalAmount(totalAmount);
 
+        // --- save Total Discount ---
+        order.setTotalDiscount(order.getOrderItems().stream()
+                .map(OrderItem::getDiscount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+
         // --- Save Order ---
         Order savedOrder = orderRepository.save(order);
 
