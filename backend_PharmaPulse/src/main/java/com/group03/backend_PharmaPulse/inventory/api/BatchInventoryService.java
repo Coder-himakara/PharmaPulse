@@ -7,4 +7,10 @@ import java.util.List;
 public interface BatchInventoryService {
     List<BatchInventoryDTO> getAllBatchInventories();
     BatchInventoryDTO getBatchInventoryById(Long id);
+
+    /**
+     * Checks for batches nearing expiry and generates alerts for 6 months, 3 months, 1 month, and 1 week before expiry.
+     * Returns a list of BatchInventoryDTOs for batches needing alerts, grouped by threshold.
+     */
+    List<BatchInventoryDTO> checkExpiryAlerts();
 }

@@ -16,6 +16,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -85,6 +87,56 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                     .batchStatus(BatchStatus.AVAILABLE)
                     .dateReceived(LocalDate.now())
                     .build();
+        }
+    }
+
+    /**
+     * Checks for batches nearing expiry and generates alerts for 6 months, 3 months, 1 month, and 1 week before expiry.
+     * Returns a list of BatchInventoryDTOs for batches needing alerts, grouped by threshold.
+     */
+    @Override
+    public List<BatchInventoryDTO> checkExpiryAlerts() {
+        LocalDate now = LocalDate.now();
+        List<BatchInventoryDTO> alerts = new ArrayList<>();
+
+        // Check 6 months before expiry
+        LocalDate sixMonthsBefore = now.plusMonths(6);
+        List<BatchInventory> sixMonthBatches = batchInventoryRepo.findByExpiryDateBetween(now, sixMonthsBefore);
+        addAlerts(sixMonthBatches, "6 months before expiry", alerts);
+
+        // Check 3 months before expiry
+        LocalDate threeMonthsBefore = now.plusMonths(3);
+        List<BatchInventory> threeMonthBatches = batchInventoryRepo.findByExpiryDateBetween(now, threeMonthsBefore);
+        addAlerts(threeMonthBatches, "3 months before expiry", alerts);
+
+        // Check 1 month before expiry
+        LocalDate oneMonthBefore = now.plusMonths(1);
+        List<BatchInventory> oneMonthBatches = batchInventoryRepo.findByExpiryDateBetween(now, oneMonthBefore);
+        addAlerts(oneMonthBatches, "1 month before expiry", alerts);
+
+        // Check 1 week before expiry
+        LocalDate oneWeekBefore = now.plusWeeks(1);
+        List<BatchInventory> oneWeekBatches = batchInventoryRepo.findByExpiryDateBetween(now, oneWeekBefore);
+        addAlerts(oneWeekBatches, "1 week before expiry", alerts);
+
+        // Filter out expired or sold batches and ensure uniqueness by batchId
+        return alerts.stream()
+                .filter(dto -> dto.getBatchStatus() != BatchStatus.EXPIRED && dto.getBatchStatus() != BatchStatus.SOLD)
+                .distinct()  // Use distinct to remove duplicates based on object equality (batchId will help)
+                .collect(Collectors.toList());
+    }
+
+    private void addAlerts(List<BatchInventory> batches, String alertMessage, List<BatchInventoryDTO> alerts) {
+        for (BatchInventory batch : batches) {
+            if (batch.getBatchStatus() != BatchStatus.EXPIRED && batch.getBatchStatus() != BatchStatus.SOLD) {
+                BatchInventoryDTO dto = batchInventoryMapper.toDTO(batch);
+                // Check if this batchId already exists in alerts to prevent duplicates
+                if (dto.getBatchId() != null && alerts.stream().noneMatch(existing -> existing.getBatchId().equals(dto.getBatchId()))) {
+                    System.out.println("Alert for Batch " + batch.getBatchId() + ": " + alertMessage +
+                            " - Expiry Date: " + batch.getExpiryDate());
+                    alerts.add(dto);
+                }
+            }
         }
     }
 }

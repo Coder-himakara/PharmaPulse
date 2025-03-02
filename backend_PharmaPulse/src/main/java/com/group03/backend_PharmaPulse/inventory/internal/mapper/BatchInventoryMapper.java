@@ -9,12 +9,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface BatchInventoryMapper {
-    @Mapping(target = "batchId",ignore = true)
+    @Mapping(target = "batchId", ignore = true)  // Still ignore in toEntity if auto-generated
     @Mapping(target = "purchaseInvoice", ignore = true)
-    @Mapping(target = "inventoryRecords",ignore = true)
+    @Mapping(target = "inventoryRecords", ignore = true)
     BatchInventory toEntity(BatchInventoryDTO batchInventoryDTO);
 
-
+    @Mapping(target = "batchId", source = "batchId")  // Explicitly map batchId in toDTO
     BatchInventoryDTO toDTO(BatchInventory batchInventory);
 
     List<BatchInventoryDTO> toDTOsList(List<BatchInventory> batchInventories);

@@ -38,4 +38,13 @@ public class BatchInventoryController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("/expiry-alerts")
+    public ResponseEntity<StandardResponse> getExpiryAlerts() {
+        List<BatchInventoryDTO> expiryAlerts = batchInventoryService.checkExpiryAlerts();
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Success", expiryAlerts),
+                HttpStatus.OK
+        );
+    }
 }
