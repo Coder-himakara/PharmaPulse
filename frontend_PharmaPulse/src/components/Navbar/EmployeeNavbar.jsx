@@ -9,6 +9,7 @@ import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
 import { MegaMenu } from "primereact/megamenu";
 
+
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
   <li>
     <NavLink
@@ -212,7 +213,9 @@ const EmployeeNavbar = () => {
           Home
         </NavLink>
         <button
-          onClick={() => navigate("/employee-dashboard")}
+          onClick={() => navigate("/employee-dashboard")
+
+          }
           className="text-lg font-bold bg-transparent border-none cursor-pointer hover:text-teal-300"
         >
           Dashboard
