@@ -12,6 +12,7 @@ import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
 import { MegaMenu } from "primereact/megamenu";
 
+
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
   <li>
     <NavLink
@@ -43,7 +44,7 @@ const AdminNavbar = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [hideBackground] = useState(false);
   const navigate = useNavigate();
-
+  
 
 
   const toggleDropdown = () => {
@@ -54,7 +55,9 @@ const AdminNavbar = () => {
     setIsDropdownVisible(false);
   };
    
-  
+  const logout = () => {
+    setIsDropdownVisible(false);
+  };
 
   const AdminNavbarSections = [
       
@@ -171,7 +174,7 @@ const AdminNavbar = () => {
           {isDropdownVisible && (
             <ul className={`absolute top-full right-0 mt-2 border rounded-md min-w-[150px] shadow-lg z-10 list-none ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"}`}> 
               <DropdownLink to="/update-profile" icon={FaUser} onClick={closeDropdown}>Profile</DropdownLink>
-              <DropdownLink to="/" icon={FaSignOutAlt} onClick={closeDropdown}>Log Out</DropdownLink>
+              <DropdownLink to="/" icon={FaSignOutAlt} onClick={logout}>Log Out</DropdownLink>
             </ul>
           )}
           <button className="flex items-center justify-center w-8 h-8 rounded-full focus:outline-none" onClick={toggleTheme}>

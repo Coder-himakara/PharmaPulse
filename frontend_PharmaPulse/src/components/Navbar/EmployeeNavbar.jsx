@@ -9,6 +9,7 @@ import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
 import { MegaMenu } from "primereact/megamenu";
 
+
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
   <li>
     <NavLink
@@ -40,11 +41,17 @@ const EmployeeNavbar = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const navigate = useNavigate();
 
+ 
+
   const toggleDropdown = () => {
     setIsDropdownVisible((prev) => !prev);
   };
 
   const closeDropdown = () => {
+    setIsDropdownVisible(false);
+  };
+
+  const logout = () => {
     setIsDropdownVisible(false);
   };
 
@@ -248,7 +255,7 @@ const EmployeeNavbar = () => {
               <DropdownLink to="/update-profile" icon={FaUser} onClick={closeDropdown}>
                 Profile
               </DropdownLink>
-              <DropdownLink to="/" icon={FaSignOutAlt} onClick={closeDropdown}>
+              <DropdownLink to="/" icon={FaSignOutAlt} onClick={logout}>
                 Log Out
               </DropdownLink>
             </ul>

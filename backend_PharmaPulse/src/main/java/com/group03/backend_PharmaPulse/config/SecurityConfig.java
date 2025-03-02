@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/users/register").hasAuthority(ADMIN_CREATE.name())
                         .anyRequest().authenticated())
 
+                .cors(cors -> cors.configure(http))
                 .csrf(customizer -> customizer.disable())
                 .httpBasic(httpBasic ->httpBasic.
                         authenticationEntryPoint(this.basicAuthenticationEntryPoint))
