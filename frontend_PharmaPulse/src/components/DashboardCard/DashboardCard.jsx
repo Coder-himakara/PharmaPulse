@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import EmployeeDashboardCard from './EmployeeDashboardCard';
+
 
 const DashboardCard = ({ content }) => {
   return (
@@ -12,7 +12,7 @@ const DashboardCard = ({ content }) => {
       {/* Content Section */}
       <div className='flex-grow text-[var(--text-color)]'>
         {content}
-        <EmployeeDashboardCard />
+       
       </div>
     </div>
   );
