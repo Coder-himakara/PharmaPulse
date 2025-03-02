@@ -25,9 +25,10 @@ public class Order {
     private String orderNumber;
 
     // Basic customer details
+    private Long customerId;
     private String customerName;
-    private String customerAddress;
-    private String customerContact;
+    //private String customerAddress;
+    //private String customerContact;
 
     private BigDecimal totalAmount;
     private BigDecimal totalDiscount;

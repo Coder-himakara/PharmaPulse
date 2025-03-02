@@ -5,9 +5,9 @@ CREATE SEQUENCE order_seq START WITH 1 INCREMENT BY 1;
 CREATE TABLE orders (
                         order_id BIGINT PRIMARY KEY DEFAULT nextval('order_seq'),
                         order_number VARCHAR(255) UNIQUE NOT NULL,
+                        customer_id BIGINT,
                         customer_name VARCHAR(255),
-                        customer_address VARCHAR(255),
-                        customer_contact VARCHAR(255),
+
                         total_amount NUMERIC(19,2),
                         total_discount NUMERIC(19,2),
                         order_date TIMESTAMP,

@@ -11,6 +11,7 @@ import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
 import com.group03.backend_PharmaPulse.product.api.ProductService;
 import com.group03.backend_PharmaPulse.product.api.ProductWholesalePriceService;
 import com.group03.backend_PharmaPulse.sales.api.CustomerService;
+import com.group03.backend_PharmaPulse.sales.api.dto.CustomerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -50,17 +51,23 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDTO createOrder(OrderDTO orderDTO) {
-
-        if (orderDTO.getCustomer() == null || orderDTO.getCustomer().getCustomer_id() == null) {
+        // --- Enrich Customer Information ---
+        if (orderDTO.getCustomer_id() == null) {
             throw new RuntimeException("Customer ID is required");
         }
-
-        var minimalCustomer = orderDTO.getCustomer();
-        var fullCustomer = customerService.getCustomerById(minimalCustomer.getCustomer_id());
+        // Retrieve full customer details from CustomerService
+        var fullCustomer = customerService.getCustomerById(orderDTO.getCustomer_id());
         if (fullCustomer == null) {
-            throw new RuntimeException("Customer not found for id: " + minimalCustomer.getCustomer_id());
+            throw new RuntimeException("Customer not found for id: " + orderDTO.getCustomer_id());
         }
-        orderDTO.setCustomer(fullCustomer);
+        // Set minimal fields in the DTO with full details
+        orderDTO.setCustomer_id(fullCustomer.getCustomer_id());
+        orderDTO.setCustomer_name(fullCustomer.getCustomer_name());
+
+        // Process order items and other logic as before...
+
+        //Order order = orderMapper.toEntity(orderDTO);
+
 
         // --- Process Order Items ---
         if (orderDTO.getOrderItems() != null) {
@@ -113,9 +120,10 @@ public class OrderServiceImpl implements OrderService {
 
         // --- Map DTO to Entity ---
         Order order = orderMapper.toEntity(orderDTO);
+
+        order.setCustomerId(fullCustomer.getCustomer_id());
         order.setCustomerName(fullCustomer.getCustomer_name());
-        order.setCustomerAddress(fullCustomer.getCustomer_address());
-        order.setCustomerContact(fullCustomer.getCustomer_contact_name());
+
 
         if (order.getOrderItems() != null) {
             order.getOrderItems().forEach(item -> item.setOrder(order));
@@ -169,27 +177,5 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toDTOList(orderRepository.findAll());
     }
 
-    @Override
-    @Transactional
-    public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
-        Order existingOrder = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        existingOrder.setCustomerName(orderDTO.getCustomer().getCustomer_name());
-        existingOrder.setCustomerAddress(orderDTO.getCustomer().getCustomer_address());
-        existingOrder.setCustomerContact(orderDTO.getCustomer().getCustomer_contact_name());
-
-        // Recalculate total amount with percentage-based discount
-        BigDecimal totalAmount = orderDTO.getOrderItems().stream()
-                .map(item -> {
-                    BigDecimal totalPrice = item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-                    BigDecimal discountAmount = totalPrice.multiply(item.getDiscount()).divide(BigDecimal.valueOf(100));
-                    return totalPrice.subtract(discountAmount);
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        existingOrder.setTotalAmount(totalAmount);
-        Order updatedOrder = orderRepository.save(existingOrder);
-        return orderMapper.toDTO(updatedOrder);
-    }
 }

@@ -32,8 +32,8 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
-    @PutMapping("/{id}")
+    /*@PutMapping("/{id}")
     public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @RequestBody OrderDTO orderDTO) {
         return ResponseEntity.ok(orderService.updateOrder(id, orderDTO));
-    }
+    }*/
 }
