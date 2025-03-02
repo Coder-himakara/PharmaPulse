@@ -2,6 +2,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { registerUsers } from '../../../../api/AdminApiService';
 
 const AddUsersForm = ({ onAddUser }) => {
   const [formData, setFormData] = useState({
@@ -39,7 +40,7 @@ const AddUsersForm = ({ onAddUser }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    //Form Validation 
     if (
       !formData.username ||
       !formData.userId ||
@@ -50,6 +51,7 @@ const AddUsersForm = ({ onAddUser }) => {
       !formData.password ||
       !formData.confirmPassword ||
       !formData.dateOfJoined ||
+      !formData.role ||
       !formData.status
     ) {
       setErrorMessage("Please fill out all required fields.");
@@ -69,27 +71,61 @@ const AddUsersForm = ({ onAddUser }) => {
     }
 
     setErrorMessage("");
-    setSuccessMessage("Account created successfully!");
-    if (onAddUser) {
-      onAddUser(formData);
+
+    // File handling - if you need to handle file uploads
+    // For file uploads, you'd need FormData
+    let dataToSend;
+    if (formData.profilePicture) {
+      dataToSend = new FormData();
+      // Add all form fields to FormData
+      Object.keys(formData).forEach(key => {
+        if (key === 'profilePicture') {
+          dataToSend.append(key, formData[key]);
+        } else {
+          dataToSend.append(key, formData[key]);
+        }
+      });
+    } else {
+      // If no file, just send the JSON
+      dataToSend = { ...formData };
+      delete dataToSend.profilePicture;
     }
 
-    setTimeout(() => {
-      setFormData({
-        username: "",
-        userId: "",
-        nicNumber: "",
-        email: "",
-        contactNumber: "",
-        address: "",
-        password: "",
-        confirmPassword: "",
-        dateOfJoined: "",
-        profilePicture: null,
-        status: "",
-      });
-      setSuccessMessage("");
-    }, 2000);
+    // API Call to register users
+    if (onAddUser) {
+      registerUsers(dataToSend)
+        .then((response) => {
+          console.log(response);
+          setSuccessMessage("Account created successfully!");
+          // Reset form after successful submission
+          setFormData({
+            username: "",
+            userId: "",
+            nicNumber: "",
+            email: "",
+            contactNumber: "",
+            address: "",
+            password: "",
+            confirmPassword: "",
+            dateOfJoined: "",
+            role: "",
+            profilePicture: null,
+            status: "",
+          });
+
+          // Clear success message after delay
+          setTimeout(() => {
+            setSuccessMessage("");
+          }, 3000);
+        })
+        .catch((error) => {
+          console.error("Registration failed:", error);
+          setErrorMessage(
+            error.response?.data?.message ||
+            "Registration failed. Please try again."
+          );
+        });
+    }
   };
 
   const handleCancel = () => {
@@ -150,7 +186,7 @@ const AddUsersForm = ({ onAddUser }) => {
         {/* Right Column with Buttons at the Bottom */}
         <div className="space-y-4">
           {[
-             ["User ID", "userId", "text"],
+            ["User ID", "userId", "text"],
             ["Contact Number", "contactNumber", "number"],
             ["Date of Joined", "dateOfJoined", "date"],
           ].map(([label, name, type]) => (
@@ -167,9 +203,8 @@ const AddUsersForm = ({ onAddUser }) => {
                 name={name}
                 value={formData[name]}
                 onChange={handleChange}
-                className={`w-1/2 px-2 py-2 text-sm border border-${
-                  name === "contactNumber" ? "red-300" : "gray-300"
-                } rounded-md`}
+                className={`w-1/2 px-2 py-2 text-sm border border-${name === "contactNumber" ? "red-300" : "gray-300"
+                  } rounded-md`}
               />
             </div>
           ))}
@@ -186,8 +221,8 @@ const AddUsersForm = ({ onAddUser }) => {
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             >
               <option value="">Choose a role</option>
-              <option value="Employee">Employee</option>
-              <option value="Sales Representative">Sales Representative</option>
+              <option value="EMPLOYEE">Employee</option>
+              <option value="SALES_REP">Sales Representative</option>
             </select>
           </div>
 
@@ -219,10 +254,10 @@ const AddUsersForm = ({ onAddUser }) => {
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             >
               <option value="">Choose a status</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="Locked">Locked</option>
-              <option value="Suspended">Suspended</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+              <option value="LOCKED">Locked</option>
+              <option value="SUSPENDED">Suspended</option>
             </select>
           </div>
 
