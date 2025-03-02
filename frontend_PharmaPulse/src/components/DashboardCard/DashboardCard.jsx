@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 
-
 const DashboardCard = ({ content }) => {
   return (
     <div className='bg-[var(--card-bg-color)] absolute top-[100px] bottom-[70px] left-0 right-0 p-5 md:p-8 box-border overflow-y-auto flex flex-col '>
@@ -10,10 +9,7 @@ const DashboardCard = ({ content }) => {
       </h1>
 
       {/* Content Section */}
-      <div className='flex-grow text-[var(--text-color)]'>
-        {content}
-       
-      </div>
+      <div className='flex-grow text-[var(--text-color)]'>{content}</div>
     </div>
   );
 };
