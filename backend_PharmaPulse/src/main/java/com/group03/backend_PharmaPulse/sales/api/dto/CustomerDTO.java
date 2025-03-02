@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Builder //Helps build objects using a simple and readable way.
 //used to transfer customer-related data in a Spring Boot application
 public class CustomerDTO {
-    //private Long customer_id;
+    private Long customer_id;
     @NotBlank(message = "Customer Name is required")
     private String customer_name;
 
