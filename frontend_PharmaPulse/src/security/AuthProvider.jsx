@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AuthContext from './AuthContext';
 import { executeJwtAuthenticationService } from '../api/AuthenticationApiService';
 import { jwtDecode } from 'jwt-decode';
-import apiClient from '../api/ApiClient ';// Uncomment if needed
+import apiClient from '../api/ApiClient';// Uncomment if needed
 
 const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
@@ -55,9 +55,9 @@ const AuthProvider = ({ children }) => {
         username,
         password,
       );
-      const token = response.token;
+      const token = response.data.data.token;
       localStorage.setItem('token', token);
-      const role = response.data.role;
+      const role = response.data.data.userInfo.role;
       localStorage.setItem('role', role);
 
       // If you need to set default axios headers for auth
