@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AuthContext from './AuthContext';
 import { executeJwtAuthenticationService } from '../api/AuthenticationApiService';
 import { jwtDecode } from 'jwt-decode';
-import apiClient from '../api/ApiClient';// Uncomment if needed
+import apiClient from '../api/ApiClient'; // Uncomment if needed
 
 const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({

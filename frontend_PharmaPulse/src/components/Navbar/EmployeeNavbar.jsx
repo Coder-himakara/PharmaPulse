@@ -8,6 +8,7 @@ import { FaUser, FaSignOutAlt, FaSun, FaMoon } from "react-icons/fa";
 import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
 import { MegaMenu } from "primereact/megamenu";
+import { useAuth } from '../../security/UseAuth';
 
 
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
@@ -40,7 +41,7 @@ const EmployeeNavbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const navigate = useNavigate();
-
+  const { logout } = useAuth();
  
 
   const toggleDropdown = () => {
@@ -51,8 +52,9 @@ const EmployeeNavbar = () => {
     setIsDropdownVisible(false);
   };
 
-  const logout = () => {
+  const logoutEmployee = () => {
     setIsDropdownVisible(false);
+    logout();
   };
 
   const EmployeeNavbarSections = [
@@ -255,7 +257,7 @@ const EmployeeNavbar = () => {
               <DropdownLink to="/update-profile" icon={FaUser} onClick={closeDropdown}>
                 Profile
               </DropdownLink>
-              <DropdownLink to="/" icon={FaSignOutAlt} onClick={logout}>
+              <DropdownLink to="/" icon={FaSignOutAlt} onClick={logoutEmployee}>
                 Log Out
               </DropdownLink>
             </ul>
