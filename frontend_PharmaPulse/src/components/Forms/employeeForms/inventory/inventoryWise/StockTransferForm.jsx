@@ -266,10 +266,6 @@ const StockTransferForm = () => {
                   <td className='px-4 py-2'>
                     <input
                       type='text'
-                      value={row.remarks || ''}
-                      onChange={(e) =>
-                        handleBatchChange(index, 'remarks', e.target.value)
-                      }
                       className='w-full p-1 border rounded'
                     />
                   </td>
