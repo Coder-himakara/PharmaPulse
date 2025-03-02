@@ -8,6 +8,9 @@ import com.group03.backend_PharmaPulse.order.internal.mapper.OrderMapper;
 import com.group03.backend_PharmaPulse.order.internal.repository.OrderRepository;
 import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
+import com.group03.backend_PharmaPulse.product.api.ProductService;
+import com.group03.backend_PharmaPulse.product.api.ProductWholesalePriceService;
+import com.group03.backend_PharmaPulse.sales.api.CustomerService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -15,53 +18,126 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import com.group03.backend_PharmaPulse.order.internal.entity.OrderItem;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    // Used to check available stock and reserve inventory temporarily
     private final BatchInventoryService batchInventoryService;
     private final InventoryReservationService inventoryReservationService;
+    private final CustomerService customerService;
+    private final ProductService productService;
+    private final ProductWholesalePriceService productWholesalePriceService;
 
     public OrderServiceImpl(OrderRepository orderRepository,
                             OrderMapper orderMapper,
-                            BatchInventoryService batchInventoryService,InventoryReservationService inventoryReservationService) {
+                            BatchInventoryService batchInventoryService,
+                            InventoryReservationService inventoryReservationService,
+                            CustomerService customerService,
+                            ProductService productService,
+                            ProductWholesalePriceService productWholesalePriceService) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.batchInventoryService = batchInventoryService;
         this.inventoryReservationService = inventoryReservationService;
+        this.customerService = customerService;
+        this.productService = productService;
+        this.productWholesalePriceService = productWholesalePriceService;
     }
 
     @Override
     @Transactional
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        // Generate order details
+
+        if (orderDTO.getCustomer() == null || orderDTO.getCustomer().getCustomer_id() == null) {
+            throw new RuntimeException("Customer ID is required");
+        }
+
+        var minimalCustomer = orderDTO.getCustomer();
+        var fullCustomer = customerService.getCustomerById(minimalCustomer.getCustomer_id());
+        if (fullCustomer == null) {
+            throw new RuntimeException("Customer not found for id: " + minimalCustomer.getCustomer_id());
+        }
+        orderDTO.setCustomer(fullCustomer);
+
+        // --- Process Order Items ---
+        if (orderDTO.getOrderItems() != null) {
+            orderDTO.setOrderItems(
+                    orderDTO.getOrderItems().stream().map(item -> {
+                        if (item.getProductId() == null || item.getQuantity() == null) {
+                            throw new RuntimeException("Each order item must have a productId and quantity");
+                        }
+
+                        if (item.getProductName() == null || item.getUnitPrice() == null) {
+                            var product = productService.getProductById(item.getProductId());
+                            if (product == null) {
+                                throw new RuntimeException("Product not found for id: " + item.getProductId());
+                            }
+                            item.setProductName(product.getProductName());
+
+                            var latestPriceOpt = productWholesalePriceService.getLatestWholesalePrice(item.getProductId());
+                            if (latestPriceOpt.isPresent()) {
+                                item.setUnitPrice(latestPriceOpt.get());
+                            } else {
+                                throw new RuntimeException("No wholesale price found for product id: " + item.getProductId());
+                            }
+                        }
+
+                        // Ensure discount is treated as a percentage
+                        BigDecimal discountPercentage = item.getDiscount() != null ? item.getDiscount() : BigDecimal.ZERO;
+
+                        // Calculate total price before discount
+                        BigDecimal totalPrice = item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+
+                        // Calculate discount amount (percentage-based)
+                        BigDecimal discountAmount = totalPrice.multiply(discountPercentage).divide(BigDecimal.valueOf(100));
+
+                        // Calculate final line total after discount
+                        BigDecimal lineTotal = totalPrice.subtract(discountAmount);
+
+                        // Set the calculated values back
+                        item.setDiscount(discountAmount); // Store actual discount amount
+                        item.setLineTotal(lineTotal);
+
+                        return item;
+                    }).collect(Collectors.toList())
+            );
+        }
+
+        // --- Order Metadata ---
         orderDTO.setOrderDate(LocalDateTime.now());
         orderDTO.setStatus("PENDING");
         orderDTO.setOrderNumber("ORD-" + UUID.randomUUID().toString());
 
-        // Save order first to obtain an orderId
+        // --- Map DTO to Entity ---
         Order order = orderMapper.toEntity(orderDTO);
+        order.setCustomerName(fullCustomer.getCustomer_name());
+        order.setCustomerAddress(fullCustomer.getCustomer_address());
+        order.setCustomerContact(fullCustomer.getCustomer_contact_name());
 
-        //new
         if (order.getOrderItems() != null) {
             order.getOrderItems().forEach(item -> item.setOrder(order));
         }
+
+        // --- Calculate Total Amount ---
+        BigDecimal totalAmount = order.getOrderItems().stream()
+                .map(OrderItem::getLineTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        order.setTotalAmount(totalAmount);
+
+        // --- Save Order ---
         Order savedOrder = orderRepository.save(order);
 
-        // For each order item, validate effective available stock and reserve inventory
-        orderDTO.getOrderItems().forEach(item -> {
-            // Retrieve batches for the product
+        // --- Inventory Validation & Reservation ---
+        for (var item : orderDTO.getOrderItems()) {
             List<BatchInventoryDTO> batches = batchInventoryService.getAllBatchInventories()
                     .stream()
                     .filter(b -> b.getProductId().equals(item.getProductId()))
                     .collect(Collectors.toList());
 
-            // Sum available units from all batches (assuming here availableUnitQuantity is not altered)
             int totalAvailable = batches.stream().mapToInt(BatchInventoryDTO::getAvailableUnitQuantity).sum();
-            // Get already reserved quantity from the reservation table
             int totalReserved = inventoryReservationService.getTotalReservedForProduct(item.getProductId());
             int effectiveAvailable = totalAvailable - totalReserved;
 
@@ -69,19 +145,17 @@ public class OrderServiceImpl implements OrderService {
                 throw new RuntimeException("Insufficient effective stock for product id: " + item.getProductId());
             }
 
-            // Reserve inventory in the separate reservation table
             inventoryReservationService.reserveInventory(item.getProductId(), item.getQuantity(), savedOrder.getOrderId());
-        });
+        }
 
         return orderMapper.toDTO(savedOrder);
     }
-
-
 
     @Override
     public OrderDTO getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.getOrderItems().size();
         return orderMapper.toDTO(order);
     }
 
@@ -95,14 +169,20 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
         Order existingOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-        // Update customer details and recalculate totals as needed
+
         existingOrder.setCustomerName(orderDTO.getCustomer().getCustomer_name());
         existingOrder.setCustomerAddress(orderDTO.getCustomer().getCustomer_address());
         existingOrder.setCustomerContact(orderDTO.getCustomer().getCustomer_contact_name());
+
+        // Recalculate total amount with percentage-based discount
         BigDecimal totalAmount = orderDTO.getOrderItems().stream()
-                .map(item -> item.getUnitPrice().multiply(new BigDecimal(item.getQuantity()))
-                        .subtract(item.getDiscount() != null ? item.getDiscount() : BigDecimal.ZERO))
+                .map(item -> {
+                    BigDecimal totalPrice = item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+                    BigDecimal discountAmount = totalPrice.multiply(item.getDiscount()).divide(BigDecimal.valueOf(100));
+                    return totalPrice.subtract(discountAmount);
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         existingOrder.setTotalAmount(totalAmount);
         Order updatedOrder = orderRepository.save(existingOrder);
         return orderMapper.toDTO(updatedOrder);
