@@ -13,4 +13,10 @@ public interface BatchInventoryService {
      * Returns a list of BatchInventoryDTOs for batches needing alerts, grouped by threshold.
      */
     List<BatchInventoryDTO> checkExpiryAlerts();
+
+    /**
+     * Checks for products needing reorder based on total available quantity across batches compared to reorderLimitByPackage.
+     * Returns a list of BatchInventoryDTOs for batches of products requiring reorder alerts.
+     */
+    List<BatchInventoryDTO> checkReorderAlerts();
 }

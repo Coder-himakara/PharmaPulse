@@ -17,7 +17,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -123,7 +122,7 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
         return alerts.stream()
                 .filter(dto -> dto.getBatchStatus() != BatchStatus.EXPIRED && dto.getBatchStatus() != BatchStatus.SOLD)
                 .distinct()  // Use distinct to remove duplicates based on object equality (batchId will help)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void addAlerts(List<BatchInventory> batches, String alertMessage, List<BatchInventoryDTO> alerts) {
@@ -138,5 +137,36 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                 }
             }
         }
+    }
+
+    /**
+     * Checks for products needing reorder based on total available quantity across batches compared to reorderLimitByPackage.
+     * Returns a list of BatchInventoryDTOs for batches of products requiring reorder alerts.
+     */
+    @Override
+    public List<BatchInventoryDTO> checkReorderAlerts() {
+        List<Long> productIds = batchInventoryRepo.findAll().stream()
+                .filter(batch -> batch.getBatchStatus() == BatchStatus.AVAILABLE)
+                .map(BatchInventory::getProductId)
+                .distinct()
+                .toList();
+
+        List<BatchInventoryDTO> alerts = new ArrayList<>();
+        for (Long productId : productIds) {
+            Integer totalAvailable = batchInventoryRepo.sumAvailableUnitQuantityByProductIdAndStatus(productId, BatchStatus.AVAILABLE);
+            if (totalAvailable == null) totalAvailable = 0; // Handle case where no batches exist
+
+            ProductDTO product = productService.getProductById(productId);
+            if (product != null && totalAvailable <= product.getReorderLimitByPackage()) {
+                List<BatchInventory> productBatches = batchInventoryRepo.findByProductIdAndStatus(productId, BatchStatus.AVAILABLE);
+                for (BatchInventory batch : productBatches) {
+                    BatchInventoryDTO dto = batchInventoryMapper.toDTO(batch);
+                    System.out.println("Reorder Alert for Product " + productId + ", Batch " + batch.getBatchId() +
+                            ": Total available = " + totalAvailable + ", Reorder limit = " + product.getReorderLimitByPackage());
+                    alerts.add(dto);
+                }
+            }
+        }
+        return alerts;
     }
 }
