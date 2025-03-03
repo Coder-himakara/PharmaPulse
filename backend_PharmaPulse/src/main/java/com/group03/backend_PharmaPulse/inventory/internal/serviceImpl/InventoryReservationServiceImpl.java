@@ -20,11 +20,14 @@ public class InventoryReservationServiceImpl implements InventoryReservationServ
     private final InventoryReservationRepo reservationRepo;
     private final BatchInventoryRepo batchInventoryRepository;
     private final ProductService productService;
+    private final InventoryReservationRepo inventoryReservationRepo;
 
-    public InventoryReservationServiceImpl(InventoryReservationRepo reservationRepo, BatchInventoryRepo batchInventoryRepository, ProductService productService) {
+
+    public InventoryReservationServiceImpl(InventoryReservationRepo reservationRepo, BatchInventoryRepo batchInventoryRepository, ProductService productService, InventoryReservationRepo inventoryReservationRepo) {
         this.reservationRepo = reservationRepo;
         this.batchInventoryRepository = batchInventoryRepository;
         this.productService = productService;
+        this.inventoryReservationRepo = inventoryReservationRepo;
     }
 
     @Override
@@ -87,5 +90,10 @@ public class InventoryReservationServiceImpl implements InventoryReservationServ
     }
 
     // For demonstration purposes, assume each BatchInventory record contains the same product name.
-
+    @Override
+    @Transactional
+    public void deleteReservationsByOrderId(Long orderId) {
+        // Assuming your InventoryReservationRepository has a method to delete by orderId:
+        inventoryReservationRepo.deleteByOrderId(orderId);
+    }
 }

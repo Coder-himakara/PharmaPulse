@@ -38,7 +38,10 @@ CREATE TABLE sales_invoices (
                                 invoice_date TIMESTAMP,
                                 total_amount NUMERIC(19,2),
                                 total_discount NUMERIC(19,2),
-                                order_id BIGINT
+                                order_id BIGINT,
+                                customer_id BIGINT,
+                                customer_name VARCHAR(255)
+
 );
 
 -- Sequence and table for sales invoice items

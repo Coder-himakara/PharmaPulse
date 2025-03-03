@@ -178,4 +178,73 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    @Override
+    @Transactional
+    public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
+        // Retrieve the existing order
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // Update order header details (customer details, etc.)
+        existingOrder.setCustomerName(orderDTO.getCustomer_name());
+
+        // Option 1: If you want to update order items individually, you can iterate and update existing ones.
+        // For simplicity, here we remove all existing order items and rebuild them from the input.
+
+        // Clear current order items
+        existingOrder.getOrderItems().clear();
+
+        // Build new order items from the input DTO
+        if (orderDTO.getOrderItems() != null) {
+            List<OrderItem> updatedItems = orderDTO.getOrderItems().stream().map(itemDTO -> {
+                OrderItem newItem = new OrderItem();
+                newItem.setProductId(itemDTO.getProductId());
+                newItem.setProductName(itemDTO.getProductName());
+                newItem.setQuantity(itemDTO.getQuantity());
+                newItem.setUnitPrice(itemDTO.getUnitPrice());
+                // If discount is provided as percentage, you might need to recalc discount amount.
+                // For this example, we assume discount in the DTO is the actual discount amount.
+                BigDecimal totalPrice = itemDTO.getUnitPrice().multiply(BigDecimal.valueOf(itemDTO.getQuantity()));
+                BigDecimal discountAmount = (itemDTO.getDiscount() != null) ? itemDTO.getDiscount() : BigDecimal.ZERO;
+                BigDecimal lineTotal = totalPrice.subtract(discountAmount);
+                newItem.setDiscount(discountAmount);
+                newItem.setLineTotal(lineTotal);
+                newItem.setOrder(existingOrder); // Set the parent reference
+                return newItem;
+            }).collect(Collectors.toList());
+            existingOrder.setOrderItems(updatedItems);
+        }
+
+        // Recalculate order totals based on the updated order items
+        BigDecimal totalAmount = existingOrder.getOrderItems().stream()
+                .map(OrderItem::getLineTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        existingOrder.setTotalAmount(totalAmount);
+
+        BigDecimal totalDiscount = existingOrder.getOrderItems().stream()
+                .map(OrderItem::getDiscount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        existingOrder.setTotalDiscount(totalDiscount);
+
+        // Save the updated order
+        Order updatedOrder = orderRepository.save(existingOrder);
+
+        // Return the updated order as a DTO
+        return orderMapper.toDTO(updatedOrder);
+    }
+
+
+    @Override
+    @Transactional
+    public void deleteOrder(Long orderId) {
+        // Retrieve the order first
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found for id: " + orderId));
+        // Delete associated inventory reservations for this order
+        inventoryReservationService.deleteReservationsByOrderId(orderId);
+        // Now delete the order itself
+        orderRepository.delete(existingOrder);
+    }
+
+
 }

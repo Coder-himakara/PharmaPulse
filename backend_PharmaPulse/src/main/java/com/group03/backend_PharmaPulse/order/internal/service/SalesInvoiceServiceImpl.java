@@ -11,7 +11,6 @@ import com.group03.backend_PharmaPulse.order.internal.repository.SalesInvoiceRep
 import com.group03.backend_PharmaPulse.order.internal.repository.OrderRepository;
 import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.InventoryReservationService;
-import com.group03.backend_PharmaPulse.sales.api.dto.CustomerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -34,13 +33,14 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
                                    SalesInvoiceMapper salesInvoiceMapper,
                                    BatchInventoryService batchInventoryService,
                                    InventoryReservationService inventoryReservationService,
-                                   OrderRepository orderRepository,SalesInvoiceItemMapper salesInvoiceItemMapper) {
+                                   OrderRepository orderRepository,
+                                   SalesInvoiceItemMapper salesInvoiceItemMapper) {
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.salesInvoiceMapper = salesInvoiceMapper;
         this.batchInventoryService = batchInventoryService;
         this.inventoryReservationService = inventoryReservationService;
         this.orderRepository = orderRepository;
-        this.salesInvoiceItemMapper=salesInvoiceItemMapper;
+        this.salesInvoiceItemMapper = salesInvoiceItemMapper;
     }
 
     @Override
@@ -50,16 +50,19 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
         if (salesInvoiceDTO.getOrderId() == null) {
             throw new RuntimeException("Order ID is required to generate a Sales Invoice");
         }
-        // Retrieve full order details based on orderId
+        // Retrieve the Order from the database
         Order order = orderRepository.findById(salesInvoiceDTO.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order not found for id: " + salesInvoiceDTO.getOrderId()));
+
+        // ***** Set Customer Details from Order into SalesInvoiceDTO *****
+        salesInvoiceDTO.setCustomerId(order.getCustomerId());
+        salesInvoiceDTO.setCustomerName(order.getCustomerName());
 
         // Set basic invoice metadata
         salesInvoiceDTO.setInvoiceNumber("INV-" + UUID.randomUUID().toString());
         salesInvoiceDTO.setInvoiceDate(LocalDateTime.now());
 
-        // Option 1: If the SalesInvoiceDTO already contains invoice items, use them.
-        // Option 2: If not, build invoice items from the order's order items.
+        // If invoice items are not provided, build them from Order's items
         if (salesInvoiceDTO.getInvoiceItems() == null || salesInvoiceDTO.getInvoiceItems().isEmpty()) {
             List<SalesInvoiceItem> invoiceItems = order.getOrderItems().stream().map(orderItem -> {
                 SalesInvoiceItem invoiceItem = new SalesInvoiceItem();
@@ -70,26 +73,11 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
                 invoiceItem.setLineTotal(orderItem.getLineTotal());
                 return invoiceItem;
             }).collect(Collectors.toList());
-            // Map these invoice items to DTOs using your SalesInvoiceMapper if needed,
-            // or set them directly in the entity later.
-            //salesInvoiceDTO.setInvoiceItems(salesInvoiceMapper.toDTOList(invoiceItems));
+            // Map invoice items to DTOs via SalesInvoiceItemMapper (if needed)
             salesInvoiceDTO.setInvoiceItems(salesInvoiceItemMapper.toDTOList(invoiceItems));
-
         }
-        // Retrieve the order first (which should include customer details)
-        Order o = orderRepository.findById(salesInvoiceDTO.getOrderId())
-                .orElseThrow(() -> new RuntimeException("Order not found for id: " + salesInvoiceDTO.getOrderId()));
 
-
-        // Build customer details from the order and set them into the SalesInvoiceDTO.
-        CustomerDTO customerDTO = new CustomerDTO(); // Set customer details in the SalesInvoiceDTO from the order
-        salesInvoiceDTO.setCustomerId(order.getCustomerId());
-        salesInvoiceDTO.setCustomerName(order.getCustomerName());
-
-
-
-
-        // Calculate total discount and total amount from the order's items
+        // Calculate totals from the Order's items
         BigDecimal totalAmount = order.getOrderItems().stream()
                 .map(item -> item.getLineTotal())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -99,13 +87,12 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
                     return linePrice.subtract(item.getLineTotal());
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
         salesInvoiceDTO.setTotalAmount(totalAmount);
         salesInvoiceDTO.setTotalDiscount(totalDiscount);
 
-        // Create SalesInvoice entity from the DTO.
+        // Create the SalesInvoice entity from the DTO
         SalesInvoice salesInvoice = salesInvoiceMapper.toEntity(salesInvoiceDTO);
-        // Optionally, if your mapping does not set invoice items, set them manually from order items:
+        // Build invoice items manually if needed
         List<SalesInvoiceItem> invoiceItems = order.getOrderItems().stream().map(orderItem -> {
             SalesInvoiceItem item = new SalesInvoiceItem();
             item.setProductId(orderItem.getProductId());
@@ -117,14 +104,17 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
             return item;
         }).collect(Collectors.toList());
         salesInvoice.setInvoiceItems(invoiceItems);
-        // Also, link the SalesInvoice to the Order by storing orderId.
+        // Link SalesInvoice to the Order
         salesInvoice.setOrderId(order.getOrderId());
+        // ***** Set customer details into the SalesInvoice entity *****
+        salesInvoice.setCustomerId(order.getCustomerId());
+        salesInvoice.setCustomerName(order.getCustomerName());
 
         // Save the SalesInvoice
         SalesInvoice savedInvoice = salesInvoiceRepository.save(salesInvoice);
 
-        // Deduct inventory from each invoice item and finalize reservations
-        salesInvoice.getInvoiceItems().forEach(item -> {
+        // Deduct inventory and finalize reservations for each invoice item
+        savedInvoice.getInvoiceItems().forEach(item -> {
             batchInventoryService.deductInventory(item.getProductId(), item.getQuantity());
             inventoryReservationService.finalizeReservation(item.getProductId(), item.getQuantity(), order.getOrderId());
         });

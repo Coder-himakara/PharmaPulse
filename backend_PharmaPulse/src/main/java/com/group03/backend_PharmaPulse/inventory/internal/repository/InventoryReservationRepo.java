@@ -9,4 +9,6 @@ import java.util.List;
 public interface InventoryReservationRepo extends JpaRepository<InventoryReservation, Long> {
     List<InventoryReservation> findByProductId(Long productId);
     List<InventoryReservation> findByOrderId(Long orderId);
+    void deleteByOrderId(Long orderId);
+
 }
