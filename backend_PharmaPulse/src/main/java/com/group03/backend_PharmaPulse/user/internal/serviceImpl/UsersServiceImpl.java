@@ -7,11 +7,13 @@ import com.group03.backend_PharmaPulse.user.api.dto.response.LoginSuccessRespons
 import com.group03.backend_PharmaPulse.user.internal.entity.Users;
 import com.group03.backend_PharmaPulse.user.internal.mapper.UsersMapper;
 import com.group03.backend_PharmaPulse.user.internal.repository.UsersRepo;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Transactional
 public class UsersServiceImpl implements UsersService {
     private final UsersRepo usersRepo;
     private final PasswordEncoder passwordEncoder;
@@ -60,6 +63,7 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.toDTO(registeredUser);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Map<String, Object> verify(UserLoginDTO userLoginDTO) {
         Authentication authentication = authenticationManager.authenticate(

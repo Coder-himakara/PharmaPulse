@@ -15,10 +15,10 @@ const AddUsersForm = ({ onAddUser }) => {
     password: "",
     confirmPassword: "",
     dateOfJoined: "",
-    profilePicture: null,
+    role: "",
     status: "",
   });
-
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -32,10 +32,7 @@ const AddUsersForm = ({ onAddUser }) => {
   };
 
   const handleFileChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      profilePicture: e.target.files[0],
-    }));
+    setImage(e.target.files[0]);
   };
 
   const handleSubmit = (e) => {
@@ -62,7 +59,7 @@ const AddUsersForm = ({ onAddUser }) => {
       setErrorMessage(
         "Contact number must start with 0 and contain exactly 10 digits."
       );
-      return false;
+      return;
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -72,30 +69,25 @@ const AddUsersForm = ({ onAddUser }) => {
 
     setErrorMessage("");
 
-    // File handling - if you need to handle file uploads
-    // For file uploads, you'd need FormData
-    let dataToSend;
-    if (formData.profilePicture) {
-      dataToSend = new FormData();
-      // Add all form fields to FormData
-      Object.keys(formData).forEach(key => {
-        if (key === 'profilePicture') {
-          dataToSend.append(key, formData[key]);
-        } else {
-          dataToSend.append(key, formData[key]);
-        }
-      });
-    } else {
-      // If no file, just send the JSON
-      dataToSend = { ...formData };
-      delete dataToSend.profilePicture;
-    }
+    const dataToSend = new FormData();
 
+    // Add all form fields individually (not as a single JSON blob)
+    Object.keys(formData).forEach(key => {
+      // Don't send confirmPassword to the backend
+      if (key !== 'confirmPassword') {
+        dataToSend.append(key, formData[key]);
+      }
+    });
+
+    // Add the image if it exists
+    if (image) {
+      dataToSend.append("imageFile", image);
+    }
     // API Call to register users
     if (onAddUser) {
       registerUsers(dataToSend)
         .then((response) => {
-          console.log(response);
+          console.log("User registered successfully:", response.data);
           setSuccessMessage("Account created successfully!");
           // Reset form after successful submission
           setFormData({
@@ -108,10 +100,10 @@ const AddUsersForm = ({ onAddUser }) => {
             password: "",
             confirmPassword: "",
             dateOfJoined: "",
-            role: "",
-            profilePicture: null,
+            role: "", // Include role in reset
             status: "",
           });
+          setImage(null);
 
           // Clear success message after delay
           setTimeout(() => {
@@ -187,7 +179,7 @@ const AddUsersForm = ({ onAddUser }) => {
         <div className="space-y-4">
           {[
             ["User ID", "userId", "text"],
-            ["Contact Number", "contactNumber", "number"],
+            ["Contact Number", "contactNumber", "text"],
             ["Date of Joined", "dateOfJoined", "date"],
           ].map(([label, name, type]) => (
             <div key={name} className="flex items-center">
@@ -228,15 +220,15 @@ const AddUsersForm = ({ onAddUser }) => {
 
           <div className="flex items-center">
             <label
-              htmlFor="profilePicture"
+              htmlFor="imageFile"
               className="text-[16px] text-gray-800 w-1/2 text-left"
             >
               Profile Picture:
             </label>
             <input
               type="file"
-              id="profilePicture"
-              name="profilePicture"
+              id="imageFile"
+              name="imageFile"
               onChange={handleFileChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />

@@ -38,6 +38,7 @@ public class Users {
 
     private String imageName;
     private String imageType;
-    @Lob
+
+    @Column(name = "image_data", columnDefinition = "bytea")
     private byte[] imageData;
 }

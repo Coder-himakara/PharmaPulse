@@ -1,4 +1,8 @@
-import apiClient from '../api/ApiClient';
+import apiClient from './ApiClient';
 
-export const registerUsers = (userData) =>
-  apiClient.post('/users/register', userData);
+export const registerUsers = (formData) =>
+  apiClient.post('/users/register', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });

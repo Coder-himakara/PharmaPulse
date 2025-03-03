@@ -22,18 +22,19 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<StandardResponse> registerUser(@RequestPart UsersDTO usersDTO,
-                                                         @RequestPart MultipartFile imageFile) {
-        try{
-            UsersDTO savedUser = usersService.registerUser(usersDTO,imageFile);
+    @PostMapping(value = "/register", consumes = {"multipart/form-data"})
+    public ResponseEntity<StandardResponse> registerUser(@ModelAttribute UsersDTO usersDTO,
+                                                         @RequestParam("imageFile") MultipartFile imageFile) {
+        try {
+            UsersDTO savedUser = usersService.registerUser(usersDTO, imageFile);
             return new ResponseEntity<>(
-                    new StandardResponse(201,"Success",savedUser),
+                    new StandardResponse(201, "Success", savedUser),
                     HttpStatus.CREATED
             );
-        }catch(Exception e){
+        } catch (Exception e) {
+            logger.error("Error registering user: ", e);
             return new ResponseEntity<>(
-                    new StandardResponse(400,"Error",null),
+                    new StandardResponse(400, "Error: " + e.getMessage(), null),
                     HttpStatus.BAD_REQUEST
             );
         }

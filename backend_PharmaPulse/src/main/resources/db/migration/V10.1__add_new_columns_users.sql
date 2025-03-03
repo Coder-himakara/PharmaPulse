@@ -27,3 +27,4 @@ ALTER TABLE users
 
 ALTER TABLE customer
     ALTER COLUMN customer_group_id SET NOT NULL;
+
