@@ -35,4 +35,9 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private String imageName;
+    private String imageType;
+    @Lob
+    private byte[] imageData;
 }

@@ -4,6 +4,7 @@ import com.group03.backend_PharmaPulse.user.api.enumeration.Role;
 import com.group03.backend_PharmaPulse.user.api.enumeration.UserStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +32,9 @@ public class UsersDTO {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private String imageName;
+    private String imageType;
+    @Lob
+    private byte[] imageData;
 }

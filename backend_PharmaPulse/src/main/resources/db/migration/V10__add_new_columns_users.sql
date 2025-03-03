@@ -16,5 +16,14 @@ ALTER TABLE users
 ALTER TABLE users
     ADD status VARCHAR(255);
 
+ALTER TABLE users
+    ADD image_data OID;
+
+ALTER TABLE users
+    ADD image_name VARCHAR(255);
+
+ALTER TABLE users
+    ADD image_type VARCHAR(255);
+
 ALTER TABLE customer
     ALTER COLUMN customer_group_id SET NOT NULL;

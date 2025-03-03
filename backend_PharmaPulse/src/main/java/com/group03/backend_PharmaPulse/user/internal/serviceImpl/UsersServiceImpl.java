@@ -12,7 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,14 +36,28 @@ public class UsersServiceImpl implements UsersService {
         this.jwtService = jwtService;
     }
 
-    public UsersDTO registerUser(UsersDTO usersDTO) {
+    public UsersDTO registerUser(UsersDTO usersDTO, MultipartFile imageFile) throws IOException {
         if (usersRepo.existsByUsername(usersDTO.getUsername())) {
             throw new IllegalArgumentException("User already exists");
-        } else {
-            usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
-            Users registeredUser = usersRepo.save(usersMapper.toEntity(usersDTO));
-            return usersMapper.toDTO(registeredUser);
         }
+        usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
+        // Handle image if provided
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                usersDTO.setImageName(imageFile.getOriginalFilename());
+                usersDTO.setImageType(imageFile.getContentType());
+                usersDTO.setImageData(imageFile.getBytes());
+            } catch (IOException e) {
+                throw new IOException("Error in saving image");
+            }
+        } else {
+            // Set image fields to null when no image is provided
+            usersDTO.setImageName(null);
+            usersDTO.setImageType(null);
+            usersDTO.setImageData(null);
+        }
+        Users registeredUser = usersRepo.save(usersMapper.toEntity(usersDTO));
+        return usersMapper.toDTO(registeredUser);
     }
 
     @Override

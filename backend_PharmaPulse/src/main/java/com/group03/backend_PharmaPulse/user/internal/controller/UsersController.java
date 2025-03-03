@@ -8,10 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/users")
@@ -23,14 +21,24 @@ public class UsersController {
     public UsersController(UsersService usersService) {
         this.usersService = usersService;
     }
+
     @PostMapping("/register")
-    public ResponseEntity<StandardResponse> registerUser(@RequestBody UsersDTO usersDTO) {
-        UsersDTO savedUser = usersService.registerUser(usersDTO);
-        return new ResponseEntity<>(
-                new StandardResponse(201,"Success",savedUser),
-                HttpStatus.CREATED
-        );
+    public ResponseEntity<StandardResponse> registerUser(@RequestPart UsersDTO usersDTO,
+                                                         @RequestPart MultipartFile imageFile) {
+        try{
+            UsersDTO savedUser = usersService.registerUser(usersDTO,imageFile);
+            return new ResponseEntity<>(
+                    new StandardResponse(201,"Success",savedUser),
+                    HttpStatus.CREATED
+            );
+        }catch(Exception e){
+            return new ResponseEntity<>(
+                    new StandardResponse(400,"Error",null),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
     }
+
     @PostMapping("/login")
     public ResponseEntity<StandardResponse> loginUser(@RequestBody UserLoginDTO userLoginDTO) {
         return new ResponseEntity<>(
