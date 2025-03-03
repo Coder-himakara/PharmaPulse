@@ -28,7 +28,8 @@ public class SalesInvoice {
     private BigDecimal totalAmount;
     private BigDecimal totalDiscount;
     private Long orderId; // reference to the order
-
+    private Long customerId; // reference to the customer
+    private String customerName; // Customer details from Sales module
     @OneToMany(mappedBy = "salesInvoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SalesInvoiceItem> invoiceItems;
 }

@@ -8,9 +8,14 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {SalesInvoiceItemMapper.class})
 public interface SalesInvoiceMapper {
+
+    @Mapping(target = "customerId", source = "customerId")
+    @Mapping(target = "customerName", source = "customerName")
     @Mapping(target = "invoiceItems", source = "invoiceItems")
     SalesInvoiceDTO toDTO(SalesInvoice salesInvoice);
 
+    @Mapping(target = "customerId", source = "customerId")
+    @Mapping(target = "customerName", source = "customerName")
     @Mapping(target = "invoiceItems", source = "invoiceItems")
     SalesInvoice toEntity(SalesInvoiceDTO salesInvoiceDTO);
 
