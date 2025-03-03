@@ -4,6 +4,7 @@ import com.group03.backend_PharmaPulse.user.api.UsersService;
 import com.group03.backend_PharmaPulse.user.api.dto.UserLoginDTO;
 import com.group03.backend_PharmaPulse.user.api.dto.UsersDTO;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -41,10 +42,12 @@ public class UsersController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<StandardResponse> loginUser(@RequestBody UserLoginDTO userLoginDTO) {
+    public ResponseEntity<StandardResponse> loginUser(@RequestBody UserLoginDTO userLoginDTO,
+                                                      HttpServletResponse response) {
         return new ResponseEntity<>(
-                new StandardResponse(200,"Success",usersService.verify(userLoginDTO)),
+                new StandardResponse(200,"Success",usersService.verify(userLoginDTO,response)),
                 HttpStatus.OK
         );
     }
+
 }

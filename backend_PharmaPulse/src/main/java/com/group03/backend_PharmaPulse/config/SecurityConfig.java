@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/users/login").permitAll()
                         .requestMatchers("/api/users/register").hasRole(ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/api/users/register").hasAuthority(ADMIN_CREATE.name())
+                        .requestMatchers("/swagger-ui/index.html").permitAll()
                         .anyRequest().authenticated())
 
                 .cors(cors -> cors.configure(http))

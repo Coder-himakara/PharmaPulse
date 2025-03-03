@@ -4,10 +4,14 @@ import com.group03.backend_PharmaPulse.user.api.UsersService;
 import com.group03.backend_PharmaPulse.user.api.dto.UserLoginDTO;
 import com.group03.backend_PharmaPulse.user.api.dto.UsersDTO;
 import com.group03.backend_PharmaPulse.user.api.dto.response.LoginSuccessResponse;
+import com.group03.backend_PharmaPulse.user.internal.entity.RefreshToken;
 import com.group03.backend_PharmaPulse.user.internal.entity.Users;
 import com.group03.backend_PharmaPulse.user.internal.mapper.UsersMapper;
 import com.group03.backend_PharmaPulse.user.internal.repository.UsersRepo;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,15 +32,17 @@ public class UsersServiceImpl implements UsersService {
     private final UsersMapper usersMapper;
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     public UsersServiceImpl(UsersRepo usersRepo, PasswordEncoder passwordEncoder,
                             UsersMapper usersMapper, AuthenticationManager authenticationManager,
-                            JWTService jwtService) {
+                            JWTService jwtService, RefreshTokenService refreshTokenService) {
         this.usersRepo = usersRepo;
         this.passwordEncoder = passwordEncoder;
         this.usersMapper = usersMapper;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public UsersDTO registerUser(UsersDTO usersDTO, MultipartFile imageFile) throws IOException {
@@ -63,9 +69,9 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.toDTO(registeredUser);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
-    public Map<String, Object> verify(UserLoginDTO userLoginDTO) {
+    public Map<String, Object> verify(UserLoginDTO userLoginDTO, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userLoginDTO.getUsername(), userLoginDTO.getPassword())
         );
@@ -75,6 +81,20 @@ public class UsersServiceImpl implements UsersService {
                     toLoginSuccessResponse(usersRepo.findByUsername(userLoginDTO.getUsername()));
             //Create a JWT
             String token =jwtService.generateToken(userLoginDTO.getUsername());
+            //Create a refresh token
+            RefreshToken refreshToken = refreshTokenService.generateRefreshToken(userLoginDTO.getUsername());
+
+            // Set refresh token in cookie
+            ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken.getToken())
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/api/auth/refresh")
+                    .maxAge(refreshTokenService.getRefreshExpirationMs() / 1000)
+                    .sameSite("Strict")
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
             Map<String, Object> loginResultMap = new HashMap<>();
             loginResultMap.put("userInfo", loginSuccess);
             loginResultMap.put("token", token);

@@ -31,17 +31,26 @@ public class JWTService {
     }
 
     public String generateToken(String username) {
+        return generateRelevantToken(username,1000 * 60 * 60 * 10); // 10 hours
+    }
+    public String generateRefreshToken(String username) {
+        return generateRelevantToken(username,1000 * 60 * 60 * 24 * 7);// 7 days
+    }
+
+    private String generateRelevantToken(String username, long expireTime){
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .expiration(new Date(System.currentTimeMillis() + expireTime))
                 .and()
                 .signWith(getSigningKey())
                 .compact();
     }
+
+
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(privateKey);
         return Keys.hmacShaKeyFor(keyBytes);
