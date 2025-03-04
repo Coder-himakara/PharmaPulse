@@ -15,11 +15,14 @@ public interface BatchInventoryMapper {
     @Mapping(target = "inventoryRecords",ignore = true)
     BatchInventory toEntity(BatchInventoryDTO batchInventoryDTO);
     //new
+    @Mapping(target = "purchaseInvoice", ignore = true)
+    @Mapping(target = "inventoryRecords",ignore = true)
     void updateBatchFromDto(BatchInventoryDTO dto, @MappingTarget BatchInventory entity);
 
 
     BatchInventoryDTO toDTO(BatchInventory batchInventory);
 
     List<BatchInventoryDTO> toDTOsList(List<BatchInventory> batchInventories);
+
     List<BatchInventory> toEntityList(List<BatchInventoryDTO> batchInventoryDTOS);
 }

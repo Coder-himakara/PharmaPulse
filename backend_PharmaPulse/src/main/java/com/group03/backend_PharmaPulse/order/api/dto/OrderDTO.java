@@ -1,6 +1,5 @@
 package com.group03.backend_PharmaPulse.order.api.dto;
 
-import com.group03.backend_PharmaPulse.sales.api.dto.CustomerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,11 +15,14 @@ import java.util.List;
 public class OrderDTO {
     //private Long orderId;
     private String orderNumber;
-    private Long customer_id;
-    private String customer_name;  // Customer details from Sales module
-    private List<OrderItemDTO> orderItems;
+
+    private Long customerId;
+    private String customerName;
+
     private BigDecimal totalAmount;
     private BigDecimal totalDiscount;
     private LocalDateTime orderDate;
     private String status; // e.g., "PENDING", "SUBMITTED", "INVOICED"
+
+    private List<OrderItemDTO> orderItems;
 }

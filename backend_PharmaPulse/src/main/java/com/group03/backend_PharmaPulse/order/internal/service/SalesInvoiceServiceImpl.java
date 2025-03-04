@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,7 +58,7 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
         salesInvoiceDTO.setCustomerName(order.getCustomerName());
 
         // Set basic invoice metadata
-        salesInvoiceDTO.setInvoiceNumber("INV-" + UUID.randomUUID().toString());
+        //salesInvoiceDTO.setInvoiceNo("INV-" + UUID.randomUUID().toString());
         salesInvoiceDTO.setInvoiceDate(LocalDateTime.now());
 
         // If invoice items are not provided, build them from Order's items
@@ -88,7 +87,7 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         salesInvoiceDTO.setTotalAmount(totalAmount);
-        salesInvoiceDTO.setTotalDiscount(totalDiscount);
+        salesInvoiceDTO.setDiscountAmount(totalDiscount);
 
         // Create the SalesInvoice entity from the DTO
         SalesInvoice salesInvoice = salesInvoiceMapper.toEntity(salesInvoiceDTO);

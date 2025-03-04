@@ -24,11 +24,8 @@ public class Order {
     @Column(unique = true, nullable = false)
     private String orderNumber;
 
-    // Basic customer details
     private Long customerId;
     private String customerName;
-    //private String customerAddress;
-    //private String customerContact;
 
     private BigDecimal totalAmount;
     private BigDecimal totalDiscount;
