@@ -31,10 +31,7 @@ public class JWTService {
     }
 
     public String generateToken(String username) {
-        return generateRelevantToken(username,1000 * 60 * 60 * 10); // 10 hours
-    }
-    public String generateRefreshToken(String username) {
-        return generateRelevantToken(username,1000 * 60 * 60 * 24 * 7);// 7 days
+        return generateRelevantToken(username,1000 * 60 * 15); // 15 minutes
     }
 
     private String generateRelevantToken(String username, long expireTime){
@@ -49,7 +46,6 @@ public class JWTService {
                 .signWith(getSigningKey())
                 .compact();
     }
-
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(privateKey);

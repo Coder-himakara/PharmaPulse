@@ -17,7 +17,7 @@ public class RefreshTokenService {
     private final RefreshTokenRepo refreshTokenRepo;
     private final UsersRepo usersRepo;
     @Getter
-    private final Long refreshExpirationMs = 1000 * 60 * 60 * 24 * 7L;
+    private final Long refreshExpirationMs = 1000 * 60 * 60 * 24 * 7L; // 7 days
 
     public RefreshTokenService(RefreshTokenRepo refreshTokenRepo, UsersRepo usersRepo) {
         this.refreshTokenRepo = refreshTokenRepo;

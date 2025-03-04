@@ -87,10 +87,9 @@ public class UsersServiceImpl implements UsersService {
             // Set refresh token in cookie
             ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken.getToken())
                     .httpOnly(true)
-                    .secure(true)
-                    .path("/api/auth/refresh")
+                    .secure(false)
+                    .path("/")
                     .maxAge(refreshTokenService.getRefreshExpirationMs() / 1000)
-                    .sameSite("Strict")
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
