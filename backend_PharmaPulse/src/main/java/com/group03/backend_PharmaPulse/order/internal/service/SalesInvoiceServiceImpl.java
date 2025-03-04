@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +60,37 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
 
         // Set basic invoice metadata
         //salesInvoiceDTO.setInvoiceNo("INV-" + UUID.randomUUID().toString());
+        // 1) Build the prefix: e.g. "1234-PP-"
+        String prefix = order.getCustomerId() + "-PP-";
+
+        // 2) Query the DB for existing invoice numbers that start with prefix
+        List<String> existingNumbers = salesInvoiceRepository.findInvoiceNumbersByPrefix(prefix);
+
+        // 3) If none exist, we start at 1; otherwise parse the last number
+        int nextNumber = 1;
+        if (!existingNumbers.isEmpty()) {
+            // e.g. "1234-PP-10" -> parse "10"
+            // existingNumbers is sorted desc, so the first one is the highest
+            String lastInvoiceNo = existingNumbers.get(0);
+            String[] parts = lastInvoiceNo.split(prefix); // parts[0] = "", parts[1] = "10"
+            if (parts.length > 1) {
+                try {
+                    int lastNum = Integer.parseInt(parts[1]);
+                    nextNumber = lastNum + 1;
+                } catch (NumberFormatException e) {
+                    // fallback if parse fails
+                    nextNumber = 1;
+                }
+            }
+        }
+
+        // 4) Build the new invoice number
+        String invoiceNum = prefix + nextNumber;
+        salesInvoiceDTO.setInvoiceNo(invoiceNum);
+
+
+
+
         salesInvoiceDTO.setInvoiceDate(LocalDateTime.now());
 
         // If invoice items are not provided, build them from Order's items
