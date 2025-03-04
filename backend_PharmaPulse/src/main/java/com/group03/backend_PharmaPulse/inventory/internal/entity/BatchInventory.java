@@ -45,7 +45,6 @@ public class BatchInventory {
 
     private LocalDate dateReceived;
 
-
     // New field for temporary reservation
     //private Integer reservedQuantity;
 

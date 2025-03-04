@@ -11,7 +11,6 @@ import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
 import com.group03.backend_PharmaPulse.product.api.ProductService;
 import com.group03.backend_PharmaPulse.product.api.ProductWholesalePriceService;
 import com.group03.backend_PharmaPulse.sales.api.CustomerService;
-import com.group03.backend_PharmaPulse.sales.api.dto.CustomerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -52,17 +51,17 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDTO createOrder(OrderDTO orderDTO) {
         // --- Enrich Customer Information ---
-        if (orderDTO.getCustomer_id() == null) {
+        if (orderDTO.getCustomerId() == null) {
             throw new RuntimeException("Customer ID is required");
         }
         // Retrieve full customer details from CustomerService
-        var fullCustomer = customerService.getCustomerById(orderDTO.getCustomer_id());
+        var fullCustomer = customerService.getCustomerById(orderDTO.getCustomerId());
         if (fullCustomer == null) {
-            throw new RuntimeException("Customer not found for id: " + orderDTO.getCustomer_id());
+            throw new RuntimeException("Customer not found for id: " + orderDTO.getCustomerId());
         }
         // Set minimal fields in the DTO with full details
-        orderDTO.setCustomer_id(fullCustomer.getCustomer_id());
-        orderDTO.setCustomer_name(fullCustomer.getCustomer_name());
+        orderDTO.setCustomerId(fullCustomer.getCustomer_id());
+        orderDTO.setCustomerName(fullCustomer.getCustomer_name());
 
         // Process order items and other logic as before...
 
@@ -72,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
         // --- Process Order Items ---
         if (orderDTO.getOrderItems() != null) {
             orderDTO.setOrderItems(
-                    orderDTO.getOrderItems().stream().map(item -> {
+                    orderDTO.getOrderItems().stream().peek(item -> {
                         if (item.getProductId() == null || item.getQuantity() == null) {
                             throw new RuntimeException("Each order item must have a productId and quantity");
                         }
@@ -108,7 +107,6 @@ public class OrderServiceImpl implements OrderService {
                         item.setDiscount(discountAmount); // Store actual discount amount
                         item.setLineTotal(lineTotal);
 
-                        return item;
                     }).collect(Collectors.toList())
             );
         }
@@ -116,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
         // --- Order Metadata ---
         orderDTO.setOrderDate(LocalDateTime.now());
         orderDTO.setStatus("PENDING");
-        orderDTO.setOrderNumber("ORD-" + UUID.randomUUID().toString());
+        orderDTO.setOrderNumber("ORD-" + UUID.randomUUID());
 
         // --- Map DTO to Entity ---
         Order order = orderMapper.toEntity(orderDTO);
@@ -130,6 +128,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // --- Calculate Total Amount ---
+        assert order.getOrderItems() != null;
         BigDecimal totalAmount = order.getOrderItems().stream()
                 .map(OrderItem::getLineTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -148,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
             List<BatchInventoryDTO> batches = batchInventoryService.getAllBatchInventories()
                     .stream()
                     .filter(b -> b.getProductId().equals(item.getProductId()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             int totalAvailable = batches.stream().mapToInt(BatchInventoryDTO::getAvailableUnitQuantity).sum();
             int totalReserved = inventoryReservationService.getTotalReservedForProduct(item.getProductId());
@@ -186,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         // Update order header details (customer details, etc.)
-        existingOrder.setCustomerName(orderDTO.getCustomer_name());
+        existingOrder.setCustomerName(orderDTO.getCustomerName());
 
         // Option 1: If you want to update order items individually, you can iterate and update existing ones.
         // For simplicity, here we remove all existing order items and rebuild them from the input.

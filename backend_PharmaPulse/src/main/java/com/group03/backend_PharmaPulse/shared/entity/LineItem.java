@@ -20,3 +20,4 @@ public abstract class LineItem {
     private BigDecimal discountAmount;
 
 }
+
