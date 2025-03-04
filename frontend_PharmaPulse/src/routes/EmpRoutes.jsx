@@ -251,10 +251,7 @@ const EmpRoutes = () => {
         element={<StockTransferForm />}
       />
       <Route path="/"  element={<EmployeeDashboardCard />} />
-      <Route
-          path="/employee-dashboard"
-         
-        />
+      <Route  path="/employee-dashboard"/>
     </Routes>
   );
 };

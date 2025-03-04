@@ -93,7 +93,7 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search Customer Group..."
+            placeholder="Search Customer Group Name..."
             value={search}
             onChange={(cg) => setSearch(cg.target.value)}
             className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"

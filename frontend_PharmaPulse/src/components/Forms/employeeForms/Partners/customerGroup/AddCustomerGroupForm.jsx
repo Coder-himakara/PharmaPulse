@@ -69,10 +69,10 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
       </h2>
 
       {errorMessage && (
-        <p className="text-[#991919] text-sm font-bold mb-4">{errorMessage}</p>
+        <p className="text-[#991919] text-sm font-bold mb-4 text-center">{errorMessage}</p>
       )}
       {successMessage && (
-        <p className="text-[#3c5f3c] text-sm font-bold mb-4">
+        <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">
           {successMessage}
         </p>
       )}
