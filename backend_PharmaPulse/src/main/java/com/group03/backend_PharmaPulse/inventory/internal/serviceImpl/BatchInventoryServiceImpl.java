@@ -122,4 +122,18 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
     }
 
 
+
+    // NEW: Method to retrieve available batches for a product sorted by expiry date (ascending)
+    @Override
+    public List<BatchInventoryDTO> getBatchesByProductIdSorted(Long productId) {
+        // Get all batches for the product, then filter and sort
+        List<BatchInventory> batches = batchInventoryRepo.findByProductId(productId)
+                .stream()
+                .filter(b -> b.getAvailableUnitQuantity() != null && b.getAvailableUnitQuantity() > 0)
+                .sorted(Comparator.comparing(BatchInventory::getExpiryDate))
+                .collect(Collectors.toList());
+        return batchInventoryMapper.toDTOsList(batches);
+    }
+
+
 }

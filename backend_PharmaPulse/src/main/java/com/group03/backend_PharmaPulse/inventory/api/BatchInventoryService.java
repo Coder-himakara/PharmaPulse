@@ -12,4 +12,7 @@ public interface BatchInventoryService {
     // New methods
     void deductInventory(Long productId, Integer quantity);
     //void reserveInventory(Long productId, Integer quantity);
+    // New method: Retrieve available batches for a product, sorted by expiry date ascending.
+    List<BatchInventoryDTO> getBatchesByProductIdSorted(Long productId);
+
 }
