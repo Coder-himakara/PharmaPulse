@@ -1,7 +1,8 @@
 package com.group03.backend_PharmaPulse.inventory.internal.serviceImpl;
 
-
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.internal.entity.BatchInventory;
 import com.group03.backend_PharmaPulse.inventory.api.enumeration.BatchStatus;
 import com.group03.backend_PharmaPulse.inventory.internal.mapper.BatchInventoryMapper;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.*;
 import java.util.Optional;
 
 @Service
@@ -91,82 +93,115 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
 
     /**
      * Checks for batches nearing expiry and generates alerts for 6 months, 3 months, 1 month, and 1 week before expiry.
-     * Returns a list of BatchInventoryDTOs for batches needing alerts, grouped by threshold.
+     * Returns a list of ExpiryAlertDTOs for batches needing alerts, grouped by product and sorted by earliest expiry date.
+     *
+     * @return List of ExpiryAlertDTOs containing product-based expiry alerts
+     * @throws NotFoundException if a product associated with a batch is not found
      */
     @Override
-    public List<BatchInventoryDTO> checkExpiryAlerts() {
+    public List<ExpiryAlertDTO> checkExpiryAlerts() {
         LocalDate now = LocalDate.now();
-        List<BatchInventoryDTO> alerts = new ArrayList<>();
+        Map<Long, ExpiryAlertDTO> alertsByProduct = new HashMap<>();
 
-        // Check 6 months before expiry
-        LocalDate sixMonthsBefore = now.plusMonths(6);
-        List<BatchInventory> sixMonthBatches = batchInventoryRepo.findByExpiryDateBetween(now, sixMonthsBefore);
-        addAlerts(sixMonthBatches, "6 months before expiry", alerts);
+        // Define timeframes for alerts
+        Map<String, LocalDate> thresholds = new HashMap<>();
+        thresholds.put("6 months before expiry", now.plusMonths(6));
+        thresholds.put("3 months before expiry", now.plusMonths(3));
+        thresholds.put("1 month before expiry", now.plusMonths(1));
+        thresholds.put("1 week before expiry", now.plusWeeks(1));
 
-        // Check 3 months before expiry
-        LocalDate threeMonthsBefore = now.plusMonths(3);
-        List<BatchInventory> threeMonthBatches = batchInventoryRepo.findByExpiryDateBetween(now, threeMonthsBefore);
-        addAlerts(threeMonthBatches, "3 months before expiry", alerts);
+        // Check each threshold
+        for (Map.Entry<String, LocalDate> threshold : thresholds.entrySet()) {
+            String alertMessage = threshold.getKey();
+            LocalDate endDate = threshold.getValue();
+            List<BatchInventory> batches = batchInventoryRepo.findByExpiryDateBetween(now, endDate);
 
-        // Check 1 month before expiry
-        LocalDate oneMonthBefore = now.plusMonths(1);
-        List<BatchInventory> oneMonthBatches = batchInventoryRepo.findByExpiryDateBetween(now, oneMonthBefore);
-        addAlerts(oneMonthBatches, "1 month before expiry", alerts);
+            for (BatchInventory batch : batches) {
+                if (batch.getBatchStatus() != BatchStatus.EXPIRED && batch.getBatchStatus() != BatchStatus.SOLD) {
+                    Long productId = batch.getProductId();
+                    ProductDTO product = productService.getProductById(productId);
+                    if (product == null) {
+                        throw new NotFoundException("Product not found for ID: " + productId);
+                    }
 
-        // Check 1 week before expiry
-        LocalDate oneWeekBefore = now.plusWeeks(1);
-        List<BatchInventory> oneWeekBatches = batchInventoryRepo.findByExpiryDateBetween(now, oneWeekBefore);
-        addAlerts(oneWeekBatches, "1 week before expiry", alerts);
+                    ExpiryAlertDTO alert = alertsByProduct.get(productId);
+                    if (alert == null) {
+                        alert = ExpiryAlertDTO.builder()
+                                .productId(productId)
+                                .productName(product.getProductName())
+                                .batches(new ArrayList<>())
+                                .alertMessage(alertMessage)
+                                .earliestExpiryDate(batch.getExpiryDate())
+                                .build();
+                        alertsByProduct.put(productId, alert);
+                    }
 
-        // Filter out expired or sold batches and ensure uniqueness by batchId
-        return alerts.stream()
-                .filter(dto -> dto.getBatchStatus() != BatchStatus.EXPIRED && dto.getBatchStatus() != BatchStatus.SOLD)
-                .distinct()  // Use distinct to remove duplicates based on object equality (batchId will help)
-                .toList();
-    }
-
-    private void addAlerts(List<BatchInventory> batches, String alertMessage, List<BatchInventoryDTO> alerts) {
-        for (BatchInventory batch : batches) {
-            if (batch.getBatchStatus() != BatchStatus.EXPIRED && batch.getBatchStatus() != BatchStatus.SOLD) {
-                BatchInventoryDTO dto = batchInventoryMapper.toDTO(batch);
-                // Check if this batchId already exists in alerts to prevent duplicates
-                if (dto.getBatchId() != null && alerts.stream().noneMatch(existing -> existing.getBatchId().equals(dto.getBatchId()))) {
-                    System.out.println("Alert for Batch " + batch.getBatchId() + ": " + alertMessage +
-                            " - Expiry Date: " + batch.getExpiryDate());
-                    alerts.add(dto);
+                    // Add batch if not already included (ensure uniqueness by batchId)
+                    BatchInventoryDTO batchDto = batchInventoryMapper.toDTO(batch);
+                    if (alert.getBatches().stream().noneMatch(b -> b.getBatchId().equals(batchDto.getBatchId()))) {
+                        alert.getBatches().add(batchDto);
+                        // Update earlier expiry date if this batch expires earlier
+                        if (batch.getExpiryDate().isBefore(alert.getEarliestExpiryDate())) {
+                            alert.setEarliestExpiryDate(batch.getExpiryDate());
+                        }
+                    }
                 }
             }
         }
+
+        // Convert map values to list and sort by earliest expiry date
+        List<ExpiryAlertDTO> finalAlerts = new ArrayList<>(alertsByProduct.values());
+        finalAlerts.sort(Comparator.comparing(ExpiryAlertDTO::getEarliestExpiryDate));
+
+        return finalAlerts;
     }
 
     /**
      * Checks for products needing reorder based on total available quantity across batches compared to reorderLimitByPackage.
-     * Returns a list of BatchInventoryDTOs for batches of products requiring reorder alerts.
+     * Returns a list of ReorderAlertDTOs for products requiring reorder alerts, grouped by product.
+     *
+     * @return List of ReorderAlertDTOs containing product-based reorder alerts
+     * @throws NotFoundException if a product associated with a batch is not found
      */
     @Override
-    public List<BatchInventoryDTO> checkReorderAlerts() {
+    public List<ReorderAlertDTO> checkReorderAlerts() {
+        // Get distinct product IDs for AVAILABLE batches
         List<Long> productIds = batchInventoryRepo.findAll().stream()
                 .filter(batch -> batch.getBatchStatus() == BatchStatus.AVAILABLE)
                 .map(BatchInventory::getProductId)
                 .distinct()
                 .toList();
 
-        List<BatchInventoryDTO> alerts = new ArrayList<>();
+        List<ReorderAlertDTO> alerts = new ArrayList<>();
         for (Long productId : productIds) {
             Integer totalAvailable = batchInventoryRepo.sumAvailableUnitQuantityByProductIdAndStatus(productId, BatchStatus.AVAILABLE);
             if (totalAvailable == null) totalAvailable = 0; // Handle case where no batches exist
 
             ProductDTO product = productService.getProductById(productId);
             if (product != null && totalAvailable <= product.getReorderLimitByPackage()) {
+                // Get all AVAILABLE batches for this product
                 List<BatchInventory> productBatches = batchInventoryRepo.findByProductIdAndStatus(productId, BatchStatus.AVAILABLE);
-                for (BatchInventory batch : productBatches) {
-                    BatchInventoryDTO dto = batchInventoryMapper.toDTO(batch);
-                    System.out.println("Reorder Alert for Product " + productId + ", Batch " + batch.getBatchId() +
-                            ": Total available = " + totalAvailable + ", Reorder limit = " + product.getReorderLimitByPackage());
-                    alerts.add(dto);
-                }
+                List<BatchInventoryDTO> batchDtos = productBatches.stream()
+                        .map(batchInventoryMapper::toDTO)
+                        .toList();
+
+                ReorderAlertDTO alert = ReorderAlertDTO.builder()
+                        .productId(productId)
+                        .productName(product.getProductName())
+                        .totalAvailableQuantity(totalAvailable)
+                        .reorderLimitByPackage(product.getReorderLimitByPackage())
+                        .batches(batchDtos)
+                        .build();
+
+                alerts.add(alert);
+                System.out.println("Reorder Alert for Product " + productId + ": Total available = " + totalAvailable +
+                        ", Reorder limit = " + product.getReorderLimitByPackage());
             }
         }
+
+        // Sort alerts by totalAvailableQuantity (low to high) for prioritization
+        alerts.sort(Comparator.comparing(ReorderAlertDTO::getTotalAvailableQuantity));
+
         return alerts;
     }
 }
