@@ -50,7 +50,12 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
-
+    if (!/^0[0-9]{9}$/.test(formData.contactNumber)) {
+      setErrorMessage(
+        'Contact number must start with 0 and contain exactly 10 digits.',
+      );
+      return false;
+    }
     setErrorMessage(''); // Clear errors
 
     // Pass the updated supplier data to the parent
@@ -81,7 +86,9 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
       </h2>
 
       {errorMessage && (
-        <p className='text-[#991919] text-sm font-bold mb-4 text-center'>{errorMessage}</p>
+        <p className='text-[#991919] text-sm font-bold mb-4 text-center'>
+          {errorMessage}
+        </p>
       )}
       {successMessage && (
         <p className='text-[#3c5f3c] text-sm font-bold mb-4 text-center'>
@@ -165,7 +172,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
           Credit Period:
         </label>
         <input
-          type='text'
+          type='number'
           id='creditPeriod'
           name='creditPeriod'
           value={formData.creditPeriod}
@@ -181,7 +188,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
           Credit Limit:
         </label>
         <input
-          type='text'
+          type='number'
           id='creditLimit'
           name='creditLimit'
           value={formData.creditLimit}

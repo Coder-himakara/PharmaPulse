@@ -7,6 +7,7 @@ const CustomersInfoTable = ({ customers }) => {
   const navigate = useNavigate();
 
   const dummyCustomers = [
+    ...customers,
     {
       customerId: '1',
       customerName: 'Lanka Distributors',
@@ -68,7 +69,7 @@ const CustomersInfoTable = ({ customers }) => {
   };
 
   const handleEdit = (customerId) => {
-    const customer = customers.find((c) => c.customerId === customerId);
+    const customer =  dummyCustomers.find((c) => c.customerId === customerId);
     navigate(`/employee-dashboard/edit-customer/${customerId}`, {
       state: { customer },
     });

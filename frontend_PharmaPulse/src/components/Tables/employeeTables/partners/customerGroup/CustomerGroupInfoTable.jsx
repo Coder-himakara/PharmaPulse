@@ -8,6 +8,7 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
 
   const navigate = useNavigate();
   const dummyCustomerGroups = [
+    ...customerGroups,
     {
       customerGroupId: "1",
       customerGroupName: "Premium Customers",
@@ -60,9 +61,10 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
     navigate("/employee-dashboard");
   };
 
+
   // Fix handleEdit function
   const handleEdit = (customerGroupId) => {
-    const customerGroup = customerGroups.find(
+    const customerGroup =dummyCustomerGroups.find(
       (cg) => cg.customerGroupId === customerGroupId
     );
     navigate(`/employee-dashboard/edit-customer-group/${customerGroupId}`, {

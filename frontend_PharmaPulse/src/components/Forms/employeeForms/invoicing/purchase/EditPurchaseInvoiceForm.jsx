@@ -301,7 +301,7 @@ const EditPurchaseInvoiceForm = ({ onUpdatePurchaseInvoice }) => {
               <option value="">Choose a payment type</option>
               <option value="CASH">Cash</option>
               <option value="CHEQUE">Cheque</option>
-              <option value="CONLINE TRANSACTION">Online Transaction</option>
+              <option value="ONLINE TRANSACTION">Online Transaction</option>
             </select>
           </div>
 

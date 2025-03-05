@@ -50,7 +50,12 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
-
+    if (!/^0[0-9]{9}$/.test(formData.contactNumber)) {
+      setErrorMessage(
+        "Contact number must start with 0 and contain exactly 10 digits."
+      );
+      return false;
+    }
     setErrorMessage(""); // Clear errors
     setSuccessMessage("Supplier added successfully!");
 
@@ -180,7 +185,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           Credit Period:
         </label>
         <input
-          type="text"
+          type="number"
           id="creditPeriod"
           name="creditPeriod"
           value={formData.creditPeriod}
@@ -197,7 +202,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           Credit Limit:
         </label>
         <input
-          type="text"
+          type="number"
           id="creditLimit"
           name="creditLimit"
           value={formData.creditLimit}
