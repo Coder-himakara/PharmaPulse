@@ -8,7 +8,6 @@ const TruckInfoTable = ({ trucks }) => {
   const navigate = useNavigate();
 
   const dummyTrucks = [
-    
     {
       truckId: 'L001',
       numberPlate: 'ABC-1234',

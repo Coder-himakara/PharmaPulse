@@ -69,7 +69,7 @@ const CustomersInfoTable = ({ customers }) => {
   };
 
   const handleEdit = (customerId) => {
-    const customer =  dummyCustomers.find((c) => c.customerId === customerId);
+    const customer = dummyCustomers.find((c) => c.customerId === customerId);
     navigate(`/employee-dashboard/edit-customer/${customerId}`, {
       state: { customer },
     });
