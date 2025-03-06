@@ -10,7 +10,9 @@
     "lint:fix": "eslint src --fix",
     "lint:ci": "eslint .",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "stop": "npx kill-port 3123",
+    "restart": "npm run stop && npm run dev"
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint --fix",
