@@ -1,14 +1,11 @@
-FROM ubuntu:22.04
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-RUN apt-get update && \
-    apt-get install -y openjdk-21-jdk openjdk-21-jre maven
-
-COPY . /spring-boot-app
-
-WORKDIR /spring-boot-app
-
-RUN mvn clean install -DskipTests
-
-WORKDIR /spring-boot-app/target
-
-CMD ["java", "-jar", "backend_PharmaPulse-0.0.1-SNAPSHOT.jar"]
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/target/backend_PharmaPulse-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8090
+ENV SPRING_PROFILES_ACTIVE=test
+ENTRYPOINT ["java", "-jar", "app.jar"]
