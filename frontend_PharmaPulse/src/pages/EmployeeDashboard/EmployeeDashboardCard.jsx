@@ -105,7 +105,9 @@ const EmployeeDashboardCard = ({ content }) => {
 
         {/* Expiry Date Doughnut Chart (unchanged) */}
         <div className='p-6 transition-transform duration-300 transform bg-white shadow-lg rounded-xl hover:scale-105'>
+
           <h2 className='mb-10 text-xl font-semibold text-transparent text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text'>
+
             Expiry Distribution
           </h2>
           <ResponsiveContainer width="100%" height={250}>
@@ -171,7 +173,9 @@ const EmployeeDashboardCard = ({ content }) => {
 };
 
 EmployeeDashboardCard.propTypes = {
+
   content: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+
   className: PropTypes.string
 };
 

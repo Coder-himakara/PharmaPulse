@@ -78,7 +78,9 @@ const StockTransferForm = () => {
   };
 
   useEffect(() => {
+
     if (formData.productName && formData.productType && formData.fromLocation && formData.toLocation) {
+
       const selectedProduct = products.find((p) => p.name === formData.productName);
       if (selectedProduct) {
         const updatedBatches = selectedProduct.batches.map((batch) => ({
@@ -86,7 +88,9 @@ const StockTransferForm = () => {
           itemName: batch.itemName,
           unitPrice: batch.unitPrice,
           availableStock: Number(batch.availableStock) || 0,
+
           quantityPerTransfer: 0, 
+
           balanceStock: Number(batch.availableStock) || 0,
           remarks: '',
           unit: batch.unit,
@@ -98,7 +102,9 @@ const StockTransferForm = () => {
     } else {
       setBatchRows([]);
     }
+
   }, [formData.productName, formData.productType, formData.fromLocation, formData.toLocation]);
+
 
   const addToProceed = (index) => {
     const rowToAdd = batchRows[index];
@@ -238,7 +244,9 @@ const StockTransferForm = () => {
                   <td className='px-4 py-2'>
                     <input
                       type='number'
+
                       value={row.quantityPerTransfer ?? ''} 
+
                       onChange={(e) => handleBatchChange(index, 'quantityPerTransfer', e.target.value)}
                       className='w-full p-1 border rounded'
                       min='0'

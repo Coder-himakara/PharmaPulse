@@ -201,7 +201,9 @@ const EmployeeNavbar = () => {
     >
       <div className="flex items-center gap-6">
         <img src={logo} alt="Logo" className="h-10 mr-4" />
+
           Home
+
         <button
           onClick={() => navigate("/employee-dashboard")
 
