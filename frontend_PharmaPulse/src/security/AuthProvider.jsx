@@ -38,11 +38,11 @@ const AuthProvider = ({ children }) => {
             setAuthState({
               token: newToken,
               role: newRole,
-              isAuthenticated: true
+              isAuthenticated: true,
             });
             setIsRefreshing(false);
           } catch (error) {
-            console.log('Token refresh failed on initialization');
+            console.log('Token refresh failed on initialization', error);
             // Refresh failed, clear storage and go to login
             localStorage.removeItem('token');
             localStorage.removeItem('role');
@@ -54,7 +54,7 @@ const AuthProvider = ({ children }) => {
           setAuthState({
             token,
             role,
-            isAuthenticated: true
+            isAuthenticated: true,
           });
         }
       }
@@ -117,7 +117,7 @@ const AuthProvider = ({ children }) => {
   const logout = useCallback(async () => {
     try {
       await logoutUserService(undefined, {
-        withCredentials: true // Send cookies
+        withCredentials: true, // Send cookies
       });
     } finally {
       localStorage.removeItem('token');
@@ -125,7 +125,7 @@ const AuthProvider = ({ children }) => {
       setAuthState({
         token: null,
         role: null,
-        isAuthenticated: false
+        isAuthenticated: false,
       });
     }
   }, []);
@@ -134,7 +134,10 @@ const AuthProvider = ({ children }) => {
   useLayoutEffect(() => {
     const requestInterceptor = apiClient.interceptors.request.use((config) => {
       // Skip auth header for login/logout
-      if (config.url.includes('users/login') || config.url.includes('/auth/logout')) {
+      if (
+        config.url.includes('users/login') ||
+        config.url.includes('/auth/logout')
+      ) {
         return config;
       }
 
@@ -152,7 +155,7 @@ const AuthProvider = ({ children }) => {
   // Axios response interceptor for token refresh
   useLayoutEffect(() => {
     const responseInterceptor = apiClient.interceptors.response.use(
-      response => response,
+      (response) => response,
       async (error) => {
         const originalRequest = error.config;
 
@@ -176,7 +179,7 @@ const AuthProvider = ({ children }) => {
             setAuthState({
               token: newToken,
               role,
-              isAuthenticated: true
+              isAuthenticated: true,
             });
 
             // Retry original request
@@ -195,7 +198,7 @@ const AuthProvider = ({ children }) => {
         }
 
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => apiClient.interceptors.response.eject(responseInterceptor);
@@ -207,6 +210,7 @@ const AuthProvider = ({ children }) => {
         isAuthenticated: authState.isAuthenticated,
         role: authState.role,
         token: authState.token,
+        isRefreshing,
         login,
         logout,
       }}
