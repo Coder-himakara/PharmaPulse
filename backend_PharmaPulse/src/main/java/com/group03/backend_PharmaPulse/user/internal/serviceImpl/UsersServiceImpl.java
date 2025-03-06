@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,7 +83,9 @@ public class UsersServiceImpl implements UsersService {
             //Create a JWT
             String token =jwtService.generateToken(userLoginDTO.getUsername());
             //Create a refresh token
-            RefreshToken refreshToken = refreshTokenService.generateRefreshToken(userLoginDTO.getUsername());
+            RefreshToken refreshToken = refreshTokenService.findByTokenForUser(userLoginDTO.getUsername())
+                    .filter(rt -> rt.getExpiryDate().isAfter(Instant.now()))
+                    .orElseGet(() -> refreshTokenService.generateRefreshToken(userLoginDTO.getUsername()));
 
             // Set refresh token in cookie
             ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken.getToken())

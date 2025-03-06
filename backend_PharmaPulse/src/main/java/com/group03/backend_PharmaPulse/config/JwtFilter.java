@@ -58,4 +58,8 @@ public class JwtFilter extends OncePerRequestFilter {
             exceptionResolver.resolveException(request,response,null,ex);
         }
     }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().startsWith("api/users/login");
+    }
 }

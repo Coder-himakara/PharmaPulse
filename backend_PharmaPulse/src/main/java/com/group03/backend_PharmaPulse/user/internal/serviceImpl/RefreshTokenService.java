@@ -33,6 +33,12 @@ public class RefreshTokenService {
         return refreshTokenRepo.save(refreshToken);
     }
 
+    // Added method to find token by user instead of creating a new one always
+    public Optional<RefreshToken> findByTokenForUser(String username) {
+        return refreshTokenRepo.findByUser(usersRepo.findByUsername(username));
+    }
+
+
     // Verify refresh token validity
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {

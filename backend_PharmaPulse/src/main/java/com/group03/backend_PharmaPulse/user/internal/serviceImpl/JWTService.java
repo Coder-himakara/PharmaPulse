@@ -31,7 +31,7 @@ public class JWTService {
     }
 
     public String generateToken(String username) {
-        return generateRelevantToken(username,1000 * 60 * 15); // 15 minutes
+        return generateRelevantToken(username,1000 * 60 *10 ); // 10 minute
     }
 
     private String generateRelevantToken(String username, long expireTime){

@@ -1,5 +1,6 @@
 package com.group03.backend_PharmaPulse.user.internal.controller;
 
+import com.group03.backend_PharmaPulse.user.api.exception.TokenExpiredException;
 import com.group03.backend_PharmaPulse.user.internal.entity.RefreshToken;
 import com.group03.backend_PharmaPulse.user.internal.serviceImpl.JWTService;
 import com.group03.backend_PharmaPulse.user.internal.serviceImpl.RefreshTokenService;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("api/auth")
 public class RefreshTokenController {
@@ -29,14 +33,29 @@ public class RefreshTokenController {
     public ResponseEntity<StandardResponse> refreshToken(@CookieValue(name = "refreshToken") String requestRefreshToken) {
         RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken)
                 .orElseThrow(() -> new TokenNotFoundException("Refresh token not found"));
+        try {
+            // If the token is expired, verifyExpiration() throws TokenExpiredException
+            refreshTokenService.verifyExpiration(refreshToken);
+        } catch (TokenExpiredException e) {
+            // Return 401 status so the frontend can redirect to the login page
+            return new ResponseEntity<>(
+                    new StandardResponse(401, "Refresh token expired, please login", null),
+                    HttpStatus.UNAUTHORIZED
+            );
+        }
+        // Token is valid; generate a new JWT token using the same refresh token
+//        String newAccessToken = jwtService.generateToken(refreshToken.getUser().getUsername());
+//        String role = refreshToken.getUser().getRole().toString();
 
-        refreshTokenService.verifyExpiration(refreshToken);
-        String newAccessToken = jwtService.generateToken(refreshToken.getUser().toString());
+        Map<String, String> data = new HashMap<>();
+        data.put("newAccessToken", jwtService.generateToken(refreshToken.getUser().getUsername()));
+        data.put("role", refreshToken.getUser().getRole().toString());
         return new ResponseEntity<>(
-                new StandardResponse(200,"Success",newAccessToken),
+                new StandardResponse(200, "Success",data),
                 HttpStatus.OK
         );
     }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@CookieValue(name = "refreshToken", required = false) String refreshToken,
                                     HttpServletResponse response) {
