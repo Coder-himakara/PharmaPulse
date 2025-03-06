@@ -12,7 +12,7 @@ const Footer = () => {
         isDarkMode ? "bg-gray-900 text-gray-200" : "bg-green-200 text-gray-800"
       } 
       p-4 w-full box-border flex items-center z-50 h-[70px] 
-      relative md:fixed bottom-0 left-0`}
+      fixed bottom-0 left-0`}
     >
       <div
         className="flex flex-col items-center justify-between w-full px-4 mx-auto max-w-7xl md:flex-row sm:px-6 lg:px-8"

@@ -22,8 +22,8 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     nic: "",
     brcNo: "",
     email: "",
-    phoneNo: "",
     customerGroup: "",
+    phoneNo: "",
     status: "",
     registeredDate: formatDate(new Date()), // Set current date
     creditLimit: "",
@@ -67,6 +67,12 @@ const AddCustomersForm = ({ onAddCustomer }) => {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
+    if (!/^0[0-9]{9}$/.test(formData.phoneNo)) {
+      setErrorMessage(
+        "Contact number must start with 0 and contain exactly 10 digits."
+      );
+      return false;
+    }
 
     setErrorMessage("");
     setSuccessMessage("Customer added successfully!");
@@ -83,8 +89,8 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         nic: "",
         brcNo: "",
         email: "",
-        phoneNo: "",
         customerGroup: "",
+        phoneNo: "",
         status: "",
         registeredDate: formatDate(new Date()), // Reset with the current date
         creditLimit: "",
@@ -189,21 +195,21 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
-
+          
           <div className="flex items-center">
             <label
-              htmlFor="brcNo"
+              htmlFor="phoneNo"
               className="text-[16px] text-gray-800 w-1/2 text-left"
             >
-              Businesses Registration Number:
+              Phone Number:
             </label>
             <input
-              type="text"
-              id="brcNo"
-              name="brcNo"
-              value={formData.brcNo}
+              type="number"
+              id="phoneNo"
+              name="phoneNo"
+              value={formData.phoneNo}
               onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
             />
           </div>
 
@@ -227,24 +233,8 @@ const AddCustomersForm = ({ onAddCustomer }) => {
 
         {/* Right Column */}
         <div className="space-y-4">
-          <div className="flex items-center">
-            <label
-              htmlFor="phoneNo"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
-              Phone Number:
-            </label>
-            <input
-              type="number"
-              id="phoneNo"
-              name="phoneNo"
-              value={formData.phoneNo}
-              onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
-            />
-          </div>
-
-          <div className="flex items-center">
+          
+        <div className="flex items-center">
             <label
               htmlFor="customerGroup"
               className="text-[16px] text-gray-800 w-1/2 text-left"
@@ -269,7 +259,23 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               </button>
             </div>
           </div>
-
+          <div className="flex items-center">
+            <label
+              htmlFor="brcNo"
+              className="text-[16px] text-gray-800 w-1/2 text-left"
+            >
+              Businesses Registration Number:
+            </label>
+            <input
+              type="text"
+              id="brcNo"
+              name="brcNo"
+              value={formData.brcNo}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            />
+          </div>
+          
           <div className="flex items-center">
             <label
               htmlFor="status"
@@ -316,7 +322,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               Credit Limit:
             </label>
             <input
-              type="text"
+              type="number"
               id="creditLimit"
               name="creditLimit"
               value={formData.creditLimit}
