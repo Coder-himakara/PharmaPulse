@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import EmployeeDashboardCard from '../pages/EmployeeDashboard/EmployeeDashboardCard';
 
 import AddProductsForm from "../components/Forms/employeeForms/products/AddProductsForm";
 import ProductsInfoTable from "../components/Tables/employeeTables/products/ProductsInfoTable";
@@ -249,6 +250,8 @@ const EmpRoutes = () => {
         path="stock-transfer"
         element={<StockTransferForm />}
       />
+      <Route path="/"  element={<EmployeeDashboardCard />} />
+      <Route  path="/employee-dashboard"/>
     </Routes>
   );
 };

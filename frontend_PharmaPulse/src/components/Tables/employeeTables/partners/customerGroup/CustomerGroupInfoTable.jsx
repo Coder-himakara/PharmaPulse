@@ -8,6 +8,7 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
 
   const navigate = useNavigate();
   const dummyCustomerGroups = [
+    ...customerGroups,
     {
       customerGroupId: "1",
       customerGroupName: "Premium Customers",
@@ -60,9 +61,10 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
     navigate("/employee-dashboard");
   };
 
+
   // Fix handleEdit function
   const handleEdit = (customerGroupId) => {
-    const customerGroup = customerGroups.find(
+    const customerGroup =dummyCustomerGroups.find(
       (cg) => cg.customerGroupId === customerGroupId
     );
     navigate(`/employee-dashboard/edit-customer-group/${customerGroupId}`, {
@@ -93,7 +95,7 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search Customer Group..."
+            placeholder="Search Customer Group Name..."
             value={search}
             onChange={(cg) => setSearch(cg.target.value)}
             className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"

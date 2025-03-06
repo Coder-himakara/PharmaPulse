@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 
 const StockTransferForm = () => {
-  // Sample data for locations and products
   const locations = [
     { id: 'main-stock', name: 'Main Stock' },
     { id: 'truck-1', name: 'Truck 1' },
@@ -16,40 +15,16 @@ const StockTransferForm = () => {
       id: 'PRD001',
       name: 'Product 1',
       batches: [
-        {
-          batchId: 'BATCH001',
-          itemName: 'Item A',
-          unitPrice: 50.0,
-          availableStock: 100,
-          unit: 'pcs',
-        },
-        {
-          batchId: 'BATCH002',
-          itemName: 'Item B',
-          unitPrice: 60.0,
-          availableStock: 50,
-          unit: 'pcs',
-        },
+        { batchId: 'BATCH001', itemName: 'Item A', unitPrice: 50.0, availableStock: 100, unit: 'pcs' },
+        { batchId: 'BATCH002', itemName: 'Item B', unitPrice: 60.0, availableStock: 50, unit: 'pcs' },
       ],
     },
     {
       id: 'PRD002',
       name: 'Product 2',
       batches: [
-        {
-          batchId: 'BATCH003',
-          itemName: 'Item C',
-          unitPrice: 70.0,
-          availableStock: 80,
-          unit: 'pcs',
-        },
-        {
-          batchId: 'BATCH004',
-          itemName: 'Item D',
-          unitPrice: 80.0,
-          availableStock: 30,
-          unit: 'pcs',
-        },
+        { batchId: 'BATCH003', itemName: 'Item C', unitPrice: 70.0, availableStock: 80, unit: 'pcs' },
+        { batchId: 'BATCH004', itemName: 'Item D', unitPrice: 80.0, availableStock: 30, unit: 'pcs' },
       ],
     },
   ];
@@ -59,10 +34,12 @@ const StockTransferForm = () => {
     toLocation: '',
     date: '',
     productName: '',
+    productType: '',
+    reference: '',
   });
 
   const [batchRows, setBatchRows] = useState([]);
-  const [proceedItems, setProceedItems] = useState([]); // Store items for Proceed
+  const [proceedItems, setProceedItems] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -74,33 +51,43 @@ const StockTransferForm = () => {
 
   const handleBatchChange = (index, field, value) => {
     const newRows = [...batchRows];
-    newRows[index] = {
-      ...newRows[index],
-      [field]: value,
-    };
-    // Update balance stock based on quantity per transfer
+
     if (field === 'quantityPerTransfer') {
-      const availableStock = newRows[index].availableStock || 0;
-      newRows[index].balanceStock = availableStock - (value || 0);
+      const numericValue = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+      let finalValue = numericValue === '' ? 0 : Number(numericValue);
+
+      const availableStock = Number(newRows[index].availableStock) || 0;
+      if (finalValue > availableStock) {
+        finalValue = availableStock;
+        alert('Quantity cannot exceed available stock!');
+      }
+
+      newRows[index] = {
+        ...newRows[index],
+        quantityPerTransfer: finalValue,
+        balanceStock: availableStock - finalValue,
+      };
+    } else {
+      newRows[index] = {
+        ...newRows[index],
+        [field]: value,
+      };
     }
+
     setBatchRows(newRows);
   };
 
-  // Update table with batch items based on product and locations
   useEffect(() => {
-    if (formData.productName && formData.fromLocation && formData.toLocation) {
-      const selectedProduct = products.find(
-        (p) => p.name === formData.productName,
-      );
+    if (formData.productName && formData.productType && formData.fromLocation && formData.toLocation) {
+      const selectedProduct = products.find((p) => p.name === formData.productName);
       if (selectedProduct) {
-        // Simulate stock availability based on fromLocation 
         const updatedBatches = selectedProduct.batches.map((batch) => ({
           batchId: batch.batchId,
           itemName: batch.itemName,
           unitPrice: batch.unitPrice,
-          availableStock: batch.availableStock,
-          quantityPerTransfer: 0,
-          balanceStock: batch.availableStock,
+          availableStock: Number(batch.availableStock) || 0,
+          quantityPerTransfer: 0, 
+          balanceStock: Number(batch.availableStock) || 0,
           remarks: '',
           unit: batch.unit,
         }));
@@ -111,15 +98,12 @@ const StockTransferForm = () => {
     } else {
       setBatchRows([]);
     }
-  }, [formData.productName, formData.fromLocation, formData.toLocation, products]);
+  }, [formData.productName, formData.productType, formData.fromLocation, formData.toLocation]);
 
   const addToProceed = (index) => {
     const rowToAdd = batchRows[index];
-    // Only add if quantityPerTransfer is greater than 0
     if (rowToAdd.quantityPerTransfer > 0) {
       setProceedItems((prev) => [...prev, rowToAdd]);
-
-      // Reset the current row's quantity, balance, and remarks
       const newRows = [...batchRows];
       newRows[index] = {
         ...newRows[index],
@@ -128,8 +112,6 @@ const StockTransferForm = () => {
         remarks: '',
       };
       setBatchRows(newRows);
-
-      // Show success alert
       alert('Item added to proceed successfully!');
     } else {
       alert('Please enter a quantity greater than 0 before adding to proceed.');
@@ -137,11 +119,9 @@ const StockTransferForm = () => {
   };
 
   const handleProceed = () => {
-    // Extract only batchIds from proceedItems
     const batchIds = proceedItems.map((item) => item.batchId).join(', ');
     console.log('Proceeding with batch IDs:', batchIds);
     alert(`Proceeding with the following batch IDs: ${batchIds}`);
-    // Optionally reset proceedItems after processing
     setProceedItems([]);
   };
 
@@ -152,11 +132,9 @@ const StockTransferForm = () => {
           Stock Transfer
         </h2>
 
-        <div className='grid grid-cols-3 gap-4 mb-4'>
+        <div className='grid grid-cols-3 gap-2 mb-4'>
           <div>
-            <label className='block mb-1 text-sm font-medium text-gray-700'>
-              Date
-            </label>
+            <label className='block mb-1 text-sm font-medium text-gray-700'>Date</label>
             <input
               type='date'
               name='date'
@@ -165,11 +143,8 @@ const StockTransferForm = () => {
               className='w-full p-2 border rounded'
             />
           </div>
-
           <div>
-            <label className='block mb-1 text-sm font-medium text-gray-700'>
-              From
-            </label>
+            <label className='block mb-1 text-sm font-medium text-gray-700'>From</label>
             <select
               name='fromLocation'
               value={formData.fromLocation}
@@ -178,17 +153,12 @@ const StockTransferForm = () => {
             >
               <option value=''>Select Location</option>
               {locations.map((location) => (
-                <option key={location.id} value={location.id}>
-                  {location.name}
-                </option>
+                <option key={location.id} value={location.id}>{location.name}</option>
               ))}
             </select>
           </div>
-
           <div>
-            <label className='block mb-1 text-sm font-medium text-gray-700'>
-              To
-            </label>
+            <label className='block mb-1 text-sm font-medium text-gray-700'>To</label>
             <select
               name='toLocation'
               value={formData.toLocation}
@@ -197,9 +167,7 @@ const StockTransferForm = () => {
             >
               <option value=''>Select Location</option>
               {locations.map((location) => (
-                <option key={location.id} value={location.id}>
-                  {location.name}
-                </option>
+                <option key={location.id} value={location.id}>{location.name}</option>
               ))}
             </select>
           </div>
@@ -207,9 +175,7 @@ const StockTransferForm = () => {
 
         <div className='grid grid-cols-3 gap-4 mb-4'>
           <div>
-            <label className='block mb-1 text-sm font-medium text-gray-700'>
-              Product Name
-            </label>
+            <label className='block mb-1 text-sm font-medium text-gray-700'>Product Name</label>
             <select
               name='productName'
               value={formData.productName}
@@ -218,11 +184,33 @@ const StockTransferForm = () => {
             >
               <option value=''>Select Product</option>
               {products.map((product) => (
-                <option key={product.id} value={product.name}>
-                  {product.name}
-                </option>
+                <option key={product.id} value={product.name}>{product.name}</option>
               ))}
             </select>
+          </div>
+          <div>
+            <label className='block mb-1 text-sm font-medium text-gray-700'>Product Type</label>
+            <select
+              name='productType'
+              value={formData.productType}
+              onChange={handleInputChange}
+              className='w-full p-2 border rounded'
+            >
+              <option value=''>Select Product Type</option>
+              <option value='Medicine'>Medicine</option>
+              <option value='Surgical'>Surgical</option>
+            </select>
+          </div>
+          <div>
+            <label className='block mb-1 text-sm font-medium text-gray-700'>Reference</label>
+            <input
+              type='text'
+              name='reference'
+              value={formData.reference}
+              onChange={handleInputChange}
+              className='w-full p-2 border rounded'
+              placeholder='Enter reference (e.g., REF123)'
+            />
           </div>
         </div>
 
@@ -242,7 +230,7 @@ const StockTransferForm = () => {
             </thead>
             <tbody>
               {batchRows.map((row, index) => (
-                <tr key={index} className='bg-white'>
+                <tr key={row.batchId} className='bg-white'>
                   <td className='px-4 py-2'>{row.batchId}</td>
                   <td className='px-4 py-2'>{row.itemName}</td>
                   <td className='px-4 py-2'>{row.unitPrice.toFixed(2)}</td>
@@ -250,26 +238,21 @@ const StockTransferForm = () => {
                   <td className='px-4 py-2'>
                     <input
                       type='number'
-                      value={row.quantityPerTransfer || 0}
-                      onChange={(e) =>
-                        handleBatchChange(
-                          index,
-                          'quantityPerTransfer',
-                          e.target.value,
-                        )
-                      }
+                      value={row.quantityPerTransfer ?? ''} 
+                      onChange={(e) => handleBatchChange(index, 'quantityPerTransfer', e.target.value)}
                       className='w-full p-1 border rounded'
                       min='0'
+                      max={row.availableStock}
+                      step='1'
+                      pattern="[0-9]*"
                     />
                   </td>
-                  <td className='px-4 py-2'>{row.balanceStock}</td>
+                  <td className='px-4 py-2'>
+                    {Number(row.availableStock) - Number(row.quantityPerTransfer || 0)}
+                  </td>
                   <td className='px-4 py-2'>
                     <input
                       type='text'
-                      value={row.remarks || ''}
-                      onChange={(e) =>
-                        handleBatchChange(index, 'remarks', e.target.value)
-                      }
                       className='w-full p-1 border rounded'
                     />
                   </td>
@@ -290,7 +273,7 @@ const StockTransferForm = () => {
 
         <div className='flex justify-end gap-2 mt-4'>
           <button
-            type='button' 
+            type='button'
             onClick={handleProceed}
             className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
           >

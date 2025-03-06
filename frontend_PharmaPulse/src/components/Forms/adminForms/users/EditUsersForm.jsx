@@ -134,7 +134,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
             { label: "Email", name: "email", type: "email" },
             { label: "Contact Number", name: "contactNumber", type: "number" },
             { label: "Address", name: "address", type: "text" },
-            { label: "Status", name: "status", type: "select" }, // Changed type to 'select' for consistency
+            { label: "Status", name: "status", type: "select" }, 
           ].map(({ label, name, type }) => (
             <div key={name} className="flex items-center">
               <label
