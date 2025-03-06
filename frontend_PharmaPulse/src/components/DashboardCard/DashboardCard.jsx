@@ -7,7 +7,6 @@ const DashboardCard = ({ content }) => {
       <h1 className='mb-4 text-3xl md:text-4xl font-bold text-[var(--card-text-color)] text-center md:text-center'>
         Welcome to PharmaPulse!
       </h1>
-
       {/* Content Section */}
       <div className='flex-grow text-[var(--text-color)]'>{content}</div>
     </div>

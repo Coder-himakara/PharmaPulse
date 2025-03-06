@@ -1,4 +1,4 @@
-package com.group03.backend_PharmaPulse.sales.api.event;
+package com.group03.backend_PharmaPulse.sales.api;
 
 import com.group03.backend_PharmaPulse.sales.api.dto.CustomerGroupDTO;
 import jakarta.validation.Valid;

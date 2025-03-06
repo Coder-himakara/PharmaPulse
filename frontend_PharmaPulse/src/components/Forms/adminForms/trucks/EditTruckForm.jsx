@@ -80,10 +80,10 @@ const EditTruckForm = ({ onUpdateTruck }) => {
       </h2>
 
       {errorMessage && (
-        <p className="mb-4 text-sm font-bold text-red-600">{errorMessage}</p>
+        <p className="mb-4 text-sm font-bold text-center text-red-600">{errorMessage}</p>
       )}
       {successMessage && (
-        <p className="mb-4 text-sm font-bold text-green-600">
+        <p className="mb-4 text-sm font-bold text-center text-green-600">
           {successMessage}
         </p>
       )}

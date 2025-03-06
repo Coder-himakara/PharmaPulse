@@ -201,17 +201,9 @@ const EmployeeNavbar = () => {
     >
       <div className="flex items-center gap-6">
         <img src={logo} alt="Logo" className="h-10 mr-4" />
-      
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            `text-lg font-bold transition-colors duration-300 ${
-              isActive ? "text-teal-300" : "hover:text-teal-300"
-            }`
-          }
-        >
+
           Home
-        </NavLink>
+
         <button
           onClick={() => navigate("/employee-dashboard")
 

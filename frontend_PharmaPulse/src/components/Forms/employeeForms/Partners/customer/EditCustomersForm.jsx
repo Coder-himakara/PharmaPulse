@@ -23,13 +23,10 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     customerName: "",
     address: "",
     contactName: "",
-    nic: "",
-    brcNo: "",
     email: "",
     phoneNo: "",
     customerGroup: "",
     status: "",
-    registeredDate: formatDate(new Date()), // Default to current date if not provided
     creditLimit: "",
     creditPeriod: "",
   });
@@ -45,8 +42,6 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
         customerName: customer.customerName || "",
         address: customer.address || "",
         contactName: customer.contactName || "",
-        nic: customer.nic || "",
-        brcNo: customer.brcNo || "",
         email: customer.email || "",
         phoneNo: customer.phoneNo || "",
         customerGroup: customer.customerGroup || "",
@@ -88,6 +83,12 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;
+    }
+    if (!/^0[0-9]{9}$/.test(formData.phoneNo)) {
+      setErrorMessage(
+        "Contact number must start with 0 and contain exactly 10 digits."
+      );
+      return false;
     }
 
     setErrorMessage(""); // Clear errors
@@ -192,42 +193,10 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
               name="nic"
               value={formData.nic}
               onChange={handleChange}
+              readOnly
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
-
-          <div className="flex items-center">
-            <label htmlFor="brcNo" className="text-[16px] text-gray-800 w-1/2 text-left">
-              Businesses Registration Number:
-            </label>
-            <input
-              type="text"
-              id="brcNo"
-              name="brcNo"
-              value={formData.brcNo}
-              onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
-            />
-          </div>
-          <div className="flex items-center">
-            <label htmlFor="email" className="text-[16px] text-gray-800 w-1/2 text-left">
-              Email:
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
-            />
-          </div>
-        </div>
-
-        {/* Right Column with Buttons at the Bottom */}
-        <div className="space-y-4">
-        
-
           <div className="flex items-center">
             <label
               htmlFor="phoneNo"
@@ -246,6 +215,23 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           </div>
 
           <div className="flex items-center">
+            <label htmlFor="email" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Email:
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            />
+          </div>
+        </div>
+
+        {/* Right Column with Buttons at the Bottom */}
+        <div className="space-y-4">
+          <div className="flex items-center">
             <label
               htmlFor="customerGroup"
               className="text-[16px] text-gray-800 w-1/2 text-left"
@@ -259,12 +245,26 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
                 name="customerGroup"
                 value={formData.customerGroup}
                 onChange={handleChange}
+                readOnly
                 className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
               />
               <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 top-1/2 right-3" />
             </div>
           </div>
-
+          <div className="flex items-center">
+            <label htmlFor="brcNo" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Businesses Registration Number:
+            </label>
+            <input
+              type="text"
+              id="brcNo"
+              name="brcNo"
+              value={formData.brcNo}
+              onChange={handleChange}
+              readOnly
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            />
+          </div>
           <div className="flex items-center">
             <label htmlFor="status" className="text-[16px] text-gray-800 w-1/2 text-left">
               Status:
@@ -308,7 +308,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
               Credit Limit:
             </label>
             <input
-              type="text"
+              type="number"
               id="creditLimit"
               name="creditLimit"
               value={formData.creditLimit}
@@ -325,7 +325,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
               Credit Period:
             </label>
             <input
-              type="text"
+              type="number"
               id="creditPeriod"
               name="creditPeriod"
               value={formData.creditPeriod}

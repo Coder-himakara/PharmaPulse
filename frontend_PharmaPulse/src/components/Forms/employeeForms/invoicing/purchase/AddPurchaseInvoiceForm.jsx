@@ -13,11 +13,11 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
     invoiceDate: "",
     invoiceNo: "",
     paymentType: "",
-    totalAmount: 0,
+    totalAmount: 0, // Initialize as 0, will be calculated on submit
     discountAmount: 0,
-    netAmount: 0,
-    notes: "", // Added notes to the initial state
-    lineItems: [{ product: "", quantity: "", price: "", focQty: 0 }],
+    netAmount: 0, // Initialize as 0, will be calculated on submit
+    notes: "",
+    lineItems: [{ product: "", quantity: "", price: "", focQty: 0, discount: 0 }],
   });
 
   const navigate = useNavigate();
@@ -38,22 +38,25 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
   const handleLineItemChange = (index, field, value) => {
     const updatedLineItems = invoiceData.lineItems.map((item, idx) => {
       if (idx === index) {
-        return { ...item, [field]: value };
+        return {
+          ...item,
+          [field]: field === "quantity" || field === "focQty" ? parseInt(value) || 0 : parseFloat(value) || 0,
+        };
       }
       return item;
     });
     setInvoiceData({ ...invoiceData, lineItems: updatedLineItems });
   };
 
-  // Calculate the total and net amounts
+  // Calculate totals only when needed (e.g., on submit or manually triggered)
   const calculateTotals = () => {
     const totalAmount = invoiceData.lineItems.reduce(
-      (sum, item) => sum + (item.quantity * item.price || 0),
+      (sum, item) => sum + (item.quantity * item.price * (1 - (item.discount || 0) / 100) || 0),
       0
     );
 
     const netAmount = totalAmount - invoiceData.discountAmount;
-    setInvoiceData({ ...invoiceData, totalAmount, netAmount });
+    return { totalAmount, netAmount };
   };
 
   // Add a new empty line item
@@ -62,7 +65,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
       ...invoiceData,
       lineItems: [
         ...invoiceData.lineItems,
-        { product: "", quantity: "", price: "", focQty: 0 },
+        { product: "", quantity: "", price: "", focQty: 0, discount: 0 },
       ],
     });
   };
@@ -90,11 +93,23 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
       return;
     }
 
+    // Calculate totals before submission
+    const { totalAmount, netAmount } = calculateTotals();
+    setInvoiceData((prev) => ({
+      ...prev,
+      totalAmount,
+      netAmount,
+    }));
+
     setErrorMessage("");
     setSuccessMessage("Purchase Invoice added successfully!");
 
     if (onAddPurchaseInvoice) {
-      onAddPurchaseInvoice(invoiceData);
+      onAddPurchaseInvoice({
+        ...invoiceData,
+        totalAmount,
+        netAmount,
+      });
     }
 
     setTimeout(() => {
@@ -110,8 +125,8 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         totalAmount: 0,
         discountAmount: 0,
         netAmount: 0,
-        notes: "", // Reset notes field
-        lineItems: [{ product: "", quantity: "", price: "", focQty: 0 }],
+        notes: "",
+        lineItems: [{ product: "", quantity: "", price: "", focQty: 0, discount: 0 }],
       });
       setSuccessMessage("");
     }, 2000);
@@ -124,7 +139,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-4xl mx-auto p-5 bg-[#e6eef3] border border-gray-300 rounded-lg shadow-md"
+     className="max-w-4xl mx-auto p-5 bg-[#e6eef3] border border-gray-300 rounded-lg shadow-md"
     >
       <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md mb-5 text-lg">
         Add Purchase Invoice
@@ -156,7 +171,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             />
           </div>
-          <div className="w-1/3">
+          <div className="w-full mb-4 md:w-1/3 md:mb-0">
             <label className="w-full text-sm text-gray-800">
               Supplier ID:
             </label>
@@ -171,7 +186,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               <option value="S002">S002</option>
             </select>
           </div>
-          <div className="w-1/3">
+          <div className="w-full mb-4 md:w-1/3 md:mb-0">
             <label className="w-full text-sm text-gray-800">
               Purchase Order Reference:
             </label>
@@ -183,7 +198,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             />
           </div>
-          <div className="w-1/3">
+          <div className="w-full mb-4 md:w-1/3 md:mb-0">
             <label className="w-full text-sm text-gray-800">
               Invoice Number:
             </label>
@@ -210,7 +225,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             />
           </div>
 
-          <div className="w-1/3">
+          <div className="w-full mb-4 md:w-1/3 md:mb-0">
             <label className="w-full text-sm text-gray-800">
               Invoice Status:
             </label>
@@ -229,7 +244,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             </select>
           </div>
 
-          <div className="w-1/3">
+          <div className="w-full mb-4 md:w-1/3 md:mb-0">
             <label className="w-full text-sm text-gray-800">
               Invoice Date:
             </label>
@@ -241,7 +256,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
             />
           </div>
-          <div className="w-1/3">
+          <div className="w-full mb-4 md:w-1/3 md:mb-0">
             <label className="w-full text-sm text-gray-800">
               Payment Type:
             </label>
@@ -393,7 +408,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div>
             <label className="text-sm text-gray-800">Total:</label>
             <span className="w-full px-2 py-1 mt-1 text-sm bg-white border border-gray-300 rounded-md">
-              {invoiceData.totalAmount.toFixed(2)}
+              {invoiceData.lineItems.length > 0 ? calculateTotals().totalAmount.toFixed(2) : "0.00"}
             </span>
           </div>
           <div>
@@ -403,7 +418,14 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               name="discountAmount"
               value={invoiceData.discountAmount}
               onChange={(e) => handleInputChange(e)}
-              onBlur={calculateTotals}
+              onBlur={() => {
+                const { totalAmount, netAmount } = calculateTotals();
+                setInvoiceData((prev) => ({
+                  ...prev,
+                  totalAmount,
+                  netAmount,
+                }));
+              }}
               className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
               min="0"
             />
@@ -421,7 +443,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div>
             <label className="text-sm text-gray-800">Net Total:</label>
             <span className="w-full px-2 py-1 mt-1 text-sm bg-white border border-gray-300 rounded-md">
-              {invoiceData.netAmount.toFixed(2)}
+              {invoiceData.lineItems.length > 0 ? calculateTotals().netAmount.toFixed(2) : "0.00"}
             </span>
           </div>
         </div>
