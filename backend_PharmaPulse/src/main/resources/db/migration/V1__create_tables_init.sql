@@ -15,6 +15,7 @@ CREATE TABLE batch_inventory
     discount                DECIMAL,
     batch_status            VARCHAR(255),
     date_received           date,
+
     CONSTRAINT pk_batch_inventory PRIMARY KEY (batch_id)
 );
 
@@ -109,3 +110,5 @@ ALTER TABLE product_retail_price
 
 ALTER TABLE supplier
     ADD CONSTRAINT FK_SUPPLIER_ON_PURCHASE_GROUP FOREIGN KEY (purchase_group_id) REFERENCES purchase_group (purchase_group_id);
+
+

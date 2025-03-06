@@ -14,11 +14,13 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import java.util.Optional;
 
 @Service
 public class ProductWholesalePriceServiceImpl implements ProductWholesalePriceService {
     private final ProductWholesalePriceRepo wholesalePriceRepo;
     private final ProductService productService;
+    private final Logger logger = LoggerFactory.getLogger(ProductWholesalePriceServiceImpl.class);
 
 
     public ProductWholesalePriceServiceImpl(ProductWholesalePriceRepo wholesalePriceRepo,
@@ -80,6 +82,14 @@ public class ProductWholesalePriceServiceImpl implements ProductWholesalePriceSe
         purchaseLineItemEvent.getPurchaseLineItemDTOS()
                 .forEach(dto ->
                         checkAndUpdateWholesalePrice(dto.getProductId(), dto.getUnitPrice()));
+    }
+
+    //new
+    @Override
+    public Optional<BigDecimal> getLatestWholesalePrice(Long productId) {
+        Product product = productService.getProductEntityById(productId);
+        return wholesalePriceRepo.findTopByProductAndEndDateIsNullOrderByEffectiveDateDesc(product)
+                .map(ProductWholesalePrice::getWholesalePrice);
     }
 
 }

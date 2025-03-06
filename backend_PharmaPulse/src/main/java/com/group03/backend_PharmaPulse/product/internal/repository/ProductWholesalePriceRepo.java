@@ -13,4 +13,5 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface ProductWholesalePriceRepo extends JpaRepository<ProductWholesalePrice, Long> {
     Optional<ProductWholesalePrice> findTopByProductAndEndDateIsNullOrderByEffectiveDateDesc(Product product);
+
 }
