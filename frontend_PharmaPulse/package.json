@@ -10,7 +10,9 @@
     "lint:fix": "eslint src --fix",
     "lint:ci": "eslint .",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "stop": "npx kill-port 3123",
+    "restart": "npm run stop && npm run dev"
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint --fix",
@@ -26,6 +28,7 @@
     "axios": "^1.7.9",
     "font-awesome": "^4.7.0",
     "frontend-pharmapulse": "file:",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.476.0",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.2",

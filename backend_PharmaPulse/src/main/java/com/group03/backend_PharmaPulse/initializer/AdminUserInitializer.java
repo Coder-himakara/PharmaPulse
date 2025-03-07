@@ -24,10 +24,9 @@ public class AdminUserInitializer implements CommandLineRunner {
             admin.setUsername("admin");
             admin.setPassword("admin123");
             admin.setRole(ADMIN);
-            usersService.registerUser(admin);
+            usersService.registerUser(admin,null);
         }catch(IllegalArgumentException ex){
             System.out.println("Admin and User already exist");
         }
-
     }
 }

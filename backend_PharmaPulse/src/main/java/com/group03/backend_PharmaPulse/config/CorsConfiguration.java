@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfiguration {
     private static final String[] ALLOWED_METHODS = {
-            "GET", "POST", "PUT", "DELETE"
+            "GET", "POST", "PUT", "DELETE", "OPTIONS"
     };
 
     @Bean
@@ -18,8 +18,10 @@ public class CorsConfiguration {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedMethods(ALLOWED_METHODS)
-                        .allowedOrigins("*")
-                        .allowedHeaders("*");
+                        .allowedOrigins("http://localhost:3123")
+                        .allowedHeaders("*")
+                        .allowCredentials(true)
+                        .maxAge(3600);
             }
         };
     }

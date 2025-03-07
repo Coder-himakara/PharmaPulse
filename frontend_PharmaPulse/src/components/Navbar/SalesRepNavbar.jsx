@@ -11,7 +11,7 @@ import {
 import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
 import { MegaMenu } from "primereact/megamenu";
-
+import { useAuth } from '../../security/UseAuth';
 
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
   <li>
@@ -42,8 +42,8 @@ DropdownLink.propTypes = {
 const SalesRepNavbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const toggleDropdown = () => {
     setIsDropdownVisible((prev) => !prev);
@@ -52,7 +52,12 @@ const SalesRepNavbar = () => {
   const closeDropdown = () => {
     setIsDropdownVisible(false);
   };
-  
+
+  const logoutSalesRep = () => {
+    setIsDropdownVisible(false);
+    logout();
+  };
+
   const SalesRepNavbarSections=
   [
     {
@@ -166,7 +171,7 @@ const SalesRepNavbar = () => {
               <DropdownLink
                 to="/"
                 icon={FaSignOutAlt}
-                onClick={closeDropdown}
+                onClick={logoutSalesRep}
               >
                 Log Out
               </DropdownLink>

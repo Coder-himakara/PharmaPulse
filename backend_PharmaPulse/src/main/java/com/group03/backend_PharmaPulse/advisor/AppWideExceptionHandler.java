@@ -1,5 +1,7 @@
 package com.group03.backend_PharmaPulse.advisor;
 
+import com.group03.backend_PharmaPulse.user.api.exception.TokenExpiredException;
+import com.group03.backend_PharmaPulse.user.api.exception.TokenNotFoundException;
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.util.api.dto.ErrorResponseDto;
 
@@ -126,6 +128,20 @@ public class AppWideExceptionHandler{
         return new ResponseEntity<>(
                 new ErrorResponseDto(403, "No Permission", e.getMessage()),
                 HttpStatus.FORBIDDEN
+        );
+    }
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ErrorResponseDto> handleTokenExpiredException(TokenExpiredException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(401, "Token Expired", e.getMessage()),
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleTokenNotFoundException(TokenNotFoundException e) {
+        return new ResponseEntity<>(
+                new ErrorResponseDto(404, "Token Not Found", e.getMessage()),
+                HttpStatus.NOT_FOUND
         );
     }
 }

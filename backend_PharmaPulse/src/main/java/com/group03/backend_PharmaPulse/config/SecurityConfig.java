@@ -43,11 +43,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(request ->request
-                        .requestMatchers(HttpMethod.POST,"/api/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/users/login","api/auth/refresh").permitAll()
                         .requestMatchers("/api/users/register").hasRole(ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/api/users/register").hasAuthority(ADMIN_CREATE.name())
+                        .requestMatchers("/swagger-ui/index.html").permitAll()
                         .anyRequest().authenticated())
 
+                .cors(cors -> cors.configure(http))
                 .csrf(customizer -> customizer.disable())
                 .httpBasic(httpBasic ->httpBasic.
                         authenticationEntryPoint(this.basicAuthenticationEntryPoint))
