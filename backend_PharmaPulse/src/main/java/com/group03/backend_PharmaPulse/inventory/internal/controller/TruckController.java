@@ -3,7 +3,7 @@ package com.group03.backend_PharmaPulse.inventory.internal.controller;
 import com.group03.backend_PharmaPulse.inventory.api.TruckService;
 import com.group03.backend_PharmaPulse.inventory.internal.entity.Truck;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,13 +12,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/trucks")
+@AllArgsConstructor
 public class TruckController {
-    @Autowired
     private TruckService truckService;
 
-    public TruckController(TruckService truckService) {
-        this.truckService = truckService;
-    }
 
     @PostMapping("/")
     public ResponseEntity<?> addTruck(@RequestBody Truck truck) {
