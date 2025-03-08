@@ -46,9 +46,12 @@ public class BatchInventoryController {
         );
     }
 
-    @Operation(summary = "Get expiry alerts for batches", description = "Returns a list of ExpiryAlertDTOs for batches nearing expiry (6 months, 3 months, 1 month, 1 week)")
+    @Operation(summary = "Get expiry alerts for batches", description = "Returns a list of ExpiryAlertDTOs " +
+            "for batches nearing expiry (6 months, 3 months, 1 month, 1 week)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Successful operation",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandardResponse.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/expiry-alerts")
@@ -60,9 +63,12 @@ public class BatchInventoryController {
         );
     }
 
-    @Operation(summary = "Get reorder alerts for products", description = "Returns a list of ReorderAlertDTOs for products needing reorder based on total available quantity compared to reorderLimitByPackage")
+    @Operation(summary = "Get reorder alerts for products", description = "Returns a list of ReorderAlertDTOs " +
+            "for products needing reorder based on total available quantity compared to reorderLimitByPackage")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Successful operation",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandardResponse.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/reorder-alerts")

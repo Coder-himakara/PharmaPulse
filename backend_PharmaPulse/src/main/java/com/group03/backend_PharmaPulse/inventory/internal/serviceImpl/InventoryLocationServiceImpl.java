@@ -25,9 +25,12 @@ public class InventoryLocationServiceImpl implements InventoryLocationService {
 
     @Override
     public InventoryLocationResponse addInventoryLocation(InventoryLocationDTO inventoryLocationDTO) {
-        InventoryLocation savedInventoryLocation = inventoryLocationRepo.
-                save(inventoryLocationMapper.toEntity(inventoryLocationDTO));
-        return inventoryLocationMapper.toResponseDTO(savedInventoryLocation);
+        if (inventoryLocationRepo.existsByLocationName(inventoryLocationDTO.getLocationName())) {
+            throw new IllegalArgumentException("Inventory Location already exists");
+        }
+            InventoryLocation savedInventoryLocation = inventoryLocationRepo.
+                    save(inventoryLocationMapper.toEntity(inventoryLocationDTO));
+            return inventoryLocationMapper.toResponseDTO(savedInventoryLocation);
     }
 
     @Override

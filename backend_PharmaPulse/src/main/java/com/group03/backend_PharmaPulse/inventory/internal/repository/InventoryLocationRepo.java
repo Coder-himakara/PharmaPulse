@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @EnableJpaRepositories
 public interface InventoryLocationRepo extends JpaRepository<InventoryLocation, Long> {
+    boolean existsByLocationName(String locationName);
 }
