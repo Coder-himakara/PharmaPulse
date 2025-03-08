@@ -5,17 +5,25 @@ import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.internal.entity.BatchInventory;
 import com.group03.backend_PharmaPulse.inventory.api.enumeration.BatchStatus;
+import com.group03.backend_PharmaPulse.inventory.internal.entity.InventoryLocation;
+import com.group03.backend_PharmaPulse.inventory.internal.entity.WarehouseInventory;
 import com.group03.backend_PharmaPulse.inventory.internal.mapper.BatchInventoryMapper;
+import com.group03.backend_PharmaPulse.inventory.internal.mapper.WarehouseInventoryMapper;
 import com.group03.backend_PharmaPulse.inventory.internal.repository.BatchInventoryRepo;
+import com.group03.backend_PharmaPulse.inventory.internal.repository.InventoryLocationRepo;
+import com.group03.backend_PharmaPulse.inventory.internal.repository.WarehouseInventoryRepo;
 import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
+import com.group03.backend_PharmaPulse.inventory.api.event.BatchInventoryEvent;
 import com.group03.backend_PharmaPulse.product.api.ProductService;
 import com.group03.backend_PharmaPulse.product.api.dto.ProductDTO;
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseLineItemDTO;
 import com.group03.backend_PharmaPulse.purchase.api.event.PurchaseLineItemEvent;
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
@@ -28,13 +36,25 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
     private final BatchInventoryRepo batchInventoryRepo;
     private final BatchInventoryMapper batchInventoryMapper;
     private final ProductService productService;
+    private final ApplicationEventPublisher eventPublisher;
+    private final InventoryLocationRepo inventoryLocationRepo;
+    private final WarehouseInventoryRepo warehouseInventoryRepo;
+    private final WarehouseInventoryMapper warehouseInventoryMapper;
 
     public BatchInventoryServiceImpl(BatchInventoryRepo batchInventoryRepo,
                                      BatchInventoryMapper batchInventoryMapper,
-                                     ProductService productService){
+                                     ProductService productService,
+                                     ApplicationEventPublisher eventPublisher,
+                                     InventoryLocationRepo inventoryLocationRepo,
+                                     WarehouseInventoryRepo warehouseInventoryRepo,
+                                     WarehouseInventoryMapper warehouseInventoryMapper) {
         this.batchInventoryRepo=batchInventoryRepo;
         this.batchInventoryMapper=batchInventoryMapper;
         this.productService=productService;
+        this.eventPublisher = eventPublisher;
+        this.inventoryLocationRepo = inventoryLocationRepo;
+        this.warehouseInventoryRepo = warehouseInventoryRepo;
+        this.warehouseInventoryMapper = warehouseInventoryMapper;
     }
 
     @Override
@@ -59,13 +79,22 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
      * @return List<BatchInventory>
      */
     @EventListener
+    @Transactional
     public List<BatchInventory> batchInventoryListener(PurchaseLineItemEvent purchaseLineItemEvent) {
-        List<BatchInventory> batches=purchaseLineItemEvent.getPurchaseLineItemDTOS()
+        List<BatchInventory> batches = purchaseLineItemEvent.getPurchaseLineItemDTOS()
                 .stream()
                 .map(this::convertToBatchInventory)
                 .toList();
-        return batchInventoryRepo.saveAll(batches);
+
+        // Save all batches to the repository
+        List<BatchInventory> savedBatches = batchInventoryRepo.saveAll(batches);
+
+        // Publish the BatchInventoryEvent after successful save
+        eventPublisher.publishEvent(new BatchInventoryEvent(this, savedBatches));
+
+        return savedBatches;
     }
+
     private BatchInventory convertToBatchInventory(PurchaseLineItemDTO dto) {
         Integer totalQuantity = dto.getQuantity() + dto.getFreeQuantity();
         //check if product exists
@@ -89,6 +118,48 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                     .dateReceived(LocalDate.now())
                     .build();
         }
+    }
+
+    /**
+     * Event listener for BatchInventoryEvent.
+     * Allocates newly created batches to the Main Warehouse.
+     */
+    @EventListener
+    @Transactional
+    public void allocateBatchesToMainWarehouse(BatchInventoryEvent batchInventoryEvent) {
+        List<BatchInventory> createdBatches = batchInventoryEvent.getCreatedBatches();
+
+        // Find the Main Warehouse
+        InventoryLocation mainWarehouse = inventoryLocationRepo.findByLocationName("Main Warehouse")
+                .orElseThrow(() -> new NotFoundException("Main Warehouse not found"));
+
+        // Check and update available capacity
+        int totalQuantityToAllocate = createdBatches.stream()
+                .mapToInt(BatchInventory::getAvailableUnitQuantity)
+                .sum();
+        if (mainWarehouse.getAvailableCapacity() < totalQuantityToAllocate) {
+            throw new IllegalStateException("Insufficient capacity in Main Warehouse. Required: " + totalQuantityToAllocate +
+                    ", Available: " + mainWarehouse.getAvailableCapacity());
+        }
+
+        // Create WarehouseInventory records for each batch
+        List<WarehouseInventory> warehouseInventories = new ArrayList<>();
+        for (BatchInventory batch : createdBatches) {
+            WarehouseInventory warehouseInventory = WarehouseInventory.builder()
+                    .location(mainWarehouse)
+                    .batch(batch)
+                    .quantity(batch.getAvailableUnitQuantity())
+                    .warehouseLocation(mainWarehouse.getLocationName())
+                    .build();
+            warehouseInventories.add(warehouseInventory);
+        }
+
+        // Save WarehouseInventory records
+        warehouseInventoryRepo.saveAll(warehouseInventories);
+
+        // Update Main Warehouse available capacity
+        mainWarehouse.setAvailableCapacity(mainWarehouse.getAvailableCapacity() - totalQuantityToAllocate);
+        inventoryLocationRepo.save(mainWarehouse);
     }
 
     /**
