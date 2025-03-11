@@ -57,6 +57,27 @@ const OrderForm = () => {
     setOrderItems(newItems);
   };
 
+  // Function to fetch maximum available quantity for a product
+  const handleShowMaxQuantity = (index) => {
+    const productId = orderItems[index].productId;
+    if (!productId) {
+      alert('Please select a product first.');
+      return;
+    }
+    apiClient
+      .get(`/inventory/available-quantity/${productId}`)
+      .then((response) => {
+        const maxQty = response.data; // assuming the API returns a number
+        const newItems = [...orderItems];
+        newItems[index].maxQuantity = maxQty;
+        setOrderItems(newItems);
+      })
+      .catch((error) => {
+        console.error('Error fetching available quantity:', error);
+        alert('Failed to fetch available quantity.');
+      });
+  };
+
   // Add a new empty order item
   const handleAddOrderItem = () => {
     setOrderItems([
@@ -87,7 +108,7 @@ const OrderForm = () => {
       const item = orderItems[i];
       if (!item.productId || !item.quantity) {
         setErrorMessage(
-          'Each order item must have a selected product and a quantity.',
+          'Each order item must have a selected product and a quantity.'
         );
         return;
       }
@@ -125,7 +146,7 @@ const OrderForm = () => {
         console.error('Order creation failed:', error);
         setErrorMessage(
           error.response?.data?.message ||
-            'Order creation failed. Please try again.',
+            'Order creation failed. Please try again.'
         );
       });
   };
@@ -225,6 +246,18 @@ const OrderForm = () => {
                 onChange={(e) => handleOrderItemChange(index, e)}
                 className='w-2/3 px-2 py-2 border border-gray-300 rounded-md'
               />
+              <button
+                type='button'
+                onClick={() => handleShowMaxQuantity(index)}
+                className='ml-2 px-2 py-1 bg-green-500 text-white rounded-md text-sm'
+              >
+                Show Max
+              </button>
+              {item.maxQuantity !== undefined && (
+                <span className='ml-2 text-green-700'>
+                  Max: {item.maxQuantity}
+                </span>
+              )}
             </div>
             <div className='flex items-center'>
               <label
