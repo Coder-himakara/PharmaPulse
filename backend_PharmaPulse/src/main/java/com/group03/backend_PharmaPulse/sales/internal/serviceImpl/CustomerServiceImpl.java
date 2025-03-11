@@ -30,12 +30,17 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.toDTO(savedCustomer);
    }
 
-    /*@Override
+    @Override
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> customers = customerRepo.findAll();
-        return customerMapper.toDTOList(customers);
 
-    }*/
+        if(!customers.isEmpty()){
+            return customerMapper.toDTOsList(customers);
+        }else{
+            throw new NotFoundException("No Customer found");
+        }
+
+    }
 
     @Override
     public CustomerDTO getCustomerById(Long id) {

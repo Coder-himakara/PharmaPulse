@@ -1,208 +1,284 @@
-import { useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  TextField,
-  Button,
-  Typography,
-  Box,
-  MenuItem,
-  Select,
-  Grid,
-} from '@mui/material';
-
-const customers = [
-  { regNo: 'CUST001', name: 'John Doe' },
-  { regNo: 'CUST002', name: 'Jane Smith' },
-];
-
-const products = [
-  { name: 'Product A', code: 'A001', price: 100, quantity: 50 },
-  { name: 'Product B', code: 'B001', price: 200, quantity: 20 },
-];
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createOrder } from '../../../api/OrderApiService'; // adjust the path as needed
+import apiClient from '../../../api/ApiClient'; // API client with baseURL configured
 
 const OrderForm = () => {
-  const [orderItems, setOrderItems] = useState([]);
-  const [customerRegNo, setCustomerRegNo] = useState('');
-  const [customerName, setCustomerName] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState('');
-  const [orderQty, setOrderQty] = useState('');
-  const [quantityError, setQuantityError] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    customerId: '',
+  });
+  const [orderItems, setOrderItems] = useState([
+    { productId: '', quantity: '', discount: '' },
+  ]);
+  const [customers, setCustomers] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const handleCustomerChange = (regNo) => {
-    setCustomerRegNo(regNo);
-    const customer = customers.find((c) => c.regNo === regNo);
-    setCustomerName(customer ? customer.name : '');
+  // Fetch customers and products when the component mounts
+  useEffect(() => {
+    // Fetch all customers
+    apiClient
+      .get('/customers/all')
+      .then((response) => {
+        // Adjust extraction if your response is wrapped, e.g., response.data.data
+        setCustomers(response.data.data || response.data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch customers:', error);
+      });
+
+    // Fetch all products
+    apiClient
+      .get('/products/all')
+      .then((response) => {
+        setProducts(response.data.data || response.data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch products:', error);
+      });
+  }, []);
+
+  // Handle changes for the customer dropdown
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const addToOrder = () => {
-    const product = products.find((p) => p.code === selectedProduct);
-    const qty = parseInt(orderQty);
+  // Handle changes for each order item
+  const handleOrderItemChange = (index, e) => {
+    const { name, value } = e.target;
+    const newItems = [...orderItems];
+    newItems[index][name] = value;
+    setOrderItems(newItems);
+  };
 
-    if (!product || qty <= 0 || qty > product.quantity) {
-      setQuantityError(true);
+  // Add a new empty order item
+  const handleAddOrderItem = () => {
+    setOrderItems([
+      ...orderItems,
+      { productId: '', quantity: '', discount: '' },
+    ]);
+  };
+
+  // Remove an order item
+  const handleRemoveOrderItem = (index) => {
+    const newItems = [...orderItems];
+    newItems.splice(index, 1);
+    setOrderItems(newItems);
+  };
+
+  // Submit order
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate customer selection
+    if (!formData.customerId) {
+      setErrorMessage('Please select a customer.');
       return;
     }
 
-    setOrderItems((prevItems) => [...prevItems, { ...product, orderQty: qty }]);
-    setSelectedProduct('');
-    setOrderQty('');
-    setQuantityError(false);
-  };
-
-  const removeFromOrder = (productCode) => {
-    setOrderItems(orderItems.filter((item) => item.code !== productCode));
-  };
-
-  const handleSubmit = () => {
-    if (!customerRegNo) {
-      alert('Please enter a customer registration number');
-      return;
+    // Validate each order item
+    for (let i = 0; i < orderItems.length; i++) {
+      const item = orderItems[i];
+      if (!item.productId || !item.quantity) {
+        setErrorMessage(
+          'Each order item must have a selected product and a quantity.',
+        );
+        return;
+      }
+      if (isNaN(item.quantity) || Number(item.quantity) <= 0) {
+        setErrorMessage('Quantity must be a positive number.');
+        return;
+      }
     }
 
-    console.log('Order submitted:', {
-      customerRegNo,
-      customerName,
-      orderItems,
-    });
-    setOrderItems([]);
-    setCustomerRegNo('');
-    setCustomerName('');
+    setErrorMessage('');
+
+    // Construct order payload
+    const orderData = {
+      ...formData,
+      orderItems: orderItems.map((item) => ({
+        productId: Number(item.productId),
+        quantity: Number(item.quantity),
+        discount: item.discount ? Number(item.discount) : 0,
+      })),
+    };
+
+    // Call API to create the order
+    createOrder(orderData)
+      .then((response) => {
+        console.log('Order created successfully:', response.data);
+        setSuccessMessage('Order created successfully!');
+        // Reset form fields
+        setFormData({ customerId: '' });
+        setOrderItems([{ productId: '', quantity: '', discount: '' }]);
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error('Order creation failed:', error);
+        setErrorMessage(
+          error.response?.data?.message ||
+            'Order creation failed. Please try again.',
+        );
+      });
+  };
+
+  const handleCancel = () => {
+    navigate('/orders');
   };
 
   return (
-    <Box p={4} bgcolor='#e0f2f1' minHeight='100vh'>
-      <Paper elevation={3} sx={{ p: 2, borderRadius: 2 }}>
-        <Typography variant='h5' gutterBottom color='#004d40'>
-          Create Order
-        </Typography>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              select
-              label='Customer Registration No'
-              value={customerRegNo}
-              onChange={(e) => handleCustomerChange(e.target.value)}
-            >
-              {customers.map((customer) => (
-                <MenuItem key={customer.regNo} value={customer.regNo}>
-                  {customer.regNo}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label='Customer Name'
-              value={customerName}
-              variant='outlined'
-              disabled
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label='Search Product'
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Select
-              fullWidth
-              value={selectedProduct}
-              onChange={(e) => setSelectedProduct(e.target.value)}
-              displayEmpty
-            >
-              <MenuItem value='' disabled>
-                Select Product
-              </MenuItem>
-              {products
-                .filter((product) =>
-                  product.name.toLowerCase().includes(searchTerm.toLowerCase()),
-                )
-                .map((product) => (
-                  <MenuItem key={product.code} value={product.code}>
-                    {product.name} - ${product.price}
-                  </MenuItem>
-                ))}
-            </Select>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              type='number'
-              fullWidth
-              label='Quantity'
-              value={orderQty}
-              onChange={(e) => setOrderQty(e.target.value)}
-              error={quantityError}
-              helperText={quantityError ? 'Invalid quantity' : ''}
-            />
-          </Grid>
-        </Grid>
-        <Button
-          sx={{ mt: 2, bgcolor: '#00796b' }}
-          variant='contained'
-          onClick={addToOrder}
-        >
-          Add to Order
-        </Button>
-        <TableContainer component={Paper} sx={{ mt: 2, borderRadius: 2 }}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ bgcolor: '#ffcc80' }}>
-                <TableCell>Product Name</TableCell>
-                <TableCell>Quantity</TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {orderItems.map((item) => (
-                <TableRow key={item.code} sx={{ bgcolor: '#bbdefb' }}>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.orderQty}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant='contained'
-                      color='secondary'
-                      onClick={() => removeFromOrder(item.code)}
-                    >
-                      Remove
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Box mt={2} display='flex' justifyContent='space-between'>
-          <Button variant='contained' color='success' onClick={handleSubmit}>
-            Submit Order
-          </Button>
-          <Button
-            variant='contained'
-            color='error'
-            onClick={() => {
-              setOrderItems([]);
-              setCustomerRegNo('');
-              setCustomerName('');
-            }}
+    <form
+      onSubmit={handleSubmit}
+      className='max-w-4xl mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md border border-gray-300'
+    >
+      <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg'>
+        Create Order
+      </h2>
+
+      {errorMessage && (
+        <p className='text-[#991919] text-sm font-bold mb-4 text-center'>
+          {errorMessage}
+        </p>
+      )}
+      {successMessage && (
+        <p className='text-[#3c5f3c] text-sm font-bold mb-4 text-center'>
+          {successMessage}
+        </p>
+      )}
+
+      {/* Customer Details */}
+      <div className='mb-6'>
+        <div className='flex items-center mb-4'>
+          <label
+            htmlFor='customerId'
+            className='w-1/3 text-[16px] text-gray-800'
           >
-            Cancel Order
-          </Button>
-        </Box>
-      </Paper>
-    </Box>
+            Customer:
+          </label>
+          <select
+            id='customerId'
+            name='customerId'
+            value={formData.customerId}
+            onChange={handleChange}
+            className='w-2/3 px-2 py-2 border border-gray-300 rounded-md'
+          >
+            <option value=''>Select a customer</option>
+            {customers.map((customer) => (
+              <option key={customer.customer_id} value={customer.customer_id}>
+                {customer.customer_name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Order Items */}
+      <div className='mb-6'>
+        <h3 className='text-lg font-bold mb-4'>Order Items</h3>
+        {orderItems.map((item, index) => (
+          <div
+            key={index}
+            className='p-4 mb-4 border border-gray-300 rounded-md relative'
+          >
+            <div className='flex items-center mb-2'>
+              <label
+                htmlFor={`productId-${index}`}
+                className='w-1/3 text-[16px] text-gray-800'
+              >
+                Product:
+              </label>
+              <select
+                id={`productId-${index}`}
+                name='productId'
+                value={item.productId}
+                onChange={(e) => handleOrderItemChange(index, e)}
+                className='w-2/3 px-2 py-2 border border-gray-300 rounded-md'
+              >
+                <option value=''>Select a product</option>
+                {products.map((product) => (
+                  <option key={product.productId} value={product.productId}>
+                    {product.productName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className='flex items-center mb-2'>
+              <label
+                htmlFor={`quantity-${index}`}
+                className='w-1/3 text-[16px] text-gray-800'
+              >
+                Quantity:
+              </label>
+              <input
+                type='number'
+                id={`quantity-${index}`}
+                name='quantity'
+                value={item.quantity}
+                onChange={(e) => handleOrderItemChange(index, e)}
+                className='w-2/3 px-2 py-2 border border-gray-300 rounded-md'
+              />
+            </div>
+            <div className='flex items-center'>
+              <label
+                htmlFor={`discount-${index}`}
+                className='w-1/3 text-[16px] text-gray-800'
+              >
+                Discount (%):
+              </label>
+              <input
+                type='number'
+                id={`discount-${index}`}
+                name='discount'
+                value={item.discount}
+                onChange={(e) => handleOrderItemChange(index, e)}
+                className='w-2/3 px-2 py-2 border border-gray-300 rounded-md'
+              />
+            </div>
+            {orderItems.length > 1 && (
+              <button
+                type='button'
+                onClick={() => handleRemoveOrderItem(index)}
+                className='absolute top-2 right-2 text-sm text-red-600'
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        ))}
+        <button
+          type='button'
+          onClick={handleAddOrderItem}
+          className='px-4 py-2 bg-blue-500 text-white rounded-md text-sm'
+        >
+          Add Order Item
+        </button>
+      </div>
+
+      {/* Action Buttons */}
+      <div className='flex justify-end gap-2'>
+        <button
+          type='submit'
+          className='px-5 py-2 bg-[#2a4d69] text-white rounded-md text-[16px] transition-all duration-300 hover:bg-[#00796b]'
+        >
+          Create Order
+        </button>
+        <button
+          type='button'
+          onClick={handleCancel}
+          className='px-5 py-2 bg-[#2a4d69] text-white rounded-md text-[16px] transition-all duration-300 hover:bg-[#00796b]'
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
   );
 };
 

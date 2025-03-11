@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/products")
-@PreAuthorize("hasRole('EMPLOYEE')")
+//@PreAuthorize("hasRole('EMPLOYEE')")
 public class ProductController {
     private final ProductService productService;
 
@@ -21,7 +21,7 @@ public class ProductController {
         this.productService = productService;
     }
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('employee:read')")
+    //@PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getAllProducts() {
         List<ProductDTO> productDTOS  = productService.getAllProducts();
         return new ResponseEntity<>(
@@ -30,7 +30,7 @@ public class ProductController {
         );
     }
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('employee:read')")
+    //@PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getProductsById(@PathVariable Long id) {
         ProductDTO selectedProduct = productService.getProductById(id);
         return new ResponseEntity<>(
@@ -39,7 +39,7 @@ public class ProductController {
         );
     }
     @PostMapping("/add")
-    @PreAuthorize("hasAuthority('employee:create')")
+    //@PreAuthorize("hasAuthority('employee:create')")
     public ResponseEntity<StandardResponse> addProducts(@Valid @RequestBody ProductDTO productDTO) {
         ProductDTO savedProduct=productService.addProduct(productDTO);
         return new ResponseEntity<>(
@@ -48,7 +48,7 @@ public class ProductController {
         );
     }
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasAuthority('employee:update')")
+   // @PreAuthorize("hasAuthority('employee:update')")
     public ResponseEntity<StandardResponse> updateProducts(@Valid @PathVariable Long id,
                                                            @RequestBody ProductDTO productDTO) {
         ProductDTO updatedProducts=productService.updateProduct(id,productDTO);

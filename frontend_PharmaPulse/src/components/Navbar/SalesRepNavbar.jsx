@@ -74,6 +74,7 @@ const SalesRepNavbar = () => {
     {
       label: "Order History",
       icon: "pi pi-history text-white",
+      command: () => navigate("/sales-dashboard/order-history"),
   
     },
     {

@@ -19,6 +19,9 @@ public interface CustomerMapper {
     @Mapping(target = "customer_id" ,ignore = true)
     Customer toEntity(CustomerDTO customerDTO);
 
+    //new
+
+
     // Map a list of Customer entities to a list of CustomerDTOs
     List<CustomerDTO> toDTOsList(List<Customer> customers);
 
