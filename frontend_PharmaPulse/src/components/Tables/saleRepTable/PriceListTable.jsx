@@ -27,16 +27,11 @@ const PriceListTable = () => {
     fetchPriceList();
   }, []);
 
+  // Updated filtering to check that productName starts with the search term.
   useEffect(() => {
     const searchTerm = search.toLowerCase();
     const results = priceList.filter((entry) => {
-      return (
-        String(entry.productId).toLowerCase().includes(searchTerm) ||
-        String(entry.productRefId).toLowerCase().includes(searchTerm) ||
-        String(entry.purchaseGroupId).toLowerCase().includes(searchTerm) ||
-        String(entry.productName).toLowerCase().includes(searchTerm) ||
-        String(entry.genericName).toLowerCase().includes(searchTerm)
-      );
+      return String(entry.productName).toLowerCase().startsWith(searchTerm);
     });
     setFilteredPriceList(results);
   }, [search, priceList]);
@@ -65,7 +60,7 @@ const PriceListTable = () => {
         <div className='relative'>
           <input
             type='text'
-            placeholder='Search Price List...'
+            placeholder='Search by Product Name...'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className='px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]'
@@ -105,7 +100,7 @@ const PriceListTable = () => {
                   Units per Pack
                 </th>
                 <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                  Wholesale Price
+                  Wholesale Price(Rs)
                 </th>
               </tr>
             </thead>
@@ -131,7 +126,7 @@ const PriceListTable = () => {
                     {entry.unitsPerPack}
                   </td>
                   <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    ${entry.wholesalePrice.toFixed(2)}
+                    {entry.wholesalePrice.toFixed(2)}
                   </td>
                 </tr>
               ))}
