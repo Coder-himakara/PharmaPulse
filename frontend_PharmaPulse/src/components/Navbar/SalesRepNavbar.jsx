@@ -80,6 +80,7 @@ const SalesRepNavbar = () => {
     {
       "label": "Create Sale Invoice",
       "icon": "pi pi-file text-white",
+      "command": () => navigate("/sales-dashboard/sale-invoice-creation")
     }
     
     

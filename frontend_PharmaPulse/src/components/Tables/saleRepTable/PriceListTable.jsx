@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../../api/ApiClient';
 
-
 const PriceListTable = () => {
   const [priceList, setPriceList] = useState([]);
   const [filteredPriceList, setFilteredPriceList] = useState([]);

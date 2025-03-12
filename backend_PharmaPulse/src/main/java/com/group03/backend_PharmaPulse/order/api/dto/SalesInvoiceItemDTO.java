@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 public class SalesInvoiceItemDTO {
     private Long invoiceItemId;
     private Long productId;
+
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal discount;

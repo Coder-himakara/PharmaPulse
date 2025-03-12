@@ -108,7 +108,7 @@ const OrderForm = () => {
       const item = orderItems[i];
       if (!item.productId || !item.quantity) {
         setErrorMessage(
-          'Each order item must have a selected product and a quantity.'
+          'Each order item must have a selected product and a quantity.',
         );
         return;
       }
@@ -146,7 +146,7 @@ const OrderForm = () => {
         console.error('Order creation failed:', error);
         setErrorMessage(
           error.response?.data?.message ||
-            'Order creation failed. Please try again.'
+            'Order creation failed. Please try again.',
         );
       });
   };
