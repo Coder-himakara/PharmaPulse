@@ -53,6 +53,13 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
         // Retrieve the Order from the database
         Order order = orderRepository.findById(salesInvoiceDTO.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order not found for id: " + salesInvoiceDTO.getOrderId()));
+        // Check if an invoice for this order already exists
+        var existingInvoice = salesInvoiceRepository.findByOrderId(order.getOrderId());
+        if(existingInvoice.isPresent()){
+            return salesInvoiceMapper.toDTO(existingInvoice.get());
+        }
+
+
 
         // ***** Set Customer Details from Order into SalesInvoiceDTO *****
         salesInvoiceDTO.setCustomerId(order.getCustomerId());
@@ -97,6 +104,7 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
         if (salesInvoiceDTO.getInvoiceItems() == null || salesInvoiceDTO.getInvoiceItems().isEmpty()) {
             List<SalesInvoiceItem> invoiceItems = order.getOrderItems().stream().map(orderItem -> {
                 SalesInvoiceItem invoiceItem = new SalesInvoiceItem();
+
                 invoiceItem.setProductId(orderItem.getProductId());
                 invoiceItem.setQuantity(orderItem.getQuantity());
                 invoiceItem.setUnitPrice(orderItem.getUnitPrice());
