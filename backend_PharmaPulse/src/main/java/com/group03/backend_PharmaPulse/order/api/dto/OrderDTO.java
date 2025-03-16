@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class OrderDTO {
-    //private Long orderId;
+    private Long orderId;
     private String orderNumber;
 
     private Long customerId;

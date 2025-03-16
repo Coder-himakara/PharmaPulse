@@ -35,7 +35,7 @@ const OrderHistory = () => {
       order.customerName.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Toggle expansion for a given order
+  // Toggle expansion for a given order (by its orderNumber)
   const handleRowClick = (orderNumber) => {
     if (expandedRows.includes(orderNumber)) {
       setExpandedRows(expandedRows.filter((num) => num !== orderNumber));
@@ -88,6 +88,9 @@ const OrderHistory = () => {
           <thead>
             <tr>
               <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+                Order ID
+              </th>
+              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
                 Order Number
               </th>
               <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
@@ -105,12 +108,15 @@ const OrderHistory = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((order) => (  //here i removed index key
+            {filteredOrders.map((order) => (
               <React.Fragment key={order.orderNumber}>
                 <tr
                   className="bg-[#c6dceb] hover:bg-[#dce4e9] cursor-pointer"
                   onClick={() => handleRowClick(order.orderNumber)}
                 >
+                  <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                    {order.orderId}
+                  </td>
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                     {order.orderNumber}
                   </td>
@@ -121,7 +127,7 @@ const OrderHistory = () => {
                     {new Date(order.orderDate).toLocaleString()}
                   </td>
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                    ${parseFloat(order.totalAmount).toFixed(2)}
+                    {"$" + parseFloat(order.totalAmount).toFixed(2)}
                   </td>
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                     {order.status}
@@ -129,7 +135,7 @@ const OrderHistory = () => {
                 </tr>
                 {expandedRows.includes(order.orderNumber) && (
                   <tr>
-                    <td colSpan="5" className="p-4 bg-[#f1f1f1]">
+                    <td colSpan="6" className="p-4 bg-[#f1f1f1]">
                       <h3 className="text-xl font-bold mb-2">Order Items</h3>
                       {order.orderItems && order.orderItems.length > 0 ? (
                         <table className="w-full border-collapse">
@@ -152,13 +158,13 @@ const OrderHistory = () => {
                                   {item.quantity}
                                 </td>
                                 <td className="border border-gray-400 p-2">
-                                  ${parseFloat(item.unitPrice).toFixed(2)}
+                                  {"$" + parseFloat(item.unitPrice).toFixed(2)}
                                 </td>
                                 <td className="border border-gray-400 p-2">
-                                  ${parseFloat(item.discount).toFixed(2)}
+                                  {"$" + parseFloat(item.discount).toFixed(2)}
                                 </td>
                                 <td className="border border-gray-400 p-2">
-                                  ${parseFloat(item.lineTotal).toFixed(2)}
+                                  {"$" + parseFloat(item.lineTotal).toFixed(2)}
                                 </td>
                               </tr>
                             ))}
