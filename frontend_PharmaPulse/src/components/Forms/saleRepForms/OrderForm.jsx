@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Select from 'react-select';
 import { createOrder } from '../../../api/OrderApiService'; // adjust the path as needed
 import apiClient from '../../../api/ApiClient'; // API client with baseURL configured
 
@@ -9,7 +10,7 @@ const OrderForm = () => {
     customerId: '',
   });
   const [orderItems, setOrderItems] = useState([
-    { productId: '', quantity: '', discount: '' },
+    { productId: '', quantity: '', discount: '', maxQuantity: undefined },
   ]);
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
@@ -40,21 +41,26 @@ const OrderForm = () => {
       });
   }, []);
 
-  // Handle changes for the customer dropdown
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  // Handle changes for the customer dropdown (react-select)
+  const handleCustomerChange = (option) => {
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      customerId: option.value,
     }));
   };
 
-  // Handle changes for each order item
+  // Handle changes for each order item; we mimic an event to keep existing logic
   const handleOrderItemChange = (index, e) => {
     const { name, value } = e.target;
     const newItems = [...orderItems];
     newItems[index][name] = value;
     setOrderItems(newItems);
+  };
+
+  // Handle product selection using react-select in each order item
+  const handleProductChange = (index, option) => {
+    // Mimic an event so our handler works as before
+    handleOrderItemChange(index, { target: { name: 'productId', value: option.value } });
   };
 
   // Function to fetch maximum available quantity for a product
@@ -82,7 +88,7 @@ const OrderForm = () => {
   const handleAddOrderItem = () => {
     setOrderItems([
       ...orderItems,
-      { productId: '', quantity: '', discount: '' },
+      { productId: '', quantity: '', discount: '', maxQuantity: undefined },
     ]);
   };
 
@@ -107,9 +113,7 @@ const OrderForm = () => {
     for (let i = 0; i < orderItems.length; i++) {
       const item = orderItems[i];
       if (!item.productId || !item.quantity) {
-        setErrorMessage(
-          'Each order item must have a selected product and a quantity.',
-        );
+        setErrorMessage('Each order item must have a selected product and a quantity.');
         return;
       }
       if (isNaN(item.quantity) || Number(item.quantity) <= 0) {
@@ -137,7 +141,7 @@ const OrderForm = () => {
         setSuccessMessage('Order created successfully!');
         // Reset form fields
         setFormData({ customerId: '' });
-        setOrderItems([{ productId: '', quantity: '', discount: '' }]);
+        setOrderItems([{ productId: '', quantity: '', discount: '', maxQuantity: undefined }]);
         setTimeout(() => {
           setSuccessMessage('');
         }, 3000);
@@ -154,6 +158,18 @@ const OrderForm = () => {
   const handleCancel = () => {
     navigate('/orders');
   };
+
+  // Options for react-select for customers
+  const customerOptions = customers.map((customer) => ({
+    value: customer.customer_id,
+    label: customer.customer_name,
+  }));
+
+  // Options for react-select for products
+  const productOptions = products.map((product) => ({
+    value: product.productId,
+    label: product.productName,
+  }));
 
   return (
     <form
@@ -178,26 +194,23 @@ const OrderForm = () => {
       {/* Customer Details */}
       <div className='mb-6'>
         <div className='flex items-center mb-4'>
-          <label
-            htmlFor='customerId'
-            className='w-1/3 text-[16px] text-gray-800'
-          >
+          <label htmlFor='customerId' className='w-1/3 text-[16px] text-gray-800'>
             Customer:
           </label>
-          <select
-            id='customerId'
-            name='customerId'
-            value={formData.customerId}
-            onChange={handleChange}
-            className='w-2/3 px-2 py-2 border border-gray-300 rounded-md'
-          >
-            <option value=''>Select a customer</option>
-            {customers.map((customer) => (
-              <option key={customer.customer_id} value={customer.customer_id}>
-                {customer.customer_name}
-              </option>
-            ))}
-          </select>
+          <div className='w-2/3'>
+            <Select
+              id='customerId'
+              name='customerId'
+              options={customerOptions}
+              placeholder='Select a customer'
+              onChange={handleCustomerChange}
+              value={
+                formData.customerId
+                  ? customerOptions.find(option => option.value === Number(formData.customerId))
+                  : null
+              }
+            />
+          </div>
         </div>
       </div>
 
@@ -210,60 +223,53 @@ const OrderForm = () => {
             className='p-4 mb-4 border border-gray-300 rounded-md relative'
           >
             <div className='flex items-center mb-2'>
-              <label
-                htmlFor={`productId-${index}`}
-                className='w-1/3 text-[16px] text-gray-800'
-              >
+              <label htmlFor={`productId-${index}`} className='w-1/3 text-[16px] text-gray-800'>
                 Product:
               </label>
-              <select
-                id={`productId-${index}`}
-                name='productId'
-                value={item.productId}
-                onChange={(e) => handleOrderItemChange(index, e)}
-                className='w-2/3 px-2 py-2 border border-gray-300 rounded-md'
-              >
-                <option value=''>Select a product</option>
-                {products.map((product) => (
-                  <option key={product.productId} value={product.productId}>
-                    {product.productName}
-                  </option>
-                ))}
-              </select>
+              <div className='w-2/3'>
+                <Select
+                  id={`productId-${index}`}
+                  name='productId'
+                  options={productOptions}
+                  placeholder='Select a product'
+                  onChange={(option) => handleProductChange(index, option)}
+                  value={
+                    orderItems[index].productId
+                      ? productOptions.find(option => option.value === Number(orderItems[index].productId))
+                      : null
+                  }
+                />
+              </div>
             </div>
             <div className='flex items-center mb-2'>
-              <label
-                htmlFor={`quantity-${index}`}
-                className='w-1/3 text-[16px] text-gray-800'
-              >
+              <label htmlFor={`quantity-${index}`} className='w-1/3 text-[16px] text-gray-800'>
                 Quantity:
               </label>
-              <input
-                type='number'
-                id={`quantity-${index}`}
-                name='quantity'
-                value={item.quantity}
-                onChange={(e) => handleOrderItemChange(index, e)}
-                className='w-2/3 px-2 py-2 border border-gray-300 rounded-md'
-              />
-              <button
-                type='button'
-                onClick={() => handleShowMaxQuantity(index)}
-                className='ml-2 px-2 py-1 bg-green-500 text-white rounded-md text-sm'
-              >
-                Show Max
-              </button>
-              {item.maxQuantity !== undefined && (
-                <span className='ml-2 text-green-700'>
-                  Max: {item.maxQuantity}
-                </span>
-              )}
+              <div className="w-2/3 flex items-center space-x-2">
+                <input
+                  type='number'
+                  id={`quantity-${index}`}
+                  name='quantity'
+                  value={item.quantity}
+                  onChange={(e) => handleOrderItemChange(index, e)}
+                  className='flex-1 px-2 py-2 border border-gray-300 rounded-md'
+                />
+                <button
+                  type='button'
+                  onClick={() => handleShowMaxQuantity(index)}
+                  className='px-2 py-2 bg-green-500 text-white rounded-md text-sm'
+                >
+                  Show Max
+                </button>
+                {item.maxQuantity !== undefined && (
+                  <span className='text-green-700'>
+                    Max: {item.maxQuantity}
+                  </span>
+                )}
+              </div>
             </div>
             <div className='flex items-center'>
-              <label
-                htmlFor={`discount-${index}`}
-                className='w-1/3 text-[16px] text-gray-800'
-              >
+              <label htmlFor={`discount-${index}`} className='w-1/3 text-[16px] text-gray-800'>
                 Discount (%):
               </label>
               <input
