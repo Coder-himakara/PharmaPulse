@@ -11,7 +11,7 @@ public interface CustomerService {
 
     CustomerDTO addCustomer(CustomerDTO customerDTO);
 
-    //List<CustomerDTO> getAllCustomers();
+    List<CustomerDTO> getAllCustomers();
 
     CustomerDTO getCustomerById(Long id);
 
@@ -20,4 +20,6 @@ public interface CustomerService {
     //new
     boolean existsById(Long customerId);
     Customer getCustomerEntityById(Long id);
+
+
 }

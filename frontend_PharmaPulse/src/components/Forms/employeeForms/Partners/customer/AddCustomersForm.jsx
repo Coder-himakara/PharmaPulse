@@ -2,32 +2,27 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { FaSearch } from "react-icons/fa"; // Importing search icon
+import { FaSearch } from "react-icons/fa";
+import axios from "axios";
 
 const AddCustomersForm = ({ onAddCustomer }) => {
   const formatDate = (date) => {
-    return date
-      .toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
-      .replace(/ /g, "-"); // Example: 11-Feb-2025
+    return date.toISOString().split("T")[0]; // Converts to "YYYY-MM-DD"
   };
 
   const [formData, setFormData] = useState({
-    customerName: "",
-    address: "",
-    contactName: "",
-    nic: "",
-    brcNo: "",
-    email: "",
-    customerGroup: "",
-    phoneNo: "",
-    status: "",
-    registeredDate: formatDate(new Date()), // Set current date
-    creditLimit: "",
-    creditPeriod: "",
+    customer_name: "",
+    customer_address: "",
+    customer_contact_name: "",
+    customer_nic_no: "",
+    customer_brc_no: "",
+    customer_email: "",
+    customer_phone_no: "",
+    customer_group: "",
+    registered_date: formatDate(new Date()),
+    credit_limit: "",
+    credit_period_in_days: "",
+    outstanding_balance: "",
   });
 
   const navigate = useNavigate();
@@ -43,61 +38,111 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   };
 
   const handleSearch = () => {
-    console.log("Searching for customer group:", formData.customerGroup);
-    alert(`Searching for customer group: ${formData.customerGroup}`);
+    console.log("Searching for customer group:", formData.customer_group);
+    alert(`Searching for customer group: ${formData.customer_group}`);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Check for empty fields
     if (
-      !formData.customerName ||
-      !formData.address ||
-      !formData.contactName ||
-      !formData.nic ||
-      !formData.brcNo ||
-      !formData.email ||
-      !formData.phoneNo ||
-      !formData.customerGroup ||
-      !formData.status ||
-      !formData.registeredDate ||
-      !formData.creditLimit ||
-      !formData.creditPeriod
+      !formData.customer_name ||
+      !formData.customer_address ||
+      !formData.customer_contact_name ||
+      !formData.customer_nic_no ||
+      !formData.customer_brc_no ||
+      !formData.customer_email ||
+      !formData.customer_phone_no ||
+      !formData.customer_group ||
+      !formData.credit_limit ||
+      !formData.credit_period_in_days ||
+      !formData.outstanding_balance
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
-    if (!/^0[0-9]{9}$/.test(formData.phoneNo)) {
-      setErrorMessage(
-        "Contact number must start with 0 and contain exactly 10 digits."
+
+    // Validate phone number format
+    if (!/^0[0-9]{9}$/.test(formData.customer_phone_no)) {
+      setErrorMessage("Phone number must start with 0 and contain exactly 10 digits.");
+      return;
+    }
+
+    // Convert fields to match backend DTO types
+    const phoneNo = parseInt(formData.customer_phone_no, 10);
+    const group = parseInt(formData.customer_group, 10);
+    const creditLimit = parseFloat(formData.credit_limit);
+    const creditPeriod = parseInt(formData.credit_period_in_days, 10);
+    const balance = parseFloat(formData.outstanding_balance);
+
+    // Check for invalid numeric conversions
+    if (isNaN(phoneNo) || isNaN(group) || isNaN(creditLimit) || isNaN(creditPeriod) || isNaN(balance)) {
+      setErrorMessage("Please ensure all numeric fields contain valid numbers.");
+      return;
+    }
+
+    const requestData = {
+      ...formData,
+      customer_phone_no: phoneNo,           // Integer
+      customer_group: group,                // Long
+      credit_limit: creditLimit,            // Double
+      credit_period_in_days: creditPeriod,  // Integer
+      outstanding_balance: balance,         // Double
+    };
+
+    setErrorMessage(""); // Clear previous errors
+    try {
+      console.log("Sending requestData:", JSON.stringify(requestData, null, 2));
+      const response = await axios.post(
+        "http://localhost:8090/api/customers/add",
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          auth: {
+            username: "admin",
+            password: "admin123",
+          },
+        }
       );
-      return false;
-    }
 
-    setErrorMessage("");
-    setSuccessMessage("Customer added successfully!");
+      const savedCustomer = response.data.data;
+      setSuccessMessage("Customer added successfully!");
+      if (onAddCustomer) {
+        onAddCustomer(savedCustomer);
+      }
 
-    if (onAddCustomer) {
-      onAddCustomer(formData);
-    }
-
-    setTimeout(() => {
-      setFormData({
-        customerName: "",
-        address: "",
-        contactName: "",
-        nic: "",
-        brcNo: "",
-        email: "",
-        customerGroup: "",
-        phoneNo: "",
-        status: "",
-        registeredDate: formatDate(new Date()), // Reset with the current date
-        creditLimit: "",
-        creditPeriod: "",
+      setTimeout(() => {
+        setFormData({
+          customer_name: "",
+          customer_address: "",
+          customer_contact_name: "",
+          customer_nic_no: "",
+          customer_brc_no: "",
+          customer_email: "",
+          customer_phone_no: "",
+          customer_group: "",
+          registered_date: formatDate(new Date()),
+          credit_limit: "",
+          credit_period_in_days: "",
+          outstanding_balance: "",
+        });
+        setSuccessMessage("");
+      }, 2000);
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || "An unexpected error occurred. Check the console for details.";
+      setErrorMessage(errorMsg);
+      console.error("Error Details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        headers: error.response?.headers,
+        request: error.request,
       });
-      setSuccessMessage("");
-    }, 2000);
+    }
   };
 
   const handleCancel = () => {
@@ -124,129 +169,99 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         </p>
       )}
 
-      {/* Form Grid Layout */}
       <div className="grid grid-cols-2 gap-4">
-        {/* Left Column */}
         <div className="space-y-4">
           <div className="flex items-center">
-            <label
-              htmlFor="customerName"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="customer_name" className="text-[16px] text-gray-800 w-1/2 text-left">
               Customer Name:
             </label>
             <input
               type="text"
-              id="customerName"
-              name="customerName"
-              value={formData.customerName}
+              id="customer_name"
+              name="customer_name"
+              value={formData.customer_name}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
-
           <div className="flex items-center">
-            <label
-              htmlFor="address"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="customer_address" className="text-[16px] text-gray-800 w-1/2 text-left">
               Address:
             </label>
             <input
               type="text"
-              id="address"
-              name="address"
-              value={formData.address}
+              id="customer_address"
+              name="customer_address"
+              value={formData.customer_address}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
-
           <div className="flex items-center">
-            <label
-              htmlFor="contactName"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="customer_contact_name" className="text-[16px] text-gray-800 w-1/2 text-left">
               Contact Name:
             </label>
             <input
               type="text"
-              id="contactName"
-              name="contactName"
-              value={formData.contactName}
+              id="customer_contact_name"
+              name="customer_contact_name"
+              value={formData.customer_contact_name}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
-
           <div className="flex items-center">
-            <label
-              htmlFor="nic"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="customer_nic_no" className="text-[16px] text-gray-800 w-1/2 text-left">
               NIC:
             </label>
             <input
               type="text"
-              id="nic"
-              name="nic"
-              value={formData.nic}
+              id="customer_nic_no"
+              name="customer_nic_no"
+              value={formData.customer_nic_no}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
-          
           <div className="flex items-center">
-            <label
-              htmlFor="phoneNo"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
-              Phone Number:
-            </label>
-            <input
-              type="number"
-              id="phoneNo"
-              name="phoneNo"
-              value={formData.phoneNo}
-              onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
-            />
-          </div>
-
-          <div className="flex items-center">
-            <label
-              htmlFor="email"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="customer_email" className="text-[16px] text-gray-800 w-1/2 text-left">
               Email:
             </label>
             <input
               type="email"
-              id="email"
-              name="email"
-              value={formData.email}
+              id="customer_email"
+              name="customer_email"
+              value={formData.customer_email}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
+          <div className="flex items-center">
+            <label htmlFor="customer_phone_no" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Phone Number:
+            </label>
+            <input
+              type="text" // Changed to text for better control over format
+              id="customer_phone_no"
+              name="customer_phone_no"
+              value={formData.customer_phone_no}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
+            />
+          </div>
         </div>
 
-        {/* Right Column */}
         <div className="space-y-4">
-          
-        <div className="flex items-center">
-            <label
-              htmlFor="customerGroup"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+          <div className="flex items-center">
+            <label htmlFor="customer_group" className="text-[16px] text-gray-800 w-1/2 text-left">
               Customer Group:
             </label>
             <div className="relative flex items-center w-1/2">
               <input
-                type="text"
-                id="customerGroup"
-                name="customerGroup"
-                value={formData.customerGroup}
+                type="number" // Changed to number since backend expects Long
+                id="customer_group"
+                name="customer_group"
+                value={formData.customer_group}
                 onChange={handleChange}
                 className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
               />
@@ -260,95 +275,70 @@ const AddCustomersForm = ({ onAddCustomer }) => {
             </div>
           </div>
           <div className="flex items-center">
-            <label
-              htmlFor="brcNo"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
-              Businesses Registration Number:
+            <label htmlFor="customer_brc_no" className="text-[16px] text-gray-800 w-1/2 text-left">
+              BRC No:
             </label>
             <input
-              type="text"
-              id="brcNo"
-              name="brcNo"
-              value={formData.brcNo}
+              type="text" // Changed to text to match backend String type
+              id="customer_brc_no"
+              name="customer_brc_no"
+              value={formData.customer_brc_no}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
-          
           <div className="flex items-center">
-            <label
-              htmlFor="status"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
-              Status:
-            </label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
-            >
-              <option value="">Choose a status</option>
-              <option value="active">ACTIVE</option>
-              <option value="inactive">INACTIVE</option>
-              <option value="suspended">SUSPENDED</option>
-            </select>
-          </div>
-
-          <div className="flex items-center">
-            <label
-              htmlFor="registeredDate"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="registered_date" className="text-[16px] text-gray-800 w-1/2 text-left">
               Registered Date:
             </label>
             <input
               type="text"
-              id="registeredDate"
-              name="registeredDate"
-              value={formData.registeredDate}
+              id="registered_date"
+              name="registered_date"
+              value={formData.registered_date}
               readOnly
               className="w-1/2 px-2 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md"
             />
           </div>
-
           <div className="flex items-center">
-            <label
-              htmlFor="creditLimit"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="credit_limit" className="text-[16px] text-gray-800 w-1/2 text-left">
               Credit Limit:
             </label>
             <input
               type="number"
-              id="creditLimit"
-              name="creditLimit"
-              value={formData.creditLimit}
+              id="credit_limit"
+              name="credit_limit"
+              value={formData.credit_limit}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
-
           <div className="flex items-center">
-            <label
-              htmlFor="creditPeriod"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
-              Credit Period:
+            <label htmlFor="credit_period_in_days" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Credit Period In Days:
             </label>
             <input
               type="number"
-              id="creditPeriod"
-              name="creditPeriod"
-              value={formData.creditPeriod}
+              id="credit_period_in_days"
+              name="credit_period_in_days"
+              value={formData.credit_period_in_days}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
             />
           </div>
-
-          {/* Buttons at Bottom-Right */}
+          <div className="flex items-center">
+            <label htmlFor="outstanding_balance" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Outstanding Balance:
+            </label>
+            <input
+              type="number"
+              id="outstanding_balance"
+              name="outstanding_balance"
+              value={formData.outstanding_balance}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
+            />
+          </div>
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="submit"

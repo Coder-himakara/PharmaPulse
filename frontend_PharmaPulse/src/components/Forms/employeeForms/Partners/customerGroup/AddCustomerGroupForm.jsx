@@ -22,7 +22,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
       [name]: value,
     }));
   };
-
+//async-The function always returns a promise.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,6 +37,8 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
 
     try {
       console.log("Sending:", formData);
+      //axios.post-Send data to the backend using an API request 
+      //await-await to pause execution until a promise resolves.
       const response = await axios.post(
         "http://localhost:8090/api/customer-groups/add",
         formData,
@@ -44,6 +46,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           headers: {
             "Content-Type": "application/json",
           },
+          // Basic authentication
           auth: {
             username: "admin",
             password: "admin123"

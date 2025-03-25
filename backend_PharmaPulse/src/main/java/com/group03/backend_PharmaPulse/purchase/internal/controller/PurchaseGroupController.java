@@ -51,7 +51,7 @@ public class PurchaseGroupController {
                                                                 @RequestBody PurchaseGroupDTO purchaseGroupDTO) {
         PurchaseGroupDTO updatedPurchaseGroup=purchaseGroupService.updatePurchaseGroup(id,purchaseGroupDTO);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",updatedPurchaseGroup),
+                new StandardResponse(200,"Success",updatedPurchaseGroup),
                 HttpStatus.CREATED
         );
     }
