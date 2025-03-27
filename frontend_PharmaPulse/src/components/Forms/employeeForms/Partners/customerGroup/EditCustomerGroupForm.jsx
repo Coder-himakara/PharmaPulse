@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   const { state } = useLocation();
@@ -10,9 +11,8 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
 
   const [formData, setFormData] = useState({
     customerGroupName: "",
-    assignSalesRepId: "",
-    assignSalesRepName: "",
-    location: "",
+    assignedSalesRep: "",
+    descriptions: "",
   });
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -22,46 +22,65 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
     if (customerGroup) {
       setFormData({
         customerGroupName: customerGroup.customerGroupName,
-        assignSalesRepId: customerGroup.assignSalesRepId,
-        assignSalesRepName: customerGroup.assignSalesRepName,
-        location: customerGroup.location,
+        assignedSalesRep: customerGroup.assignedSalesRep,
+        descriptions: customerGroup.location || customerGroup.descriptions,
       });
     }
   }, [customerGroup]);
 
-  const handleChange = (cg) => {
-    const { name, value } = cg.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (cg) => {
-    cg.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     if (
       !formData.customerGroupName.trim() ||
-      !formData.assignSalesRepId.trim() ||
-      !formData.assignSalesRepName.trim() ||
-      !formData.location.trim()
+      !formData.assignedSalesRep.trim() ||
+      !formData.descriptions.trim()
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
 
-    setErrorMessage("");
+    try {
+      console.log("Updating:", formData);
+      const response = await axios.put(
+        `http://localhost:8090/api/customer-groups/${formData.customerGroupName}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          auth: {
+            username: "admin",
+            password: "admin123"
+          }
+        }
+      );
 
-    if (onUpdateCustomerGroup) {
-      onUpdateCustomerGroup(formData);
+      setErrorMessage("");
+      setSuccessMessage("Customer Group updated successfully!");
+      
+      if (onUpdateCustomerGroup) {
+        onUpdateCustomerGroup(response.data.data);
+      }
+
+      setTimeout(() => {
+        setSuccessMessage("");
+        navigate("/customer-group-info");
+      }, 2000);
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.message || "Failed to update customer group"
+      );
+      console.error("Error:", error.response || error);
     }
-
-    setSuccessMessage("Customer Group updated successfully!");
-
-    setTimeout(() => {
-      setSuccessMessage("");
-      navigate("/customer-group-info"); // Navigate back to the list
-    }, 2000);
   };
 
   const handleCancel = () => {
@@ -69,10 +88,8 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
-    >
+    // ... Same JSX as before, just update the field names
+    <form onSubmit={handleSubmit} className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md">
       <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
         Edit Customer Group
       </h2>
@@ -81,16 +98,11 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
         <p className="text-[#991919] text-sm font-bold mb-4 text-center">{errorMessage}</p>
       )}
       {successMessage && (
-        <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">
-          {successMessage}
-        </p>
+        <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">{successMessage}</p>
       )}
 
       <div className="flex items-center mb-4">
-        <label
-          htmlFor="customerGroupName"
-          className="text-[16px] text-gray-800 w-1/3 text-left"
-        >
+        <label htmlFor="customerGroupName" className="text-[16px] text-gray-800 w-1/3 text-left">
           Customer Group Name:
         </label>
         <input
@@ -104,49 +116,31 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
       </div>
 
       <div className="flex items-center mb-4">
-        <label
-          htmlFor="location"
-          className="text-[16px] text-gray-800 w-1/3 text-left"
-        >
-          Location:
+        <label htmlFor="assignedSalesRep" className="text-[16px] text-gray-800 w-1/3 text-left">
+          Assigned Sales Rep:
         </label>
         <input
           type="text"
-          id="location"
-          name="location"
-          value={formData.location}
+          id="assignedSalesRep"
+          name="assignedSalesRep"
+          value={formData.assignedSalesRep}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
 
       <div className="flex items-center mb-4">
-        <label
-          htmlFor="assignSalesRepId"
-          className="text-[16px] text-gray-800 w-1/3 text-left"
-        >
-          Assign Sales Rep:
+        <label htmlFor="descriptions" className="text-[16px] text-gray-800 w-1/3 text-left">
+          Location:
         </label>
-        <div className="flex w-2/3 gap-2">
-          <input
-            type="text"
-            id="assignSalesRepId"
-            name="assignSalesRepId"
-            value={formData.assignSalesRepId}
-            onChange={handleChange}
-            placeholder="Rep ID"
-            className="w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-md"
-          />
-          <input
-            type="text"
-            id="assignSalesRepName"
-            name="assignSalesRepName"
-            value={formData.assignSalesRepName}
-            onChange={handleChange}
-            placeholder="Rep Name"
-            className="w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-md"
-          />
-        </div>
+        <input
+          type="text"
+          id="descriptions"
+          name="descriptions"
+          value={formData.descriptions}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
       </div>
 
       <div className="flex justify-center gap-2">
