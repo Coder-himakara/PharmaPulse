@@ -36,8 +36,8 @@ const AddProductsForm = ({ onAddProduct }) => {
               "Accept": "application/json",
             },
             auth: {
-              username: "admin",
-              password: "admin123",
+              username: "employee",
+              password: "employee123",
             },
           }
         );
