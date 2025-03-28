@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
+import axios from 'axios';
 
 const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   const [formData, setFormData] = useState({
@@ -40,47 +40,47 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       setErrorMessage('Please fill out all required fields.');
       return;
     }
-    
-        try {
-          console.log("Sending:", formData);
-          const response = await axios.post(
-            "http://localhost:8090/api/purchase-groups/add",
-            formData,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              auth: {
-                username: "admin",
-                password: "admin123"
-              }
-            }
-          );
-    const savedPurchaseGroup = response.data.data;
-    setErrorMessage('');
-    setSuccessMessage('Purchase Group Added Successfully!');
 
-    if (onAddPurchaseGroup) {
-      onAddPurchaseGroup(savedPurchaseGroup );
+    try {
+      console.log('Sending:', formData);
+      const response = await axios.post(
+        'http://localhost:8090/api/purchase-groups/add',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          auth: {
+            username: 'admin',
+            password: 'admin123',
+          },
+        },
+      );
+      const savedPurchaseGroup = response.data.data;
+      setErrorMessage('');
+      setSuccessMessage('Purchase Group Added Successfully!');
+
+      if (onAddPurchaseGroup) {
+        onAddPurchaseGroup(savedPurchaseGroup);
+      }
+
+      setTimeout(() => {
+        setFormData({
+          purchaseGroupName: '',
+          purchaseGroupAddress: '',
+          purchaseGroupContactName: '',
+          purchaseGroupPhoneNo: '',
+          purchaseGroupFaxNo: '',
+          purchaseGroupEmail: '',
+        });
+        setSuccessMessage('');
+      }, 2000);
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.message || 'Failed to add purchase group',
+      );
+      console.error('Error:', error.response || error);
     }
-
-    setTimeout(() => {
-      setFormData({
-        purchaseGroupName: '',
-        purchaseGroupAddress: '',
-        purchaseGroupContactName: '',
-        purchaseGroupPhoneNo: '',
-        purchaseGroupFaxNo: '',
-        purchaseGroupEmail: '',
-      });
-      setSuccessMessage('');
-    }, 2000);
-  } catch (error) {
-    setErrorMessage(
-      error.response?.data?.message || "Failed to add purchase group"
-    );
-    console.error("Error:", error.response || error);
-  }
   };
 
   const handleCancel = () => {
@@ -206,7 +206,6 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
-
 
       <div className='flex justify-center gap-2'>
         <button

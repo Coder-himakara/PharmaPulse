@@ -8,7 +8,7 @@ const CustomerGroupInfoTable = ({ refreshTrigger }) => {
   const [search, setSearch] = useState("");
   const [customerGroups, setCustomerGroups] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(""); // Match AddCustomerGroupForm naming
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -17,19 +17,19 @@ const CustomerGroupInfoTable = ({ refreshTrigger }) => {
       try {
         console.log("Fetching customer groups...");
         const response = await axios.get(
-          "http://localhost:8090/api/customer-groups/all", // Updated to match controller
+          "http://localhost:8090/api/customer-groups/all",
           {
             headers: {
               "Content-Type": "application/json",
             },
             auth: {
               username: "admin",
-              password: "admin123", // Consistent with AddCustomerGroupForm
+              password: "admin123",
             },
           }
         );
         console.log("Response:", response.data);
-        setCustomerGroups(response.data.data || []); // Extract from StandardResponse
+        setCustomerGroups(response.data.data || []);
         setErrorMessage("");
         setLoading(false);
       } catch (error) {
@@ -45,18 +45,18 @@ const CustomerGroupInfoTable = ({ refreshTrigger }) => {
   }, [refreshTrigger]);
 
   const filteredCustomerGroups = customerGroups.filter((customerGroup) =>
-    customerGroup.customerGroupName.toLowerCase().includes(search.toLowerCase())
+    (customerGroup.customerGroupName || "")
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
 
   const handleClose = () => {
-    navigate("/employee-dashboard"); // Consistent navigation
+    navigate("/employee-dashboard");
   };
 
-  const handleEdit = (customerGroupId) => {
-    const customerGroup = customerGroups.find(
-      (cg) => cg.customerGroupId === customerGroupId
-    );
-    navigate(`/employee-dashboard/edit-customer-group/${customerGroupId}`, {
+  const handleEdit = (customerGroup) => {
+    console.log("Editing customer group:", customerGroup);
+    navigate(`/employee-dashboard/edit-customer-group/${customerGroup.customerGroupId}`, {
       state: { customerGroup },
     });
   };
@@ -72,9 +72,9 @@ const CustomerGroupInfoTable = ({ refreshTrigger }) => {
   }
 
   return (
-    <div className="flex flex-col max-w-4xl mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"> {/* Match form styling */}
+    <div className="flex flex-col max-w-4xl mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md">
       <div className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg relative">
-        <h1 className="text-lg">Customer Groups Management</h1> {/* Adjusted to match h2 styling */}
+        <h1 className="text-lg">Customer Groups Management</h1>
         <button
           onClick={handleClose}
           className="absolute top-1/2 right-2 transform -translate-y-1/2 text-white text-2xl cursor-pointer hover:text-[#f1f1f1]"
@@ -96,7 +96,7 @@ const CustomerGroupInfoTable = ({ refreshTrigger }) => {
           placeholder="Search Customer Group Name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md" // Match input styling
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
 
@@ -113,9 +113,8 @@ const CustomerGroupInfoTable = ({ refreshTrigger }) => {
               <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
                 {[
                   "Customer Group Name",
-                  "Sales Rep ID",
-                  "Sales Rep Name",
-                  "Location",
+                  "Assigned Sales Rep",
+                  "Descriptions",
                   "Action",
                 ].map((header, index) => (
                   <th
@@ -134,20 +133,17 @@ const CustomerGroupInfoTable = ({ refreshTrigger }) => {
                   className="bg-[#c6dceb] hover:bg-[#dce4e9] border border-gray-400"
                 >
                   <td className="p-2 text-center border border-gray-400">
-                    {customerGroup.customerGroupName}
-                  </td>
-                  <td className="p-2 text-center border border-gray-400">
-                    {customerGroup.assignSalesRepId || "N/A"} {/* Adjust if DTO includes */}
+                    {customerGroup.customerGroupName || "N/A"}
                   </td>
                   <td className="p-2 text-center border border-gray-400">
                     {customerGroup.assignedSalesRep || "N/A"}
                   </td>
                   <td className="p-2 text-center border border-gray-400">
-                    {customerGroup.descriptions}
+                    {customerGroup.descriptions || "N/A"}
                   </td>
                   <td className="p-2 text-center border border-gray-400">
                     <button
-                      onClick={() => handleEdit(customerGroup.customerGroupId)}
+                      onClick={() => handleEdit(customerGroup)}
                       className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] mr-2"
                     >
                       Edit

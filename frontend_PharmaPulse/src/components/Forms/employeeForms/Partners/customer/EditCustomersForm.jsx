@@ -3,55 +3,61 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaSearch } from "react-icons/fa"; // Importing search icon
+import axios from "axios";
 
 const EditCustomersForm = ({ onUpdateCustomer }) => {
-  const { state } = useLocation(); // Access the state passed by navigate
-  const customer = state?.customer; // Get customer from the state
+  const { state } = useLocation();
+  const customer = state?.customer;
+  const navigate = useNavigate();
 
-  // Function to format date (DD-MMM-YYYY)
   const formatDate = (date) => {
-    return date
-      .toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      })
-      .replace(/ /g, "-"); // Example: 11-Feb-2025
+    return date.toISOString().split("T")[0]; // YYYY-MM-DD
   };
 
   const [formData, setFormData] = useState({
-    customerName: "",
-    address: "",
-    contactName: "",
-    email: "",
-    phoneNo: "",
-    customerGroup: "",
-    status: "",
-    creditLimit: "",
-    creditPeriod: "",
+    customer_id: "",
+    customer_name: "",
+    customer_address: "",
+    customer_contact_name: "",
+    customer_nic_no: "",
+    customer_brc_no: "",
+    customer_email: "",
+    customer_phone_no: "",
+    customer_group: "",
+    registered_date: formatDate(new Date()),
+    credit_limit: "",
+    credit_period_in_days: "",
+    outstanding_balance: "",
   });
 
-  const navigate = useNavigate();
+
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (customer) {
+      console.log("Received customer data:", customer);
       setFormData({
-        customerName: customer.customerName || "",
-        address: customer.address || "",
-        contactName: customer.contactName || "",
-        email: customer.email || "",
-        phoneNo: customer.phoneNo || "",
-        customerGroup: customer.customerGroup || "",
-        status: customer.status || "",
-        registeredDate: customer.registeredDate
-          ? formatDate(new Date(customer.registeredDate))
+        customer_id: customer.customer_id || customer.customerId || "",
+        customer_name: customer.customer_name || customer.customerName || "",
+        customer_address: customer.customer_address || customer.address || "",
+        customer_contact_name: customer.customer_contact_name || customer.contactName || "",
+        customer_nic_no: customer.customer_nic_no || customer.nic || "",
+        customer_brc_no: customer.customer_brc_no || customer.brcNo || "",
+        customer_email: customer.customer_email || customer.email || "",
+        customer_phone_no: customer.customer_phone_no || customer.phoneNo || "",
+        customer_group: customer.customer_group || customer.customerGroup || "",
+        registered_date: customer.registered_date
+          ? formatDate(new Date(customer.registered_date))
           : formatDate(new Date()),
-        creditLimit: customer.creditLimit || "",
-        creditPeriod: customer.creditPeriod || "",
+        credit_limit: customer.credit_limit || customer.creditLimit || "",
+        credit_period_in_days: customer.credit_period_in_days || customer.creditPeriod || "",
+        outstanding_balance: customer.outstanding_balance || customer.outstandingBalance || "",
       });
+    } else {
+      console.warn("No customer data received in state");
+      setErrorMessage("No customer data available to edit.");
     }
   }, [customer]);
 
@@ -63,50 +69,100 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form submitted with data:", formData); // Debug submission
 
     // Basic validation
     if (
-      !formData.customerName ||
-      !formData.address ||
-      !formData.contactName ||
-      !formData.nic ||
-      !formData.brcNo ||
-      !formData.email ||
-      !formData.phoneNo ||
-      !formData.customerGroup ||
-      !formData.status ||
-      !formData.registeredDate ||
-      !formData.creditLimit ||
-      !formData.creditPeriod
+      !formData.customer_id ||
+      !formData.customer_name.trim() ||
+      !formData.customer_address.trim() ||
+      !formData.customer_contact_name.trim() ||
+      !formData.customer_nic_no.trim() ||
+      !formData.customer_brc_no.trim() ||
+      !formData.customer_email.trim() ||
+      !formData.customer_phone_no.trim() ||
+      !formData.customer_group.trim() ||
+      !formData.credit_limit ||
+      !formData.credit_period_in_days ||
+      !formData.outstanding_balance
     ) {
       setErrorMessage("Please fill out all required fields.");
+      console.log("Validation failed: Missing required fields");
       return;
     }
-    if (!/^0[0-9]{9}$/.test(formData.phoneNo)) {
-      setErrorMessage(
-        "Contact number must start with 0 and contain exactly 10 digits."
-      );
-      return false;
+    if (!/^0[0-9]{9}$/.test(formData.customer_phone_no)) {
+      setErrorMessage("Phone number must start with 0 and contain exactly 10 digits.");
+      console.log("Validation failed: Invalid phone number format");
+      return;
     }
+    
+
+    const phoneNo = parseInt(formData.customer_phone_no, 10);
+    const group = parseInt(formData.customer_group, 10);
+    const creditLimit = parseFloat(formData.credit_limit);
+    const creditPeriod = parseInt(formData.credit_period_in_days, 10);
+    const balance = parseFloat(formData.outstanding_balance);
+
+    if (isNaN(phoneNo) || isNaN(group) || isNaN(creditLimit) || isNaN(creditPeriod) || isNaN(balance)) {
+      setErrorMessage("Please ensure all numeric fields contain valid numbers.");
+      console.log("Validation failed: Invalid numeric values");
+      return;
+    }
+
+    const requestData = {
+      ...formData,
+      customer_phone_no: phoneNo,
+      customer_group: group,
+      credit_limit: creditLimit,
+      credit_period_in_days: creditPeriod,
+      outstanding_balance: balance,
+    };
+
+    try {
+      console.log("Sending update request with data:", JSON.stringify(requestData, null, 2));
+      const response = await axios.put(
+        `http://localhost:8090/api/customers/${formData.customer_id}`,
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          auth: {
+            username: "admin",
+            password: "admin123",
+          },
+        }
+      );
+
+      console.log("Update response:", response.data);
 
     setErrorMessage(""); // Clear errors
-
-    // Pass the updated customer data to the parent
-    if (onUpdateCustomer) {
-      onUpdateCustomer(formData);
-    }
-
     setSuccessMessage("Customer updated successfully!");
 
-    // Redirect after update
+    if (onUpdateCustomer) {
+      onUpdateCustomer(response.data.data);
+    }
+
     setTimeout(() => {
       setSuccessMessage("");
       navigate("/customers-info");
     }, 2000);
-  };
-
+  } catch (error) {
+    const errorMsg =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      "An unexpected error occurred while updating the customer.";
+    setErrorMessage(errorMsg);
+    console.error("Error updating customer:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message,
+      config: error.config,
+    });
+  }
+};
   const handleCancel = () => {
     navigate("/employee-dashboard/customers-info");
   };

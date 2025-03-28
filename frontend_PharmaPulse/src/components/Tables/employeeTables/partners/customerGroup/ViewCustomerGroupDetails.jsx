@@ -19,10 +19,6 @@ const ViewCustomerGroupDetails = () => {
           {customerGroup?.customerGroupName || "N/A"}
         </li>
         <li>
-          <strong>Sales Rep ID:</strong>{" "}
-          {customerGroup?.assignSalesRepId || "N/A"}
-        </li>
-        <li>
           <strong>Sales Rep Name:</strong>{" "}
           {customerGroup?.assignedSalesRep || "N/A"}
         </li>
