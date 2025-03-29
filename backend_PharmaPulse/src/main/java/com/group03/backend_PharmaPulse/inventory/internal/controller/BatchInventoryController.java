@@ -2,6 +2,8 @@ package com.group03.backend_PharmaPulse.inventory.internal.controller;
 
 import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,24 @@ public class BatchInventoryController {
         BatchInventoryDTO selectedBatchInventory = batchInventoryService.getBatchInventoryById(id);
         return new ResponseEntity<>(
                 new StandardResponse(200,"Success",selectedBatchInventory),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/expiry-alerts")
+    public ResponseEntity<StandardResponse> getExpiryAlerts() {
+        List<ExpiryAlertDTO> expiryAlerts = batchInventoryService.checkExpiryAlerts();
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Success", expiryAlerts),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/reorder-alerts")
+    public ResponseEntity<StandardResponse> getReorderAlerts() {
+        List<ReorderAlertDTO> reorderAlerts = batchInventoryService.checkReorderAlerts();
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Success", reorderAlerts),
                 HttpStatus.OK
         );
     }
