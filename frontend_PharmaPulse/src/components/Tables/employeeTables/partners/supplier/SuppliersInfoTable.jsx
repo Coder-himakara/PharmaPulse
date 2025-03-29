@@ -1,56 +1,59 @@
 /* eslint-disable prettier/prettier */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const SuppliersInfoTable = ({ suppliers }) => {
+const SuppliersInfoTable = ({ refreshTrigger }) => {
   const [search, setSearch] = useState("");
   const [sortDirection] = useState("asc");
+  const [suppliers, setSuppliers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // Combine the existing suppliers with the dummy data
-  const allSuppliers = [
-    ...suppliers, // Existing suppliers from props
-    {
-      supplierId: "S001",
-      supplierName: "ABC Distributors",
-      supplierAddress: "Main Street, Panadura",
-      contactNumber: "0784567812",
-      purchaseGroup: "PG-005",
-      creditPeriod: "3",
-      creditLimit: "5000",
-      dateOfConnected: "2024-01-15", // Added date for sorting
-    },
-    {
-      supplierId: "S002",
-      supplierName: "Pharma Distributors",
-      supplierAddress: "Galle Road, Matara",
-      contactNumber: "0761237895",
-      purchaseGroup: "PG-012",
-      creditPeriod: "8",
-      creditLimit: "25000",
-      dateOfConnected: "2024-03-20", // Added date for sorting
-    },
-    {
-      supplierId: "S003",
-      supplierName: "Medi Pharma Agencies",
-      supplierAddress: "2nd Cross Road, Ahangama",
-      contactNumber: "0671236784",
-      purchaseGroup: "PG-001",
-      creditPeriod: "2",
-      creditLimit: "10000",
-      dateOfConnected: "2024-02-10", // Added date for sorting
-    },
-  ];
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        console.log("Fetching suppliers...");
+        const response = await axios.get("http://localhost:8090/api/suppliers/all", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          auth: {
+            username: "admin", // Adjust credentials as needed
+            password: "admin123",
+          },
+        });
+        console.log("Full API Response:", JSON.stringify(response.data, null, 2));
+        const data = response.data.data || [];
+        console.log("Suppliers Data:", JSON.stringify(data, null, 2));
+        setSuppliers(data);
+        setErrorMessage("");
+        setLoading(false);
+      } catch (error) {
+        setErrorMessage(
+          error.response?.data?.message || "Failed to fetch suppliers"
+        );
+        console.error("Error:", error.response || error);
+        setLoading(false);
+      }
+    };
 
-  const filteredSuppliers = allSuppliers.filter((supplier) =>
-    supplier.supplierName.toLowerCase().includes(search.toLowerCase())
+    fetchSuppliers();
+  }, [refreshTrigger]);
+
+  const filteredSuppliers = suppliers.filter((supplier) =>
+    (supplier.supplier_name || "").toLowerCase().includes(search.toLowerCase())
   );
 
   const sortedSuppliers = filteredSuppliers.sort((a, b) => {
-    const dateA = new Date(a.dateOfConnected);
-    const dateB = new Date(b.dateOfConnected);
-    return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
+    // Sort by supplier_name since dateOfConnected isn’t in SupplierDTO
+    const valueA = a.supplier_name || "";
+    const valueB = b.supplier_name || "";
+    return sortDirection === "asc"
+      ? valueA.localeCompare(valueB)
+      : valueB.localeCompare(valueA);
   });
 
   const handleClose = () => {
@@ -58,17 +61,35 @@ const SuppliersInfoTable = ({ suppliers }) => {
   };
 
   const handleEdit = (supplierId) => {
-    const supplier = allSuppliers.find((s) => s.supplierId === supplierId); // Find the specific supplier
-    navigate(`/employee-dashboard/edit-supplier/${supplierId}`, {
-      state: { supplier },
-    }); // Pass the supplier data to the Edit form
-  };
-
-  const handleViewSupplier = (supplier) => {
-    navigate(`/employee-dashboard/view-supplier/${supplier.supplierId}`, {
+    const supplier = suppliers.find((s) => s.supplier_id === supplierId);
+    console.log("Editing supplier:", JSON.stringify(supplier, null, 2));
+    if (!supplier || supplier.supplier_id === undefined || supplier.supplier_id === null) {
+      console.error("Missing supplier_id in:", supplier);
+      setErrorMessage("Cannot edit: Supplier ID is missing or invalid.");
+      return;
+    }
+    navigate(`/employee-dashboard/edit-supplier/${supplier.supplier_id}`, {
       state: { supplier },
     });
   };
+
+  const handleViewSupplier = (supplier) => {
+    console.log("Viewing supplier:", JSON.stringify(supplier, null, 2));
+    if (!supplier || supplier.supplier_id === undefined || supplier.supplier_id === null) {
+      console.error("Missing supplier_id in:", supplier);
+      setErrorMessage("Cannot view: Supplier ID is missing or invalid.");
+      return;
+    }
+    navigate(`/employee-dashboard/view-supplier/${supplier.supplier_id}`, {
+      state: { supplier },
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="p-5 text-center text-gray-800">Loading suppliers...</div>
+    );
+  }
 
   return (
     <div className="bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative">
@@ -81,6 +102,12 @@ const SuppliersInfoTable = ({ suppliers }) => {
           X
         </button>
       </div>
+
+      {errorMessage && (
+        <div className="text-[#991919] text-sm text-center mt-2 font-bold">
+          {errorMessage}
+        </div>
+      )}
 
       <div className="flex items-center justify-between p-2 m-2">
         <h2 className="text-2xl font-bold text-[#1a5353]">Suppliers</h2>
@@ -95,96 +122,87 @@ const SuppliersInfoTable = ({ suppliers }) => {
         </div>
       </div>
 
-      {sortedSuppliers.length === 0 && search && (
+      {sortedSuppliers.length === 0 && (
         <div className="text-[#991919] text-sm text-center mt-2 font-bold">
-          No suppliers found matching your search.
+          {search ? "No suppliers found matching your search." : "No suppliers available."}
         </div>
       )}
 
-      <div className="p-2 m-2">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Supplier Name
-              </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Supplier Address
-              </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Contact Number
-              </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Purchase Group
-              </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Credit Period (Months)
-              </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Credit Limit (Rs.)
-              </th>
-              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedSuppliers.map((supplier, index) => (
-              <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                  {supplier.supplierName}
-                </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                  {supplier.supplierAddress}
-                </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                  {supplier.contactNumber}
-                </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                  {supplier.purchaseGroup}
-                </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                  {supplier.creditPeriod}
-                </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                  {supplier.creditLimit}
-                </td>
-                <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                  <button
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                    onClick={() => handleEdit(supplier.supplierId)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                    onClick={() => handleViewSupplier(supplier)}
-                  >
-                    View
-                  </button>
-                </td>
+      {sortedSuppliers.length > 0 && (
+        <div className="p-2 m-2">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+                  Supplier Name
+                </th>
+                <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+                  Supplier Address
+                </th>
+                <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+                  Contact Number
+                </th>
+                <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+                  Purchase Group
+                </th>
+                <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+                  Credit Period (Months)
+                </th>
+                <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+                  Credit Limit (Rs.)
+                </th>
+                <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+                  Action
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {sortedSuppliers.map((supplier, index) => (
+                <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
+                  <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                    {supplier.supplier_name || "N/A"}
+                  </td>
+                  <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                    {supplier.supplier_address || "N/A"}
+                  </td>
+                  <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                    {supplier.supplier_contactNo || "N/A"}
+                  </td>
+                  <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                    {supplier.purchase_group || "N/A"}
+                  </td>
+                  <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                    {supplier.credit_period || "N/A"}
+                  </td>
+                  <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                    {supplier.credit_limit || "N/A"}
+                  </td>
+                  <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                    <button
+                      className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                      onClick={() => handleEdit(supplier.supplier_id)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+                      onClick={() => handleViewSupplier(supplier)}
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
 
 SuppliersInfoTable.propTypes = {
-  suppliers: PropTypes.arrayOf(
-    PropTypes.shape({
-      supplierId: PropTypes.string.isRequired,
-      supplierName: PropTypes.string.isRequired,
-      supplierAddress: PropTypes.string.isRequired,
-      contactNumber: PropTypes.string.isRequired,
-      purchaseGroup: PropTypes.string.isRequired,
-      creditPeriod: PropTypes.string.isRequired,
-      creditLimit: PropTypes.string.isRequired,
-      dateOfConnected: PropTypes.string.isRequired, // Added to match the sorting logic
-    })
-  ).isRequired,
+  refreshTrigger: PropTypes.number,
 };
 
 export default SuppliersInfoTable;
