@@ -5,11 +5,6 @@ import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,14 +41,6 @@ public class BatchInventoryController {
         );
     }
 
-    @Operation(summary = "Get expiry alerts for batches", description = "Returns a list of ExpiryAlertDTOs " +
-            "for batches nearing expiry (6 months, 3 months, 1 month, 1 week)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandardResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/expiry-alerts")
     public ResponseEntity<StandardResponse> getExpiryAlerts() {
         List<ExpiryAlertDTO> expiryAlerts = batchInventoryService.checkExpiryAlerts();
@@ -63,14 +50,6 @@ public class BatchInventoryController {
         );
     }
 
-    @Operation(summary = "Get reorder alerts for products", description = "Returns a list of ReorderAlertDTOs " +
-            "for products needing reorder based on total available quantity compared to reorderLimitByPackage")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = StandardResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/reorder-alerts")
     public ResponseEntity<StandardResponse> getReorderAlerts() {
         List<ReorderAlertDTO> reorderAlerts = batchInventoryService.checkReorderAlerts();
