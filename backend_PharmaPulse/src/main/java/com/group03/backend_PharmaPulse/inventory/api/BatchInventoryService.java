@@ -1,7 +1,7 @@
 package com.group03.backend_PharmaPulse.inventory.api;
 
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
-import com.group03.backend_PharmaPulse.inventory.internal.entity.BatchInventory;
+
 
 
 import java.util.List;
