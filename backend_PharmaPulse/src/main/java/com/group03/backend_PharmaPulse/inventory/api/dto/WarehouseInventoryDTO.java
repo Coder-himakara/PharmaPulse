@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class WarehouseInventoryDTO {
-    //private Long inventoryId;
+    private Long inventoryId;
     private Long location;
     private Long batch;
     private Integer quantity;

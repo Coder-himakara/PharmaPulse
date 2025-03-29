@@ -13,10 +13,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class TruckDTO {
     private String truckId;
     private String registrationNumber;
     private double maxCapacity;
+
     @Enumerated(EnumType.STRING)
     private TruckStatus status;
     private LocalDateTime dateAdded = LocalDateTime.now();

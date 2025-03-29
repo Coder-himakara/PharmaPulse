@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 public class BatchInventoryDTO {
     private Long batchId;
     private Long productId;
