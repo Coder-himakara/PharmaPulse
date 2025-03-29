@@ -1,35 +1,38 @@
 /* eslint-disable prettier/prettier */
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import EmployeeDashboardCard from '../pages/EmployeeDashboard/EmployeeDashboardCard';
 
-import AddProductsForm from "../components/Forms/employeeForms/AddProductsForm";
-import ProductsInfoTable from "../components/Tables/employeeTables/ProductsInfoTable";
-import EditProductsForm from "../components/Forms/employeeForms/EditProductsForm";
-import ViewProductDetails from "../components/Tables/employeeTables/ViewProductDetails";
+import AddProductsForm from "../components/Forms/employeeForms/products/AddProductsForm";
+import ProductsInfoTable from "../components/Tables/employeeTables/products/ProductsInfoTable";
+import EditProductsForm from "../components/Forms/employeeForms/products/EditProductsForm";
+import ViewProductDetails from "../components/Tables/employeeTables/products/ViewProductDetails";
 
-import AddCustomersForm from "../components/Forms/employeeForms/AddCustomersForm";
-import CustomersInfoTable from "../components/Tables/employeeTables/CustomersInfoTable";
-import EditCustomersForm from "../components/Forms/employeeForms/EditCustomersForm";
-import ViewCustomerDetails from "../components/Tables/employeeTables/ViewCustomerDetails";
+import AddCustomersForm from "../components/Forms/employeeForms/Partners/customer/AddCustomersForm";
+import CustomersInfoTable from "../components/Tables/employeeTables/partners/customer/CustomersInfoTable";
+import EditCustomersForm from "../components/Forms/employeeForms/Partners/customer/EditCustomersForm";
+import ViewCustomerDetails from "../components/Tables/employeeTables/partners/customer/ViewCustomerDetails";
 
-import AddSuppliersForm from "../components/Forms/employeeForms/AddSuppliersForm";
-import SuppliersInfoTable from "../components/Tables/employeeTables/SuppliersInfoTable";
-import EditSuppliersForm from "../components/Forms/employeeForms/EditSuppliersForm";
-import ViewSupplierDetails from "../components/Tables/employeeTables/ViewSupplierDetails";
+import AddSuppliersForm from "../components/Forms/employeeForms/Partners/suppliers/AddSuppliersForm";
+import SuppliersInfoTable from "../components/Tables/employeeTables/partners/supplier/SuppliersInfoTable";
+import EditSuppliersForm from "../components/Forms/employeeForms/Partners/suppliers/EditSuppliersForm";
+import ViewSupplierDetails from "../components/Tables/employeeTables/partners/supplier/ViewSupplierDetails";
 
-import AddCustomerGroupForm from "../components/Forms/employeeForms/AddCustomerGroupForm";
-import CustomerGroupInfoTable from "../components/Tables/employeeTables/CustomerGroupInfoTable";
-import EditCustomerGroupForm from "../components/Forms/employeeForms/EditCustomerGroupForm";
-import ViewCustomerGroupDetails from "../components/Tables/employeeTables/ViewCustomerGroupDetails";
+import AddCustomerGroupForm from "../components/Forms/employeeForms/Partners/customerGroup/AddCustomerGroupForm";
+import CustomerGroupInfoTable from "../components/Tables/employeeTables/partners/customerGroup/CustomerGroupInfoTable";
+import EditCustomerGroupForm from "../components/Forms/employeeForms/Partners/customerGroup/EditCustomerGroupForm";
+import ViewCustomerGroupDetails from "../components/Tables/employeeTables/partners/customerGroup/ViewCustomerGroupDetails";
 
-import AddPurchaseGroupForm from "../components/Forms/employeeForms/AddPurchaseGroupForm";
-import PurchaseGroupInfoTable from "../components/Tables/employeeTables/PurchaseGroupInfoTable";
-import EditPurchaseGroupForm from "../components/Forms/employeeForms/EditPurchaseGroupForm";
-import ViewPurchaseGroupDetails from "../components/Tables/employeeTables/ViewPurchaseGroupDetails";
+import AddPurchaseGroupForm from "../components/Forms/employeeForms/Partners/purchaseGroup/AddPurchaseGroupForm";
+import PurchaseGroupInfoTable from "../components/Tables/employeeTables/partners/purchaseGroup/PurchasegroupInfoTable";
+import EditPurchaseGroupForm from "../components/Forms/employeeForms/Partners/purchaseGroup/EditPurchaseGroupForm";
+import ViewPurchaseGroupDetails from "../components/Tables/employeeTables/partners/purchaseGroup/ViewPurchaseGroupDetails";
 
-import AddPurchaseInvoiceForm from "../components/Forms/employeeForms/AddPurchaseInvoiceForm";
-import PurchaseInvoiceInfoTable from "../components/Tables/employeeTables/PurchaseInvoiceInfoTable";
-import EditPurchaseInvoiceForm from "../components/Forms/employeeForms/EditPurchaseInvoiceForm";
+import AddPurchaseInvoiceForm from "../components/Forms/employeeForms/invoicing/purchase/AddPurchaseInvoiceForm";
+import PurchaseInvoiceInfoTable from "../components/Tables/employeeTables/invoicing/purchase/PurchaseInvoiceInfoTable";
+import EditPurchaseInvoiceForm from "../components/Forms/employeeForms/invoicing/purchase/EditPurchaseInvoiceForm";
+
+import StockTransferForm from "../components/Forms/employeeForms/inventory/inventoryWise/StockTransferForm"; 
 
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
@@ -241,6 +244,16 @@ const EmpRoutes = () => {
           />
         }
       />
+
+ 
+      <Route
+        path="stock-transfer"
+        element={<StockTransferForm />}
+      />
+      <Route path="/"  element={<EmployeeDashboardCard />} />
+
+      <Route  path="/employee-dashboard"/>
+
     </Routes>
   );
 };

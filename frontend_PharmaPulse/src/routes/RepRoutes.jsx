@@ -1,7 +1,6 @@
-//import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import PriceListTable from '../components/Tables/saleRepTable/PriceListTable';
-import OrderForm from '../components/Forms/saleRepForm/OrderForm';
+import OrderForm from '../components/Forms/saleRepForms/OrderForm';
 
 const RepRoutes = () => {
   return (

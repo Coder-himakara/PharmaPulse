@@ -1,10 +1,9 @@
 // theme_context.js
 import { createContext, useState, useEffect } from 'react';
-
+import PropTypes from 'prop-types';
 // eslint-disable-next-line react-refresh/only-export-components
 export const ThemeContext = createContext();
 
-// eslint-disable-next-line react/prop-types
 export const ThemeProvider = ({ children }) => {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
@@ -40,6 +39,10 @@ export const ThemeProvider = ({ children }) => {
       {children}
     </ThemeContext.Provider>
   );
+};
+
+ThemeProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default ThemeProvider;

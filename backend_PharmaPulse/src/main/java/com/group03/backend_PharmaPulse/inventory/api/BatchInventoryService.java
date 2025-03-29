@@ -1,8 +1,11 @@
 package com.group03.backend_PharmaPulse.inventory.api;
 
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
+
 import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
+
+
 
 import java.util.List;
 
@@ -21,4 +24,12 @@ public interface BatchInventoryService {
      * Returns a list of BatchInventoryDTOs for batches of products requiring reorder alerts.
      */
     List<ReorderAlertDTO> checkReorderAlerts();
+
+    // New methods
+    void deductInventory(Long productId, Integer quantity);
+    //void reserveInventory(Long productId, Integer quantity);
+    // New method: Retrieve available batches for a product, sorted by expiry date ascending.
+    List<BatchInventoryDTO> getBatchesByProductIdSorted(Long productId);
+
+
 }

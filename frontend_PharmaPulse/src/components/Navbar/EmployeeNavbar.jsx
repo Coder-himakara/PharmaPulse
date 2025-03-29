@@ -3,12 +3,13 @@ import { useState, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-
-import { FaUser, FaSignOutAlt,FaSun, FaMoon } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaSun, FaMoon } from "react-icons/fa";
 
 import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
 import { MegaMenu } from "primereact/megamenu";
+import { useAuth } from '../../security/UseAuth';
+
 
 
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
@@ -41,6 +42,8 @@ const EmployeeNavbar = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
+ 
 
   const toggleDropdown = () => {
     setIsDropdownVisible((prev) => !prev);
@@ -49,15 +52,13 @@ const EmployeeNavbar = () => {
   const closeDropdown = () => {
     setIsDropdownVisible(false);
   };
-  
-  const handleMenuClick = (event) => {
-    if (event.item.command) {
-      event.item.command();
-    }
+
+  const logoutEmployee = () => {
+    setIsDropdownVisible(false);
+    logout();
   };
-  
+
   const EmployeeNavbarSections = [
-  
     {
       label: "Partners",
       icon: "pi pi-users text-white",
@@ -98,7 +99,6 @@ const EmployeeNavbar = () => {
             ],
           },
         ],
-       
       ],
     },
     {
@@ -117,9 +117,7 @@ const EmployeeNavbar = () => {
         [
           {
             label: "Product Retail Price",
-            items: [
-              { label: "Retail Price Info"},
-            ]
+            items: [{ label: "Retail Price Info" }],
           },
         ],
       ],
@@ -133,7 +131,7 @@ const EmployeeNavbar = () => {
             label: "Purchase",
             items: [
               { label: "Add Invoice", command: () => navigate("/employee-dashboard/add-purchase-invoice") },
-              { label: " Invoice Info", command: () => navigate("/employee-dashboard/purchase-invoice-info") },
+              { label: "Invoice Info", command: () => navigate("/employee-dashboard/purchase-invoice-info") },
             ],
           },
         ],
@@ -141,63 +139,58 @@ const EmployeeNavbar = () => {
           {
             label: "Sale",
             items: [
-              { label: "Orders",command: () => navigate("/employee-dashboard/orders")},
-              { label: "Invoice Info",command: () => navigate("/employee-dashboard/sales-invoice-info")},
-            ]
+              { label: "Orders", command: () => navigate("/employee-dashboard/orders") },
+              { label: "Invoice Info", command: () => navigate("/employee-dashboard/sales-invoice-info") },
+            ],
           },
         ],
         [
           {
             label: "Purchase Return",
             items: [
-              { label: "Return Invoice",command: () => navigate("/employee-dashboard/purchase-return-invoice")},
-              { label: "Invoice Info",command: () => navigate("/employee-dashboard/purchase-invoice-info")},
-            ]
+              { label: "Return Invoice", command: () => navigate("/employee-dashboard/purchase-return-invoice") },
+              { label: "Invoice Info", command: () => navigate("/employee-dashboard/purchase-invoice-info") },
+            ],
           },
         ],
         [
           {
             label: "Sales Return",
             items: [
-              { label: "Return Invoice"},
-              { label: "Invoice Info"},
-            ]
+              { label: "Return Invoice" },
+              { label: "Invoice Info" },
+            ],
           },
         ],
       ],
     },
     {
       label: "Inventory",
-      icon: "pi pi-warehouse -line text-white",
+      icon: "pi pi-warehouse text-white",
       items: [
         [
           {
             label: "Batch Wise",
-            items: [
-              { label: "Batch Inventory" },
-            ],
+            items: [{ label: "Batch Inventory" }],
           },
         ],
         [
           {
             label: "Inventory Wise",
             items: [
-              {label: "Warehouse Inventory" },
-              {label: "Truck Transfer" },
-              {label: "Stock Adjustment" }
+              { label: "Warehouse Inventory" },
+              { label: "Stock Transfer", command: () => navigate("/employee-dashboard/stock-transfer") },
+              { label: "Stock Adjustment" },
             ],
           },
         ],
         [
           {
             label: "Product Wise",
-            items: [
-              {label: "Stock Register" },
-            ],
+            items: [{ label: "Stock Register" }],
           },
         ],
       ],
-      
     },
     {
       label: "Payment",
@@ -208,37 +201,49 @@ const EmployeeNavbar = () => {
       icon: "pi pi-chart-line text-white",
     },
   ];
+
   return (
-
-    <div className={`flex justify-between items-center px-6 py-4 fixed top-0 left-0 w-full z-10 h-[100px] transition-colors duration-300 ${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"}`}>
-      <div className="flex items-right">
-
+    <div
+      className={`flex justify-between items-center px-6 py-4 fixed top-0 left-0 w-full z-10 h-[100px] transition-colors duration-300 ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"
+      }`}
+    >
+      <div className="flex items-center gap-6">
         <img src={logo} alt="Logo" className="h-10 mr-4" />
-        <span className="text-lg font-bold">Home</span>
+
+          Home
+
+        <button
+          onClick={() => navigate("/employee-dashboard")
+
+          }
+          className="text-lg font-bold bg-transparent border-none cursor-pointer hover:text-teal-300"
+        >
+          Dashboard
+        </button>
       </div>
 
       {/* Mega Menu centered dropdown */}
       <div className="justify-center hidden w-full md:flex">
-      <MegaMenu
-        model={EmployeeNavbarSections}
-        onMenuClick={handleMenuClick} 
-        breakpoint="960px"
-        pt={{
-          root: { className: `${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-black"} border-none` },
-          menu: { className: "bg-transparent gap-2 border-none shadow-md flex justify-right w-full" },
-          panel: { className: "absolute bg-white shadow-lg rounded-md" },
-          submenu: { className: `${isDarkMode ? "text-white" : "text-black"} border-none` },
-          content: { className: `${isDarkMode ? "hover:bg-gray-700" : "hover:bg-teal-700"} border-none` },
-          label: { className: `${isDarkMode ? "text-gray-400 hover:bg-gray-700 hover:text-white" : "text-gray-400 hover:bg-teal-700 hover:text-white"} border-none` },
-          icon: { className: "text-white font-bold" },
-          menuitem: { className: "hover:bg-transparent text-black text-left" },
-          action: { className: "hover:bg-transparent text-black" },
-          link: { className: "hover:bg-transparent text-black" },
-          submenuitem: { className: "hover:bg-transparent text-black text-left" },
-  }}
-/>
-
-
+        <MegaMenu
+          model={EmployeeNavbarSections}
+          breakpoint="960px"
+          pt={{
+            root: { className: `${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-black"} border-none` },
+            menu: { className: "bg-transparent gap-2 border-none shadow-md flex justify-right w-full" },
+            panel: { className: "absolute bg-white shadow-lg rounded-md" },
+            submenu: { className: `${isDarkMode ? "text-white" : "text-black"} border-none` },
+            content: { className: `${isDarkMode ? "hover:bg-gray-700" : "hover:bg-teal-700"} border-none` },
+            label: {
+              className: `${isDarkMode ? "text-gray-400 hover:bg-gray-700 hover:text-white" : "text-gray-400 hover:bg-teal-700 hover:text-white"} border-none`,
+            },
+            icon: { className: "text-white font-bold" },
+            menuitem: { className: "hover:bg-transparent text-black text-left" },
+            action: { className: "hover:bg-transparent text-black" },
+            link: { className: "hover:bg-transparent text-black" },
+            submenuitem: { className: "hover:bg-transparent text-black text-left" },
+          }}
+        />
       </div>
 
       <div className="relative flex items-center gap-4">
@@ -255,11 +260,17 @@ const EmployeeNavbar = () => {
             ▼
           </button>
           {isDropdownVisible && (
-
-            <ul className={`absolute top-full right-0 mt-2 border rounded-md min-w-[150px] shadow-lg z-10 list-none ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"}`}>
-              <DropdownLink to="/update-profile" icon={FaUser} onClick={closeDropdown}>Profile</DropdownLink>
-              <DropdownLink to="/" icon={FaSignOutAlt} onClick={closeDropdown}>Log Out</DropdownLink>
-
+            <ul
+              className={`absolute top-full right-0 mt-2 border rounded-md min-w-[150px] shadow-lg z-10 list-none ${
+                isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"
+              }`}
+            >
+              <DropdownLink to="/update-profile" icon={FaUser} onClick={closeDropdown}>
+                Profile
+              </DropdownLink>
+              <DropdownLink to="/" icon={FaSignOutAlt} onClick={logoutEmployee}>
+                Log Out
+              </DropdownLink>
             </ul>
           )}
         </div>

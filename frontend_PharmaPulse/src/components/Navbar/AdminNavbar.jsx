@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { useState, useContext } from "react";
-import { NavLink ,useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import {
   FaUser,
@@ -11,16 +11,17 @@ import {
 import logo from "../../assets/Logo.jpg";
 import { ThemeContext } from "../../ThemeContext";
 import { MegaMenu } from "primereact/megamenu";
+import { useAuth } from '../../security/UseAuth';
+
 
 const DropdownLink = ({ to, icon: Icon, children, onClick }) => (
   <li>
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center p-2 text-sm rounded-md transition-all duration-300 ${
-          isActive
-            ? "bg-teal-700 text-white"
-            : "bg-transparent text-gray-700 dark:text-gray-300 hover:bg-teal-700 hover:text-teal-300"
+        `flex items-center p-2 text-sm rounded-md transition-all duration-300 ${isActive
+          ? "bg-teal-700 text-white"
+          : "bg-transparent text-gray-700 dark:text-gray-300 hover:bg-teal-700 hover:text-teal-300"
         }`
       }
       onClick={onClick}
@@ -43,7 +44,7 @@ const AdminNavbar = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [hideBackground] = useState(false);
   const navigate = useNavigate();
-
+  const { logout } = useAuth();
 
 
   const toggleDropdown = () => {
@@ -53,17 +54,14 @@ const AdminNavbar = () => {
   const closeDropdown = () => {
     setIsDropdownVisible(false);
   };
-   
-  const handleMenuClick = (event) => {
-    if (event.item.command) {
-      event.item.command();
-    }
+
+  const logoutAdmin = () => {
+    setIsDropdownVisible(false);
+    logout();
   };
-  
-  
 
   const AdminNavbarSections = [
-      
+
     {
       label: "Users",
       icon: "pi pi-users text-white",
@@ -77,7 +75,7 @@ const AdminNavbar = () => {
             ],
           },
         ],
-       
+
       ],
     },
     {
@@ -93,7 +91,7 @@ const AdminNavbar = () => {
             ],
           },
         ],
-       
+
       ],
     },
     {
@@ -109,10 +107,10 @@ const AdminNavbar = () => {
             ],
           },
         ],
-       
+
       ],
     },
-  
+
     {
       label: "Log Details",
       icon: "pi pi-history text-white",
@@ -123,9 +121,8 @@ const AdminNavbar = () => {
     <>
       <div className={`background-wrapper ${hideBackground ? "background-hidden" : ""}`} />
       <div
-        className={`flex justify-between items-center px-6 py-4 fixed top-0 left-0 w-full z-10 h-[100px] transition-colors duration-300 ${
-          isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"
-        }`}
+        className={`flex justify-between items-center px-6 py-4 fixed top-0 left-0 w-full z-10 h-[100px] transition-colors duration-300 ${isDarkMode ? "bg-gray-900 text-white" : "bg-teal-800 text-white"
+          }`}
       >
         <div className="flex items-center">
           <img src={logo} alt="Logo" className="h-10 mr-4" />
@@ -134,7 +131,6 @@ const AdminNavbar = () => {
         <div className="justify-center hidden w-full md:flex">
           <MegaMenu
             model={AdminNavbarSections}
-            onMenuClick={handleMenuClick}
             breakpoint="960px"
             pt={{
               root: {
@@ -176,9 +172,9 @@ const AdminNavbar = () => {
           </div>
           <button onClick={toggleDropdown} className="flex items-center text-base text-white bg-transparent border-none cursor-pointer hover:text-teal-300">▼</button>
           {isDropdownVisible && (
-            <ul className={`absolute top-full right-0 mt-2 border rounded-md min-w-[150px] shadow-lg z-10 list-none ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"}`}> 
+            <ul className={`absolute top-full right-0 mt-2 border rounded-md min-w-[150px] shadow-lg z-10 list-none ${isDarkMode ? "bg-gray-800 text-white border-gray-600" : "bg-white text-black border-gray-300"}`}>
               <DropdownLink to="/update-profile" icon={FaUser} onClick={closeDropdown}>Profile</DropdownLink>
-              <DropdownLink to="/" icon={FaSignOutAlt} onClick={closeDropdown}>Log Out</DropdownLink>
+              <DropdownLink to="/" icon={FaSignOutAlt} onClick={logoutAdmin}>Log Out</DropdownLink>
             </ul>
           )}
           <button className="flex items-center justify-center w-8 h-8 rounded-full focus:outline-none" onClick={toggleTheme}>

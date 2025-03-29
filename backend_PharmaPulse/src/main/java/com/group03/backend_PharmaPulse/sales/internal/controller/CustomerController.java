@@ -1,7 +1,7 @@
 package com.group03.backend_PharmaPulse.sales.internal.controller;
 
 import com.group03.backend_PharmaPulse.sales.api.dto.CustomerDTO;
-import com.group03.backend_PharmaPulse.sales.api.event.CustomerService;
+import com.group03.backend_PharmaPulse.sales.api.CustomerService;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,14 +18,14 @@ public class CustomerController {
         this.customerService = customerService;
 
     }
-    @GetMapping("/all") //retrieving
+   /* @GetMapping("/all") //retrieving
     public ResponseEntity<StandardResponse> getAllCustomers() {
         List<CustomerDTO> customerDTOS  = customerService.getAllCustomers();
         return new ResponseEntity<>(
                 new StandardResponse(201,"Success",customerDTOS),
                 HttpStatus.OK
         );
-    }
+    }*/
     @GetMapping("/{id}")
     public ResponseEntity<StandardResponse> getCustomerById(@PathVariable Long id) {
         CustomerDTO selectedCustomer = customerService.getCustomerById(id);

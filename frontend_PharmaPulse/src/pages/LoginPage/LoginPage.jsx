@@ -1,27 +1,85 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
+import { useAuth } from '../../security/UseAuth';
+
+// If the image is in src/assets, import it like this:
+// import loginBg from '../assets/loginbg.webp'; // Adjust path as needed
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  // Get authentication state and methods from context
+  const { login, isAuthenticated, role } = useAuth();
 
-    if (username === 'admin' && password === 'admin') {
-      navigate('/admin-dashboard');
-    } else if (username === 'sales' && password === 'sales') {
-      navigate('/sales-dashboard');
-    } else if (username === 'employee' && password === 'employee') {
-      navigate('/employee-dashboard');
-    } else {
-      alert('Invalid credentials');
+  // Handle redirection after successful login
+  useEffect(() => {
+    if (isAuthenticated && role) {
+      switch (role) {
+        case 'ADMIN':
+          navigate('/admin-dashboard');
+          break;
+        case 'EMPLOYEE':
+          navigate('/employee-dashboard');
+          break;
+        case 'SALES_REP':
+          navigate('/sales-dashboard');
+          break;
+        default:
+          navigate('/');
+      }
+    }
+  }, [isAuthenticated, role, navigate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const success = await login(username, password);
+
+      if (!success) {
+        setError('Invalid username or password');
+      }
+    } catch (err) {
+      setError('Login failed. Please try again.' + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // const handleSubmit1 = (event) => {
+  //   event.preventDefault();
+
+  //   if (username === 'admin' && password === 'admin') {
+  //     navigate('/admin-dashboard');
+  //   } else if (username === 'sales' && password === 'sales') {
+  //     navigate('/sales-dashboard');
+  //   } else if (username === 'employee' && password === 'employee') {
+  //     navigate('/employee-dashboard');
+  //   } else {
+  //     authContext.setAuthenticated(false);
+  //     alert('Invalid credentials');
+  //   }
+  // };
+
   return (
-    <div className='relative flex items-center justify-center w-full h-screen overflow-hidden'>
+    <div
+      className='relative flex items-center justify-center w-full h-screen overflow-hidden'
+      style={{
+        backgroundImage: `url('/loginbg.webp')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed', // Note: 'fixed' may not work as expected in some contexts
+        backgroundColor: 'black', // Fallback color
+        willChange: 'background-image',
+      }}
+    >
       {/* Login Form Container */}
       <div
         style={{
@@ -84,11 +142,16 @@ function LoginPage() {
               Forgot Password?
             </NavLink>
           </div>
+
+          {error && <div className='error-message'>{error}</div>}
+
           <button
             type='submit'
+            disabled={loading}
             className='w-full py-2 bg-teal-700 text-white rounded-md hover:bg-[#003d33]'
           >
-            Login
+            {/* Login */}
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
       </div>

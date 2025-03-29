@@ -33,4 +33,7 @@ public class BatchInventoryDTO {
     private BatchStatus batchStatus;
 
     private LocalDate dateReceived;
+
+    // New field for reserved quantity
+    //private Integer reservedQuantity;
 }
