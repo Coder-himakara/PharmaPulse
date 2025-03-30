@@ -3,6 +3,7 @@ package com.group03.backend_PharmaPulse.inventory.internal.serviceImpl;
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.ExpiryCountDTO;
 import com.group03.backend_PharmaPulse.inventory.internal.entity.BatchInventory;
 import com.group03.backend_PharmaPulse.inventory.api.enumeration.BatchStatus;
 import com.group03.backend_PharmaPulse.inventory.internal.entity.InventoryLocation;
@@ -13,19 +14,14 @@ import com.group03.backend_PharmaPulse.inventory.internal.repository.BatchInvent
 import com.group03.backend_PharmaPulse.inventory.internal.repository.InventoryLocationRepo;
 import com.group03.backend_PharmaPulse.inventory.internal.repository.WarehouseInventoryRepo;
 import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
-
 import com.group03.backend_PharmaPulse.inventory.api.event.BatchInventoryEvent;
-
 import com.group03.backend_PharmaPulse.product.api.ProductService;
 import com.group03.backend_PharmaPulse.product.api.dto.ProductDTO;
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseLineItemDTO;
 import com.group03.backend_PharmaPulse.purchase.api.event.PurchaseLineItemEvent;
-
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.context.ApplicationEventPublisher;
-
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,13 +88,10 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                 .stream()
                 .map(this::convertToBatchInventory)
                 .toList();
-
         // Save all batches to the repository
         List<BatchInventory> savedBatches = batchInventoryRepo.saveAll(batches);
-
         // Publish the BatchInventoryEvent after successful save
         eventPublisher.publishEvent(new BatchInventoryEvent(this, savedBatches));
-
         return savedBatches;
     }
 
@@ -108,7 +101,6 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
         ProductDTO productDTO= productService.getProductById(dto.getProductId());
         if(productDTO==null){
             throw new EntityNotFoundException("Product not found");
-
         }else{
             return BatchInventory.builder()
                     .productId(dto.getProductId())
@@ -145,10 +137,10 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                 .mapToInt(BatchInventory::getAvailableUnitQuantity)
                 .sum();
         if (mainWarehouse.getAvailableCapacity() < totalQuantityToAllocate) {
-            throw new IllegalStateException("Insufficient capacity in Main Warehouse. Required: " + totalQuantityToAllocate +
+            throw new IllegalStateException("Insufficient capacity in Main Warehouse. Required: " +
+                    totalQuantityToAllocate +
                     ", Available: " + mainWarehouse.getAvailableCapacity());
         }
-
         // Create WarehouseInventory records for each batch
         List<WarehouseInventory> warehouseInventories = new ArrayList<>();
         for (BatchInventory batch : createdBatches) {
@@ -160,10 +152,8 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                     .build();
             warehouseInventories.add(warehouseInventory);
         }
-
         // Save WarehouseInventory records
         warehouseInventoryRepo.saveAll(warehouseInventories);
-
         // Update Main Warehouse available capacity
         mainWarehouse.setAvailableCapacity(mainWarehouse.getAvailableCapacity() - totalQuantityToAllocate);
         inventoryLocationRepo.save(mainWarehouse);
@@ -180,7 +170,6 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
     public List<ExpiryAlertDTO> checkExpiryAlerts() {
         LocalDate now = LocalDate.now();
         Map<Long, ExpiryAlertDTO> alertsByProduct = new HashMap<>();
-
         // Define timeframes for alerts in a LinkedHashMap to maintain insertion order
         // from most urgent to the least urgent
         Map<String, LocalDate> thresholds = new LinkedHashMap<>();
@@ -188,15 +177,14 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
         thresholds.put("1 month before expiry", now.plusMonths(1));
         thresholds.put("3 months before expiry", now.plusMonths(3));
         thresholds.put("6 months before expiry", now.plusMonths(6));
-
         // Process all batches that will expire in the next 6 months
-        List<BatchInventory> allExpiringBatches = batchInventoryRepo.findByExpiryDateBetween(now, now.plusMonths(6));
-
+        List<BatchInventory> allExpiringBatches = batchInventoryRepo.findByExpiryDateBetween(now,
+                now.plusMonths(6));
         // Group batches by product ID
         Map<Long, List<BatchInventory>> batchesByProduct = allExpiringBatches.stream()
-                .filter(batch -> batch.getBatchStatus() != BatchStatus.EXPIRED && batch.getBatchStatus() != BatchStatus.SOLD)
+                .filter(batch -> batch.getBatchStatus() != BatchStatus.EXPIRED &&
+                        batch.getBatchStatus() != BatchStatus.SOLD)
                 .collect(Collectors.groupingBy(BatchInventory::getProductId));
-
         // Process each product's batches
         for (Map.Entry<Long, List<BatchInventory>> entry : batchesByProduct.entrySet()) {
             Long productId = entry.getKey();
@@ -206,7 +194,6 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
             if (product == null) {
                 throw new NotFoundException("Product not found for ID: " + productId);
             }
-
             // Determine the most urgent alert level for this product
             String alertMessage = null;
             LocalDate earliestExpiry = null;
@@ -215,20 +202,18 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                 if (earliestExpiry == null || batch.getExpiryDate().isBefore(earliestExpiry)) {
                     earliestExpiry = batch.getExpiryDate();
                 }
-
                 // Determine the appropriate alert level for this batch
                 for (Map.Entry<String, LocalDate> threshold : thresholds.entrySet()) {
-                    if (batch.getExpiryDate().isBefore(threshold.getValue()) || batch.getExpiryDate().isEqual(threshold.getValue())) {
+                    if (batch.getExpiryDate().isBefore(threshold.getValue()) ||
+                            batch.getExpiryDate().isEqual(threshold.getValue())) {
                         alertMessage = threshold.getKey();
                         break; // Found the most urgent applicable alert for this batch
                     }
                 }
-
                 if (alertMessage != null) {
                     break; // We found the most urgent alert level for this product
                 }
             }
-
             // Create alert with the most urgent message
             ExpiryAlertDTO alert = ExpiryAlertDTO.builder()
                     .productId(productId)
@@ -240,12 +225,31 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
 
             alertsByProduct.put(productId, alert);
         }
-
         // Convert map values to list and sort by earliest expiry date
         List<ExpiryAlertDTO> finalAlerts = new ArrayList<>(alertsByProduct.values());
         finalAlerts.sort(Comparator.comparing(ExpiryAlertDTO::getEarliestExpiryDate));
 
         return finalAlerts;
+    }
+    /**
+     * Returns a summary of expiry alerts for batches nearing expiry.
+     * Counts the number of alerts for each timeframe: 1 week, 1 month, 3 months, and 6 months before expiry.
+     *
+     * @return ExpiryCountDTO containing counts of expiry alerts for each timeframe
+     */
+    public ExpiryCountDTO getExpiryCounts() {
+        List<ExpiryAlertDTO> alerts = checkExpiryAlerts();
+
+        return ExpiryCountDTO.builder()
+                .oneWeek((int) alerts.stream()
+                        .filter(a -> a.getAlertMessage().contains("1 week")).count())
+                .oneMonth((int) alerts.stream()
+                        .filter(a -> a.getAlertMessage().contains("1 month")).count())
+                .threeMonths((int) alerts.stream()
+                        .filter(a -> a.getAlertMessage().contains("3 months")).count())
+                .sixMonths((int) alerts.stream()
+                        .filter(a -> a.getAlertMessage().contains("6 months")).count())
+                .build();
     }
 
     /**
@@ -266,13 +270,15 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
 
         List<ReorderAlertDTO> alerts = new ArrayList<>();
         for (Long productId : productIds) {
-            Integer totalAvailable = batchInventoryRepo.sumAvailableUnitQuantityByProductIdAndStatus(productId, BatchStatus.AVAILABLE);
+            Integer totalAvailable = batchInventoryRepo.sumAvailableUnitQuantityByProductIdAndStatus
+                    (productId, BatchStatus.AVAILABLE);
             if (totalAvailable == null) totalAvailable = 0; // Handle case where no batches exist
 
             ProductDTO product = productService.getProductById(productId);
             if (product != null && totalAvailable <= product.getReorderLimitByPackage()) {
                 // Get all AVAILABLE batches for this product
-                List<BatchInventory> productBatches = batchInventoryRepo.findByProductIdAndStatus(productId, BatchStatus.AVAILABLE);
+                List<BatchInventory> productBatches = batchInventoryRepo.findByProductIdAndStatus
+                        (productId, BatchStatus.AVAILABLE);
                 List<BatchInventoryDTO> batchDtos = productBatches.stream()
                         .map(batchInventoryMapper::toDTO)
                         .toList();
@@ -293,7 +299,6 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
 
         // Sort alerts by totalAvailableQuantity (low to high) for prioritization
         alerts.sort(Comparator.comparing(ReorderAlertDTO::getTotalAvailableQuantity));
-
         return alerts;
     }
 
@@ -321,7 +326,8 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
             batchInventoryRepo.save(batch);
         }
         if (remaining > 0) {
-            throw new RuntimeException("Not enough inventory to deduct " + quantity + " units for product id " + productId);
+            throw new RuntimeException("Not enough inventory to deduct " + quantity +
+                    " units for product id " + productId);
         }
     }
 
@@ -336,6 +342,4 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                 .collect(Collectors.toList());
         return batchInventoryMapper.toDTOsList(batches);
     }
-
-
 }

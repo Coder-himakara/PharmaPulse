@@ -1,12 +1,10 @@
 package com.group03.backend_PharmaPulse.inventory.api.event;
 
 import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
-import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.ExpiryCountDTO;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class AlertScheduler {
@@ -19,10 +17,11 @@ public class AlertScheduler {
         this.batchInventoryService = batchInventoryService;
     }
 
-    @Scheduled(fixedRate = 300000) // 5 minutes
-    public void pushExpiryAlerts() {
-        List<ExpiryAlertDTO> alerts = batchInventoryService.checkExpiryAlerts();
-        messagingTemplate.convertAndSend("/topic/expiry-alerts", alerts);
+    @Scheduled(fixedRate = 300000)
+    public void pushExpiryCounts() {
+        ExpiryCountDTO counts = batchInventoryService.getExpiryCounts();
+        // Push the expiry counts to the expiry-counts topic
+        messagingTemplate.convertAndSend("/topic/expiry-counts", counts);
     }
 }
 

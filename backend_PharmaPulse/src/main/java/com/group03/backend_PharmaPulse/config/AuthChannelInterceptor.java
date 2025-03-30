@@ -17,11 +17,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthChannelInterceptor implements ChannelInterceptor {
 
-    @Autowired
+
     private JWTService jwtService;
+    private AppUserDetailsService userDetailsService;
 
     @Autowired
-    private AppUserDetailsService userDetailsService;
+    public void setJwtService(JWTService jwtService) {
+        this.jwtService = jwtService;
+    }
+
+    @Autowired
+    public void setUserDetailsService(AppUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
     /**
      * This method is called before the message is sent to the channel.
      * It is used to authenticate the user before sending the message.
