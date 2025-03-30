@@ -20,7 +20,36 @@ const EditSuppliersForm = () => {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [purchaseGroups, setPurchaseGroups] = useState([]); // State for purchase groups
+  const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
 
+  // Fetch purchase groups on component mount
+  useEffect(() => {
+    const fetchPurchaseGroups = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8090/api/purchase-groups/all", // Hypothetical endpoint
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            auth: {
+              username: "admin",
+              password: "admin123",
+            },
+          }
+        );
+        setPurchaseGroups(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching purchase groups:", error);
+        setErrorMessage("Failed to fetch purchase groups.");
+      }
+    };
+
+    fetchPurchaseGroups();
+  }, []);
+
+  // Populate form data with supplier details
   useEffect(() => {
     console.log("Supplier in Edit Form:", JSON.stringify(supplier, null, 2));
     if (supplier) {
@@ -28,9 +57,9 @@ const EditSuppliersForm = () => {
         supplier_name: supplier.supplier_name || "",
         supplier_address: supplier.supplier_address || "",
         supplier_contactNo: supplier.supplier_contactNo || "",
-        purchase_group: supplier.purchase_group || "",
-        credit_period: supplier.credit_period || "",
-        credit_limit: supplier.credit_limit || "",
+        purchase_group: supplier.purchase_group?.toString() || "", // Convert to string for input
+        credit_period: supplier.credit_period?.toString() || "", // Convert to string for input
+        credit_limit: supplier.credit_limit?.toString() || "", // Convert to string for input
       });
     } else {
       setErrorMessage("No supplier data provided. Redirecting...");
@@ -46,14 +75,34 @@ const EditSuppliersForm = () => {
     }));
   };
 
+  const handleSearch = () => {
+    setShowDropdown(!showDropdown); // Toggle dropdown visibility
+  };
+
+  const handleSelectPurchaseGroup = (groupId) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      purchase_group: groupId.toString(), // Set the selected group ID as string
+    }));
+    setShowDropdown(false); // Hide dropdown after selection
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validation
-    if (!formData.supplier_name || !formData.purchase_group) {
+    if (
+      !formData.supplier_name ||
+      !formData.supplier_address ||
+      !formData.supplier_contactNo ||
+      !formData.purchase_group ||
+      !formData.credit_period ||
+      !formData.credit_limit
+    ) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
+
     if (!/^0[0-9]{9}$/.test(formData.supplier_contactNo)) {
       setErrorMessage("Contact number must start with 0 and contain exactly 10 digits.");
       return;
@@ -64,17 +113,39 @@ const EditSuppliersForm = () => {
       return;
     }
 
+    // Convert fields to match backend entity types
+    const phoneNo = formData.supplier_contactNo; // String
+    const creditLimit = parseFloat(formData.credit_limit); // BigDecimal
+    const creditPeriod = parseInt(formData.credit_period, 10); // Integer
+    const purchaseGroup = parseInt(formData.purchase_group, 10); // Long (ID of PurchaseGroup)
+
+    // Check for invalid numeric conversions
+    if (isNaN(creditLimit) || isNaN(creditPeriod) || isNaN(purchaseGroup)) {
+      setErrorMessage("Please ensure all numeric fields contain valid numbers.");
+      return;
+    }
+
+    const requestData = {
+      supplier_name: formData.supplier_name,
+      supplier_address: formData.supplier_address,
+      supplier_contactNo: phoneNo,
+      purchase_group: purchaseGroup,
+      credit_period: creditPeriod,
+      credit_limit: creditLimit,
+    };
+
     try {
       console.log("Submitting update for supplier_id:", supplier.supplier_id);
+      console.log("Sending requestData:", JSON.stringify(requestData, null, 2));
       const response = await axios.put(
         `http://localhost:8090/api/suppliers/update/${supplier.supplier_id}`,
-        formData,
+        requestData,
         {
           headers: {
             "Content-Type": "application/json",
           },
           auth: {
-            username: "admin", // Adjust credentials as needed
+            username: "admin",
             password: "admin123",
           },
         }
@@ -164,25 +235,51 @@ const EditSuppliersForm = () => {
         />
       </div>
 
-      <div className="relative flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4">
         <label htmlFor="purchase_group" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Purchase Group:
+          Purchase Group ID:
         </label>
-        <input
-          type="text"
-          id="purchase_group"
-          name="purchase_group"
-          value={formData.purchase_group}
-          onChange={handleChange}
-          className="w-2/3 px-2 py-2 pr-8 text-sm border border-gray-300 rounded-md"
-          required
-        />
-        <FaSearch className="absolute text-gray-500 transform -translate-y-1/2 right-2 top-1/2" />
+        <div className="relative flex items-center w-2/3">
+          <input
+            type="number" // Changed to number for Long ID
+            id="purchase_group"
+            name="purchase_group"
+            value={formData.purchase_group}
+            onChange={handleChange}
+            className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
+            required
+          />
+          <button
+            type="button" // Prevent form submission
+            onClick={handleSearch}
+            className="absolute text-green-500 cursor-pointer right-2"
+            aria-label="Search purchase group"
+          >
+            <FaSearch />
+          </button>
+          {showDropdown && (
+            <div className="absolute left-0 z-10 w-full overflow-y-auto bg-white border border-gray-300 rounded-md shadow-md top-10 max-h-40">
+              {purchaseGroups.length > 0 ? (
+                purchaseGroups.map((group) => (
+                  <div
+                    key={group.purchaseGroupId}
+                    onClick={() => handleSelectPurchaseGroup(group.purchaseGroupId)}
+                    className="px-2 py-1 cursor-pointer hover:bg-gray-100"
+                  >
+                    {group.purchaseGroupName} (ID: {group.purchaseGroupId})
+                  </div>
+                ))
+              ) : (
+                <div className="px-2 py-1 text-gray-500">No purchase groups available</div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center justify-between mb-4">
         <label htmlFor="credit_period" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Credit Period (Months):
+          Credit Period (Days):
         </label>
         <input
           type="number"
@@ -191,6 +288,7 @@ const EditSuppliersForm = () => {
           value={formData.credit_period}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          required
         />
       </div>
 
@@ -205,6 +303,7 @@ const EditSuppliersForm = () => {
           value={formData.credit_limit}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          required
         />
       </div>
 

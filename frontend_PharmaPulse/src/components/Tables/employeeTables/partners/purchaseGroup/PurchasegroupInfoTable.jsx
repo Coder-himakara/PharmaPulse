@@ -28,20 +28,8 @@ const PurchaseGroupInfoTable = ({ refreshTrigger }) => {
             },
           }
         );
-        console.log("Full API Response:", response.data);
-        const data = response.data.data || [];
-        console.log("Purchase Groups Data:", data);
-        
-        // Validate that each object has purchaseGroupId
-        const validatedData = data.map(group => {
-          if (!group.purchaseGroupId) {
-            console.warn("Missing purchaseGroupId in group:", group);
-            return { ...group, purchaseGroupId: null }; // Fallback for display
-          }
-          return group;
-        });
-        
-        setPurchaseGroups(validatedData);
+        console.log("Response:", response.data);
+        setPurchaseGroups(response.data.data || []);
         setErrorMessage("");
         setLoading(false);
       } catch (error) {
@@ -68,11 +56,6 @@ const PurchaseGroupInfoTable = ({ refreshTrigger }) => {
 
   const handleEdit = (purchaseGroup) => {
     console.log("Editing purchase group:", purchaseGroup);
-    if (!purchaseGroup.purchaseGroupId) {
-      console.error("Missing purchaseGroupId in:", purchaseGroup);
-      setErrorMessage("Cannot edit: Purchase group ID is missing.");
-      return;
-    }
     navigate(`/employee-dashboard/edit-purchase-group/${purchaseGroup.purchaseGroupId}`, {
       state: { purchaseGroup },
     });
@@ -80,11 +63,6 @@ const PurchaseGroupInfoTable = ({ refreshTrigger }) => {
 
   const handleViewPurchaseGroup = (purchaseGroup) => {
     console.log("Viewing purchase group:", purchaseGroup);
-    if (!purchaseGroup.purchaseGroupId) {
-      console.error("Missing purchaseGroupId in:", purchaseGroup);
-      setErrorMessage("Cannot view: Purchase group ID is missing.");
-      return;
-    }
     navigate(
       `/employee-dashboard/view-purchase-group/${purchaseGroup.purchaseGroupId}`,
       {
