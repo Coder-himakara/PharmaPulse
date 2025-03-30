@@ -100,7 +100,7 @@ const OrderHistory = () => {
                 Order Date
               </th>
               <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
-                Total Amount
+                Total Amount(Rs)
               </th>
               <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
                 Status
@@ -127,7 +127,7 @@ const OrderHistory = () => {
                     {new Date(order.orderDate).toLocaleString()}
                   </td>
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                    {"$" + parseFloat(order.totalAmount).toFixed(2)}
+                    {parseFloat(order.totalAmount).toFixed(2)}
                   </td>
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                     {order.status}
@@ -143,9 +143,9 @@ const OrderHistory = () => {
                             <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
                               <th className="border border-gray-400 p-2">Product Name</th>
                               <th className="border border-gray-400 p-2">Quantity</th>
-                              <th className="border border-gray-400 p-2">Unit Price</th>
-                              <th className="border border-gray-400 p-2">Discount</th>
-                              <th className="border border-gray-400 p-2">Line Total</th>
+                              <th className="border border-gray-400 p-2">Unit Price(Rs)</th>
+                              <th className="border border-gray-400 p-2">Discount(Rs)</th>
+                              <th className="border border-gray-400 p-2">Line Total(Rs)</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -158,13 +158,13 @@ const OrderHistory = () => {
                                   {item.quantity}
                                 </td>
                                 <td className="border border-gray-400 p-2">
-                                  {"$" + parseFloat(item.unitPrice).toFixed(2)}
+                                  {parseFloat(item.unitPrice).toFixed(2)}
                                 </td>
                                 <td className="border border-gray-400 p-2">
-                                  {"$" + parseFloat(item.discount).toFixed(2)}
+                                  {parseFloat(item.discount).toFixed(2)}
                                 </td>
                                 <td className="border border-gray-400 p-2">
-                                  {"$" + parseFloat(item.lineTotal).toFixed(2)}
+                                  {parseFloat(item.lineTotal).toFixed(2)}
                                 </td>
                               </tr>
                             ))}

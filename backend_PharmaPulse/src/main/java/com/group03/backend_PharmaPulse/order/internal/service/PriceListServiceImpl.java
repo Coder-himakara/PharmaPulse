@@ -60,19 +60,7 @@ public class PriceListServiceImpl implements PriceListService {
                             .build();
                     priceList.add(dto);
                 }
-            } else {
-                // If no batch exists, create a default row with wholesalePrice=0
-                PriceListDTO dto = PriceListDTO.builder()
-                        .productId(productDTO.getProductId())
-                        .productRefId(productDTO.getProductRefId())
-                        .purchaseGroupId(productDTO.getPurchaseGroupId())
-                        .productName(productDTO.getProductName())
-                        .genericName(productDTO.getGenericName())
-                        .unitsPerPack(productDTO.getUnitsPerPack())
-                        .wholesalePrice(BigDecimal.ZERO)
-                        .build();
-                priceList.add(dto);
-            }
+            } 
         }
         return priceList;
     }

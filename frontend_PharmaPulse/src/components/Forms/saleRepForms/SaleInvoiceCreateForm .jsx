@@ -129,15 +129,15 @@ const SaleInvoiceCreateForm = () => {
                 <td className='p-2'>{salesInvoice.customerName}</td>
               </tr>
               <tr className='border-b'>
-                <td className='p-2 font-bold'>Total Amount:</td>
+                <td className='p-2 font-bold'>Total Amount(Rs):</td>
                 <td className='p-2'>
-                  {'$' + parseFloat(salesInvoice.totalAmount).toFixed(2)}
+                  {parseFloat(salesInvoice.totalAmount).toFixed(2)}
                 </td>
               </tr>
               <tr className='border-b'>
-                <td className='p-2 font-bold'>Discount Amount:</td>
+                <td className='p-2 font-bold'>Discount Amount(Rs):</td>
                 <td className='p-2'>
-                  {'$' + parseFloat(salesInvoice.discountAmount).toFixed(2)}
+                  {parseFloat(salesInvoice.discountAmount).toFixed(2)}
                 </td>
               </tr>
             </tbody>
@@ -148,9 +148,9 @@ const SaleInvoiceCreateForm = () => {
               <tr className='bg-[#ffb24d] text-[#5e5757] text-sm'>
                 <th className='border p-2'>Product Name</th>
                 <th className='border p-2'>Quantity</th>
-                <th className='border p-2'>Unit Price</th>
-                <th className='border p-2'>Discount</th>
-                <th className='border p-2'>Line Total</th>
+                <th className='border p-2'>Unit Price(Rs)</th>
+                <th className='border p-2'>Discount(Rs)</th>
+                <th className='border p-2'>Line Total(Rs)</th>
               </tr>
             </thead>
             <tbody>
@@ -159,13 +159,13 @@ const SaleInvoiceCreateForm = () => {
                   <td className='border p-2'>{item.productName}</td>
                   <td className='border p-2'>{item.quantity}</td>
                   <td className='border p-2'>
-                    {'$' + parseFloat(item.unitPrice).toFixed(2)}
+                    {parseFloat(item.unitPrice).toFixed(2)}
                   </td>
                   <td className='border p-2'>
-                    {'$' + parseFloat(item.discount).toFixed(2)}
+                    {parseFloat(item.discount).toFixed(2)}
                   </td>
                   <td className='border p-2'>
-                    {'$' + parseFloat(item.lineTotal).toFixed(2)}
+                    {parseFloat(item.lineTotal).toFixed(2)}
                   </td>
                 </tr>
               ))}
