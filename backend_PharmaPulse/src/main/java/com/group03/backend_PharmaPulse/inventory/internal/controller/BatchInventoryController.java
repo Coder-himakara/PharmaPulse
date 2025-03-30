@@ -7,6 +7,8 @@ import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +43,9 @@ public class BatchInventoryController {
         );
     }
 
-    @GetMapping("/expiry-alerts")
+    @MessageMapping("/expiry-alerts")
+    @SendTo("/topic/expiry-alerts")
+    //@GetMapping("/expiry-alerts")
     public ResponseEntity<StandardResponse> getExpiryAlerts() {
         List<ExpiryAlertDTO> expiryAlerts = batchInventoryService.checkExpiryAlerts();
         return new ResponseEntity<>(

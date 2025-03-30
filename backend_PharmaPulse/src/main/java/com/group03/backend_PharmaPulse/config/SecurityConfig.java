@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/register").hasRole(ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/api/users/register").hasAuthority(ADMIN_CREATE.name())
                         .requestMatchers("/swagger-ui/index.html").permitAll()
+                        .requestMatchers("/ws/**").permitAll() // Handled in interceptor. For websocket
                         .anyRequest().authenticated())
 
                 .cors(cors -> cors.configure(http))
