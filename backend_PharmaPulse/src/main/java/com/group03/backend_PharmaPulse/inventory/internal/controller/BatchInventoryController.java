@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/batch-inventory")
+@PreAuthorize("hasRole('EMPLOYEE')")
 public class BatchInventoryController {
     private final BatchInventoryService batchInventoryService;
 
@@ -44,9 +46,9 @@ public class BatchInventoryController {
         );
     }
 
-    @MessageMapping("/expiry-alerts")
-    @SendTo("/topic/expiry-alerts")
-    //@GetMapping("/expiry-alerts")
+//    @MessageMapping("/expiry-alerts")
+//    @SendTo("/topic/expiry-alerts")
+    @GetMapping("/expiry-alerts")
     public ResponseEntity<StandardResponse> getExpiryAlerts() {
         List<ExpiryAlertDTO> expiryAlerts = batchInventoryService.checkExpiryAlerts();
         return new ResponseEntity<>(
@@ -65,6 +67,7 @@ public class BatchInventoryController {
     }
 
     @GetMapping("/expiry-counts")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getExpiryCounts() {
         ExpiryCountDTO counts = batchInventoryService.getExpiryCounts();
         return new ResponseEntity<>(
@@ -72,4 +75,11 @@ public class BatchInventoryController {
                 HttpStatus.OK
         );
     }
+
+   // WebSocket endpoint
+   @MessageMapping("/expiry-counts")
+   @SendTo("/topic/expiry-counts")
+   public ExpiryCountDTO getExpiryCountsWs() {
+       return batchInventoryService.getExpiryCounts();
+   }
 }

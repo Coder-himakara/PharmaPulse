@@ -237,18 +237,60 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
      *
      * @return ExpiryCountDTO containing counts of expiry alerts for each timeframe
      */
+    @Override
     public ExpiryCountDTO getExpiryCounts() {
-        List<ExpiryAlertDTO> alerts = checkExpiryAlerts();
+        LocalDate now = LocalDate.now();
 
+        // Define timeframes for alerts
+        LocalDate oneWeekThreshold = now.plusWeeks(1);
+        LocalDate oneMonthThreshold = now.plusMonths(1);
+        LocalDate threeMonthsThreshold = now.plusMonths(3);
+        LocalDate sixMonthsThreshold = now.plusMonths(6);
+
+        // Get all non-expired, non-sold batches (including those beyond 6 months)
+        List<BatchInventory> allActiveBatches = batchInventoryRepo.findAll()
+                .stream()
+                .filter(batch -> batch.getBatchStatus() != BatchStatus.EXPIRED &&
+                        batch.getBatchStatus() != BatchStatus.SOLD)
+                .collect(Collectors.toList());
+
+        // Initialize counters
+        int oneWeekBatches = 0, oneWeekQuantity = 0;
+        int oneMonthBatches = 0, oneMonthQuantity = 0;
+        int threeMonthsBatches = 0, threeMonthsQuantity = 0;
+        int sixMonthsBatches = 0, sixMonthsQuantity = 0;
+        int safeBatches = 0, safeQuantity = 0; // For batches expiring beyond 6 months
+
+        // Count batches and quantities for each period
+        for (BatchInventory batch : allActiveBatches) {
+            LocalDate expiryDate = batch.getExpiryDate();
+            int quantity = batch.getAvailableUnitQuantity() != null ? batch.getAvailableUnitQuantity() : 0;
+
+            if (expiryDate.isBefore(oneWeekThreshold) || expiryDate.isEqual(oneWeekThreshold)) {
+                oneWeekBatches++;
+                oneWeekQuantity += quantity;
+            } else if (expiryDate.isBefore(oneMonthThreshold) || expiryDate.isEqual(oneMonthThreshold)) {
+                oneMonthBatches++;
+                oneMonthQuantity += quantity;
+            } else if (expiryDate.isBefore(threeMonthsThreshold) || expiryDate.isEqual(threeMonthsThreshold)) {
+                threeMonthsBatches++;
+                threeMonthsQuantity += quantity;
+            } else if (expiryDate.isBefore(sixMonthsThreshold) || expiryDate.isEqual(sixMonthsThreshold)) {
+                sixMonthsBatches++;
+                sixMonthsQuantity += quantity;
+            } else {
+                // Batches that expire after 6 months (safe products)
+                safeBatches++;
+                safeQuantity += quantity;
+            }
+        }
+        // Build and return the DTO
         return ExpiryCountDTO.builder()
-                .oneWeek((int) alerts.stream()
-                        .filter(a -> a.getAlertMessage().contains("1 week")).count())
-                .oneMonth((int) alerts.stream()
-                        .filter(a -> a.getAlertMessage().contains("1 month")).count())
-                .threeMonths((int) alerts.stream()
-                        .filter(a -> a.getAlertMessage().contains("3 months")).count())
-                .sixMonths((int) alerts.stream()
-                        .filter(a -> a.getAlertMessage().contains("6 months")).count())
+                .oneWeek(new int[]{oneWeekBatches, oneWeekQuantity})
+                .oneMonth(new int[]{oneMonthBatches, oneMonthQuantity})
+                .threeMonths(new int[]{threeMonthsBatches, threeMonthsQuantity})
+                .sixMonths(new int[]{sixMonthsBatches, sixMonthsQuantity})
+                .safeBatches(new int[]{safeBatches, safeQuantity}) // Add the new field
                 .build();
     }
 
