@@ -48,7 +48,6 @@ export const connectExpiryCounts = (token, onCountsReceived) => {
     },
   });
 
-  // Wrap activation in try-catch
   client.activate();
   return client;
 };
