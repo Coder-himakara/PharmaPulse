@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { connectExpiryCounts } from '../../api/WebSocket';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -226,6 +226,23 @@ const EmployeeDashboardCard = ({ content }) => {
 
   return (
     <div className='flex-grow text-[var(--text-color)]'>
+       {/* Display error message if there's an error */}
+    {error && (
+      <div className="p-4 mb-6 text-red-700 bg-red-100 border border-red-200 rounded-lg">
+        <p className="font-medium">Error loading dashboard data</p>
+        <p className="text-sm">{error}</p>
+      </div>
+    )}
+
+    {/* Display loading state */}
+    {loading ? (
+      <div className="flex flex-col items-center justify-center h-64">
+        <div className="w-12 h-12 border-t-2 border-b-2 border-blue-500 rounded-full animate-spin"></div>
+        <p className="mt-4 text-gray-600">Loading dashboard data...</p>
+      </div>
+    ) : (
+      <>
+
       {/* Charts Container */}
       <div className='grid grid-cols-1 gap-6 mb-8 md:grid-cols-2'>
         {/* Stock Availability Display (replacing Stock Levels chart) */}
@@ -351,6 +368,8 @@ const EmployeeDashboardCard = ({ content }) => {
 
       <ToastContainer position="bottom-right" />
       <div>{content}</div>
+      </>
+    )}
     </div>
   );
 };
