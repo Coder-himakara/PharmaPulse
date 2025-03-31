@@ -1,34 +1,61 @@
 /* eslint-disable prettier/prettier */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AddProductsForm = ({ onAddProduct }) => {
   const [formData, setFormData] = useState({
-    purchaseGroup: "",
+    purchaseGroupId: "",
     productRefId: "",
     productName: "",
     genericName: "",
     description: "",
     category: "",
     packageType: "",
-    unitsPerPackage: "",
+    unitsPerPack: "",
     productStatus: "",
     reorderLimitByPackage: "",
   });
 
   const navigate = useNavigate();
-
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isRefIdGenerated, setIsRefIdGenerated] = useState(false); // Track if Ref ID is generated
+  const [isRefIdGenerated, setIsRefIdGenerated] = useState(false);
+  const [lastRefId, setLastRefId] = useState(null); // Store the last ref ID from backend
 
-  // Simulate backend data for the last product reference ID (e.g., "RepId003" for this example)
-  const lastRefId = "RepId003"; // This would typically come from a backend API
-  const getNextRefId = () => {
+  // Fetch the last productRefId from the backend on component mount
+  useEffect(() => {
+    const fetchLastRefId = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8090/api/products/last-ref-id", // Hypothetical endpoint
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            auth: {
+              username: "employee",
+              password: "employee123",
+            },
+          }
+        );
+        const fetchedRefId = response.data.data || "RefId000"; // Default if no products exist
+        setLastRefId(fetchedRefId);
+      } catch (error) {
+        console.error("Error fetching last ref ID:", error);
+        setLastRefId("RefId000"); // Fallback in case of error
+      }
+    };
+    fetchLastRefId();
+  }, []);
+
+  const generateNextRefId = () => {
+    if (!lastRefId) return "RefId001"; // Default if no lastRefId yet
     const numericPart = parseInt(lastRefId.replace("RefId", ""), 10) || 0;
     const nextNumber = (numericPart + 1).toString().padStart(3, "0");
-    return `RefId${nextNumber}`; // e.g., "RefId004"
+    return `RefId${nextNumber}`;
   };
 
   const handleChange = (e) => {
@@ -40,29 +67,29 @@ const AddProductsForm = ({ onAddProduct }) => {
   };
 
   const handleGenerateRefId = () => {
-    if (!formData.purchaseGroup || isRefIdGenerated) return; // Prevent generating if no purchase group or already generated
+    if (!formData.purchaseGroupId || isRefIdGenerated) return;
 
-    const newRefId = getNextRefId(); // Generate the next sequential ID
+    const newRefId = generateNextRefId();
     setFormData((prevData) => ({
       ...prevData,
       productRefId: newRefId,
     }));
-    setIsRefIdGenerated(true); // Mark as generated
+    setIsRefIdGenerated(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation
     if (
-      !formData.productName ||
-      !formData.purchaseGroup ||
+      !formData.purchaseGroupId ||
       !formData.productRefId ||
       !formData.productName ||
       !formData.genericName ||
       !formData.description ||
       !formData.category ||
       !formData.packageType ||
-      !formData.unitsPerPackage ||
+      !formData.unitsPerPack ||
       !formData.productStatus ||
       !formData.reorderLimitByPackage
     ) {
@@ -75,29 +102,83 @@ const AddProductsForm = ({ onAddProduct }) => {
       return;
     }
 
-    setErrorMessage(""); // Clear errors
-    setSuccessMessage("Product added successfully!");
+    // Convert fields to match backend entity types
+    const purchaseGroupId = parseInt(formData.purchaseGroupId, 10);
+    const unitsPerPack = formData.unitsPerPack; // String
+    const reorderLimit = parseInt(formData.reorderLimitByPackage, 10);
 
-    if (onAddProduct) {
-      onAddProduct(formData);
+    if (isNaN(purchaseGroupId) || isNaN(reorderLimit)) {
+      setErrorMessage("Please ensure numeric fields contain valid numbers.");
+      return;
     }
 
-    setTimeout(() => {
-      setFormData({
-        purchaseGroup: "",
-        productRefId: "",
-        productName: "",
-        genericName: "",
-        description: "",
-        category: "",
-        packageType: "",
-        unitsPerPackage: "",
-        productStatus: "",
-        reorderLimitByPackage: "",
+    const requestData = {
+      purchaseGroupId, // Long
+      productRefId: formData.productRefId, // String
+      productName: formData.productName, // String
+      genericName: formData.genericName, // String
+      description: formData.description, // String
+      category: formData.category, // Enum (String)
+      packageType: formData.packageType, // Enum (String)
+      unitsPerPack, // String
+      productStatus: formData.productStatus.toUpperCase(), // Enum (String, uppercase)
+      reorderLimitByPackage: reorderLimit, // Integer
+    };
+
+    setErrorMessage("");
+    try {
+      console.log("Sending requestData:", JSON.stringify(requestData, null, 2));
+      const response = await axios.post(
+        "http://localhost:8090/api/products/add",
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          auth: {
+            username: "employee",
+            password: "employee123",
+          },
+        }
+      );
+
+      const savedProduct = response.data.data;
+      setSuccessMessage("Product added successfully!");
+      if (onAddProduct) {
+        onAddProduct(savedProduct);
+      }
+
+      // Update lastRefId with the newly saved product's refId
+      setLastRefId(savedProduct.productRefId);
+
+      setTimeout(() => {
+        setFormData({
+          purchaseGroupId: "",
+          productRefId: "",
+          productName: "",
+          genericName: "",
+          description: "",
+          category: "",
+          packageType: "",
+          unitsPerPack: "",
+          productStatus: "",
+          reorderLimitByPackage: "",
+        });
+        setSuccessMessage("");
+        setIsRefIdGenerated(false);
+      }, 2000);
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || "An unexpected error occurred. Check the console for details.";
+      setErrorMessage(errorMsg);
+      console.error("Error Details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        headers: error.response?.headers,
+        request: error.request,
       });
-      setSuccessMessage("");
-      setIsRefIdGenerated(false); // Reset for a new product
-    }, 2000);
+    }
   };
 
   const handleCancel = () => {
@@ -114,47 +195,35 @@ const AddProductsForm = ({ onAddProduct }) => {
       </h2>
 
       {errorMessage && (
-        <p className="text-[#991919] text-sm font-bold mb-4 text-center">
-          {errorMessage}
-        </p>
+        <p className="text-[#991919] text-sm font-bold mb-4 text-center">{errorMessage}</p>
       )}
       {successMessage && (
-        <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">
-          {successMessage}
-        </p>
+        <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">{successMessage}</p>
       )}
 
-      {/* Form Grid Layout */}
       <div className="grid grid-cols-2 gap-12">
-        {/* Left Column */}
         <div className="space-y-4">
           <div className="flex items-center">
-            <label
-              htmlFor="purchaseGroup"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="purchaseGroupId" className="text-[16px] text-gray-800 w-1/2 text-left">
               Purchase Group:
             </label>
             <select
-              id="purchaseGroup"
-              name="purchaseGroup"
-              value={formData.purchaseGroup}
+              id="purchaseGroupId"
+              name="purchaseGroupId"
+              value={formData.purchaseGroupId}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             >
               <option value="">Select a Purchase Group</option>
-              <option value="PG001">PG001</option>
-              <option value="PG002">PG002</option>
-              <option value="PG003">PG003</option>
-              {/* Add more options as needed */}
+              <option value="1">Group 1</option>
+              <option value="2">Group 2</option>
+              <option value="3">Group 3</option>
+              {/* Replace with dynamic data from backend */}
             </select>
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="productName"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="productName" className="text-[16px] text-gray-800 w-1/2 text-left">
               Product Name:
             </label>
             <input
@@ -168,10 +237,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="genericName"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="genericName" className="text-[16px] text-gray-800 w-1/2 text-left">
               Generic Name:
             </label>
             <input
@@ -185,10 +251,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="description"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="description" className="text-[16px] text-gray-800 w-1/2 text-left">
               Description:
             </label>
             <input
@@ -202,10 +265,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="category"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="category" className="text-[16px] text-gray-800 w-1/2 text-left">
               Category:
             </label>
             <select
@@ -216,19 +276,15 @@ const AddProductsForm = ({ onAddProduct }) => {
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             >
               <option value="">Choose a category</option>
-              <option value="MEDICINE">MEDICINE</option>
-              <option value="SURGICAL">SURGICAL</option>
+              <option value="MEDICINE">Medicine</option>
+              <option value="SURGICAL">Surgical</option>
             </select>
           </div>
         </div>
 
-        {/* Right Column */}
         <div className="space-y-4">
           <div className="flex items-center">
-            <label
-              htmlFor="productRefId"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="productRefId" className="text-[16px] text-gray-800 w-1/2 text-left">
               Product Ref Id:
             </label>
             <div className="relative w-1/2">
@@ -237,16 +293,16 @@ const AddProductsForm = ({ onAddProduct }) => {
                 id="productRefId"
                 name="productRefId"
                 value={formData.productRefId}
-                onChange={handleChange} // Disabled, but kept for form consistency
-                disabled // Prevent editing of Product Ref Id
-                className="w-full px-2 py-2 pr-20 text-sm border border-gray-300 rounded-md" // Increased padding-right for button overlap
+                onChange={handleChange}
+                disabled
+                className="w-full px-2 py-2 pr-20 text-sm border border-gray-300 rounded-md"
               />
               <button
                 type="button"
                 onClick={handleGenerateRefId}
-                disabled={!formData.purchaseGroup || isRefIdGenerated} // Disable if no purchase group or already generated
+                disabled={!formData.purchaseGroupId || isRefIdGenerated}
                 className={`absolute right-0 top-0 px-3 py-2 text-white rounded-r-md text-[14px] cursor-pointer h-full ${
-                  !formData.purchaseGroup || isRefIdGenerated
+                  !formData.purchaseGroupId || isRefIdGenerated
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-[#2a4d69] hover:bg-[#00796b]"
                 }`}
@@ -257,10 +313,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="packageType"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="packageType" className="text-[16px] text-gray-800 w-1/2 text-left">
               Package Type:
             </label>
             <select
@@ -270,37 +323,31 @@ const AddProductsForm = ({ onAddProduct }) => {
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             >
-              <option value="">Choose a packageType</option>
-              <option value="VIAL">VIAL</option>
-              <option value="BOTTLE">BOTTLE</option>
-              <option value="BOX">BOX</option>
-              <option value="BLISTER PACK">BLISTER PACK</option>
-              <option value="POUCH">POUCH</option>
+              <option value="">Choose a package type</option>
+              <option value="VIAL">Vial</option>
+              <option value="BOTTLE">Bottle</option>
+              <option value="BOX">Box</option>
+              <option value="BLISTER_PACK">Blister Pack</option>
+              <option value="POUCH">Pouch</option>
             </select>
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="unitsPerPackage"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="unitsPerPack" className="text-[16px] text-gray-800 w-1/2 text-left">
               Units Per Package:
             </label>
             <input
-              type="number"
-              id="unitsPerPackage"
-              name="unitsPerPackage"
-              value={formData.unitsPerPackage}
+              type="text"
+              id="unitsPerPack"
+              name="unitsPerPack"
+              value={formData.unitsPerPack}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="productStatus"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="productStatus" className="text-[16px] text-gray-800 w-1/2 text-left">
               Product Status:
             </label>
             <select
@@ -311,17 +358,14 @@ const AddProductsForm = ({ onAddProduct }) => {
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             >
               <option value="">Choose a status</option>
-              <option value="active">ACTIVE</option>
-              <option value="inactive">INACTIVE</option>
-              <option value="discontinued">DISCONTINUED</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+              <option value="DISCONTINUED">Discontinued</option>
             </select>
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="reorderLimitByPackage"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="reorderLimitByPackage" className="text-[16px] text-gray-800 w-1/2 text-left">
               Reorder Limit By Package:
             </label>
             <input
@@ -334,7 +378,6 @@ const AddProductsForm = ({ onAddProduct }) => {
             />
           </div>
 
-          {/* Buttons at Bottom-Right */}
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="submit"

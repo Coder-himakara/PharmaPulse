@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/products")
+@CrossOrigin(origins = "http://localhost:3123") // Adjust to your frontend port
 @PreAuthorize("hasRole('EMPLOYEE')")
 public class ProductController {
     private final ProductService productService;
@@ -53,7 +54,7 @@ public class ProductController {
                                                            @RequestBody ProductDTO productDTO) {
         ProductDTO updatedProducts=productService.updateProduct(id,productDTO);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",updatedProducts),
+                new StandardResponse(200,"Success",updatedProducts),
                 HttpStatus.CREATED
         );
     }

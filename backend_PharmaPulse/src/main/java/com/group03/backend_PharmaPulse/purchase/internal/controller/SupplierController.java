@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/suppliers")
+@CrossOrigin(origins = "http://localhost:3123") // Adjust to your frontend port
 public class SupplierController {
     private final SupplierService supplierService;
     public SupplierController(SupplierService supplierService) {
@@ -51,7 +52,7 @@ public class SupplierController {
                                                                  @RequestBody SupplierDTO supplierDTO) {
         SupplierDTO updatedSupplier=supplierService.updateSupplier(id,supplierDTO);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",updatedSupplier),
+                new StandardResponse(200,"Success",updatedSupplier),
                 HttpStatus.CREATED
         );
     }

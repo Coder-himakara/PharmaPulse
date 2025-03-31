@@ -24,33 +24,29 @@ public class CustomerGroupServiceImpl implements CustomerGroupService {
 
     @Override
     public CustomerGroupDTO addCustomerGroup(CustomerGroupDTO customerGroupDTO) {
-        CustomerGroup savedCustomerGroup= customerGroupRepo.save(customerGroupMapper.toEntity(customerGroupDTO));
+        CustomerGroup savedCustomerGroup = customerGroupRepo.save(customerGroupMapper.toEntity(customerGroupDTO));
         return customerGroupMapper.toDTO(savedCustomerGroup);
     }
 
     @Override
     public List<CustomerGroupDTO> getAllCustomerGroups() {
-        List<CustomerGroup> customerGroups= customerGroupRepo.findAll();
-        if(!customerGroups.isEmpty()){
-            return customerGroupMapper.toDTOsList(customerGroups);
-        }else{
-            throw new NotFoundException("No Customer Groups found");
-        }
+        List<CustomerGroup> customerGroups = customerGroupRepo.findAll();
+        return customerGroupMapper.toDTOsList(customerGroups); // Return empty list if none found
     }
 
     @Override
     public CustomerGroupDTO getCustomerGroupById(Long id) {
-        Optional<CustomerGroup> customerGroup= customerGroupRepo.findById(Math.toIntExact(id));
+        Optional<CustomerGroup> customerGroup = customerGroupRepo.findById(id);
         return customerGroup.map(customerGroupMapper::toDTO)
                 .orElseThrow(() -> new NotFoundException("CustomerGroup not found"));
     }
 
     @Override
     public CustomerGroupDTO updateCustomerGroup(Long id, CustomerGroupDTO customerGroupDTO) {
-        Optional<CustomerGroup> customerGroup = customerGroupRepo.findById(Math.toIntExact(id));
+        Optional<CustomerGroup> customerGroup = customerGroupRepo.findById(id);
         if (customerGroup.isPresent()) {
             CustomerGroup updatedCustomerGroup = customerGroupMapper.toEntity(customerGroupDTO);
-            updatedCustomerGroup.setCustomerGroupId(id); // Ensure the ID is set to the existing entity's ID
+            updatedCustomerGroup.setCustomerGroupId(id); // Ensure ID is preserved
             CustomerGroup savedCustomerGroup = customerGroupRepo.save(updatedCustomerGroup);
             return customerGroupMapper.toDTO(savedCustomerGroup);
         } else {

@@ -30,12 +30,12 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.toDTO(savedCustomer);
    }
 
-    /*@Override
+    @Override
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> customers = customerRepo.findAll();
         return customerMapper.toDTOList(customers);
 
-    }*/
+    }
 
     @Override
     public CustomerDTO getCustomerById(Long id) {

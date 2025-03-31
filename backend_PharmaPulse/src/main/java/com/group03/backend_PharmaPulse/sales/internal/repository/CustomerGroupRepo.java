@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository //Marks this interface as a Spring-managed repository
 @EnableJpaRepositories //Enables Spring Data JPA repositories.
-public interface CustomerGroupRepo extends JpaRepository<CustomerGroup, Integer> {
+public interface CustomerGroupRepo extends JpaRepository<CustomerGroup,Long> {
     //This makes CustomerGroupRepo inherit built-in CRUD methods from JpaRepository, such as:
     //
     //    save(CustomerGroup entity) → Saves or updates a customer group.
-    //    findById(Integer id) → Finds a customer group by its ID.
+    //   findById(Integer id) → Finds a customer group by its ID.
     //    findAll() → Gets all customer groups.
     //    deleteById(Integer id) → Deletes a customer group by ID.
 }
