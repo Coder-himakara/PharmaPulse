@@ -1,10 +1,9 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
-import { connectExpiryCounts } from '../../api/WebSocket';
+import { webSocketConnections, disconnectWebSocket } from '../../api/WebSocketService';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../../security/UseAuth';
@@ -29,19 +28,18 @@ const EmployeeDashboardCard = ({ content }) => {
   });
 
 
-  const stockSummary = {
-    totalStock: 3000,
-    available: 2000, // Yellow portion
-    lowStock: 600,   // Orange portion
-    outOfStock: 400, // White portion
-  };
+  // State for stock availability
+  const [stockSummary, setStockSummary] = useState({
+    totalStock: 0,
+    available: 0,
+    lowStock: 0,
+    outOfStock: 0,
+  });
 
-  // Sample data for low stock items (matching the image)
-  const lowStockItems = [
-    { name: 'Medicine 1', quantity: 10, supplier: 'Supplier 1' },
-    { name: 'Medicine 2', quantity: 8, supplier: 'Supplier 2' },
-    { name: 'Medicine 3', quantity: 5, supplier: 'Supplier 3' },
-  ];
+  // State for low stock items
+  const [lowStockItems, setLowStockItems] = useState([]);
+  const [outOfStockItems, setOutOfStockItems] = useState([]);
+
 
   // Function to transform API data into the required format with better handling of nested data
   const transformExpiryCounts = (data = {}) => {
@@ -65,11 +63,48 @@ const EmployeeDashboardCard = ({ content }) => {
     };
   };
 
-  // Fetch initial data and setup WebSocket
-  useEffect(() => {
-    let wsClient = null;
 
-    const fetchInitialCounts = async () => {
+  // Function to transform stock counts from WebSocket/API
+  const transformStockCounts = (data = {}) => {
+    // Extract data from response
+    const stockData = data.data || data;
+
+    // Process stock summary data
+    const summary = {
+      totalStock: stockData.totalStock || 0,
+      available: stockData.availableStock || 0,
+      lowStock: stockData.lowStock || 0,
+      outOfStock: stockData.outOfStock || 0
+    };
+
+    // Transform low stock product items
+    const lowItems = Array.isArray(stockData.lowStockProducts)
+      ? stockData.lowStockProducts.map(product => ({
+        name: product.productName || 'Unknown Product',
+        quantity: product.quantity || 0,
+        supplier: product.supplierName || 'Unknown Supplier'
+      }))
+      : [];
+
+    // Transform out of stock product items
+    const outItems = Array.isArray(stockData.outOfStockProducts)
+      ? stockData.outOfStockProducts.map(product => ({
+        name: product.productName || 'Unknown Product',
+        quantity: product.quantity || 0,
+        supplier: product.supplierName || 'Unknown Supplier'
+      }))
+      : [];
+
+    return { summary, lowItems, outItems };
+  };
+
+
+  // Fetch initial data and setup WebSockets
+  useEffect(() => {
+    let expiryWsClient = null;
+    let stockWsClient = null;
+
+    const fetchInitialData = async () => {
       setLoading(true);
       setError(null);
 
@@ -81,25 +116,40 @@ const EmployeeDashboardCard = ({ content }) => {
           return;
         }
 
-        const response = await axios.get('http://localhost:8090/api/batch-inventory/expiry-counts', {
+        // Fetch expiry counts
+        const expiryResponse = await axios.get('http://localhost:8090/api/batch-inventory/expiry-counts', {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
-          // Handle CORS issues
           withCredentials: false
         });
 
-        // Check response structure and handle accordingly
-        if (response.data) {
-          const transformedData = transformExpiryCounts(response.data);
+        // Fetch stock availability
+        const stockResponse = await axios.get('http://localhost:8090/api/batch-inventory/stock-counts', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          withCredentials: false
+        });
+
+        // Process expiry data
+        if (expiryResponse.data) {
+          const transformedData = transformExpiryCounts(expiryResponse.data);
           setCounts(transformedData);
-        } else {
-          setError('Invalid response format');
+        }
+
+        // Process stock data
+        if (stockResponse.data) {
+          const { summary, lowItems, outItems } = transformStockCounts(stockResponse.data);
+          setStockSummary(summary);
+          setLowStockItems(lowItems);
+          setOutOfStockItems(outItems);
         }
       } catch (error) {
         // Better error handling
-        let errorMessage = 'Failed to load initial data';
+        let errorMessage = 'Failed to load dashboard data';
 
         if (error.response) {
           if (error.response.status === 401) {
@@ -118,26 +168,54 @@ const EmployeeDashboardCard = ({ content }) => {
       }
     };
 
-    fetchInitialCounts();
+    fetchInitialData();
 
+    // Setup WebSocket for expiry counts
     try {
-      wsClient = connectExpiryCounts(token, (newCounts) => {
+      expiryWsClient = webSocketConnections.connectExpiryCounts(token, (newCounts) => {
         const transformedData = transformExpiryCounts(newCounts);
         setCounts(transformedData);
-        toast.info('Counts updated!', { autoClose: 2000 });
+        if (!toast.isActive("expiry-update")) {
+          toast.info('Expiry counts updated!', {
+            toastId: "expiry-update",
+            autoClose: 2000
+          });
+        }
       });
     } catch (error) {
-      console.error('Error connecting to WebSocket:', error);
-      toast.error('Failed to establish real-time connection');
+      console.error('Error connecting to expiry WebSocket:', error);
+      toast.error('Failed to establish real-time expiry connection');
     }
 
-    return () => {
-      if (wsClient) {
-        try {
-          wsClient.deactivate();
-        } catch (error) {
-          console.error('Error deactivating WebSocket client:', error);
+    // Setup WebSocket for stock counts
+    try {
+      stockWsClient = webSocketConnections.connectStockCounts(token, (newStockData) => {
+        const { summary, lowItems, outItems } = transformStockCounts(newStockData);
+        setStockSummary(summary);
+        setLowStockItems(lowItems);
+        setOutOfStockItems(outItems);
+        if (!toast.isActive("stock-update")) {
+          toast.info('Stock counts updated!', {
+            toastId: "stock-update",
+            autoClose: 2000
+          });
         }
+      });
+    } catch (error) {
+      console.error('Error connecting to stock WebSocket:', error);
+      toast.error('Failed to establish real-time stock connection');
+    }
+
+    // Clean up WebSocket connections
+    return () => {
+      if (expiryWsClient) {
+        disconnectWebSocket(expiryWsClient)
+          .catch(error => console.error('Error disconnecting expiry WebSocket:', error));
+      }
+
+      if (stockWsClient) {
+        disconnectWebSocket(stockWsClient)
+          .catch(error => console.error('Error disconnecting stock WebSocket:', error));
       }
     };
   }, [token]);
@@ -238,33 +316,33 @@ const EmployeeDashboardCard = ({ content }) => {
 
           {/* Charts Container */}
           <div className='grid grid-cols-1 gap-6 mb-8 md:grid-cols-2'>
-            {/* Stock Availability Display (replacing Stock Levels chart) */}
+            {/* Stock Availability Display */}
             <div className='p-6 transition-transform duration-300 transform bg-white shadow-lg rounded-xl hover:scale-105'>
               <h2 className='mb-4 text-xl font-semibold text-transparent text-gray-800 bg-gradient-to-r from-green-600 to-purple-600 bg-clip-text'>
                 Stock Availability
               </h2>
               <div className='mb-4'>
-                <p className='text-lg font-bold'>3000</p>
+                <p className='text-lg font-bold'>{stockSummary.totalStock}</p>
                 <p className='text-sm text-gray-600'>Total Stock</p>
               </div>
               <div className='relative w-full h-6 bg-gray-200 rounded-full'>
                 <div
                   className='h-full bg-green-500 rounded-l-full'
-                  style={{ width: `${(stockSummary.available / stockSummary.totalStock) * 100}%` }}
+                  style={{ width: `${stockSummary.totalStock > 0 ? (stockSummary.available / stockSummary.totalStock) * 100 : 0}%` }}
                 ></div>
                 <div
-                  className='h-full'
-                  style={{ width: `${(stockSummary.lowStock / stockSummary.totalStock) * 100}%` }}
+                  className='h-full bg-orange-400'
+                  style={{ width: `${stockSummary.totalStock > 0 ? (stockSummary.lowStock / stockSummary.totalStock) * 100 : 0}%` }}
                 ></div>
                 <div
-                  className='h-full bg-white'
-                  style={{ width: `${(stockSummary.outOfStock / stockSummary.totalStock) * 100}%` }}
+                  className='h-full bg-red-400'
+                  style={{ width: `${stockSummary.totalStock > 0 ? (stockSummary.outOfStock / stockSummary.totalStock) * 100 : 0}%` }}
                 ></div>
                 {/* Overlay text for exact quantities */}
                 <div className='absolute inset-0 flex items-center justify-between px-2 text-xs font-semibold text-white'>
-                  <span className='px-1 bg-yellow-500 rounded bg-opacity-80'>{stockSummary.available}</span>
+                  <span className='px-1 bg-green-600 rounded bg-opacity-80'>{stockSummary.available}</span>
                   <span className='px-1 bg-orange-500 rounded bg-opacity-80'>{stockSummary.lowStock}</span>
-                  <span className='px-1 bg-gray-400 rounded bg-opacity-80'>{stockSummary.outOfStock}</span>
+                  <span className='px-1 bg-red-500 rounded bg-opacity-80'>{stockSummary.outOfStock}</span>
                 </div>
               </div>
               <div className='flex justify-between mt-2 text-xs text-gray-600'>
@@ -275,15 +353,38 @@ const EmployeeDashboardCard = ({ content }) => {
 
               {/* Low Stock Items List */}
               <div className='mt-6'>
-                <h3 className='mb-2 text-sm font-semibold text-gray-800'>Low Stock</h3>
-                {lowStockItems.map((item, index) => (
-                  <div key={index} className='flex items-center justify-between py-1 text-sm'>
-                    <span>{item.name}</span>
-                    <span>{item.quantity}</span>
-                    <span className='text-gray-600'>{item.supplier}</span>
-                  </div>
-                ))}
+                <h3 className='mb-2 text-sm font-semibold text-gray-800'>Low Stock Items</h3>
+                {lowStockItems.length > 0 ? (
+                  lowStockItems.map((item, index) => (
+                    <div key={index} className='flex items-center justify-between py-1 text-sm'>
+                      <span>{item.name}</span>
+                      <span>{item.quantity}</span>
+                      <span className='text-gray-600'>{item.supplier}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">No low stock items</p>
+                )}
               </div>
+
+              {/* Out of Stock Items (optional) */}
+              {outOfStockItems.length > 0 && (
+                <div className='mt-4'>
+                  <h3 className='mb-2 text-sm font-semibold text-gray-800'>Out of Stock Items</h3>
+                  {outOfStockItems.slice(0, 3).map((item, index) => (
+                    <div key={index} className='flex items-center justify-between py-1 text-sm'>
+                      <span>{item.name}</span>
+                      <span className='text-red-600'>Out of Stock</span>
+                      <span className='text-gray-600'>{item.supplier}</span>
+                    </div>
+                  ))}
+                  {outOfStockItems.length > 3 && (
+                    <p className="text-xs text-gray-500 text-right mt-1">
+                      +{outOfStockItems.length - 3} more items
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Dynamic Expiry Distribution Pie Chart */}
@@ -358,8 +459,6 @@ const EmployeeDashboardCard = ({ content }) => {
             </div>
 
           </div>
-
-          <ToastContainer position="bottom-right" />
           <div>{content}</div>
         </>
       )}

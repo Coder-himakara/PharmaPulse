@@ -18,7 +18,7 @@ public class AlertScheduler {
         this.batchInventoryService = batchInventoryService;
     }
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 420000)
     public void pushAllAlerts() {
         ExpiryCountDTO counts = batchInventoryService.getExpiryCounts();
         StockCountDTO stocks = batchInventoryService.stockAvailability();

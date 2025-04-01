@@ -86,8 +86,17 @@ public class BatchInventoryController {
 
    @MessageMapping("/stock-counts")
    @SendTo("/topic/stock-counts")
-   public StockCountDTO getStockAvailability() {
+   public StockCountDTO getStockAvailabilityWs() {
        return batchInventoryService.stockAvailability();
    }
 
+    @GetMapping("/stock-counts")
+    @PreAuthorize("hasAuthority('employee:read')")
+    public ResponseEntity<StandardResponse> getStockAvailability() {
+        StockCountDTO stocks = batchInventoryService.stockAvailability();
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Success", stocks),
+                HttpStatus.OK
+        );
+    }
 }
