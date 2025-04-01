@@ -24,10 +24,14 @@ public class UsersController {
     }
 
     @PostMapping(value = "/register", consumes = {"multipart/form-data"})
-    public ResponseEntity<StandardResponse> registerUser(@ModelAttribute UsersDTO usersDTO,
-                                                         @RequestParam("imageFile") MultipartFile imageFile) {
+    public ResponseEntity<StandardResponse> registerUser(
+            @ModelAttribute UsersDTO usersDTO,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+
+        UsersDTO savedUser;
         try {
-            UsersDTO savedUser = usersService.registerUser(usersDTO, imageFile);
+            savedUser = usersService.registerUser(usersDTO, imageFile);
+
             return new ResponseEntity<>(
                     new StandardResponse(201, "Success", savedUser),
                     HttpStatus.CREATED
