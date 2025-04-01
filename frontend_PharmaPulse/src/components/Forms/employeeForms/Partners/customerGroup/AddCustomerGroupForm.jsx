@@ -2,57 +2,80 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   const [formData, setFormData] = useState({
     customerGroupName: "",
-    assignSalesRepId: "",
-    assignSalesRepName: "",
-    location: "",
+    assignedSalesRep: "",
+    descriptions: "",
   });
 
   const navigate = useNavigate();
-
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (cg) => {
-    const { name, value } = cg.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
-
-  const handleSubmit = (cg) => {
-    cg.preventDefault();
+//async-The function always returns a promise.
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     if (
       !formData.customerGroupName.trim() ||
-      !formData.assignSalesRepId.trim() ||
-      !formData.assignSalesRepName.trim() ||
-      !formData.location.trim()
+      !formData.assignedSalesRep.trim() ||
+      !formData.descriptions.trim()
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
 
-    setErrorMessage("");
-    setSuccessMessage("Customer group added successfully!");
+    try {
+      console.log("Sending:", formData);
+      //axios.post-Send data to the backend using an API request 
+      //await-await to pause execution until a promise resolves.
+      const response = await axios.post(
+        "http://localhost:8090/api/customer-groups/add",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // Basic authentication
+          auth: {
+            username: "admin",
+            password: "admin123"
+          }
+        }
+      );
 
-    if (onAddCustomerGroup) {
-      onAddCustomerGroup(formData);
+      const savedCustomerGroup = response.data.data;
+      setErrorMessage("");
+      setSuccessMessage("Customer group added successfully!");
+
+      if (onAddCustomerGroup) {
+        onAddCustomerGroup(savedCustomerGroup);
+      }
+
+      setTimeout(() => {
+        setFormData({
+          customerGroupName: "",
+          assignedSalesRep: "",
+          descriptions: "",
+        });
+        setSuccessMessage("");
+      }, 2000);
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.message || "Failed to add customer group"
+      );
+      console.error("Error:", error.response || error);
     }
-
-    setTimeout(() => {
-      setFormData({
-        customerGroupName: "",
-        assignSalesRepId: "",
-        assignSalesRepName: "",
-        location: "",
-      });
-      setSuccessMessage("");
-    }, 2000);
   };
 
   const handleCancel = () => {
@@ -69,7 +92,9 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
       </h2>
 
       {errorMessage && (
-        <p className="text-[#991919] text-sm font-bold mb-4 text-center">{errorMessage}</p>
+        <p className="text-[#991919] text-sm font-bold mb-4 text-center">
+          {errorMessage}
+        </p>
       )}
       {successMessage && (
         <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">
@@ -96,16 +121,16 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
 
       <div className="flex items-center mb-4">
         <label
-          htmlFor="location"
+          htmlFor="assignedSalesRep"
           className="text-[16px] text-gray-800 w-1/3 text-left"
         >
-          Location:
+          Assigned Sales Rep:
         </label>
         <input
           type="text"
-          id="location"
-          name="location"
-          value={formData.location}
+          id="assignedSalesRep"
+          name="assignedSalesRep"
+          value={formData.assignedSalesRep}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
@@ -113,31 +138,19 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
 
       <div className="flex items-center mb-4">
         <label
-          htmlFor="assignSalesRepId"
+          htmlFor="descriptions"
           className="text-[16px] text-gray-800 w-1/3 text-left"
         >
-          Assign Sales Rep:
+         Location:
         </label>
-        <div className="flex w-2/3 gap-2">
-          <input
-            type="text"
-            id="assignSalesRepId"
-            name="assignSalesRepId"
-            value={formData.assignSalesRepId}
-            onChange={handleChange}
-            placeholder="Rep ID"
-            className="w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-md"
-          />
-          <input
-            type="text"
-            id="assignSalesRepName"
-            name="assignSalesRepName"
-            value={formData.assignSalesRepName}
-            onChange={handleChange}
-            placeholder="Rep Name"
-            className="w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-md"
-          />
-        </div>
+        <input
+          type="text"
+          id="descriptions"
+          name="descriptions"
+          value={formData.descriptions}
+          onChange={handleChange}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
       </div>
 
       <div className="flex justify-center gap-2">

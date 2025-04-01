@@ -16,17 +16,15 @@ const ViewCustomerGroupDetails = () => {
       <ul className="text-left ">
         <li>
           <strong>Customer Group Name:</strong>{" "}
-          {customerGroup.customerGroupName}
+          {customerGroup?.customerGroupName || "N/A"}
         </li>
         <li>
-          <strong>Assign Sales Rep Id:</strong> {customerGroup.assignSalesRepId}
+          <strong>Sales Rep Name:</strong>{" "}
+          {customerGroup?.assignedSalesRep || "N/A"}
         </li>
         <li>
-          <strong>Assign Sales Rep Name:</strong>{" "}
-          {customerGroup.assignSalesRepName}
-        </li>
-        <li>
-          <strong>Location:</strong> {customerGroup.location}
+          <strong>Location:</strong>{" "}
+          {customerGroup?.descriptions || "N/A"}
         </li>
       </ul>
       <div className="flex justify-center mt-4">

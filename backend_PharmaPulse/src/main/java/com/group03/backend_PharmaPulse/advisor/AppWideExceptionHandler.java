@@ -5,8 +5,8 @@ import com.group03.backend_PharmaPulse.user.api.exception.TokenNotFoundException
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.util.api.dto.ErrorResponseDto;
 
+
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 
-
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,7 +115,6 @@ public class AppWideExceptionHandler{
         );
     }
     // Handle JWT token expiration exceptions
-    @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ErrorResponseDto> handleExpiredJwtException(ExpiredJwtException e) {
         return new ResponseEntity<>(
                 new ErrorResponseDto(401, "The access token provided is expired", e.getMessage()),
