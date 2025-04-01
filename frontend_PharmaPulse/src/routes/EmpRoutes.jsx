@@ -34,6 +34,12 @@ import EditPurchaseInvoiceForm from "../components/Forms/employeeForms/invoicing
 
 import StockTransferForm from "../components/Forms/employeeForms/inventory/inventoryWise/StockTransferForm"; 
 
+import ReceiptForm from "../components/Forms/employeeForms/payments/ReceiptForm"
+
+import MonthlyReportForm from "../components/Forms/employeeForms/reports/MonthlyReportForm"
+
+import StockBalanceReportForm from "../components/Forms/employeeForms/reports/StockBalanceReportForm"
+
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -249,6 +255,20 @@ const EmpRoutes = () => {
       <Route
         path="stock-transfer"
         element={<StockTransferForm />}
+      />
+
+    <Route
+        path="receipt-generate"
+        element={<ReceiptForm />}
+      />
+
+    <Route
+        path="monthly-report-generate"
+        element={<MonthlyReportForm />}
+      />
+        <Route
+        path="stock-balance-report-generate"
+        element={<StockBalanceReportForm />}
       />
       <Route path="/"  element={<EmployeeDashboardCard />} />
 
