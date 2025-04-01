@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 const ReceiptForm = ({ onAddReceipt }) => {
   const [formData, setFormData] = useState({
-    receiptNo: "1282",
-    receiptDate: "12-DEC-24",
+    receiptNo: "",
+    receiptDate: "",
     customer: "",
     contact: "",
     outstanding: "",
@@ -16,12 +16,10 @@ const ReceiptForm = ({ onAddReceipt }) => {
     remarks: "",
     bankAccount: "",
     chequeNo: "",
-    validDate: "12-DEC-24",
-    branch: "",
-    amount: "0",
-    fullySetOff: "0",
-    partlySetOff: "0",
-    totalSelected: "0",
+    validDate: "",
+    fullySetOff: "",
+    partlySetOff: "",
+    totalSelected: "0", // Initialize as "0"
   });
 
   const [tableData, setTableData] = useState([
@@ -35,26 +33,74 @@ const ReceiptForm = ({ onAddReceipt }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => {
+      if (name === "setOffType") {
+        return {
+          ...prevData,
+          fullySetOff: value === "fully" ? "1" : "0",
+          partlySetOff: value === "partly" ? "1" : "0",
+        };
+      }
+      return {
+        ...prevData,
+        [name]: value,
+      };
+    });
   };
 
   const handleTableChange = (index, field, value) => {
     const updatedTableData = [...tableData];
     updatedTableData[index][field] = value;
+
+    // Calculate balance when amount or paid changes
+    if (field === "amount" || field === "paid") {
+      const amount = parseFloat(updatedTableData[index].amount) || 0;
+      const paid = parseFloat(updatedTableData[index].paid) || 0;
+      updatedTableData[index].balance = (amount - paid).toFixed(2);
+    }
+
     setTableData(updatedTableData);
+
+    // Calculate totalSelected as sum of all balances
+    const total = updatedTableData.reduce((sum, row) => {
+      return sum + (parseFloat(row.balance) || 0);
+    }, 0).toFixed(2);
+
+    setFormData((prevData) => ({
+      ...prevData,
+      totalSelected: total,
+    }));
   };
 
   const addTableRow = () => {
-    setTableData([...tableData, { date: "", docRef: "", description: "", amount: "", paid: "", balance: "", age: "" }]);
+    const updatedTableData = [...tableData, { date: "", docRef: "", description: "", amount: "", paid: "", balance: "", age: "" }];
+    setTableData(updatedTableData);
+
+    // Recalculate totalSelected after adding a row
+    const total = updatedTableData.reduce((sum, row) => {
+      return sum + (parseFloat(row.balance) || 0);
+    }, 0).toFixed(2);
+
+    setFormData((prevData) => ({
+      ...prevData,
+      totalSelected: total,
+    }));
   };
 
   const removeTableRow = (indexToRemove) => {
     if (window.confirm("Are you sure you want to remove this row?")) {
       const updatedTableData = tableData.filter((_, index) => index !== indexToRemove);
       setTableData(updatedTableData);
+
+      // Recalculate totalSelected after removing a row
+      const total = updatedTableData.reduce((sum, row) => {
+        return sum + (parseFloat(row.balance) || 0);
+      }, 0).toFixed(2);
+
+      setFormData((prevData) => ({
+        ...prevData,
+        totalSelected: total,
+      }));
     }
   };
 
@@ -98,8 +144,6 @@ const ReceiptForm = ({ onAddReceipt }) => {
         bankAccount: "",
         chequeNo: "",
         validDate: "",
-        branch: "",
-        amount: "0",
         fullySetOff: "0",
         partlySetOff: "0",
         totalSelected: "0",
@@ -116,10 +160,10 @@ const ReceiptForm = ({ onAddReceipt }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-4xl mx-auto p-5 bg-[#e6eef3] border border-gray-300 rounded-lg shadow-md"
+      className="max-w-4xl mx-auto p-5 bg-[#e6eef3] border border-gray-300 rounded-md shadow-md"
     >
       <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md mb-5 text-lg">
-        Receipt Entry
+        Customer Receipt
       </h2>
 
       {errorMessage && (
@@ -186,7 +230,7 @@ const ReceiptForm = ({ onAddReceipt }) => {
                 <option value="CHEQUE">CHEQUE</option>
                 <option value="CASH">CASH</option>
                 <option value="CREDIT/DEBIT CARD">CREDIT/DEBIT CARD</option>
-                <option value="DIRECT DEPOSIT">DIRECT DEPOSIT</option>
+                <option value="ONLINE TRANSACTION">ONLINE TRANSACTION</option>
               </select>
             </div>
           </div>
@@ -225,13 +269,18 @@ const ReceiptForm = ({ onAddReceipt }) => {
             </div>
             <div className="mb-4">
               <label className="w-full text-sm text-gray-800">Bank Account:</label>
-              <input
+              <select
                 type="text"
                 name="bankAccount"
                 value={formData.bankAccount}
                 onChange={handleInputChange}
                 className="w-full px-2 py-1 mt-1 text-sm border border-red-500 rounded-md"
-              />
+              >
+                <option value="">Select Bank Account</option>
+                    <option>BOC - 8864579852</option>
+                    <option>People Bank - 255 2004 456 789</option>
+                   
+                </select>
             </div>
             <div className="mb-4">
               <label className="w-full text-sm text-gray-800">Cheque No:</label>
@@ -258,16 +307,7 @@ const ReceiptForm = ({ onAddReceipt }) => {
                 className="w-full px-2 py-1 mt-1 text-sm border border-gray-300 rounded-md"
               />
             </div>
-            <div className="mb-4">
-              <label className="w-full text-sm text-gray-800">Branch:</label>
-              <input
-                type="text"
-                name="branch"
-                value={formData.branch}
-                onChange={handleInputChange}
-                className="w-full px-2 py-1 mt-1 text-sm border border-gray-300 rounded-md"
-              />
-            </div>
+           
           </div>
           <div>
             <div className="mb-4">
@@ -279,16 +319,6 @@ const ReceiptForm = ({ onAddReceipt }) => {
                 onChange={handleInputChange}
                 className="w-full px-2 py-1 mt-1 text-sm border border-gray-300 rounded-md"
                 placeholder="Enter any additional remarks"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="w-full text-sm text-gray-800">Amount:</label>
-              <input
-                type="text"
-                name="amount"
-                value={formData.amount}
-                disabled
-                className="w-full px-2 py-1 mt-1 text-sm bg-gray-100 border border-gray-300 rounded-md"
               />
             </div>
           </div>
@@ -358,14 +388,13 @@ const ReceiptForm = ({ onAddReceipt }) => {
                     min="0"
                   />
                 </td>
-                <td className="p-2 border border-gray-300">
+                <td className="p-2 border border-gray-300 rounded-md borderexplorepagebreak">
                   <input
                     type="number"
                     placeholder="Balance"
                     value={row.balance}
-                    onChange={(e) => handleTableChange(index, "balance", e.target.value)}
-                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md"
-                    min="0"
+                    disabled
+                    className="w-full px-2 py-1 text-sm bg-gray-100 border border-gray-300 rounded-md"
                   />
                 </td>
                 <td className="p-2 border border-gray-300">
@@ -396,25 +425,33 @@ const ReceiptForm = ({ onAddReceipt }) => {
       <div className="p-4 mb-4 bg-white border border-gray-300 rounded-md">
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label className="text-sm text-gray-800">Fully Set Off:</label>
-            <input
-              type="text"
-              name="fullySetOff"
-              value={formData.fullySetOff}
-              disabled
-              className="w-full px-2 py-1 mt-1 text-sm bg-gray-100 border border-gray-300 rounded-md"
-            />
+            <label className="block mb-1 text-sm text-gray-800">Set Off Type:</label>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center text-sm text-gray-800">
+                <input
+                  type="radio"
+                  name="setOffType"
+                  value="fully"
+                  checked={formData.fullySetOff === "1"}
+                  onChange={handleInputChange}
+                  className="mr-2"
+                />
+                Fully Set Off
+              </label>
+              <label className="flex items-center text-sm text-gray-800">
+                <input
+                  type="radio"
+                  name="setOffType"
+                  value="partly"
+                  checked={formData.partlySetOff === "1"}
+                  onChange={handleInputChange}
+                  className="mr-2"
+                />
+                Partly Set Off
+              </label>
+            </div>
           </div>
-          <div>
-            <label className="text-sm text-gray-800">Partly Set Off:</label>
-            <input
-              type="text"
-              name="partlySetOff"
-              value={formData.partlySetOff}
-              disabled
-              className="w-full px-2 py-1 mt-1 text-sm bg-gray-100 border border-gray-300 rounded-md"
-            />
-          </div>
+          <div></div> {/* Empty div for layout */}
           <div>
             <label className="text-sm text-gray-800">Total Selected:</label>
             <input

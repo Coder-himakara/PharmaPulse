@@ -34,7 +34,8 @@ import EditPurchaseInvoiceForm from "../components/Forms/employeeForms/invoicing
 
 import StockTransferForm from "../components/Forms/employeeForms/inventory/inventoryWise/StockTransferForm"; 
 
-import ReceiptForm from "../components/Forms/employeeForms/payments/ReceiptForm"
+import CustomerReceiptForm from "../components/Forms/employeeForms/payments/CustomerReceiptForm"
+import SupplierReceiptForm from "../components/Forms/employeeForms/payments/SupplierReceiptForm"
 
 import MonthlyReportForm from "../components/Forms/employeeForms/reports/MonthlyReportForm"
 
@@ -258,9 +259,14 @@ const EmpRoutes = () => {
       />
 
     <Route
-        path="receipt-generate"
-        element={<ReceiptForm />}
+        path="customer-receipt-generate"
+        element={<CustomerReceiptForm />}
       />
+       <Route
+        path="supplier-receipt-generate"
+        element={<SupplierReceiptForm />}
+      />
+
 
     <Route
         path="monthly-report-generate"
