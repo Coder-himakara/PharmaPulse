@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class PurchaseGroupDTO {
-    //private int purchaseGroupId;
+    private Long purchaseGroupId;
 
     @NotBlank(message = "Purchase Group Name is required")
     private String purchaseGroupName;
