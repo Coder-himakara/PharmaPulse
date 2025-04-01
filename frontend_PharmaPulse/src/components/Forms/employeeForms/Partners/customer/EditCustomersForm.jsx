@@ -76,7 +76,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       setErrorMessage("No customer data available to edit.");
       navigate("/customers-info");
     }
-  }, [customer, navigate]);
+  }, [customer, navigate, state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

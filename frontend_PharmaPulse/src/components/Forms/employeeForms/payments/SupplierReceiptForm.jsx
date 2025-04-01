@@ -3,7 +3,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-const ReceiptForm = ({ onAddReceipt }) => {
+const SupplierReceiptForm = ({ onAddReceipt }) => {
   const [formData, setFormData] = useState({
     receiptNo: "",
     receiptDate: "",
@@ -493,8 +493,8 @@ const ReceiptForm = ({ onAddReceipt }) => {
   );
 };
 
-ReceiptForm.propTypes = {
+SupplierReceiptForm.propTypes = {
   onAddReceipt: PropTypes.func.isRequired,
 };
 
-export default ReceiptForm;
+export default SupplierReceiptForm;

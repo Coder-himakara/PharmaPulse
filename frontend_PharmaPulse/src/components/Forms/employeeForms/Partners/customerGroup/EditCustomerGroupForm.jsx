@@ -31,7 +31,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
       assignedSalesRep: customerGroup.assignedSalesRep || "",
       descriptions: customerGroup.descriptions || "",
     });
-  }, [customerGroup, navigate]);
+  }, [customerGroup, navigate, state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

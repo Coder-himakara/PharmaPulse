@@ -45,7 +45,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
       productStatus: product.productStatus || "",
       reorderLimitByPackage: product.reorderLimitByPackage || "",
     });
-  }, [product, navigate]);
+  }, [product, navigate, state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
