@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
@@ -14,12 +14,40 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
     outstanding_balance: "",
     credit_limit: "",
     credit_period: "",
-    purchase_group: "", // Added to match the ManyToOne relationship
+    purchase_group: "",
   });
 
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [purchaseGroups, setPurchaseGroups] = useState([]); // State for purchase groups
+  const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
+
+  // Fetch purchase groups on component mount
+  useEffect(() => {
+    const fetchPurchaseGroups = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8090/api/purchase-groups/all", // Hypothetical endpoint
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            auth: {
+              username: "admin",
+              password: "admin123",
+            },
+          }
+        );
+        setPurchaseGroups(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching purchase groups:", error);
+        setErrorMessage("Failed to fetch purchase groups.");
+      }
+    };
+
+    fetchPurchaseGroups();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,8 +58,15 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
   };
 
   const handleSearch = () => {
-    console.log("Searching for purchase group:", formData.purchase_group);
-    alert(`Searching for purchase group: ${formData.purchase_group}`);
+    setShowDropdown(!showDropdown); // Toggle dropdown visibility
+  };
+
+  const handleSelectPurchaseGroup = (groupId) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      purchase_group: groupId.toString(), // Set the selected group ID
+    }));
+    setShowDropdown(false); // Hide dropdown after selection
   };
 
   const handleSubmit = async (e) => {
@@ -42,7 +77,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       !formData.supplier_name ||
       !formData.supplier_address ||
       !formData.supplier_contactNo ||
-      !formData.supplier_email || // Added validation for email
+      !formData.supplier_email ||
       !formData.outstanding_balance ||
       !formData.credit_limit ||
       !formData.credit_period ||
@@ -210,7 +245,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
 
       <div className="flex items-center justify-between mb-4">
         <label htmlFor="purchase_group" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Purchase Group:
+          Purchase Group ID:
         </label>
         <div className="relative flex items-center w-2/3">
           <input
@@ -222,12 +257,30 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
             className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
           />
           <button
+            type="button" // Prevent form submission
             onClick={handleSearch}
             className="absolute text-green-500 cursor-pointer right-2"
             aria-label="Search purchase group"
           >
             <FaSearch />
           </button>
+          {showDropdown && (
+            <div className="absolute left-0 z-10 w-full overflow-y-auto bg-white border border-gray-300 rounded-md shadow-md top-10 max-h-40">
+              {purchaseGroups.length > 0 ? (
+                purchaseGroups.map((group) => (
+                  <div
+                    key={group.purchaseGroupId}
+                    onClick={() => handleSelectPurchaseGroup(group.purchaseGroupId)}
+                    className="px-2 py-1 cursor-pointer hover:bg-gray-100"
+                  >
+                    {group.purchaseGroupName} (ID: {group.purchaseGroupId})
+                  </div>
+                ))
+              ) : (
+                <div className="px-2 py-1 text-gray-500">No purchase groups available</div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

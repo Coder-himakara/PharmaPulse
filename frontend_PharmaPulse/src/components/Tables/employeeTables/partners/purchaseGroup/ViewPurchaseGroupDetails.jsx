@@ -33,12 +33,6 @@ const ViewPurchaseGroupDetails = () => {
         <>
           <ul className="space-y-2 text-left">
             <li>
-              <strong>ID:</strong>{" "}
-              {purchaseGroup.purchaseGroupId !== undefined && purchaseGroup.purchaseGroupId !== null
-                ? purchaseGroup.purchaseGroupId
-                : "N/A"}
-            </li>
-            <li>
               <strong>Purchase Group Name:</strong>{" "}
               {purchaseGroup.purchaseGroupName || "N/A"}
             </li>

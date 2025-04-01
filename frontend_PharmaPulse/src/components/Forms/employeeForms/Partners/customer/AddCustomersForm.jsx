@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
@@ -28,6 +28,34 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [customerGroups, setCustomerGroups] = useState([]); // State for customer groups
+  const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
+
+  // Fetch customer groups on component mount
+  useEffect(() => {
+    const fetchCustomerGroups = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8090/api/customer-groups/all",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            auth: {
+              username: "admin",
+              password: "admin123",
+            },
+          }
+        );
+        setCustomerGroups(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching customer groups:", error);
+        setErrorMessage("Failed to fetch customer groups.");
+      }
+    };
+
+    fetchCustomerGroups();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,8 +66,15 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   };
 
   const handleSearch = () => {
-    console.log("Searching for customer group:", formData.customer_group);
-    alert(`Searching for customer group: ${formData.customer_group}`);
+    setShowDropdown(!showDropdown); // Toggle dropdown visibility
+  };
+
+  const handleSelectCustomerGroup = (groupId) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      customer_group: groupId.toString(), // Set the selected group ID
+    }));
+    setShowDropdown(false); // Hide dropdown after selection
   };
 
   const handleSubmit = async (e) => {
@@ -254,7 +289,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         <div className="space-y-4">
           <div className="flex items-center">
             <label htmlFor="customer_group" className="text-[16px] text-gray-800 w-1/2 text-left">
-              Customer Group:
+              Customer Group ID:
             </label>
             <div className="relative flex items-center w-1/2">
               <input
@@ -266,12 +301,30 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
               />
               <button
+                type="button" // Prevent form submission
                 onClick={handleSearch}
                 className="absolute text-green-500 cursor-pointer right-2"
                 aria-label="Search customer group"
               >
                 <FaSearch />
               </button>
+              {showDropdown && (
+                <div className="absolute left-0 z-10 w-full overflow-y-auto bg-white border border-gray-300 rounded-md shadow-md top-10 max-h-40">
+                  {customerGroups.length > 0 ? (
+                    customerGroups.map((group) => (
+                      <div
+                        key={group.customerGroupId}
+                        onClick={() => handleSelectCustomerGroup(group.customerGroupId)}
+                        className="px-2 py-1 cursor-pointer hover:bg-gray-100"
+                      >
+                        {group.customerGroupName} (ID: {group.customerGroupId})
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-2 py-1 text-gray-500">No customer groups available</div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center">

@@ -105,8 +105,8 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           "Content-Type": "application/json",
         },
         auth: {
-          username: "admin",
-          password: "admin123",
+          username: "employee",
+          password: "employee123",
         },
       });
 
