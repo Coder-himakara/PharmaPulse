@@ -2,6 +2,7 @@ package com.group03.backend_PharmaPulse.inventory.api.event;
 
 import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.ExpiryCountDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.StockCountDTO;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,13 @@ public class AlertScheduler {
     }
 
     @Scheduled(fixedRate = 300000)
-    public void pushExpiryCounts() {
+    public void pushAllAlerts() {
         ExpiryCountDTO counts = batchInventoryService.getExpiryCounts();
+        StockCountDTO stocks = batchInventoryService.stockAvailability();
         // Push the expiry counts to the expiry-counts topic
         messagingTemplate.convertAndSend("/topic/expiry-counts", counts);
+        // Push the stock availability to the stock-availability topic
+        messagingTemplate.convertAndSend("/topic/stock-counts", stocks);
     }
 }
 

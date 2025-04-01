@@ -1,5 +1,7 @@
 package com.group03.backend_PharmaPulse.product.internal.serviceImpl;
 
+import com.group03.backend_PharmaPulse.product.api.dto.response.ProductCountDTO;
+import com.group03.backend_PharmaPulse.product.api.enumeration.ProductStatus;
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import com.group03.backend_PharmaPulse.product.api.ProductService;
 import com.group03.backend_PharmaPulse.product.api.dto.ProductDTO;
@@ -26,6 +28,15 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepo.findAll();
         if(!products.isEmpty()){
             return productMapper.toDTOsList(products);
+        }else{
+            throw new NotFoundException("No Products found");
+        }
+    }
+    @Override
+    public List<ProductCountDTO> getProductsByStatus(ProductStatus status) {
+        List<Product> products = productRepo.findByProductStatus(status);
+        if(!products.isEmpty()){
+            return productMapper.toProductCountDTOsList(products);
         }else{
             throw new NotFoundException("No Products found");
         }
