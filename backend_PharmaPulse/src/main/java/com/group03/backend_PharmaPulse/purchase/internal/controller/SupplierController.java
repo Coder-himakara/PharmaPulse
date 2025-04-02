@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/suppliers")
-@CrossOrigin(origins = "http://localhost:3123") // Adjust to your frontend port
 public class SupplierController {
     private final SupplierService supplierService;
     public SupplierController(SupplierService supplierService) {

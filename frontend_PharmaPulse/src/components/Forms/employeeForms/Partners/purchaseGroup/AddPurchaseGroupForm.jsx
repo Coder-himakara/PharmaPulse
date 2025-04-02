@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { addPurchaseGroups } from '../../../../../api/EmployeeApiService';
 
 const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   const [formData, setFormData] = useState({
@@ -14,7 +14,6 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   });
 
   const navigate = useNavigate();
-
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -29,33 +28,32 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !formData.purchaseGroupName.trim() ||
-      !formData.purchaseGroupAddress.trim() ||
-      !formData.purchaseGroupContactName.trim() ||
-      !formData.purchaseGroupPhoneNo.trim() ||
-      !formData.purchaseGroupFaxNo.trim() ||
-      !formData.purchaseGroupEmail.trim()
-    ) {
-      setErrorMessage('Please fill out all required fields.');
+    // Validate required fields (fax is optional)
+    const requiredFields = {
+      purchaseGroupName: 'Purchase Group Name',
+      purchaseGroupAddress: 'Address',
+      purchaseGroupContactName: 'Contact Name',
+      purchaseGroupPhoneNo: 'Phone Number',
+      purchaseGroupEmail: 'Email',
+    };
+
+    for (const [key, label] of Object.entries(requiredFields)) {
+      if (!formData[key] || formData[key].trim() === '') {
+        setErrorMessage(`${label} is required.`);
+        return;
+      }
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.purchaseGroupEmail)) {
+      setErrorMessage('Please enter a valid email address.');
       return;
     }
 
     try {
       console.log('Sending:', formData);
-      const response = await axios.post(
-        'http://localhost:8090/api/purchase-groups/add',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          auth: {
-            username: 'admin',
-            password: 'admin123',
-          },
-        },
-      );
+      const response = await addPurchaseGroups(formData);
       const savedPurchaseGroup = response.data.data;
       setErrorMessage('');
       setSuccessMessage('Purchase Group Added Successfully!');
@@ -76,10 +74,12 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
         setSuccessMessage('');
       }, 2000);
     } catch (error) {
-      setErrorMessage(
-        error.response?.data?.message || 'Failed to add purchase group',
-      );
-      console.error('Error:', error.response || error);
+      const serverMessage = error.response?.data?.message || error.message || 'Failed to add purchase group';
+      setErrorMessage(serverMessage);
+      console.error('Error details:', error.response || error);
+      if (error.response?.status === 401) {
+        navigate('/login');
+      }
     }
   };
 
@@ -110,7 +110,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='purchaseGroupName'
-          className='text-[16px] text-gray-800 w-2/3  text-left'
+          className='text-[16px] text-gray-800 w-2/3 text-left'
         >
           Purchase Group Name:
         </label>
@@ -121,13 +121,14 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           value={formData.purchaseGroupName}
           onChange={handleChange}
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          required
         />
       </div>
 
       <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='purchaseGroupAddress'
-          className='text-[16px] text-gray-800 w-2/3  text-left'
+          className='text-[16px] text-gray-800 w-2/3 text-left'
         >
           Address:
         </label>
@@ -138,13 +139,14 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           value={formData.purchaseGroupAddress}
           onChange={handleChange}
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          required
         />
       </div>
 
       <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='purchaseGroupContactName'
-          className='text-[16px] text-gray-800 w-2/3  text-left'
+          className='text-[16px] text-gray-800 w-2/3 text-left'
         >
           Contact Name:
         </label>
@@ -155,45 +157,49 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           value={formData.purchaseGroupContactName}
           onChange={handleChange}
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          required
         />
       </div>
+
       <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='purchaseGroupPhoneNo'
-          className='text-[16px] text-gray-800 w-2/3  text-left'
+          className='text-[16px] text-gray-800 w-2/3 text-left'
         >
           Phone Number:
         </label>
         <input
-          type='number'
+          type='text' // Changed from 'number' to 'text' to match String expectation
           id='purchaseGroupPhoneNo'
           name='purchaseGroupPhoneNo'
           value={formData.purchaseGroupPhoneNo}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          required
         />
       </div>
 
       <div className='flex items-center justify-between mb-4'>
         <label
           htmlFor='purchaseGroupFaxNo'
-          className='text-[16px] text-gray-800 w-2/3  text-left'
+          className='text-[16px] text-gray-800 w-2/3 text-left'
         >
           Fax:
         </label>
         <input
+          type='text'
           id='purchaseGroupFaxNo'
           name='purchaseGroupFaxNo'
           value={formData.purchaseGroupFaxNo}
           onChange={handleChange}
-          className='w-2/3 px-2 py-2 text-sm text-gray-800 border border-gray-300 rounded-md'
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
 
       <div className='flex items-center justify-between mb-4'>
         <label
-          htmlFor='email'
-          className='text-[16px] text-gray-800 w-2/3  text-left'
+          htmlFor='purchaseGroupEmail'
+          className='text-[16px] text-gray-800 w-2/3 text-left'
         >
           Email:
         </label>
@@ -204,6 +210,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           value={formData.purchaseGroupEmail}
           onChange={handleChange}
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          required
         />
       </div>
 

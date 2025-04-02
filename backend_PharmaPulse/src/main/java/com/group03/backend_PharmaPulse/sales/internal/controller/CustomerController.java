@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/customers")
-@CrossOrigin(origins = "http://localhost:3123") // Allow requests from your frontend origin
+
 public class CustomerController {
 
     private final CustomerService customerService;

@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/purchase-groups")
-@CrossOrigin(origins = "http://localhost:3123")
+
 public class PurchaseGroupController {
     private final PurchaseGroupService purchaseGroupService;
     public PurchaseGroupController(PurchaseGroupService purchaseGroupService) {

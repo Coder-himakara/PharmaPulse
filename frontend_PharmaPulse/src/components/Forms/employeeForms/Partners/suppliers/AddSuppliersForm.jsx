@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
-import axios from "axios";
+import { addSuppliers, getAllPurchaseGroups } from "../../../../../api/EmployeeApiService";
 
 const AddSuppliersForm = ({ onAddSupplier }) => {
   const [formData, setFormData] = useState({
@@ -20,34 +20,32 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [purchaseGroups, setPurchaseGroups] = useState([]); // State for purchase groups
-  const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
+  const [purchaseGroups, setPurchaseGroups] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // Fetch purchase groups on component mount
+  // Fetch purchase groups
   useEffect(() => {
     const fetchPurchaseGroups = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8090/api/purchase-groups/all", // Hypothetical endpoint
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            auth: {
-              username: "admin",
-              password: "admin123",
-            },
-          }
-        );
+        const response = await getAllPurchaseGroups();
+        console.log("Purchase groups response:", response.data);
         setPurchaseGroups(response.data.data || []);
+        setErrorMessage("");
       } catch (error) {
-        console.error("Error fetching purchase groups:", error);
-        setErrorMessage("Failed to fetch purchase groups.");
+        const errorMsg = error.response?.data?.message || "Failed to fetch purchase groups.";
+        setErrorMessage(errorMsg);
+        console.error("Error fetching purchase groups:", {
+          status: error.response?.status,
+          data: error.response?.data,
+          fullError: error.response || error,
+        });
+        if (error.response?.status === 401) {
+          navigate("/login");
+        }
       }
     };
-
     fetchPurchaseGroups();
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,85 +56,75 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
   };
 
   const handleSearch = () => {
-    setShowDropdown(!showDropdown); // Toggle dropdown visibility
+    setShowDropdown(!showDropdown);
   };
 
   const handleSelectPurchaseGroup = (groupId) => {
     setFormData((prevData) => ({
       ...prevData,
-      purchase_group: groupId.toString(), // Set the selected group ID
+      purchase_group: groupId.toString(),
     }));
-    setShowDropdown(false); // Hide dropdown after selection
+    setShowDropdown(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
-    if (
-      !formData.supplier_name ||
-      !formData.supplier_address ||
-      !formData.supplier_contactNo ||
-      !formData.supplier_email ||
-      !formData.outstanding_balance ||
-      !formData.credit_limit ||
-      !formData.credit_period ||
-      !formData.purchase_group
-    ) {
-      setErrorMessage("Please fill out all required fields.");
+    // Validation for required fields (per SupplierDTO)
+    const requiredFields = {
+      supplier_name: "Supplier Name",
+      supplier_address: "Supplier Address",
+      supplier_contactNo: "Contact Number",
+      supplier_email: "Email",
+      purchase_group: "Purchase Group",
+    };
+
+    for (const [key, label] of Object.entries(requiredFields)) {
+      if (!formData[key] || formData[key].trim() === "") {
+        setErrorMessage(`${label} is required.`);
+        return;
+      }
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.supplier_email)) {
+      setErrorMessage("Please enter a valid email address.");
       return;
     }
 
-    // Validate phone number format
-    if (!/^0[0-9]{9}$/.test(formData.supplier_contactNo)) {
-      setErrorMessage("Phone number must start with 0 and contain exactly 10 digits.");
-      return;
-    }
-
-    // Convert fields to match backend entity types
-    const phoneNo = formData.supplier_contactNo; // Keep as String to preserve format
-    const creditLimit = parseFloat(formData.credit_limit); // BigDecimal accepts number
-    const creditPeriod = parseInt(formData.credit_period, 10); // Integer
-    const balance = parseFloat(formData.outstanding_balance); // BigDecimal accepts number
-    const purchaseGroup = parseInt(formData.purchase_group, 10); // Long (ID of PurchaseGroup)
-
-    // Check for invalid numeric conversions
-    if (isNaN(creditLimit) || isNaN(creditPeriod) || isNaN(balance) || isNaN(purchaseGroup)) {
-      setErrorMessage("Please ensure all numeric fields contain valid numbers.");
-      return;
-    }
-
+    // Prepare data with correct types for SupplierDTO
     const requestData = {
       supplier_name: formData.supplier_name,
       supplier_address: formData.supplier_address,
-      supplier_contactNo: phoneNo, // String
+      supplier_contactNo: formData.supplier_contactNo, // String
       supplier_email: formData.supplier_email,
-      outstanding_balance: balance, // BigDecimal
-      credit_limit: creditLimit, // BigDecimal
-      credit_period: creditPeriod, // Integer
-      purchase_group: purchaseGroup, // Long (ID for ManyToOne relationship)
+      outstanding_balance: formData.outstanding_balance ? parseFloat(formData.outstanding_balance) : null, // BigDecimal, nullable
+      credit_limit: formData.credit_limit ? parseFloat(formData.credit_limit) : null, // BigDecimal, nullable
+      credit_period: formData.credit_period ? parseInt(formData.credit_period, 10) : null, // Integer, nullable
+      purchase_group: parseInt(formData.purchase_group, 10), // Long
     };
 
-    setErrorMessage(""); // Clear previous errors
+    // Check for invalid numeric conversions
+    if (
+      (formData.outstanding_balance && isNaN(requestData.outstanding_balance)) ||
+      (formData.credit_limit && isNaN(requestData.credit_limit)) ||
+      (formData.credit_period && isNaN(requestData.credit_period)) ||
+      isNaN(requestData.purchase_group)
+    ) {
+      setErrorMessage("Please ensure all numeric fields are valid.");
+      return;
+    }
+
     try {
       console.log("Sending requestData:", JSON.stringify(requestData, null, 2));
-      const response = await axios.post(
-        "http://localhost:8090/api/suppliers/add", // Hypothetical endpoint
-        requestData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-          auth: {
-            username: "admin",
-            password: "admin123",
-          },
-        }
-      );
-
+      const response = await addSuppliers(requestData);
+      console.log("Server response:", response.data);
       const savedSupplier = response.data.data;
+
       setSuccessMessage("Supplier added successfully!");
+      setErrorMessage("");
+
       if (onAddSupplier) {
         onAddSupplier(savedSupplier);
       }
@@ -158,12 +146,13 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       const errorMsg = error.response?.data?.message || "An unexpected error occurred. Check the console for details.";
       setErrorMessage(errorMsg);
       console.error("Error Details:", {
-        message: error.message,
-        response: error.response?.data,
         status: error.response?.status,
-        headers: error.response?.headers,
-        request: error.request,
+        data: error.response?.data,
+        fullError: error.response || error,
       });
+      if (error.response?.status === 401) {
+        navigate("/login");
+      }
     }
   };
 
@@ -198,6 +187,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           value={formData.supplier_name}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          required
         />
       </div>
 
@@ -212,6 +202,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           value={formData.supplier_address}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          required
         />
       </div>
 
@@ -226,6 +217,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           value={formData.supplier_contactNo}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          required
         />
       </div>
 
@@ -240,6 +232,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           value={formData.supplier_email}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          required
         />
       </div>
 
@@ -249,15 +242,16 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
         </label>
         <div className="relative flex items-center w-2/3">
           <input
-            type="number" // Changed to number for Long ID
+            type="text"
             id="purchase_group"
             name="purchase_group"
             value={formData.purchase_group}
             onChange={handleChange}
             className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
+            required
           />
           <button
-            type="button" // Prevent form submission
+            type="button"
             onClick={handleSearch}
             className="absolute text-green-500 cursor-pointer right-2"
             aria-label="Search purchase group"
