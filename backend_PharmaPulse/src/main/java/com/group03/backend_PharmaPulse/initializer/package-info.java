@@ -1,6 +1,6 @@
 @org.springframework.modulith.ApplicationModule(
         type = ApplicationModule.Type.OPEN,
-        allowedDependencies = {"shared", "advisor","util","config","user"}
+        allowedDependencies = {"shared", "advisor","util","config","inventory","user"}
 )
 package com.group03.backend_PharmaPulse.initializer;
 

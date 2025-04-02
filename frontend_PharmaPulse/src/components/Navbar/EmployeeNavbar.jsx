@@ -195,10 +195,32 @@ const EmployeeNavbar = () => {
     {
       label: "Payment",
       icon: "pi pi-credit-card text-white",
+      items: [
+        [
+          {
+            label: "Receipt Generate",
+            items: [
+              { label: "Customer Receipt", command: () => navigate("/employee-dashboard/receipt-generate") },
+            ],
+          },
+        ],
+      ]
     },
     {
       label: "Reports",
       icon: "pi pi-chart-line text-white",
+      items: [
+        [
+          {
+            label: "Outstanding Report",
+            items: [
+              { label: "Monthly Report", command: () => navigate("/employee-dashboard/monthly-report-generate") },
+              { label: "Stock Balance Report", command: () => navigate("/employee-dashboard/stock-balance-report-generate") },
+            ],
+          },
+        ],
+      ]
+      
     },
   ];
 
@@ -210,8 +232,6 @@ const EmployeeNavbar = () => {
     >
       <div className="flex items-center gap-6">
         <img src={logo} alt="Logo" className="h-10 mr-4" />
-
-          Home
 
         <button
           onClick={() => navigate("/employee-dashboard")

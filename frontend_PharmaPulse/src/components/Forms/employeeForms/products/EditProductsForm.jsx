@@ -2,10 +2,12 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 const EditProductsForm = ({ onUpdateProduct }) => {
-  const { state } = useLocation(); // Access the state passed by navigate
-  const product = state?.product; // Get product from the state
+  const { state } = useLocation();
+  const product = state?.product;
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     purchaseGroup: "",
@@ -20,27 +22,30 @@ const EditProductsForm = ({ onUpdateProduct }) => {
     reorderLimitByPackage: "",
   });
 
-  const navigate = useNavigate();
-
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    if (product) {
-      setFormData({
-        purchaseGroup: product.purchaseGroup || "",
-        productRefId: product.productRefId || "",
-        productName: product.productName || "",
-        genericName: product.genericName || "",
-        description: product.description || "",
-        category: product.category || "",
-        packageType: product.packageType || "",
-        unitsPerPackage: product.unitsPerPackage || "",
-        productStatus: product.productStatus || "",
-        reorderLimitByPackage: product.reorderLimitByPackage || "",
-      });
+    console.log("Location state:", state);
+    console.log("Received product:", product);
+    if (!product) {
+      setErrorMessage("No product data provided for editing.");
+      navigate("/products-info");
+      return;
     }
-  }, [product]);
+    setFormData({
+      purchaseGroup: product.purchaseGroup || "",
+      productRefId: product.productRefId || "",
+      productName: product.productName || "",
+      genericName: product.genericName || "",
+      description: product.description || "",
+      category: product.category || "",
+      packageType: product.packageType || "",
+      unitsPerPackage: product.unitsPerPackage || "",
+      productStatus: product.productStatus || "",
+      reorderLimitByPackage: product.reorderLimitByPackage || "",
+    });
+  }, [product, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,45 +55,105 @@ const EditProductsForm = ({ onUpdateProduct }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
+    console.log("Form data before submission:", formData);
+
     if (
-      !formData.purchaseGroup ||
-      !formData.productRefId ||
-      !formData.productName ||
-      !formData.genericName ||
-      !formData.description ||
-      !formData.category ||
-      !formData.packageType ||
+      !formData.purchaseGroup.trim() ||
+      !formData.productRefId.trim() ||
+      !formData.productName.trim() ||
+      !formData.genericName.trim() ||
+      !formData.description.trim() ||
+      !formData.category.trim() ||
+      !formData.packageType.trim() ||
       !formData.unitsPerPackage ||
-      !formData.productStatus ||
+      !formData.productStatus.trim() ||
       !formData.reorderLimitByPackage
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
 
-    setErrorMessage(""); // Clear errors
-
-    // Pass the updated product data to the parent
-    if (onUpdateProduct) {
-      onUpdateProduct(formData);
+    const id = product.productId; 
+    if (!id) {
+      setErrorMessage("Product ID is missing. Cannot update without an ID.");
+      return;
     }
 
-    setSuccessMessage("Product updated successfully!");
+    const requestData = {
+      purchaseGroup: formData.purchaseGroup,
+      productRefId: formData.productRefId,
+      productName: formData.productName,
+      genericName: formData.genericName,
+      description: formData.description,
+      category: formData.category,
+      packageType: formData.packageType,
+      unitsPerPackage: parseInt(formData.unitsPerPackage),
+      productStatus: formData.productStatus,
+      reorderLimitByPackage: parseInt(formData.reorderLimitByPackage),
+    };
 
-    // Clear the form and success message after a delay
-    setTimeout(() => {
-      setSuccessMessage("");
-      navigate("/products-info");
-    }, 2000);
+    try {
+      const url = `http://localhost:8090/api/products/update/${id}`; // Adjust URL as per your API
+      console.log("Sending PUT request to:", url);
+      console.log("Request payload:", requestData);
+
+      const response = await axios.put(url, requestData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        auth: {
+          username: "employee",
+          password: "employee123",
+        },
+      });
+
+      console.log("Response:", response.data);
+      setErrorMessage("");
+      setSuccessMessage("Product updated successfully!");
+
+      if (onUpdateProduct) {
+        onUpdateProduct(response.data.data || response.data);
+      }
+
+      setTimeout(() => {
+        console.log("Navigating back...");
+        setSuccessMessage("");
+        navigate("/products-info");
+      }, 2000);
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.message || "Failed to update product";
+      setErrorMessage(errorMsg);
+      console.error("Error details:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+    }
   };
 
   const handleCancel = () => {
     navigate("/employee-dashboard/products-info");
   };
+
+  if (!product) {
+    return (
+      <div className="p-5 text-center text-red-600">
+        {errorMessage || "No product data provided"}
+      </div>
+    );
+  }
+
+  const id = product.productId;
+  if (!id) {
+    return (
+      <div className="p-5 text-center text-red-600">
+        {errorMessage || "Product ID is missing"}
+      </div>
+    );
+  }
 
   return (
     <form
@@ -100,25 +165,16 @@ const EditProductsForm = ({ onUpdateProduct }) => {
       </h2>
 
       {errorMessage && (
-        <p className="text-[#991919] text-sm font-bold mb-4 text-center">
-          {errorMessage}
-        </p>
+        <p className="text-[#991919] text-sm font-bold mb-4 text-center">{errorMessage}</p>
       )}
       {successMessage && (
-        <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">
-          {successMessage}
-        </p>
+        <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">{successMessage}</p>
       )}
 
-      {/* Form Grid Layout mimicking the invoice structure */}
       <div className="grid grid-cols-2 gap-4">
-        {/* Left Column */}
         <div className="space-y-4">
           <div className="flex items-center">
-            <label
-              htmlFor="purchaseGroup"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="purchaseGroup" className="text-[16px] text-gray-800 w-1/2 text-left">
               Purchase Group:
             </label>
             <input
@@ -128,14 +184,12 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               value={formData.purchaseGroup}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="productName"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="productName" className="text-[16px] text-gray-800 w-1/2 text-left">
               Product Name:
             </label>
             <input
@@ -145,14 +199,12 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               value={formData.productName}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="genericName"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="genericName" className="text-[16px] text-gray-800 w-1/2 text-left">
               Generic Name:
             </label>
             <input
@@ -162,14 +214,12 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               value={formData.genericName}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="description"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="description" className="text-[16px] text-gray-800 w-1/2 text-left">
               Description:
             </label>
             <input
@@ -179,6 +229,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               value={formData.description}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
@@ -192,6 +243,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               value={formData.category}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             >
               <option value="">Choose a category</option>
               <option value="MEDICINE">MEDICINE</option>
@@ -200,13 +252,9 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           </div>
         </div>
 
-        {/* Right Column with Buttons at the Bottom */}
         <div className="space-y-4">
           <div className="flex items-center">
-            <label
-              htmlFor="productRefId"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="productRefId" className="text-[16px] text-gray-800 w-1/2 text-left">
               Product Ref Id:
             </label>
             <input
@@ -216,14 +264,12 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               value={formData.productRefId}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="packageType"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="packageType" className="text-[16px] text-gray-800 w-1/2 text-left">
               Package Type:
             </label>
             <select
@@ -232,6 +278,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               value={formData.packageType}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             >
               <option value="">Choose a packageType</option>
               <option value="VIAL">VIAL</option>
@@ -243,10 +290,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="unitsPerPackage"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="unitsPerPackage" className="text-[16px] text-gray-800 w-1/2 text-left">
               Units Per Package:
             </label>
             <input
@@ -256,14 +300,12 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               value={formData.unitsPerPackage}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="productStatus"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="productStatus" className="text-[16px] text-gray-800 w-1/2 text-left">
               Product Status:
             </label>
             <select
@@ -272,11 +314,12 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               value={formData.productStatus}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             >
               <option value="">Choose a status</option>
-              <option value="active">ACTIVE</option>
-              <option value="inactive">INACTIVE</option>
-              <option value="discontinued">DISCONTINUED</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+              <option value="DISCONTINUED">DISCONTINUED</option>
             </select>
           </div>
 
@@ -293,11 +336,11 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               name="reorderLimitByPackage"
               value={formData.reorderLimitByPackage}
               onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
-          {/* Buttons at Bottom-Right */}
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="submit"

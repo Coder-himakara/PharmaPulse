@@ -21,7 +21,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import static com.group03.backend_PharmaPulse.user.api.enumeration.Permission.ADMIN_CREATE;
 import static com.group03.backend_PharmaPulse.user.api.enumeration.Role.ADMIN;
 
-
 @Configuration
 @EnableWebMvc
 @EnableWebSecurity
@@ -42,27 +41,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+
                 .authorizeHttpRequests(request ->request
                         .requestMatchers(HttpMethod.POST,"/api/users/login","api/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/auth/logout").permitAll()
                         .requestMatchers("/api/users/register").hasRole(ADMIN.name())
-                        .requestMatchers(HttpMethod.POST,"/api/users/register").hasAuthority(ADMIN_CREATE.name())
+                        .requestMatchers(HttpMethod.POST, "/api/users/register").hasAuthority(ADMIN_CREATE.name())
                         .requestMatchers("/swagger-ui/index.html").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/ws/**").permitAll() // Handled in interceptor. For websocket
+                        .requestMatchers(HttpMethod.POST, "/api/customer-groups/add").permitAll() // Permit this endpoint
 
+                        .anyRequest().authenticated())
                 .cors(cors -> cors.configure(http))
                 .csrf(customizer -> customizer.disable())
-                .httpBasic(httpBasic ->httpBasic.
-                        authenticationEntryPoint(this.basicAuthenticationEntryPoint))
+                .httpBasic(httpBasic -> httpBasic
+                        .authenticationEntryPoint(this.basicAuthenticationEntryPoint))
                 .sessionManagement(session -> session
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-    /**
-     * This method is used to create an instance of DaoAuthenticationProvider.
-     * Configure default authentication and Use Database to authenticate the user
-     * @return DaoAuthenticationProvider
-     */
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -70,16 +69,13 @@ public class SecurityConfig {
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }
-    /**
-     * This method is used to create an instance of AuthenticationManager.
-     * @return AuthenticationManager
-     */
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
-
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);

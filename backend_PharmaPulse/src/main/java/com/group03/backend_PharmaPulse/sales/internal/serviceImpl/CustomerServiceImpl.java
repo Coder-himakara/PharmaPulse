@@ -34,12 +34,12 @@ public class CustomerServiceImpl implements CustomerService {
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> customers = customerRepo.findAll();
 
+
         if(!customers.isEmpty()){
             return customerMapper.toDTOsList(customers);
         }else{
             throw new NotFoundException("No Customer found");
         }
-
     }
 
     @Override

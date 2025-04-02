@@ -51,20 +51,26 @@ public class UsersServiceImpl implements UsersService {
             throw new IllegalArgumentException("User already exists");
         }
         usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
-        // Handle image if provided
-        if (imageFile != null && !imageFile.isEmpty()) {
-            try {
+        // Handle image processing with defensive checks
+        try {
+            if (imageFile != null && !imageFile.isEmpty() && imageFile.getSize() > 0) {
                 usersDTO.setImageName(imageFile.getOriginalFilename());
                 usersDTO.setImageType(imageFile.getContentType());
                 usersDTO.setImageData(imageFile.getBytes());
-            } catch (IOException e) {
-                throw new IOException("Error in saving image");
+            } else {
+                // Set image fields to null when no image is provided
+                usersDTO.setImageName(null);
+                usersDTO.setImageType(null);
+                usersDTO.setImageData(null);
             }
-        } else {
-            // Set image fields to null when no image is provided
+        } catch (IOException e) {
+            // Log the error
+            System.err.println("Error processing image file: " + e.getMessage());
+            // Default to null values for image fields
             usersDTO.setImageName(null);
             usersDTO.setImageType(null);
             usersDTO.setImageData(null);
+            throw new IOException("Error in saving image"+e.getMessage());
         }
         Users registeredUser = usersRepo.save(usersMapper.toEntity(usersDTO));
         return usersMapper.toDTO(registeredUser);

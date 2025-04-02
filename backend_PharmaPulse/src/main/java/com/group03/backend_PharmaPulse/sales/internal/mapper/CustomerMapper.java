@@ -23,7 +23,7 @@ public interface CustomerMapper {
 
 
     // Map a list of Customer entities to a list of CustomerDTOs
-    List<CustomerDTO> toDTOsList(List<Customer> customers);
+    List<CustomerDTO> toDTOList(List<Customer> customers);
 
     // Map a list of CustomerDTOs to a list of Customer entities
     List<Customer> toEntitiesList(List<CustomerDTO> customerDTOs);
@@ -35,5 +35,6 @@ public interface CustomerMapper {
         customerGroup.setCustomerGroupId(customerGroupId);
         return customerGroup;
     }
+
 
 }

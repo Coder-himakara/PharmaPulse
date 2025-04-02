@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CustomerGroupDTO {
+    private Long customerGroupId;
 
     private String customerGroupName;
 

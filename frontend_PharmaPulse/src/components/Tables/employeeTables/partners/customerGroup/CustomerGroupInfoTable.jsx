@@ -1,73 +1,62 @@
 /* eslint-disable prettier/prettier */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const CustomerGroupInfoTable = ({ customerGroups }) => {
+const CustomerGroupInfoTable = ({ refreshTrigger }) => {
   const [search, setSearch] = useState("");
+  const [customerGroups, setCustomerGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
-  const dummyCustomerGroups = [
-    ...customerGroups,
-    {
-      customerGroupId: "1",
-      customerGroupName: "Premium Customers",
-      assignSalesRepId: "SR001",
-      assignSalesRepName: "Nalin Perera",
-      email: "nalin.perera@example.lk",
-      location: "Colombo",
-    },
-    {
-      customerGroupId: "2",
-      customerGroupName: "Regular Customers",
-      assignSalesRepId: "SR002",
-      assignSalesRepName: "Kasun Silva",
-      email: "kasun.silva@example.lk",
-      location: "Kandy",
-    },
-    {
-      customerGroupId: "3",
-      customerGroupName: "VIP Customers",
-      assignSalesRepId: "SR003",
-      assignSalesRepName: "Dilani Fernando",
-      email: "dilani.fernando@example.lk",
-      location: "Galle",
-    },
-    {
-      customerGroupId: "4",
-      customerGroupName: "Wholesale Customers",
-      assignSalesRepId: "SR004",
-      assignSalesRepName: "Roshan Wijesekera",
-      email: "roshan.wijesekera@example.lk",
-      location: "Negombo",
-    },
-    {
-      customerGroupId: "5",
-      customerGroupName: "Online Shoppers",
-      assignSalesRepId: "SR005",
-      assignSalesRepName: "Shirani Perera",
-      email: "shirani.perera@example.lk",
-      location: "Jaffna",
-    },
-  ];
-  
-  
 
-  const filteredCustomerGroups = dummyCustomerGroups.filter((customerGroup) =>
-    customerGroup.customerGroupName.toLowerCase().includes(search.toLowerCase())
+  useEffect(() => {
+    const fetchCustomerGroups = async () => {
+      try {
+        console.log("Fetching customer groups...");
+        const response = await axios.get(
+          "http://localhost:8090/api/customer-groups/all",
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            auth: {
+              username: "admin",
+              password: "admin123",
+            },
+          }
+        );
+        console.log("Response:", response.data);
+        setCustomerGroups(response.data.data || []);
+        setErrorMessage("");
+        setLoading(false);
+      } catch (error) {
+        setErrorMessage(
+          error.response?.data?.message || "Failed to fetch customer groups"
+        );
+        console.error("Error:", error.response || error);
+        setLoading(false);
+      }
+    };
+
+    fetchCustomerGroups();
+  }, [refreshTrigger]);
+
+  const filteredCustomerGroups = customerGroups.filter((customerGroup) =>
+    (customerGroup.customerGroupName || "")
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
 
   const handleClose = () => {
     navigate("/employee-dashboard");
   };
 
-
-  // Fix handleEdit function
-  const handleEdit = (customerGroupId) => {
-    const customerGroup =dummyCustomerGroups.find(
-      (cg) => cg.customerGroupId === customerGroupId
-    );
-    navigate(`/employee-dashboard/edit-customer-group/${customerGroupId}`, {
+  const handleEdit = (customerGroup) => {
+    console.log("Editing customer group:", customerGroup);
+    navigate(`/employee-dashboard/edit-customer-group/${customerGroup.customerGroupId}`, {
       state: { customerGroup },
     });
   };
@@ -78,110 +67,106 @@ const CustomerGroupInfoTable = ({ customerGroups }) => {
     });
   };
 
+  if (loading) {
+    return <div className="p-5 text-center text-gray-800">Loading customer groups...</div>;
+  }
+
   return (
-    <div className="bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative">
-      <div className="bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative">
-        <h1 className="p-1 m-1 text-2xl">Customer Groups Management</h1>
+    <div className="flex flex-col max-w-4xl mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md">
+      <div className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg relative">
+        <h1 className="text-lg">Customer Groups Management</h1>
         <button
-          className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1] mr-4"
           onClick={handleClose}
+          className="absolute top-1/2 right-2 transform -translate-y-1/2 text-white text-2xl cursor-pointer hover:text-[#f1f1f1]"
         >
           X
         </button>
       </div>
 
-      <div className="flex items-center justify-between p-2 m-2">
-        <h2 className="text-2xl font-bold text-[#1a5353]">Customer Groups</h2>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search Customer Group Name..."
-            value={search}
-            onChange={(cg) => setSearch(cg.target.value)}
-            className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"
-          />
-        </div>
-      </div>
-
-      {/* Display Message if No Groups Found */}
-      {filteredCustomerGroups.length === 0 && search && (
-        <div className="text-[#991919] text-sm text-center mt-2 font-bold">
-          No customer groups found matching your search.
-        </div>
+      {errorMessage && (
+        <p className="text-[#991919] text-sm font-bold mb-4 text-center">
+          {errorMessage}
+        </p>
       )}
 
-      {/* Customer Groups Table */}
-      <div className="p-2 overflow-x-auto">
-        <table className="w-full border border-collapse border-gray-400">
-          <thead>
-            <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
-              {[
-                "Customer Group Name",
-                "Sales Rep ID",
-                "Sales Rep Name",
-                "Location",
-                "Action",
-              ].map((header, index) => (
-                <th
-                  key={index}
-                  className="p-2 text-center border border-gray-400"
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCustomerGroups.map((customerGroup, index) => (
-              <tr
-                key={index}
-                className="bg-[#c6dceb] hover:bg-[#dce4e9] border border-gray-400"
-              >
-                <td className="p-2 text-center border border-gray-400">
-                  {customerGroup.customerGroupName}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {customerGroup.assignSalesRepId || "N/A"}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {customerGroup.assignSalesRepName || "N/A"}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {customerGroup.location}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  <button
-                    onClick={() => handleEdit(customerGroup.customerGroupId)}
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleViewCustomerGroup(customerGroup)}
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                  >
-                    View
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-[16px] text-gray-800 font-bold">Customer Groups</h2>
+        <input
+          type="text"
+          placeholder="Search Customer Group Name..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+        />
       </div>
+
+      {filteredCustomerGroups.length === 0 && (
+        <p className="text-[#991919] text-sm font-bold mb-4 text-center">
+          {search ? "No customer groups found matching your search." : "No customer groups available."}
+        </p>
+      )}
+
+      {filteredCustomerGroups.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full border border-collapse border-gray-400">
+            <thead>
+              <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
+                {[
+                  "Customer Group Name",
+                  "Assigned Sales Rep",
+                  "Descriptions",
+                  "Action",
+                ].map((header, index) => (
+                  <th
+                    key={index}
+                    className="p-2 text-center border border-gray-400"
+                  >
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCustomerGroups.map((customerGroup, index) => (
+                <tr
+                  key={index}
+                  className="bg-[#c6dceb] hover:bg-[#dce4e9] border border-gray-400"
+                >
+                  <td className="p-2 text-center border border-gray-400">
+                    {customerGroup.customerGroupName || "N/A"}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    {customerGroup.assignedSalesRep || "N/A"}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    {customerGroup.descriptions || "N/A"}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    <button
+                      onClick={() => handleEdit(customerGroup)}
+                      className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] mr-2"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleViewCustomerGroup(customerGroup)}
+                      className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
+
 CustomerGroupInfoTable.propTypes = {
-  customerGroups: PropTypes.arrayOf(
-    PropTypes.shape({
-      customerGroupId: PropTypes.string.isRequired,
-      customerGroupName: PropTypes.string.isRequired,
-      assignSalesRepId: PropTypes.string.isRequired,
-      assignSalesRepName: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-      location: PropTypes.string.isRequired,
-    })
-  ).isRequired,
+  refreshTrigger: PropTypes.number,
 };
 
 export default CustomerGroupInfoTable;

@@ -12,43 +12,48 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/customer-groups")
+@CrossOrigin(origins = "http://localhost:3123")
 public class CustomerGroupController {
     private final CustomerGroupService customerGroupService;
+
     public CustomerGroupController(CustomerGroupService customerGroupService) {
         this.customerGroupService = customerGroupService;
     }
+
     @GetMapping("/all")
     public ResponseEntity<StandardResponse> getAllCustomerGroups() {
-        List<CustomerGroupDTO> customerGroupDTOS  = customerGroupService.getAllCustomerGroups();
+        List<CustomerGroupDTO> customerGroupDTOS = customerGroupService.getAllCustomerGroups();
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",customerGroupDTOS),
+                new StandardResponse(200, "Success", customerGroupDTOS), // 200 for retrieval
                 HttpStatus.OK
         );
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<StandardResponse> getCustomerGroupsById(@PathVariable Long id) {
         CustomerGroupDTO selectedCustomerGroup = customerGroupService.getCustomerGroupById(id);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",selectedCustomerGroup),
-                HttpStatus.FOUND
+                new StandardResponse(200, "Success", selectedCustomerGroup), // 200 for retrieval
+                HttpStatus.OK
         );
     }
+
     @PostMapping("/add")
-    public ResponseEntity<StandardResponse> addCustomerGroups(@Valid
-                                                              @RequestBody CustomerGroupDTO customerGroupDTO) {
-        CustomerGroupDTO savedCustomerGroup=customerGroupService.addCustomerGroup(customerGroupDTO);
+    public ResponseEntity<StandardResponse> addCustomerGroups(@Valid @RequestBody CustomerGroupDTO customerGroupDTO) {
+        CustomerGroupDTO savedCustomerGroup = customerGroupService.addCustomerGroup(customerGroupDTO);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success", savedCustomerGroup),
+                new StandardResponse(201, "Success", savedCustomerGroup), // 201 for creation
                 HttpStatus.CREATED
         );
     }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<StandardResponse> updateCustomerGroups(@Valid @PathVariable Long id,
                                                                  @RequestBody CustomerGroupDTO customerGroupDTO) {
-       CustomerGroupDTO updatedCustomerGroup=customerGroupService.updateCustomerGroup(id,customerGroupDTO);
+        CustomerGroupDTO updatedCustomerGroup = customerGroupService.updateCustomerGroup(id, customerGroupDTO);
         return new ResponseEntity<>(
-                new StandardResponse(201,"Success",updatedCustomerGroup),
-                HttpStatus.CREATED
+                new StandardResponse(200, "Success", updatedCustomerGroup), // 200 for update
+                HttpStatus.OK
         );
     }
 }
