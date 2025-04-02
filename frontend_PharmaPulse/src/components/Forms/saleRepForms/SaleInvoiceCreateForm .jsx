@@ -24,6 +24,13 @@ const SaleInvoiceCreateForm = () => {
       return null;
     }
   };
+  const formatOrderDate = (orderDate) => {
+    if (Array.isArray(orderDate)) {
+      const [year, month, day, hours, minutes] = orderDate;
+      return new Date(year, month - 1, day, hours, minutes).toLocaleString();
+    }
+    return new Date(orderDate).toLocaleString();
+  };
 
   // Handler to create Sales Invoice using the provided Order ID
   const handleCreateInvoice = async () => {
@@ -117,7 +124,7 @@ const SaleInvoiceCreateForm = () => {
               <tr className='border-b'>
                 <td className='p-2 font-bold'>Invoice Date:</td>
                 <td className='p-2'>
-                  {new Date(salesInvoice.invoiceDate).toLocaleString()}
+                  {formatOrderDate(salesInvoice.invoiceDate)}
                 </td>
               </tr>
               <tr className='border-b'>

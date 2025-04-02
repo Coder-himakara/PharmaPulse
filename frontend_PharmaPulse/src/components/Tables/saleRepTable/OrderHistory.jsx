@@ -1,7 +1,20 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../../../api/ApiClient"; // Adjust the path as needed
+import apiClient from "../../../api/ApiClient";
+
+// Date formatting helper function
+const formatOrderDate = (orderDate) => {
+  // Handle array format from backend (LocalDateTime serialization)
+  if (Array.isArray(orderDate)) {
+    const [year, month, day, hours, minutes] = orderDate;
+    // JavaScript months are 0-indexed (January = 0)
+    return new Date(year, month - 1, day, hours, minutes).toLocaleString();
+  }
+  
+  // Handle ISO string format if backend changes serialization
+  return new Date(orderDate).toLocaleString();
+};
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -15,7 +28,6 @@ const OrderHistory = () => {
     const fetchOrders = async () => {
       try {
         const response = await apiClient.get("/orders");
-        // Adjust if your orders are wrapped, e.g., response.data.data
         setOrders(response.data);
       } catch (err) {
         console.error("Error fetching orders:", err);
@@ -28,14 +40,12 @@ const OrderHistory = () => {
     fetchOrders();
   }, []);
 
-  // Filter orders based on order number or customer name
   const filteredOrders = orders.filter(
     (order) =>
       order.orderNumber.toLowerCase().includes(search.toLowerCase()) ||
       order.customerName.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Toggle expansion for a given order (by its orderNumber)
   const handleRowClick = (orderNumber) => {
     if (expandedRows.includes(orderNumber)) {
       setExpandedRows(expandedRows.filter((num) => num !== orderNumber));
@@ -44,7 +54,6 @@ const OrderHistory = () => {
     }
   };
 
-  // Close the Order History view (adjust route as needed)
   const handleClose = () => {
     navigate("/dashboard");
   };
@@ -124,7 +133,7 @@ const OrderHistory = () => {
                     {order.customerName}
                   </td>
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                    {new Date(order.orderDate).toLocaleString()}
+                    {formatOrderDate(order.orderDate)}
                   </td>
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                     {parseFloat(order.totalAmount).toFixed(2)}
