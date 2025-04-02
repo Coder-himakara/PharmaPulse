@@ -388,7 +388,7 @@ const CustomerReceiptForm = ({ onAddReceipt }) => {
                     min="0"
                   />
                 </td>
-                <td className="p-2 border border-gray-300 rounded-md borderexplorepagebreak">
+                <td className="p-2 border border-gray-300 rounded-md border-explore-page-break">
                   <input
                     type="number"
                     placeholder="Balance"
@@ -486,7 +486,7 @@ const CustomerReceiptForm = ({ onAddReceipt }) => {
 };
 
 CustomerReceiptForm.propTypes = {
-  onAddReceipt: PropTypes.func.isRequired,
+  onAddReceipt: PropTypes.func,
 };
 
 export default CustomerReceiptForm;

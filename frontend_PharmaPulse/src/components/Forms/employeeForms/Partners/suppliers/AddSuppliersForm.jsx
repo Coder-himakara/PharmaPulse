@@ -186,6 +186,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           name="supplier_name"
           value={formData.supplier_name}
           onChange={handleChange}
+          placeholder="CIC1 Pharmacy"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
           required
         />
@@ -201,6 +202,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           name="supplier_address"
           value={formData.supplier_address}
           onChange={handleChange}
+          placeholder="Kandy"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
           required
         />
@@ -216,6 +218,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           name="supplier_contactNo"
           value={formData.supplier_contactNo}
           onChange={handleChange}
+          placeholder="071-2458978"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
           required
         />
@@ -231,6 +234,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           name="supplier_email"
           value={formData.supplier_email}
           onChange={handleChange}
+          placeholder="CIC@gmail.com"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
           required
         />
@@ -288,6 +292,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           name="credit_period"
           value={formData.credit_period}
           onChange={handleChange}
+          placeholder="7"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
@@ -302,6 +307,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           name="credit_limit"
           value={formData.credit_limit}
           onChange={handleChange}
+          placeholder="100000.00"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
@@ -316,6 +322,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           name="outstanding_balance"
           value={formData.outstanding_balance}
           onChange={handleChange}
+          placeholder="10000.00"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>

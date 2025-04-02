@@ -30,20 +30,34 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [customerGroups, setCustomerGroups] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoadingGroups, setIsLoadingGroups] = useState(false);
 
-  // Fetch customer groups
+  // Fetch customer groups with authentication check
   useEffect(() => {
     const fetchCustomerGroups = async () => {
+      setIsLoadingGroups(true);
       try {
         const response = await getAllCustomerGroups();
         setCustomerGroups(response.data.data || []);
+        setErrorMessage("");
       } catch (error) {
-        console.error("Error fetching customer groups:", error);
-        setErrorMessage("Failed to fetch customer groups.");
+        console.error("Error fetching customer groups:", {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+        const errorMsg = error.response?.data?.message || 
+          "Failed to fetch customer groups. Please ensure you're logged in and the server is running.";
+        setErrorMessage(errorMsg);
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          navigate("/login"); // Redirect to login if unauthorized
+        }
+      } finally {
+        setIsLoadingGroups(false);
       }
     };
     fetchCustomerGroups();
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,7 +68,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   };
 
   const handleSearch = () => {
-    setShowDropdown(!showDropdown);
+    if (!isLoadingGroups) {
+      setShowDropdown(!showDropdown);
+    }
   };
 
   const handleSelectCustomerGroup = (groupId) => {
@@ -68,13 +84,12 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation for required fields
     const requiredFields = {
       customer_name: "Customer Name",
       customer_address: "Address",
       customer_contact_name: "Contact Name",
       customer_nic_no: "NIC",
-      customer_brc_no: "BRC No", // Now required per DTO
+      customer_brc_no: "BRC No",
       customer_email: "Email",
       customer_phone_no: "Phone Number",
       customer_group: "Customer Group",
@@ -90,20 +105,17 @@ const AddCustomersForm = ({ onAddCustomer }) => {
       }
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.customer_email)) {
       setErrorMessage("Please enter a valid email address.");
       return;
     }
 
-    // Phone number validation (numeric, not empty)
     if (!/^\d+$/.test(formData.customer_phone_no)) {
       setErrorMessage("Phone number must be numeric.");
       return;
     }
 
-    // Prepare data with correct types for CustomerDTO
     const requestData = {
       customer_name: formData.customer_name,
       customer_address: formData.customer_address,
@@ -111,15 +123,14 @@ const AddCustomersForm = ({ onAddCustomer }) => {
       customer_nic_no: formData.customer_nic_no,
       customer_brc_no: formData.customer_brc_no,
       customer_email: formData.customer_email,
-      customer_phone_no: parseInt(formData.customer_phone_no, 10), // Integer
-      customer_group: parseInt(formData.customer_group, 10),       // Long (parsed as int, safe for most IDs)
-      registered_date: formData.registered_date,                   // String in "YYYY-MM-DD" format for LocalDate
-      credit_limit: parseFloat(formData.credit_limit),             // Double
-      credit_period_in_days: parseInt(formData.credit_period_in_days, 10), // Integer
-      outstanding_balance: parseFloat(formData.outstanding_balance),       // Double
+      customer_phone_no: parseInt(formData.customer_phone_no, 10),
+      customer_group: parseInt(formData.customer_group, 10),
+      registered_date: formData.registered_date,
+      credit_limit: parseFloat(formData.credit_limit),
+      credit_period_in_days: parseInt(formData.credit_period_in_days, 10),
+      outstanding_balance: parseFloat(formData.outstanding_balance),
     };
 
-    // Check for invalid numeric conversions
     if (
       isNaN(requestData.customer_phone_no) ||
       isNaN(requestData.customer_group) ||
@@ -162,14 +173,14 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         setSuccessMessage("");
       }, 2000);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || "Failed to add customer";
+      const errorMsg = error.response?.data?.message || "Failed to add customer. Please try again.";
       setErrorMessage(errorMsg);
-      console.error("Error Details:", {
+      console.error("Error adding customer:", {
         status: error.response?.status,
         data: error.response?.data,
-        fullError: error.response || error,
+        message: error.message,
       });
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
         navigate("/login");
       }
     }
@@ -211,6 +222,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_name"
               value={formData.customer_name}
               onChange={handleChange}
+              placeholder="ABC1 Pharmacy"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />
@@ -225,6 +237,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_address"
               value={formData.customer_address}
               onChange={handleChange}
+              placeholder="Kandy"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />
@@ -239,6 +252,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_contact_name"
               value={formData.customer_contact_name}
               onChange={handleChange}
+              placeholder="ABC1"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />
@@ -253,6 +267,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_nic_no"
               value={formData.customer_nic_no}
               onChange={handleChange}
+              placeholder="20012456v / 2001-1245-6"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />
@@ -267,6 +282,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_email"
               value={formData.customer_email}
               onChange={handleChange}
+              placeholder="ABC1@gmail.com"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />
@@ -281,6 +297,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_phone_no"
               value={formData.customer_phone_no}
               onChange={handleChange}
+              placeholder="0714568978"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />
@@ -299,18 +316,21 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 name="customer_group"
                 value={formData.customer_group}
                 onChange={handleChange}
+                placeholder={isLoadingGroups ? "Loading groups..." : "Select group ID"}
                 className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
                 required
+                disabled={isLoadingGroups}
               />
               <button
                 type="button"
                 onClick={handleSearch}
                 className="absolute text-green-500 cursor-pointer right-2"
                 aria-label="Search customer group"
+                disabled={isLoadingGroups}
               >
                 <FaSearch />
               </button>
-              {showDropdown && (
+              {showDropdown && !isLoadingGroups && (
                 <div className="absolute left-0 z-10 w-full overflow-y-auto bg-white border border-gray-300 rounded-md shadow-md top-10 max-h-40">
                   {customerGroups.length > 0 ? (
                     customerGroups.map((group) => (
@@ -339,8 +359,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_brc_no"
               value={formData.customer_brc_no}
               onChange={handleChange}
+              placeholder="BRC1"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
-              required // Now required per DTO
+              required
             />
           </div>
           <div className="flex items-center">
@@ -353,6 +374,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="registered_date"
               value={formData.registered_date}
               readOnly
+              placeholder="YYYY-MM-DD"
               className="w-1/2 px-2 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md"
             />
           </div>
@@ -366,6 +388,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="credit_limit"
               value={formData.credit_limit}
               onChange={handleChange}
+              placeholder="10000.00"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />
@@ -380,6 +403,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="credit_period_in_days"
               value={formData.credit_period_in_days}
               onChange={handleChange}
+              placeholder="30"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />
@@ -394,6 +418,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="outstanding_balance"
               value={formData.outstanding_balance}
               onChange={handleChange}
+              placeholder="1000.00"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />

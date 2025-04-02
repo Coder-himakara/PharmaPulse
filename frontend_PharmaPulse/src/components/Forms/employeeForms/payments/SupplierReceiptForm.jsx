@@ -494,7 +494,7 @@ const SupplierReceiptForm = ({ onAddReceipt }) => {
 };
 
 SupplierReceiptForm.propTypes = {
-  onAddReceipt: PropTypes.func.isRequired,
+  onAddReceipt: PropTypes.func,
 };
 
 export default SupplierReceiptForm;

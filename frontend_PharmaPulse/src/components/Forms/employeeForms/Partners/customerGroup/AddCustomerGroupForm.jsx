@@ -2,7 +2,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { addCustomerGroups } from '../../../../../api/EmployeeApiService'; // Adjust the import path
+import { addCustomerGroups } from '../../../../../api/EmployeeApiService';
 
 const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   const [formData, setFormData] = useState({
@@ -105,6 +105,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           name="customerGroupName"
           value={formData.customerGroupName}
           onChange={handleChange}
+          placeholder="ABC1 Group"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
@@ -122,6 +123,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           name="assignedSalesRep"
           value={formData.assignedSalesRep}
           onChange={handleChange}
+          placeholder="Hashan"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
@@ -139,6 +141,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           name="descriptions"
           value={formData.descriptions}
           onChange={handleChange}
+          placeholder="Colombo"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>

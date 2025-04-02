@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/products")
-@CrossOrigin(origins = "http://localhost:3123") // Adjust to your frontend port
 @PreAuthorize("hasRole('EMPLOYEE')")
 public class ProductController {
     private final ProductService productService;

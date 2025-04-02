@@ -74,7 +74,10 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
         setSuccessMessage('');
       }, 2000);
     } catch (error) {
-      const serverMessage = error.response?.data?.message || error.message || 'Failed to add purchase group';
+      const serverMessage =
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to add purchase group';
       setErrorMessage(serverMessage);
       console.error('Error details:', error.response || error);
       if (error.response?.status === 401) {
@@ -120,6 +123,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           name='purchaseGroupName'
           value={formData.purchaseGroupName}
           onChange={handleChange}
+          placeholder='ABC Group'
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
           required
         />
@@ -138,6 +142,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           name='purchaseGroupAddress'
           value={formData.purchaseGroupAddress}
           onChange={handleChange}
+          placeholder='Matara'
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
           required
         />
@@ -156,6 +161,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           name='purchaseGroupContactName'
           value={formData.purchaseGroupContactName}
           onChange={handleChange}
+          placeholder='ABC'
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
           required
         />
@@ -169,11 +175,12 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           Phone Number:
         </label>
         <input
-          type='text' // Changed from 'number' to 'text' to match String expectation
+          type='text'
           id='purchaseGroupPhoneNo'
           name='purchaseGroupPhoneNo'
           value={formData.purchaseGroupPhoneNo}
           onChange={handleChange}
+          placeholder='071-2468978'
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
           required
         />
@@ -192,6 +199,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           name='purchaseGroupFaxNo'
           value={formData.purchaseGroupFaxNo}
           onChange={handleChange}
+          placeholder='(123)-446-7898'
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
         />
       </div>
@@ -209,6 +217,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           name='purchaseGroupEmail'
           value={formData.purchaseGroupEmail}
           onChange={handleChange}
+          placeholder='ABC@gmail.com'
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
           required
         />

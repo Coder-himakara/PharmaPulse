@@ -232,6 +232,7 @@ const AddProductsForm = ({ onAddProduct }) => {
               name="productName"
               value={formData.productName}
               onChange={handleChange}
+              placeholder="Penadol"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
@@ -246,6 +247,7 @@ const AddProductsForm = ({ onAddProduct }) => {
               name="genericName"
               value={formData.genericName}
               onChange={handleChange}
+              placeholder="Acetaminophen"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
@@ -342,6 +344,7 @@ const AddProductsForm = ({ onAddProduct }) => {
               name="unitsPerPack"
               value={formData.unitsPerPack}
               onChange={handleChange}
+              placeholder="10 ML"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
@@ -374,6 +377,7 @@ const AddProductsForm = ({ onAddProduct }) => {
               name="reorderLimitByPackage"
               value={formData.reorderLimitByPackage}
               onChange={handleChange}
+              placeholder="100"
               className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
             />
           </div>

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { getAllSuppliers } from '../../../../../api/EmployeeApiService'; 
 
 const SuppliersInfoTable = ({ refreshTrigger }) => {
   const [search, setSearch] = useState("");
@@ -15,20 +15,12 @@ const SuppliersInfoTable = ({ refreshTrigger }) => {
     const fetchSuppliers = async () => {
       try {
         console.log("Fetching suppliers...");
-        const response = await axios.get("http://localhost:8090/api/suppliers/all", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          auth: {
-            username: "admin",
-            password: "admin123",
-          },
-        });
-        console.log("Full Response:", response); // Log full response for debugging
-        console.log("Response Data:", response.data); // Log data specifically
-        const supplierData = response.data.data || response.data || []; // Handle both cases
+        const response = await getAllSuppliers();
+        console.log("Full Response:", response);
+        console.log("Response Data:", response.data);
+        const supplierData = response.data.data || response.data || [];
         setSuppliers(supplierData);
-        console.log("Set Suppliers:", supplierData); // Confirm state update
+        console.log("Set Suppliers:", supplierData);
         setErrorMessage("");
         setLoading(false);
       } catch (error) {
@@ -43,7 +35,6 @@ const SuppliersInfoTable = ({ refreshTrigger }) => {
     fetchSuppliers();
   }, [refreshTrigger]);
 
-  // Filter suppliers by supplier_name
   const filteredSuppliers = suppliers.filter((supplier) =>
     (supplier.supplier_name || "").toLowerCase().includes(search.toLowerCase())
   );
@@ -121,7 +112,7 @@ const SuppliersInfoTable = ({ refreshTrigger }) => {
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text Verstappentext-sm">
+                <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
                   Supplier Name
                 </th>
                 <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
@@ -194,7 +185,7 @@ SuppliersInfoTable.propTypes = {
 };
 
 SuppliersInfoTable.defaultProps = {
-  refreshTrigger: 0, // Default value to ensure useEffect runs at least once
+  refreshTrigger: 0,
 };
 
 export default SuppliersInfoTable;
