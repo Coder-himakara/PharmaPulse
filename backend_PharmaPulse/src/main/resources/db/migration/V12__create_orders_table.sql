@@ -49,6 +49,7 @@ CREATE SEQUENCE sales_invoice_item_seq START WITH 1 INCREMENT BY 1;
 CREATE TABLE sales_invoice_items (
                                      invoice_item_id BIGINT PRIMARY KEY DEFAULT nextval('sales_invoice_item_seq'),
                                      product_id BIGINT NOT NULL,
+                                     product_name VARCHAR(255),
                                      quantity INTEGER NOT NULL,
                                      unit_price NUMERIC(19,2),
                                      discount NUMERIC(19,2),

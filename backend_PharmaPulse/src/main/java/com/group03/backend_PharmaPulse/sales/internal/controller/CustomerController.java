@@ -22,7 +22,7 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all") //retrieving
     public ResponseEntity<StandardResponse> getAllCustomers() {
         List<CustomerDTO> customerDTOS = customerService.getAllCustomers();
         return new ResponseEntity<>(

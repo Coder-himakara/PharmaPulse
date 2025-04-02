@@ -74,11 +74,13 @@ const SalesRepNavbar = () => {
     {
       label: "Order History",
       icon: "pi pi-history text-white",
+      command: () => navigate("/sales-dashboard/order-history"),
   
     },
     {
       "label": "Create Sale Invoice",
       "icon": "pi pi-file text-white",
+      "command": () => navigate("/sales-dashboard/sale-invoice-creation")
     }
     
     

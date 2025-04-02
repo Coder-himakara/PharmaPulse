@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SalesInvoiceRepository extends JpaRepository<SalesInvoice, Long> {
@@ -14,4 +15,8 @@ public interface SalesInvoiceRepository extends JpaRepository<SalesInvoice, Long
     // Find the highest invoice number that starts with e.g. "1234-PP-"
     @Query("SELECT s.invoiceNo FROM SalesInvoice s WHERE s.invoiceNo LIKE CONCAT(:prefix, '%') ORDER BY s.invoiceNo DESC")
     List<String> findInvoiceNumbersByPrefix(@Param("prefix") String prefix);
+
+    Optional<SalesInvoice> findByOrderId(Long orderId);//new
+
+
 }
