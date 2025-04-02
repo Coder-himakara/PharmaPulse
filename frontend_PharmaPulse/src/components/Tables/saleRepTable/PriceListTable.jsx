@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../../api/ApiClient';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const PriceListTable = () => {
   const [priceList, setPriceList] = useState([]);
@@ -9,6 +11,7 @@ const PriceListTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const pdfRef = useRef(); // Ref for PDF content capture
 
   useEffect(() => {
     const fetchPriceList = async () => {
@@ -30,14 +33,28 @@ const PriceListTable = () => {
   // Updated filtering to check that productName starts with the search term.
   useEffect(() => {
     const searchTerm = search.toLowerCase();
-    const results = priceList.filter((entry) => {
-      return String(entry.productName).toLowerCase().startsWith(searchTerm);
-    });
+    const results = priceList.filter((entry) =>
+      String(entry.productName).toLowerCase().startsWith(searchTerm)
+    );
     setFilteredPriceList(results);
   }, [search, priceList]);
 
   const handleClose = () => {
-    navigate('/employee-dashboard');
+    navigate('/dashboard');
+  };
+
+  const generatePDF = async () => {
+    const input = pdfRef.current;
+    const canvas = await html2canvas(input, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+
+    // Create a PDF in landscape mode to better accommodate the wide table.
+    const pdf = new jsPDF('l', 'mm', 'a4');
+    const pdfWidth = 297; // A4 landscape width in mm
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`price-list_${Date.now()}.pdf`);
   };
 
   if (loading) return <p className='text-center p-4'>Loading price list...</p>;
@@ -74,7 +91,8 @@ const PriceListTable = () => {
         </div>
       )}
 
-      <div className='p-2 m-2'>
+      {/* Price list table wrapped in a div referenced by pdfRef */}
+      <div ref={pdfRef} className='p-2 m-2'>
         {filteredPriceList.length === 0 ? (
           <p className='text-center p-4'>No price list entries found.</p>
         ) : (
@@ -100,7 +118,7 @@ const PriceListTable = () => {
                   Units per Pack
                 </th>
                 <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                  Wholesale Price(Rs)
+                  Wholesale Price (Rs)
                 </th>
               </tr>
             </thead>
@@ -133,6 +151,15 @@ const PriceListTable = () => {
             </tbody>
           </table>
         )}
+      </div>
+
+      <div className='flex justify-end p-2 m-2 gap-4'>
+        <button
+          onClick={generatePDF}
+          className='px-5 py-2 bg-[#1a5353] text-white rounded-md hover:bg-[#0d3b3b] transition-colors'
+        >
+          Download PDF
+        </button>
       </div>
     </div>
   );
