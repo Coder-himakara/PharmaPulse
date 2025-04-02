@@ -30,13 +30,13 @@ export const addCustomer = (formData) =>
     headers: { 'Content-Type': 'application/json' },
   });
 
-// Get customer  by ID
+// Get customer by ID
 export const getCustomerById = (id) =>
   apiClient.get(`/customers/${id}`, {
     headers: { 'Content-Type': 'application/json' },
   });
 
-// Get all customer
+// Get all customers
 export const getAllCustomers = () =>
   apiClient.get('/customers/all', {
     headers: { 'Content-Type': 'application/json' },
@@ -54,11 +54,12 @@ export const addPurchaseGroups = (formData) =>
     headers: { 'Content-Type': 'application/json' },
   });
 
-// Get purchase groups  by ID
+// Get purchase group by ID
 export const getPurchaseGroupsById = (id) =>
   apiClient.get(`/purchase-groups/${id}`, {
     headers: { 'Content-Type': 'application/json' },
   });
+
 // Get all purchase groups
 export const getAllPurchaseGroups = () =>
   apiClient.get('/purchase-groups/all', {
@@ -77,7 +78,7 @@ export const addSuppliers = (formData) =>
     headers: { 'Content-Type': 'application/json' },
   });
 
-// Get suppliers  by ID
+// Get supplier by ID
 export const getSuppliersById = (id) =>
   apiClient.get(`/suppliers/${id}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -96,37 +97,31 @@ export const updateSuppliers = (id, formData) =>
   });
 
 // Add products
-export const addProducts = (formData, token = null) =>
+export const addProducts = (formData) =>
   apiClient.post('/products/add', formData, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
+    headers: { 'Content-Type': 'application/json' },
   });
 
-// Get products  by ID
-export const getProductsById = (id, token = null) =>
+// Get product by ID
+export const getProductsById = (id) =>
   apiClient.get(`/products/${id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
+    headers: { 'Content-Type': 'application/json' },
   });
 
 // Get all products
-export const getAllProducts = (token = null) =>
+export const getAllProducts = () =>
   apiClient.get('/products/all', {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
+    headers: { 'Content-Type': 'application/json' },
   });
 
 // Update products
-export const updateProducts = (id, formData, token = null) =>
+export const updateProducts = (id, formData) =>
   apiClient.put(`/products/update/${id}`, formData, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+// Generate product reference ID
+export const generateProductRefId = (purchaseGroupId) =>
+  apiClient.post('/product-ref-id/generate', purchaseGroupId, {
+    headers: { 'Content-Type': 'application/json' },
   });

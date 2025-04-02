@@ -6,6 +6,7 @@ import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/customers")
-
+@PreAuthorize("hasRole('EMPLOYEE')")
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -23,6 +24,7 @@ public class CustomerController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getAllCustomers() {
         List<CustomerDTO> customerDTOS = customerService.getAllCustomers();
         return new ResponseEntity<>(
@@ -32,6 +34,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getCustomerById(@PathVariable Long id) {
         CustomerDTO selectedCustomer = customerService.getCustomerById(id);
         return new ResponseEntity<>(
@@ -41,6 +44,7 @@ public class CustomerController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('employee:create')")
     public ResponseEntity<StandardResponse> addCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
         try {
             CustomerDTO savedCustomer = customerService.addCustomer(customerDTO);
@@ -57,6 +61,7 @@ public class CustomerController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('employee:update')")
     public ResponseEntity<StandardResponse> updateCustomers(@Valid @PathVariable Long id,
                                                             @RequestBody CustomerDTO customerDTO) {
         try {
@@ -71,20 +76,5 @@ public class CustomerController {
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
-    }
-
-    // Handle validation errors
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        String errorMessage = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .reduce((a, b) -> a + ", " + b)
-                .orElse("Validation failed");
-        return new ResponseEntity<>(
-                new StandardResponse(400, errorMessage, null),
-                HttpStatus.BAD_REQUEST
-        );
     }
 }

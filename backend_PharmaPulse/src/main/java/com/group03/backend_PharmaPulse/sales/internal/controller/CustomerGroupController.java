@@ -6,12 +6,14 @@ import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/customer-groups")
+@PreAuthorize("hasRole('EMPLOYEE')")
 public class CustomerGroupController {
     private final CustomerGroupService customerGroupService;
 
@@ -20,6 +22,7 @@ public class CustomerGroupController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getAllCustomerGroups() {
         List<CustomerGroupDTO> customerGroupDTOS = customerGroupService.getAllCustomerGroups();
         return new ResponseEntity<>(
@@ -29,6 +32,7 @@ public class CustomerGroupController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getCustomerGroupsById(@PathVariable Long id) {
         CustomerGroupDTO selectedCustomerGroup = customerGroupService.getCustomerGroupById(id);
         return new ResponseEntity<>(
@@ -38,6 +42,7 @@ public class CustomerGroupController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('employee:create')")
     public ResponseEntity<StandardResponse> addCustomerGroups(@Valid @RequestBody CustomerGroupDTO customerGroupDTO) {
         CustomerGroupDTO savedCustomerGroup = customerGroupService.addCustomerGroup(customerGroupDTO);
         return new ResponseEntity<>(
@@ -47,6 +52,7 @@ public class CustomerGroupController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('employee:update')")
     public ResponseEntity<StandardResponse> updateCustomerGroups(@Valid @PathVariable Long id,
                                                                  @RequestBody CustomerGroupDTO customerGroupDTO) {
         CustomerGroupDTO updatedCustomerGroup = customerGroupService.updateCustomerGroup(id, customerGroupDTO);

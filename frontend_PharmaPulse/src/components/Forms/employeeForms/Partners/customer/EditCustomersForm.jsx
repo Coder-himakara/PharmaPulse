@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
-import axios from "axios";
+import { updateCustomers, getAllCustomerGroups } from "../../../../../api/EmployeeApiService";
 
 const EditCustomersForm = ({ onUpdateCustomer }) => {
   const { state } = useLocation();
@@ -32,17 +32,14 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
   const [customerId, setCustomerId] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Added loading state
+  const [isLoading, setIsLoading] = useState(false);
   const [customerGroups, setCustomerGroups] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const fetchCustomerGroups = async () => {
       try {
-        const response = await axios.get("http://localhost:8090/api/customer-groups/all", {
-          headers: { "Content-Type": "application/json" },
-          auth: { username: "admin", password: "admin123" },
-        });
+        const response = await getAllCustomerGroups();
         setCustomerGroups(response.data.data || []);
       } catch (error) {
         console.error("Error fetching customer groups:", error);
@@ -53,30 +50,27 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
   }, []);
 
   useEffect(() => {
-    console.log("Location state:", state);
-    console.log("Received customer:", customer);
-    if (customer) {
-      setCustomerId(customer.customer_id || customer.id || "");
-      setFormData({
-        customer_name: customer.customer_name || "",
-        customer_address: customer.customer_address || "",
-        customer_contact_name: customer.customer_contact_name || "",
-        customer_nic_no: customer.customer_nic_no || "",
-        customer_brc_no: customer.customer_brc_no || "",
-        customer_email: customer.customer_email || "",
-        customer_phone_no: customer.customer_phone_no ? String(customer.customer_phone_no) : "",
-        customer_group: customer.customer_group?.customerGroupId?.toString() || customer.customer_group || "",
-        registered_date: customer.registered_date ? formatDate(new Date(customer.registered_date)) : formatDate(new Date()),
-        credit_limit: customer.credit_limit ? String(customer.credit_limit) : "",
-        credit_period_in_days: customer.credit_period_in_days ? String(customer.credit_period_in_days) : "",
-        outstanding_balance: customer.outstanding_balance ? String(customer.outstanding_balance) : "",
-      });
-    } else {
-      console.warn("No customer data received in state");
+    if (!customer) {
       setErrorMessage("No customer data available to edit.");
-      navigate("/customers-info");
+      navigate("/employee-dashboard/customers-info");
+      return;
     }
-  }, [customer, navigate, state]);
+    setCustomerId(customer.customer_id || customer.id || "");
+    setFormData({
+      customer_name: customer.customer_name || "",
+      customer_address: customer.customer_address || "",
+      customer_contact_name: customer.customer_contact_name || "",
+      customer_nic_no: customer.customer_nic_no || "",
+      customer_brc_no: customer.customer_brc_no || "",
+      customer_email: customer.customer_email || "",
+      customer_phone_no: customer.customer_phone_no ? String(customer.customer_phone_no) : "",
+      customer_group: customer.customer_group?.customerGroupId?.toString() || customer.customer_group || "",
+      registered_date: customer.registered_date ? formatDate(new Date(customer.registered_date)) : formatDate(new Date()),
+      credit_limit: customer.credit_limit ? String(customer.credit_limit) : "",
+      credit_period_in_days: customer.credit_period_in_days ? String(customer.credit_period_in_days) : "",
+      outstanding_balance: customer.outstanding_balance ? String(customer.outstanding_balance) : "",
+    });
+  }, [customer, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,33 +88,26 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted with data:", formData);
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
 
-    if (
-      !formData.customer_name.trim() ||
-      !formData.customer_address.trim() ||
-      !formData.customer_contact_name.trim() ||
-      !formData.customer_nic_no.trim() ||
-      !formData.customer_brc_no.trim() ||
-      !formData.customer_email.trim() ||
-      !formData.customer_phone_no.trim() ||
-      !formData.customer_group.trim() ||
-      !formData.credit_limit.trim() ||
-      !formData.credit_period_in_days.trim() ||
-      !formData.outstanding_balance.trim()
-    ) {
+    // Validation
+    const requiredFields = [
+      "customer_name", "customer_address", "customer_contact_name",
+      "customer_nic_no", "customer_brc_no", "customer_email",
+      "customer_phone_no", "customer_group", "credit_limit",
+      "credit_period_in_days", "outstanding_balance"
+    ];
+    
+    if (requiredFields.some(field => !formData[field].trim())) {
       setErrorMessage("Please fill out all required fields.");
-      console.log("Missing fields:", formData);
       setIsLoading(false);
       return;
     }
 
     if (!/^0[0-9]{9}$/.test(formData.customer_phone_no)) {
       setErrorMessage("Phone number must start with 0 and contain exactly 10 digits.");
-      console.log("Invalid phone number:", formData.customer_phone_no);
       setIsLoading(false);
       return;
     }
@@ -133,14 +120,12 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
 
     if (isNaN(phoneNo) || isNaN(group) || isNaN(creditLimit) || isNaN(creditPeriod) || isNaN(balance)) {
       setErrorMessage("Please ensure all numeric fields contain valid numbers.");
-      console.log("Invalid numeric values:", { phoneNo, group, creditLimit, creditPeriod, balance });
       setIsLoading(false);
       return;
     }
 
     if (!customerId) {
       setErrorMessage("Customer ID is missing. Cannot update without an ID.");
-      console.log("Missing customerId:", customerId);
       setIsLoading(false);
       return;
     }
@@ -161,37 +146,18 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     };
 
     try {
-      const url = `http://localhost:8090/api/customers/update/${customerId}`;
-      console.log("Sending PUT request to:", url);
-      console.log("Request payload:", requestData);
-      const response = await axios.put(url, requestData, {
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        auth: {
-          username: "admin",
-          password: "admin123",
-        },
-      });
-
-      console.log("Update response:", response.data);
+      const response = await updateCustomers(customerId, requestData);
+      
       setSuccessMessage("Customer updated successfully!");
       if (onUpdateCustomer) {
         onUpdateCustomer(response.data.data || response.data);
       }
       setTimeout(() => {
-        console.log("Navigating back...");
-        navigate("/customers-info");
+        navigate("/employee-dashboard/customers-info");
       }, 2000);
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Failed to update customer");
-      console.error("Error updating customer:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        request: error.request,
-      });
+      console.error("Error updating customer:", error);
     } finally {
       setIsLoading(false);
     }
@@ -201,10 +167,10 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     navigate("/employee-dashboard/customers-info");
   };
 
-  if (!customer) {
+  if (!customer || !customerId) {
     return (
       <div className="p-5 text-center text-red-600">
-        {errorMessage || "No customer data provided"}
+        {errorMessage || "Invalid customer data"}
       </div>
     );
   }
@@ -309,7 +275,11 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
 };
 
 EditCustomersForm.propTypes = {
-  onUpdateCustomer: PropTypes.func.isRequired,
+  onUpdateCustomer: PropTypes.func,
+};
+
+EditCustomersForm.defaultProps = {
+  onUpdateCustomer: () => {},
 };
 
 export default EditCustomersForm;

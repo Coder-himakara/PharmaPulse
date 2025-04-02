@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { updateProducts, getAllPurchaseGroups } from "../../../../api/EmployeeApiService";
 
 const EditProductsForm = ({ onUpdateProduct }) => {
   const { state } = useLocation();
@@ -10,42 +10,55 @@ const EditProductsForm = ({ onUpdateProduct }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    purchaseGroup: "",
+    purchaseGroupId: "",
     productRefId: "",
     productName: "",
     genericName: "",
     description: "",
     category: "",
     packageType: "",
-    unitsPerPackage: "",
+    unitsPerPack: "",
     productStatus: "",
     reorderLimitByPackage: "",
   });
 
+  const [purchaseGroups, setPurchaseGroups] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log("Location state:", state);
-    console.log("Received product:", product);
-    if (!product) {
+    const fetchPurchaseGroups = async () => {
+      try {
+        const response = await getAllPurchaseGroups();
+        setPurchaseGroups(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching purchase groups:", error);
+        setErrorMessage("Failed to fetch purchase groups.");
+      }
+    };
+    fetchPurchaseGroups();
+  }, []);
+
+  useEffect(() => {
+    if (!product || !product.productId) {
       setErrorMessage("No product data provided for editing.");
-      navigate("/products-info");
+      navigate("/employee-dashboard/products-info");
       return;
     }
     setFormData({
-      purchaseGroup: product.purchaseGroup || "",
+      purchaseGroupId: product.purchaseGroupId?.toString() || "",
       productRefId: product.productRefId || "",
       productName: product.productName || "",
       genericName: product.genericName || "",
       description: product.description || "",
       category: product.category || "",
       packageType: product.packageType || "",
-      unitsPerPackage: product.unitsPerPackage || "",
+      unitsPerPack: product.unitsPerPack || "",
       productStatus: product.productStatus || "",
-      reorderLimitByPackage: product.reorderLimitByPackage || "",
+      reorderLimitByPackage: product.reorderLimitByPackage?.toString() || "",
     });
-  }, [product, navigate, state]);
+  }, [product, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,80 +70,67 @@ const EditProductsForm = ({ onUpdateProduct }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
 
-    console.log("Form data before submission:", formData);
-
-    if (
-      !formData.purchaseGroup.trim() ||
-      !formData.productRefId.trim() ||
-      !formData.productName.trim() ||
-      !formData.genericName.trim() ||
-      !formData.description.trim() ||
-      !formData.category.trim() ||
-      !formData.packageType.trim() ||
-      !formData.unitsPerPackage ||
-      !formData.productStatus.trim() ||
-      !formData.reorderLimitByPackage
-    ) {
+    const requiredFields = [
+      "purchaseGroupId", "productRefId", "productName", "genericName",
+      "description", "category", "packageType", "unitsPerPack",
+      "productStatus", "reorderLimitByPackage"
+    ];
+    if (requiredFields.some(field => !formData[field].trim())) {
       setErrorMessage("Please fill out all required fields.");
+      setIsLoading(false);
       return;
     }
 
-    const id = product.productId; 
-    if (!id) {
+    const productId = product?.productId;
+    if (!productId) {
       setErrorMessage("Product ID is missing. Cannot update without an ID.");
+      setIsLoading(false);
+      return;
+    }
+
+    const purchaseGroupId = parseInt(formData.purchaseGroupId, 10);
+    const reorderLimit = parseInt(formData.reorderLimitByPackage, 10);
+
+    if (isNaN(purchaseGroupId) || isNaN(reorderLimit)) {
+      setErrorMessage("Please ensure numeric fields contain valid numbers.");
+      setIsLoading(false);
       return;
     }
 
     const requestData = {
-      purchaseGroup: formData.purchaseGroup,
+      purchaseGroupId,
       productRefId: formData.productRefId,
       productName: formData.productName,
       genericName: formData.genericName,
       description: formData.description,
-      category: formData.category,
-      packageType: formData.packageType,
-      unitsPerPackage: parseInt(formData.unitsPerPackage),
-      productStatus: formData.productStatus,
-      reorderLimitByPackage: parseInt(formData.reorderLimitByPackage),
+      category: formData.category.toUpperCase(),
+      packageType: formData.packageType.toUpperCase(),
+      unitsPerPack: formData.unitsPerPack,
+      productStatus: formData.productStatus.toUpperCase(),
+      reorderLimitByPackage: reorderLimit,
     };
 
     try {
-      const url = `http://localhost:8090/api/products/update/${id}`; // Adjust URL as per your API
-      console.log("Sending PUT request to:", url);
-      console.log("Request payload:", requestData);
+      const response = await updateProducts(productId, requestData);
+      const updatedProduct = response.data.data || response.data;
 
-      const response = await axios.put(url, requestData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        auth: {
-          username: "employee",
-          password: "employee123",
-        },
-      });
-
-      console.log("Response:", response.data);
-      setErrorMessage("");
       setSuccessMessage("Product updated successfully!");
-
       if (onUpdateProduct) {
-        onUpdateProduct(response.data.data || response.data);
+        onUpdateProduct(updatedProduct);
       }
 
       setTimeout(() => {
-        console.log("Navigating back...");
-        setSuccessMessage("");
-        navigate("/products-info");
+        navigate("/employee-dashboard/products-info");
       }, 2000);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || error.message || "Failed to update product";
-      setErrorMessage(errorMsg);
-      console.error("Error details:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-      });
+      setErrorMessage(error.response?.data?.message || "Failed to update product");
+      console.error("Error updating product:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -138,19 +138,10 @@ const EditProductsForm = ({ onUpdateProduct }) => {
     navigate("/employee-dashboard/products-info");
   };
 
-  if (!product) {
+  if (!product || !product.productId) {
     return (
       <div className="p-5 text-center text-red-600">
-        {errorMessage || "No product data provided"}
-      </div>
-    );
-  }
-
-  const id = product.productId;
-  if (!id) {
-    return (
-      <div className="p-5 text-center text-red-600">
-        {errorMessage || "Product ID is missing"}
+        {errorMessage || "Invalid product data"}
       </div>
     );
   }
@@ -174,18 +165,24 @@ const EditProductsForm = ({ onUpdateProduct }) => {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-4">
           <div className="flex items-center">
-            <label htmlFor="purchaseGroup" className="text-[16px] text-gray-800 w-1/2 text-left">
+            <label htmlFor="purchaseGroupId" className="text-[16px] text-gray-800 w-1/2 text-left">
               Purchase Group:
             </label>
-            <input
-              type="text"
-              id="purchaseGroup"
-              name="purchaseGroup"
-              value={formData.purchaseGroup}
+            <select
+              id="purchaseGroupId"
+              name="purchaseGroupId"
+              value={formData.purchaseGroupId}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
-            />
+            >
+              <option value="">Select a Purchase Group</option>
+              {purchaseGroups.map(group => (
+                <option key={group.purchaseGroupId} value={group.purchaseGroupId}>
+                  {group.purchaseGroupName} (ID: {group.purchaseGroupId})
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex items-center">
@@ -246,8 +243,8 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               required
             >
               <option value="">Choose a category</option>
-              <option value="MEDICINE">MEDICINE</option>
-              <option value="SURGICAL">SURGICAL</option>
+              <option value="MEDICINE">Medicine</option>
+              <option value="SURGICAL">Surgical</option>
             </select>
           </div>
         </div>
@@ -280,24 +277,24 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             >
-              <option value="">Choose a packageType</option>
-              <option value="VIAL">VIAL</option>
-              <option value="BOTTLE">BOTTLE</option>
-              <option value="BOX">BOX</option>
-              <option value="BLISTER PACK">BLISTER PACK</option>
-              <option value="POUCH">POUCH</option>
+              <option value="">Choose a package type</option>
+              <option value="VIAL">Vial</option>
+              <option value="BOTTLE">Bottle</option>
+              <option value="BOX">Box</option>
+              <option value="BLISTER_PACK">Blister Pack</option>
+              <option value="POUCH">Pouch</option>
             </select>
           </div>
 
           <div className="flex items-center">
-            <label htmlFor="unitsPerPackage" className="text-[16px] text-gray-800 w-1/2 text-left">
+            <label htmlFor="unitsPerPack" className="text-[16px] text-gray-800 w-1/2 text-left">
               Units Per Package:
             </label>
             <input
-              type="number"
-              id="unitsPerPackage"
-              name="unitsPerPackage"
-              value={formData.unitsPerPackage}
+              type="text"
+              id="unitsPerPack"
+              name="unitsPerPack"
+              value={formData.unitsPerPack}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
@@ -317,18 +314,15 @@ const EditProductsForm = ({ onUpdateProduct }) => {
               required
             >
               <option value="">Choose a status</option>
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="INACTIVE">INACTIVE</option>
-              <option value="DISCONTINUED">DISCONTINUED</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+              <option value="DISCONTINUED">Discontinued</option>
             </select>
           </div>
 
           <div className="flex items-center">
-            <label
-              htmlFor="reorderLimitByPackage"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
-              Reorder Limit By Package:
+            <label htmlFor="reorderLimitByPackage" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Reorder Limit:
             </label>
             <input
               type="number"
@@ -344,9 +338,10 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="submit"
-              className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+              disabled={isLoading}
+              className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] disabled:opacity-50"
             >
-              Update
+              {isLoading ? "Updating..." : "Update"}
             </button>
             <button
               type="button"
@@ -363,7 +358,11 @@ const EditProductsForm = ({ onUpdateProduct }) => {
 };
 
 EditProductsForm.propTypes = {
-  onUpdateProduct: PropTypes.func.isRequired,
+  onUpdateProduct: PropTypes.func,
+};
+
+EditProductsForm.defaultProps = {
+  onUpdateProduct: () => {},
 };
 
 export default EditProductsForm;
