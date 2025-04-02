@@ -41,12 +41,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.POST, "/api/users/login", "api/auth/refresh").permitAll()
+
+                .authorizeHttpRequests(request ->request
+                        .requestMatchers(HttpMethod.POST,"/api/users/login","api/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/auth/logout").permitAll()
                         .requestMatchers("/api/users/register").hasRole(ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/api/users/register").hasAuthority(ADMIN_CREATE.name())
                         .requestMatchers("/swagger-ui/index.html").permitAll()
+                        .requestMatchers("/ws/**").permitAll() // Handled in interceptor. For websocket
                         .requestMatchers(HttpMethod.POST, "/api/customer-groups/add").permitAll() // Permit this endpoint
+
                         .anyRequest().authenticated())
                 .cors(cors -> cors.configure(http))
                 .csrf(customizer -> customizer.disable())

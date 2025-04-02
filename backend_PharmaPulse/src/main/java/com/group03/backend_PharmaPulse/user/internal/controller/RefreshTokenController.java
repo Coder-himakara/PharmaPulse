@@ -59,22 +59,28 @@ public class RefreshTokenController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@CookieValue(name = "refreshToken", required = false) String refreshToken,
                                     HttpServletResponse response) {
-        // If token exists, try to delete it
-        if (refreshToken != null && !refreshToken.isEmpty()) {
-            refreshTokenService.findByToken(refreshToken)
-                    .ifPresent(refreshTokenService::delete);
+        try {
+            // If token exists, try to delete it
+            if (refreshToken != null && !refreshToken.isEmpty()) {
+                refreshTokenService.findByToken(refreshToken)
+                        .ifPresent(refreshTokenService::delete);
+            }
+            // Always clear the cookie, even if the token wasn't found
+            ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(0)
+                    .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            return ResponseEntity.ok(new StandardResponse(200, "Logged out successfully", null));
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            // Return a more specific error message
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new StandardResponse(500, "Error during logout: " + e.getMessage(), null));
         }
-
-        // Always clear the cookie, even if the token wasn't found
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
-                .httpOnly(true)
-                .secure(false)  // Consider making this environment-dependent
-                .path("/")     // Same path as when setting it
-                .maxAge(0)
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-        return ResponseEntity.ok(new StandardResponse(200, "Logged out successfully", null));
     }
 }

@@ -1,13 +1,15 @@
 import { useState, useEffect, useLayoutEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import AuthContext from './AuthContext';
+
 import {
   executeJwtAuthenticationService,
   logoutUserService,
   refreshTokenService,
 } from '../api/AuthenticationApiService';
+
 import { jwtDecode } from 'jwt-decode';
-import apiClient from '../api/ApiClient'; // Uncomment if needed
+import apiClient from '../api/ApiClient';
 
 const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
@@ -62,16 +64,6 @@ const AuthProvider = ({ children }) => {
 
     initializeAuth();
   }, []);
-
-  // Check token expiration periodically
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (authState.token && isTokenExpired(authState.token) && !isRefreshing) {
-  //       logout();
-  //     }
-  //   }, 60000);
-  //   return () => clearInterval(interval);
-  // }, [authState.token, isRefreshing]);
 
   const isTokenExpired = (token) => {
     try {
