@@ -29,8 +29,9 @@ public interface BatchInventoryRepo extends JpaRepository<BatchInventory, Long> 
 
     List<BatchInventory> findByProductId(Long productId);
 
-    //new method
     @Query("SELECT DISTINCT b.productId FROM BatchInventory b")
     List<Long> findDistinctProductIds();
+
+    List<BatchInventory> findByExpiryDateBeforeAndBatchStatusNot(LocalDate date, BatchStatus status);
 
 }

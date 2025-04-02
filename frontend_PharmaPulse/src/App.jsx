@@ -13,6 +13,9 @@ import SalesRepDashboard from "./pages/SalesRepDashboard/SalesRepDashboard";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import UnauthorizedPage from "./pages/ErrorPage/UnauthorizedPage";
 import ProtectedRoute from "./security/ProtectedRoute";
+// Toast Notifications
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -46,6 +49,17 @@ function App() {
             {/* Catch-all route */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          <ToastContainer
+            position="bottom-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick={true}
+            rtl={false}
+            pauseOnFocusLoss={true}
+            draggable={true}
+            pauseOnHover={true}
+          />
         </Router>
       </ThemeProvider>
     </AuthProvider>
