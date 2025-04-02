@@ -21,7 +21,7 @@ public class ProductController {
         this.productService = productService;
     }
     @GetMapping("/all")
-    //@PreAuthorize("hasAuthority('employee:read')")
+    @PreAuthorize("has('employee:read')")
     public ResponseEntity<StandardResponse> getAllProducts() {
         List<ProductDTO> productDTOS  = productService.getAllProducts();
         return new ResponseEntity<>(

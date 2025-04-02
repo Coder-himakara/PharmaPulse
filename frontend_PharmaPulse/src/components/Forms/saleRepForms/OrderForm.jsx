@@ -60,7 +60,9 @@ const OrderForm = () => {
   // Handle product selection using react-select in each order item
   const handleProductChange = (index, option) => {
     // Mimic an event so our handler works as before
-    handleOrderItemChange(index, { target: { name: 'productId', value: option.value } });
+    handleOrderItemChange(index, {
+      target: { name: 'productId', value: option.value },
+    });
   };
 
   // Function to fetch maximum available quantity for a product
@@ -113,7 +115,9 @@ const OrderForm = () => {
     for (let i = 0; i < orderItems.length; i++) {
       const item = orderItems[i];
       if (!item.productId || !item.quantity) {
-        setErrorMessage('Each order item must have a selected product and a quantity.');
+        setErrorMessage(
+          'Each order item must have a selected product and a quantity.',
+        );
         return;
       }
       if (isNaN(item.quantity) || Number(item.quantity) <= 0) {
@@ -141,7 +145,9 @@ const OrderForm = () => {
         setSuccessMessage('Order created successfully!');
         // Reset form fields
         setFormData({ customerId: '' });
-        setOrderItems([{ productId: '', quantity: '', discount: '', maxQuantity: undefined }]);
+        setOrderItems([
+          { productId: '', quantity: '', discount: '', maxQuantity: undefined },
+        ]);
         setTimeout(() => {
           setSuccessMessage('');
         }, 3000);
@@ -194,7 +200,10 @@ const OrderForm = () => {
       {/* Customer Details */}
       <div className='mb-6'>
         <div className='flex items-center mb-4'>
-          <label htmlFor='customerId' className='w-1/3 text-[16px] text-gray-800'>
+          <label
+            htmlFor='customerId'
+            className='w-1/3 text-[16px] text-gray-800'
+          >
             Customer:
           </label>
           <div className='w-2/3'>
@@ -206,7 +215,9 @@ const OrderForm = () => {
               onChange={handleCustomerChange}
               value={
                 formData.customerId
-                  ? customerOptions.find(option => option.value === Number(formData.customerId))
+                  ? customerOptions.find(
+                      (option) => option.value === Number(formData.customerId),
+                    )
                   : null
               }
             />
@@ -223,7 +234,10 @@ const OrderForm = () => {
             className='p-4 mb-4 border border-gray-300 rounded-md relative'
           >
             <div className='flex items-center mb-2'>
-              <label htmlFor={`productId-${index}`} className='w-1/3 text-[16px] text-gray-800'>
+              <label
+                htmlFor={`productId-${index}`}
+                className='w-1/3 text-[16px] text-gray-800'
+              >
                 Product:
               </label>
               <div className='w-2/3'>
@@ -235,17 +249,24 @@ const OrderForm = () => {
                   onChange={(option) => handleProductChange(index, option)}
                   value={
                     orderItems[index].productId
-                      ? productOptions.find(option => option.value === Number(orderItems[index].productId))
+                      ? productOptions.find(
+                          (option) =>
+                            option.value ===
+                            Number(orderItems[index].productId),
+                        )
                       : null
                   }
                 />
               </div>
             </div>
             <div className='flex items-center mb-2'>
-              <label htmlFor={`quantity-${index}`} className='w-1/3 text-[16px] text-gray-800'>
+              <label
+                htmlFor={`quantity-${index}`}
+                className='w-1/3 text-[16px] text-gray-800'
+              >
                 Quantity:
               </label>
-              <div className="w-2/3 flex items-center space-x-2">
+              <div className='w-2/3 flex items-center space-x-2'>
                 <input
                   type='number'
                   id={`quantity-${index}`}
@@ -269,7 +290,10 @@ const OrderForm = () => {
               </div>
             </div>
             <div className='flex items-center'>
-              <label htmlFor={`discount-${index}`} className='w-1/3 text-[16px] text-gray-800'>
+              <label
+                htmlFor={`discount-${index}`}
+                className='w-1/3 text-[16px] text-gray-800'
+              >
                 Discount (%):
               </label>
               <input
