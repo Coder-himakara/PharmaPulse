@@ -34,7 +34,7 @@ const PriceListTable = () => {
   useEffect(() => {
     const searchTerm = search.toLowerCase();
     const results = priceList.filter((entry) =>
-      String(entry.productName).toLowerCase().startsWith(searchTerm)
+      String(entry.productName).toLowerCase().startsWith(searchTerm),
     );
     setFilteredPriceList(results);
   }, [search, priceList]);
@@ -52,7 +52,7 @@ const PriceListTable = () => {
     const pdf = new jsPDF('l', 'mm', 'a4');
     const pdfWidth = 297; // A4 landscape width in mm
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    
+
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save(`price-list_${Date.now()}.pdf`);
   };

@@ -14,10 +14,10 @@ ALTER TABLE sales_invoices
     ADD payment_type VARCHAR(255);
 
 ALTER TABLE sales_invoices
-    DROP COLUMN invoice_number;
+    DROP COLUMN IF EXISTS invoice_number;
 
 ALTER TABLE sales_invoices
-    DROP COLUMN total_discount;
+    DROP COLUMN IF EXISTS total_discount;
 
 ALTER TABLE customer
     ALTER COLUMN customer_group_id SET NOT NULL;
