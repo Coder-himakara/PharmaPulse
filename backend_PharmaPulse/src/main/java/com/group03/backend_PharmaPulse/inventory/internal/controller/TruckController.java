@@ -1,56 +1,56 @@
 package com.group03.backend_PharmaPulse.inventory.internal.controller;
 
 import com.group03.backend_PharmaPulse.inventory.api.TruckService;
-import com.group03.backend_PharmaPulse.inventory.internal.entity.Truck;
+import com.group03.backend_PharmaPulse.inventory.api.dto.TruckDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.TruckResponseDTO;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("api/trucks")
-@AllArgsConstructor
 public class TruckController {
-    private TruckService truckService;
+    private final TruckService truckService;
 
+    public TruckController(TruckService truckService) {
+        this.truckService = truckService;
+    }
 
-    @PostMapping("/")
-    public ResponseEntity<?> addTruck(@RequestBody Truck truck) {
-        Truck createdTruck = truckService.createTruck(truck);
+    @PostMapping("/add")
+    public ResponseEntity<StandardResponse> addTruck(@RequestBody TruckDTO truckDTO) {
+        TruckDTO createdTruck = truckService.createTruck(truckDTO);
         return new ResponseEntity<>(
                 new StandardResponse(201, "Success", createdTruck),
-                HttpStatus.OK
+                HttpStatus.CREATED
         );
     }
 
     @GetMapping("/{truckId}/available-space")
-    public ResponseEntity<?> getAvailableSpace(@PathVariable Long truckId) {
+    public ResponseEntity<StandardResponse> getAvailableSpace(@PathVariable Long truckId) {
         double availableSpace = truckService.checkAvailableSpace(truckId);
         return new ResponseEntity<>(
-                new StandardResponse(201, "Success", availableSpace),
+                new StandardResponse(200, "Success", availableSpace),
                 HttpStatus.OK
         );
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> getAllTrucks() {
-        List<Truck> trucks = truckService.getAllTrucks();
+    @GetMapping("/all")
+    public ResponseEntity<StandardResponse> getAllTrucks() {
+        List<TruckResponseDTO> trucks = truckService.getAllTrucks();
         return new ResponseEntity<>(
-                new StandardResponse(201, "Success", trucks),
+                new StandardResponse(200, "Success", trucks),
                 HttpStatus.OK
         );
     }
 
     @GetMapping("/{truckId}")
-    public ResponseEntity<?> getTruckById(@PathVariable Long truckId) {
-        Truck truck = truckService.getTruckById(truckId);
+    public ResponseEntity<StandardResponse> getTruckById(@PathVariable Long truckId) {
+        TruckResponseDTO truck = truckService.getTruckById(truckId);
         return new ResponseEntity<>(
-                new StandardResponse(201, "Success", truck),
+                new StandardResponse(200, "Success", truck),
                 HttpStatus.OK
         );
     }
-
 }

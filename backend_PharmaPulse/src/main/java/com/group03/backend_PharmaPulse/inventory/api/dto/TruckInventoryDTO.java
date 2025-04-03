@@ -6,15 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class TruckInventoryDTO {
-    //private Long inventoryId;
+    private Long inventoryId;
     private Long location;
     private Long batch;
     private Integer quantity;
+    private String registrationNumber;
 }
