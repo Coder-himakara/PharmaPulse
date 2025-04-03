@@ -11,6 +11,8 @@ import com.group03.backend_PharmaPulse.order.internal.repository.SalesInvoiceRep
 import com.group03.backend_PharmaPulse.order.internal.repository.OrderRepository;
 import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.InventoryReservationService;
+import com.group03.backend_PharmaPulse.product.api.dto.ProductDTO;
+import com.group03.backend_PharmaPulse.product.internal.serviceImpl.ProductServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -28,19 +30,21 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
     private final InventoryReservationService inventoryReservationService;
     private final OrderRepository orderRepository; // To retrieve order details
     private final SalesInvoiceItemMapper salesInvoiceItemMapper;
+    private final ProductServiceImpl productServiceImpl;
 
     public SalesInvoiceServiceImpl(SalesInvoiceRepository salesInvoiceRepository,
                                    SalesInvoiceMapper salesInvoiceMapper,
                                    BatchInventoryService batchInventoryService,
                                    InventoryReservationService inventoryReservationService,
                                    OrderRepository orderRepository,
-                                   SalesInvoiceItemMapper salesInvoiceItemMapper) {
+                                   SalesInvoiceItemMapper salesInvoiceItemMapper, ProductServiceImpl productServiceImpl) {
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.salesInvoiceMapper = salesInvoiceMapper;
         this.batchInventoryService = batchInventoryService;
         this.inventoryReservationService = inventoryReservationService;
         this.orderRepository = orderRepository;
         this.salesInvoiceItemMapper = salesInvoiceItemMapper;
+        this.productServiceImpl = productServiceImpl;
     }
 
     @Override
@@ -53,6 +57,13 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
         // Retrieve the Order from the database
         Order order = orderRepository.findById(salesInvoiceDTO.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order not found for id: " + salesInvoiceDTO.getOrderId()));
+        // Check if an invoice for this order already exists
+        var existingInvoice = salesInvoiceRepository.findByOrderId(order.getOrderId());
+        if(existingInvoice.isPresent()){
+            return salesInvoiceMapper.toDTO(existingInvoice.get());
+        }
+
+
 
         // ***** Set Customer Details from Order into SalesInvoiceDTO *****
         salesInvoiceDTO.setCustomerId(order.getCustomerId());
@@ -97,6 +108,7 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
         if (salesInvoiceDTO.getInvoiceItems() == null || salesInvoiceDTO.getInvoiceItems().isEmpty()) {
             List<SalesInvoiceItem> invoiceItems = order.getOrderItems().stream().map(orderItem -> {
                 SalesInvoiceItem invoiceItem = new SalesInvoiceItem();
+                invoiceItem.setProductName(orderItem.getProductName());
                 invoiceItem.setProductId(orderItem.getProductId());
                 invoiceItem.setQuantity(orderItem.getQuantity());
                 invoiceItem.setUnitPrice(orderItem.getUnitPrice());
@@ -127,6 +139,9 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
         List<SalesInvoiceItem> invoiceItems = order.getOrderItems().stream().map(orderItem -> {
             SalesInvoiceItem item = new SalesInvoiceItem();
             item.setProductId(orderItem.getProductId());
+            // Fetch product name from product service
+            ProductDTO product = productServiceImpl.getProductById(orderItem.getProductId());
+            item.setProductName(product.getProductName());
             item.setQuantity(orderItem.getQuantity());
             item.setUnitPrice(orderItem.getUnitPrice());
             item.setDiscount(orderItem.getDiscount());

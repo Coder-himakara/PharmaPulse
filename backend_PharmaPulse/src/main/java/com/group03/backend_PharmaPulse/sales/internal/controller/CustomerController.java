@@ -14,7 +14,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/customers")
-@PreAuthorize("hasRole('EMPLOYEE')")
+@PreAuthorize("hasAnyRole('EMPLOYEE','SALES_REP')")
+// Allow requests from your frontend origin
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -24,7 +25,7 @@ public class CustomerController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('employee:read')")
+    @PreAuthorize("hasAnyAuthority('employee:read','sales_rep:read')")//retrieving
     public ResponseEntity<StandardResponse> getAllCustomers() {
         List<CustomerDTO> customerDTOS = customerService.getAllCustomers();
         return new ResponseEntity<>(
@@ -34,7 +35,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('employee:read')")
+    @PreAuthorize("hasAnyAuthority('employee:read','sales_rep:read')")
     public ResponseEntity<StandardResponse> getCustomerById(@PathVariable Long id) {
         CustomerDTO selectedCustomer = customerService.getCustomerById(id);
         return new ResponseEntity<>(
