@@ -115,22 +115,34 @@ public class TruckServiceIMPL implements TruckService {
     }
 
     @Override
+    @Transactional
     public TruckDTO updateTruck(Long truckId, TruckDTO truckDTO) {
         Truck existingTruck = truckRepository.findById(truckId)
                 .orElseThrow(() -> new NotFoundException("Truck not found"));
 
-        // Check if the registration number is already in use by another truck
-        if (!existingTruck.getRegistrationNumber().equalsIgnoreCase(truckDTO.getRegistrationNumber()) &&
-                truckRepository.existsByRegistrationNumberIgnoreCase(truckDTO.getRegistrationNumber())) {
-            throw new IllegalArgumentException("Truck with registration number " +
-                    truckDTO.getRegistrationNumber() + " already exists");
-        }
-        Truck updatedTruck = truckMapper.toEntity(truckDTO);
-        updatedTruck.setId(truckId); // Ensure the ID is set to the existing entity's ID
-        // Preserve the current capacity from the existing truck
-        updatedTruck.setCurrentCapacity(existingTruck.getCurrentCapacity());
+        String oldRegistrationNumber = existingTruck.getRegistrationNumber();
+        String newRegistrationNumber = truckDTO.getRegistrationNumber();
 
+        // Check if registration is changing and already exists elsewhere
+        if (!oldRegistrationNumber.equalsIgnoreCase(newRegistrationNumber) &&
+                truckRepository.existsByRegistrationNumberIgnoreCase(newRegistrationNumber)) {
+            throw new IllegalArgumentException("Truck with registration number " +
+                    newRegistrationNumber + " already exists");
+        }
+
+        // Update truck entity
+        Truck updatedTruck = truckMapper.toEntity(truckDTO);
+        updatedTruck.setId(truckId);
+        // Check if the new max capacity is less than the current capacity
+        if (updatedTruck.getMaxCapacity() < existingTruck.getCurrentCapacity()) {
+            throw new IllegalArgumentException("Cannot reduce maximum capacity below current load level");
+        }
+        updatedTruck.setCurrentCapacity(existingTruck.getCurrentCapacity());
         Truck savedTruck = truckRepository.save(updatedTruck);
+        // Update inventory location using the specialized method
+        inventoryLocationServiceImpl.updateTruckLocation(
+                oldRegistrationNumber, newRegistrationNumber, truckDTO.getMaxCapacity());
+
         return truckMapper.toDTO(savedTruck);
     }
 }

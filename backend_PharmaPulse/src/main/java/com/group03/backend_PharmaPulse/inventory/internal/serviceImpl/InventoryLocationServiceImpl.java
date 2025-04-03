@@ -8,6 +8,7 @@ import com.group03.backend_PharmaPulse.inventory.internal.mapper.InventoryLocati
 import com.group03.backend_PharmaPulse.inventory.internal.repository.InventoryLocationRepo;
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,5 +49,38 @@ public class InventoryLocationServiceImpl implements InventoryLocationService {
        }else{
               throw new NotFoundException("No Inventory Locations found");
        }
+    }
+
+    /**
+     * Updates inventory location when a truck's registration number changes
+     */
+    @Transactional
+    public void updateTruckLocation(
+            String oldRegistrationNumber, String newRegistrationNumber, Integer totalCapacity) {
+
+        InventoryLocation location = inventoryLocationRepo.findByLocationName(oldRegistrationNumber)
+                .orElseThrow(() -> new NotFoundException(
+                        "Inventory Location not found for truck: " + oldRegistrationNumber));
+
+        // Check if the new name already exists (except for this location)
+        if (!oldRegistrationNumber.equals(newRegistrationNumber) &&
+                inventoryLocationRepo.existsByLocationName(newRegistrationNumber)) {
+            throw new IllegalArgumentException(
+                    "Location with name " + newRegistrationNumber + " already exists");
+        }
+        // Calculate available capacity change
+        int capacityDifference = totalCapacity - location.getTotalCapacity();
+        int newAvailableCapacity = location.getAvailableCapacity() + capacityDifference;
+        // Check if the new capacity is sufficient
+        if (newAvailableCapacity < 0) {
+            throw new IllegalArgumentException(
+                    "Cannot reduce capacity to " + totalCapacity +
+                            ". Current usage: " + (location.getTotalCapacity() - location.getAvailableCapacity()));
+        }
+        // Update location details
+        location.setLocationName(newRegistrationNumber);
+        location.setTotalCapacity(totalCapacity);
+        location.setAvailableCapacity(newAvailableCapacity);
+        inventoryLocationRepo.save(location);
     }
 }
