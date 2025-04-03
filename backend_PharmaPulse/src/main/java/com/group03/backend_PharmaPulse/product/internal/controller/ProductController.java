@@ -13,15 +13,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/products")
-@PreAuthorize("hasRole('EMPLOYEE')")
+@PreAuthorize("hasAnyRole('EMPLOYEE','SALES_REP')")
 public class ProductController {
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
+
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('employee:read')")
+    @PreAuthorize("hasAnyAuthority('employee:read','sales_rep:read')")
     public ResponseEntity<StandardResponse> getAllProducts() {
         List<ProductDTO> productDTOS  = productService.getAllProducts();
         return new ResponseEntity<>(
@@ -29,8 +30,9 @@ public class ProductController {
                 HttpStatus.OK
         );
     }
+
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('employee:read')")
+    @PreAuthorize("hasAnyAuthority('employee:read','sales_rep:read')")
     public ResponseEntity<StandardResponse> getProductsById(@PathVariable Long id) {
         ProductDTO selectedProduct = productService.getProductById(id);
         return new ResponseEntity<>(
@@ -38,20 +40,23 @@ public class ProductController {
                 HttpStatus.OK
         );
     }
+
     @PostMapping("/add")
-    @PreAuthorize("hasAuthority('employee:create')")
-    public ResponseEntity<StandardResponse> addProducts(@Valid @RequestBody ProductDTO productDTO) {
-        ProductDTO savedProduct=productService.addProduct(productDTO);
+    // This endpoint remains restricted to EMPLOYEE (or adjust if needed)
+    @PreAuthorize("hasAuthority('employee:create')")    public ResponseEntity<StandardResponse> addProducts(@Valid @RequestBody ProductDTO productDTO) {
+        ProductDTO savedProduct = productService.addProduct(productDTO);
         return new ResponseEntity<>(
                 new StandardResponse(201,"Success",savedProduct),
                 HttpStatus.CREATED
         );
     }
+
     @PutMapping("/update/{id}")
+    // This endpoint remains restricted to EMPLOYEE (or adjust if needed)
     @PreAuthorize("hasAuthority('employee:update')")
     public ResponseEntity<StandardResponse> updateProducts(@Valid @PathVariable Long id,
                                                            @RequestBody ProductDTO productDTO) {
-        ProductDTO updatedProducts=productService.updateProduct(id,productDTO);
+        ProductDTO updatedProducts = productService.updateProduct(id, productDTO);
         return new ResponseEntity<>(
                 new StandardResponse(200,"Success",updatedProducts),
                 HttpStatus.CREATED
