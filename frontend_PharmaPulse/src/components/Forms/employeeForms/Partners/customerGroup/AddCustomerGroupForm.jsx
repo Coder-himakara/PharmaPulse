@@ -2,7 +2,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { addCustomerGroups } from '../../../../../api/EmployeeApiService';
 
 const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
   const [formData, setFormData] = useState({
@@ -22,7 +22,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
       [name]: value,
     }));
   };
-//async-The function always returns a promise.
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,22 +37,8 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
 
     try {
       console.log("Sending:", formData);
-      //axios.post-Send data to the backend using an API request 
-      //await-await to pause execution until a promise resolves.
-      const response = await axios.post(
-        "http://localhost:8090/api/customer-groups/add",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          // Basic authentication
-          auth: {
-            username: "admin",
-            password: "admin123"
-          }
-        }
-      );
+      // Use the API service function instead of axios.post
+      const response = await addCustomerGroups(formData);
 
       const savedCustomerGroup = response.data.data;
       setErrorMessage("");
@@ -75,6 +61,10 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
         error.response?.data?.message || "Failed to add customer group"
       );
       console.error("Error:", error.response || error);
+      if (error.response?.status === 401) {
+        // Redirect to login if unauthorized
+        navigate("/login");
+      }
     }
   };
 
@@ -115,6 +105,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           name="customerGroupName"
           value={formData.customerGroupName}
           onChange={handleChange}
+          placeholder="ABC1 Group"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
@@ -132,6 +123,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           name="assignedSalesRep"
           value={formData.assignedSalesRep}
           onChange={handleChange}
+          placeholder="Hashan"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>
@@ -141,7 +133,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           htmlFor="descriptions"
           className="text-[16px] text-gray-800 w-1/3 text-left"
         >
-         Location:
+          Location:
         </label>
         <input
           type="text"
@@ -149,6 +141,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           name="descriptions"
           value={formData.descriptions}
           onChange={handleChange}
+          placeholder="Colombo"
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
         />
       </div>

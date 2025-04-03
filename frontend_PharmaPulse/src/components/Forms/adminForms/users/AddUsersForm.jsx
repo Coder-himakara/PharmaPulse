@@ -7,7 +7,6 @@ import { registerUsers } from '../../../../api/AdminApiService';
 const AddUsersForm = ({ onAddUser }) => {
   const [formData, setFormData] = useState({
     username: "",
-    userId: "",
     nicNumber: "",
     email: "",
     contactNumber: "",
@@ -40,7 +39,6 @@ const AddUsersForm = ({ onAddUser }) => {
     //Form Validation 
     if (
       !formData.username ||
-      !formData.userId ||
       !formData.nicNumber ||
       !formData.email ||
       !formData.contactNumber ||
@@ -92,7 +90,6 @@ const AddUsersForm = ({ onAddUser }) => {
           // Reset form after successful submission
           setFormData({
             username: "",
-            userId: "",
             nicNumber: "",
             email: "",
             contactNumber: "",
@@ -178,7 +175,6 @@ const AddUsersForm = ({ onAddUser }) => {
         {/* Right Column with Buttons at the Bottom */}
         <div className="space-y-4">
           {[
-            ["User ID", "userId", "text"],
             ["Contact Number", "contactNumber", "text"],
             ["Date of Joined", "dateOfJoined", "date"],
           ].map(([label, name, type]) => (

@@ -49,8 +49,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/users/register").hasAuthority(ADMIN_CREATE.name())
                         .requestMatchers("/swagger-ui/index.html").permitAll()
                         .requestMatchers("/ws/**").permitAll() // Handled in interceptor. For websocket
-                        .requestMatchers(HttpMethod.POST, "/api/customer-groups/add").permitAll() // Permit this endpoint
-
                         .anyRequest().authenticated())
                 .cors(cors -> cors.configure(http))
                 .csrf(customizer -> customizer.disable())

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { getAllProducts } from '../../../../api/EmployeeApiService';
 
 const ProductsInfoTable = ({ refreshTrigger }) => {
   const [search, setSearch] = useState("");
@@ -16,20 +16,10 @@ const ProductsInfoTable = ({ refreshTrigger }) => {
     const fetchProducts = async () => {
       try {
         console.log("Fetching products...");
-        const response = await axios.get(
-          "http://localhost:8090/api/products/all",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            auth: {
-              username: "employee",
-              password: "employee123",
-            },
-          }
-        );
+        const token = /* get your token from somewhere, e.g., localStorage */ null; // Add token if required
+        const response = await getAllProducts(token);
         console.log("Response:", response.data);
-        setProducts(response.data.data || []);
+        setProducts(response.data.data || response.data || []);
         setErrorMessage("");
         setLoading(false);
       } catch (error) {
@@ -66,14 +56,14 @@ const ProductsInfoTable = ({ refreshTrigger }) => {
 
   const handleEdit = (product) => {
     console.log("Editing product:", product);
-    navigate(`/employee-dashboard/edit-product/${product.id}`, { // Changed to product.id
+    navigate(`/employee-dashboard/edit-product/${product.id}`, {
       state: { product },
     });
   };
 
   const handleViewProducts = (product) => {
-    console.log("Viewing product with ID:", product.id); // Log the ID for debugging
-    navigate(`/employee-dashboard/view-product/${product.id}`, { // Changed to product.id
+    console.log("Viewing product with ID:", product.id);
+    navigate(`/employee-dashboard/view-product/${product.id}`, {
       state: { product },
     });
   };
@@ -143,7 +133,7 @@ const ProductsInfoTable = ({ refreshTrigger }) => {
             <tbody>
               {filteredProducts.map((product, index) => (
                 <tr
-                  key={index}
+                  key={product.id || index} // Use product.id if available, fallback to index
                   className="bg-[#c6dceb] hover:bg-[#dce4e9] border border-gray-400"
                 >
                   <td className="p-2 text-center border border-gray-400">

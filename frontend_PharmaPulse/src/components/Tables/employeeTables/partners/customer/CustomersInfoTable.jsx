@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { getAllCustomers } from '../../../../../api/EmployeeApiService';
 
 const CustomersInfoTable = ({ refreshTrigger }) => {
   const [search, setSearch] = useState('');
@@ -15,23 +15,12 @@ const CustomersInfoTable = ({ refreshTrigger }) => {
     const fetchCustomers = async () => {
       try {
         console.log('Fetching customers...');
-        const response = await axios.get(
-          'http://localhost:8090/api/customers/all',
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            auth: {
-              username: 'admin',
-              password: 'admin123',
-            },
-          },
-        );
-        console.log('Full Response:', response); // Log full response for debugging
-        console.log('Response Data:', response.data); // Log data specifically
-        const customerData = response.data.data || response.data || []; // Handle both cases
+        const response = await getAllCustomers();
+        console.log('Full Response:', response);
+        console.log('Response Data:', response.data);
+        const customerData = response.data.data || response.data || [];
         setCustomers(customerData);
-        console.log('Set Customers:', customerData); // Confirm state update
+        console.log('Set Customers:', customerData);
         setErrorMessage('');
         setLoading(false);
       } catch (error) {
@@ -46,7 +35,6 @@ const CustomersInfoTable = ({ refreshTrigger }) => {
     fetchCustomers();
   }, [refreshTrigger]);
 
-  // Use customer_name for filtering, consistent with your original logic
   const filteredCustomers = customers.filter((customer) =>
     customer.customer_name?.toLowerCase().includes(search.toLowerCase()),
   );
@@ -55,7 +43,6 @@ const CustomersInfoTable = ({ refreshTrigger }) => {
     navigate('/employee-dashboard');
   };
 
-  // Use customer_id consistently
   const handleEdit = (customerId) => {
     const customer = customers.find((c) => c.customer_id === customerId);
     if (customer) {
@@ -198,7 +185,7 @@ CustomersInfoTable.propTypes = {
 };
 
 CustomersInfoTable.defaultProps = {
-  refreshTrigger: 0, // Default value to ensure useEffect runs at least once
+  refreshTrigger: 0,
 };
 
 export default CustomersInfoTable;
