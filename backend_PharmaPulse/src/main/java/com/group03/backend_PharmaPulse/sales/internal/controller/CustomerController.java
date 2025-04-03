@@ -6,6 +6,7 @@ import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/customers")
-@CrossOrigin(origins = "http://localhost:3123") // Allow requests from your frontend origin
+@CrossOrigin(origins = "http://localhost:3123")
+@PreAuthorize("hasAnyRole('EMPLOYEE','SALES_REP')")
+// Allow requests from your frontend origin
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -22,7 +25,8 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @GetMapping("/all") //retrieving
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyAuthority('employee:read','sales_rep:read')")//retrieving
     public ResponseEntity<StandardResponse> getAllCustomers() {
         List<CustomerDTO> customerDTOS = customerService.getAllCustomers();
         return new ResponseEntity<>(
@@ -32,6 +36,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('employee:read','sales_rep:read')")
     public ResponseEntity<StandardResponse> getCustomerById(@PathVariable Long id) {
         CustomerDTO selectedCustomer = customerService.getCustomerById(id);
         return new ResponseEntity<>(
@@ -41,6 +46,7 @@ public class CustomerController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('employee:create')")
     public ResponseEntity<StandardResponse> addCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
         try {
             CustomerDTO savedCustomer = customerService.addCustomer(customerDTO);
@@ -57,6 +63,7 @@ public class CustomerController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('employee:update')")
     public ResponseEntity<StandardResponse> updateCustomers(@Valid @PathVariable Long id,
                                                             @RequestBody CustomerDTO customerDTO) {
         try {
