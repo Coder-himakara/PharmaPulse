@@ -27,7 +27,7 @@ public class Customer {
     private String customer_nic_no;
     private String customer_brc_no;
     private String customer_email;
-    private Integer customer_phone_no;
+    private String customer_phone_no;
 
     private LocalDate registered_date;
 

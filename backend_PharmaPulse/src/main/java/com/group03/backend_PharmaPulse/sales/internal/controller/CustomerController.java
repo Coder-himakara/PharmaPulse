@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/customers")
-@CrossOrigin(origins = "http://localhost:3123")
 @PreAuthorize("hasAnyRole('EMPLOYEE','SALES_REP')")
 // Allow requests from your frontend origin
 public class CustomerController {
@@ -78,20 +77,5 @@ public class CustomerController {
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
-    }
-
-    // Handle validation errors
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        String errorMessage = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .reduce((a, b) -> a + ", " + b)
-                .orElse("Validation failed");
-        return new ResponseEntity<>(
-                new StandardResponse(400, errorMessage, null),
-                HttpStatus.BAD_REQUEST
-        );
     }
 }

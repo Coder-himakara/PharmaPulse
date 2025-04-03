@@ -379,7 +379,7 @@ const EmployeeDashboardCard = ({ content }) => {
                     </div>
                   ))}
                   {outOfStockItems.length > 3 && (
-                    <p className="text-xs text-gray-500 text-right mt-1">
+                    <p className="mt-1 text-xs text-right text-gray-500">
                       +{outOfStockItems.length - 3} more items
                     </p>
                   )}
@@ -428,7 +428,7 @@ const EmployeeDashboardCard = ({ content }) => {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="flex justify-center items-center h-64 text-gray-500">
+                <div className="flex items-center justify-center h-64 text-gray-500">
                   No expiry data available
                 </div>
               )}
@@ -437,22 +437,22 @@ const EmployeeDashboardCard = ({ content }) => {
             {/* Quantity Indicators - Now Dynamic */}
             <div className='grid grid-cols-2 gap-4 mb-8 md:grid-cols-4'>
               <div className='p-4 text-center transition-colors duration-200 bg-blue-100 rounded-lg shadow-md hover:bg-blue-200'>
-                <p className='text-sm text-blue-800'>Within 6 Months</p>
+                <p className='text-sm text-blue-800'>Total Stock</p>
                 <p className='text-2xl font-bold text-blue-900'>{counts?.sixMonths || 0}</p>
                 <p className='text-xs text-blue-700'>{counts?.sixMonthsQuantity || 0} units</p>
               </div>
               <div className='p-4 text-center transition-colors duration-200 bg-indigo-100 rounded-lg shadow-md hover:bg-indigo-200'>
-                <p className='text-sm text-indigo-800'>Within 3 Months</p>
+                <p className='text-sm text-indigo-800'>Available Stock</p>
                 <p className='text-2xl font-bold text-indigo-900'>{counts?.threeMonths || 0}</p>
                 <p className='text-xs text-indigo-700'>{counts?.threeMonthsQuantity || 0} units</p>
               </div>
               <div className='p-4 text-center transition-colors duration-200 bg-yellow-100 rounded-lg shadow-md hover:bg-yellow-200'>
-                <p className='text-sm text-yellow-800'>Within 1 Month</p>
+                <p className='text-sm text-yellow-800'>Low Stock</p>
                 <p className='text-2xl font-bold text-yellow-900'>{counts?.oneMonth || 0}</p>
                 <p className='text-xs text-yellow-700'>{counts?.oneMonthQuantity || 0} units</p>
               </div>
               <div className='p-4 text-center transition-colors duration-200 bg-red-100 rounded-lg shadow-md hover:bg-red-200'>
-                <p className='text-sm text-red-800'>Within 1 Week</p>
+                <p className='text-sm text-red-800'>Out of stock</p>
                 <p className='text-2xl font-bold text-red-900'>{counts?.oneWeek || 0}</p>
                 <p className='text-xs text-red-700'>{counts?.oneWeekQuantity || 0} units</p>
               </div>

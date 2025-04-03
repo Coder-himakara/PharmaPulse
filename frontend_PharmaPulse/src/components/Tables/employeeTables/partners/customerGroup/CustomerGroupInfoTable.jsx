@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { getAllCustomerGroups } from '../../../../../api/EmployeeApiService'; 
 
 const CustomerGroupInfoTable = ({ refreshTrigger }) => {
   const [search, setSearch] = useState("");
@@ -16,18 +16,7 @@ const CustomerGroupInfoTable = ({ refreshTrigger }) => {
     const fetchCustomerGroups = async () => {
       try {
         console.log("Fetching customer groups...");
-        const response = await axios.get(
-          "http://localhost:8090/api/customer-groups/all",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            auth: {
-              username: "admin",
-              password: "admin123",
-            },
-          }
-        );
+        const response = await getAllCustomerGroups(); // Use the imported function
         console.log("Response:", response.data);
         setCustomerGroups(response.data.data || []);
         setErrorMessage("");

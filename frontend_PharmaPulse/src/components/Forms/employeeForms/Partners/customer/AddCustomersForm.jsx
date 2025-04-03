@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
-import axios from "axios";
+import { addCustomer, getAllCustomerGroups } from "../../../../../api/EmployeeApiService";
 
 const AddCustomersForm = ({ onAddCustomer }) => {
   const formatDate = (date) => {
-    return date.toISOString().split("T")[0]; // Converts to "YYYY-MM-DD"
+    return date.toISOString().split("T")[0]; // "YYYY-MM-DD" for LocalDate
   };
 
   const [formData, setFormData] = useState({
@@ -28,34 +28,36 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [customerGroups, setCustomerGroups] = useState([]); // State for customer groups
-  const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown visibility
+  const [customerGroups, setCustomerGroups] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoadingGroups, setIsLoadingGroups] = useState(false);
 
-  // Fetch customer groups on component mount
+  // Fetch customer groups with authentication check
   useEffect(() => {
     const fetchCustomerGroups = async () => {
+      setIsLoadingGroups(true);
       try {
-        const response = await axios.get(
-          "http://localhost:8090/api/customer-groups/all",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            auth: {
-              username: "admin",
-              password: "admin123",
-            },
-          }
-        );
+        const response = await getAllCustomerGroups();
         setCustomerGroups(response.data.data || []);
+        setErrorMessage("");
       } catch (error) {
-        console.error("Error fetching customer groups:", error);
-        setErrorMessage("Failed to fetch customer groups.");
+        console.error("Error fetching customer groups:", {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+        const errorMsg = error.response?.data?.message || 
+          "Failed to fetch customer groups. Please ensure you're logged in and the server is running.";
+        setErrorMessage(errorMsg);
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          navigate("/login"); // Redirect to login if unauthorized
+        }
+      } finally {
+        setIsLoadingGroups(false);
       }
     };
-
     fetchCustomerGroups();
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,86 +68,85 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   };
 
   const handleSearch = () => {
-    setShowDropdown(!showDropdown); // Toggle dropdown visibility
+    if (!isLoadingGroups) {
+      setShowDropdown(!showDropdown);
+    }
   };
 
   const handleSelectCustomerGroup = (groupId) => {
     setFormData((prevData) => ({
       ...prevData,
-      customer_group: groupId.toString(), // Set the selected group ID
+      customer_group: groupId.toString(),
     }));
-    setShowDropdown(false); // Hide dropdown after selection
+    setShowDropdown(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check for empty fields
-    if (
-      !formData.customer_name ||
-      !formData.customer_address ||
-      !formData.customer_contact_name ||
-      !formData.customer_nic_no ||
-      !formData.customer_brc_no ||
-      !formData.customer_email ||
-      !formData.customer_phone_no ||
-      !formData.customer_group ||
-      !formData.credit_limit ||
-      !formData.credit_period_in_days ||
-      !formData.outstanding_balance
-    ) {
-      setErrorMessage("Please fill out all required fields.");
-      return;
-    }
-
-    // Validate phone number format
-    if (!/^0[0-9]{9}$/.test(formData.customer_phone_no)) {
-      setErrorMessage("Phone number must start with 0 and contain exactly 10 digits.");
-      return;
-    }
-
-    // Convert fields to match backend DTO types
-    const phoneNo = parseInt(formData.customer_phone_no, 10);
-    const group = parseInt(formData.customer_group, 10);
-    const creditLimit = parseFloat(formData.credit_limit);
-    const creditPeriod = parseInt(formData.credit_period_in_days, 10);
-    const balance = parseFloat(formData.outstanding_balance);
-
-    // Check for invalid numeric conversions
-    if (isNaN(phoneNo) || isNaN(group) || isNaN(creditLimit) || isNaN(creditPeriod) || isNaN(balance)) {
-      setErrorMessage("Please ensure all numeric fields contain valid numbers.");
-      return;
-    }
-
-    const requestData = {
-      ...formData,
-      customer_phone_no: phoneNo,           // Integer
-      customer_group: group,                // Long
-      credit_limit: creditLimit,            // Double
-      credit_period_in_days: creditPeriod,  // Integer
-      outstanding_balance: balance,         // Double
+    const requiredFields = {
+      customer_name: "Customer Name",
+      customer_address: "Address",
+      customer_contact_name: "Contact Name",
+      customer_nic_no: "NIC",
+      customer_brc_no: "BRC No",
+      customer_email: "Email",
+      customer_phone_no: "Phone Number",
+      customer_group: "Customer Group",
+      credit_limit: "Credit Limit",
+      credit_period_in_days: "Credit Period",
+      outstanding_balance: "Outstanding Balance",
     };
 
-    setErrorMessage(""); // Clear previous errors
+    for (const [key, label] of Object.entries(requiredFields)) {
+      if (!formData[key] || formData[key].trim() === "") {
+        setErrorMessage(`${label} is required.`);
+        return;
+      }
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.customer_email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+
+    const requestData = {
+      customer_name: formData.customer_name,
+      customer_address: formData.customer_address,
+      customer_contact_name: formData.customer_contact_name,
+      customer_nic_no: formData.customer_nic_no,
+      customer_brc_no: formData.customer_brc_no,
+      customer_email: formData.customer_email,
+      customer_phone_no:formData.customer_phone_no,
+      customer_group: parseInt(formData.customer_group, 10),
+      registered_date: formData.registered_date,
+      credit_limit: parseFloat(formData.credit_limit),
+      credit_period_in_days: parseInt(formData.credit_period_in_days, 10),
+      outstanding_balance: parseFloat(formData.outstanding_balance),
+    };
+
+    if (
+      isNaN(requestData.customer_phone_no) ||
+      isNaN(requestData.customer_group) ||
+      isNaN(requestData.credit_limit) ||
+      isNaN(requestData.credit_period_in_days) ||
+      isNaN(requestData.outstanding_balance)
+    ) {
+      setErrorMessage("Please ensure all numeric fields are valid.");
+      return;
+    }
+
     try {
       console.log("Sending requestData:", JSON.stringify(requestData, null, 2));
-      const response = await axios.post(
-        "http://localhost:8090/api/customers/add",
-        requestData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-          auth: {
-            username: "admin",
-            password: "admin123",
-          },
-        }
-      );
-
+      const response = await addCustomer(requestData);
+      console.log("Server response:", response.data);
       const savedCustomer = response.data.data;
+
       setSuccessMessage("Customer added successfully!");
+      setErrorMessage("");
+
       if (onAddCustomer) {
         onAddCustomer(savedCustomer);
       }
@@ -168,15 +169,16 @@ const AddCustomersForm = ({ onAddCustomer }) => {
         setSuccessMessage("");
       }, 2000);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || "An unexpected error occurred. Check the console for details.";
+      const errorMsg = error.response?.data?.message || "Failed to add customer. Please try again.";
       setErrorMessage(errorMsg);
-      console.error("Error Details:", {
-        message: error.message,
-        response: error.response?.data,
+      console.error("Error adding customer:", {
         status: error.response?.status,
-        headers: error.response?.headers,
-        request: error.request,
+        data: error.response?.data,
+        message: error.message,
       });
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        navigate("/login");
+      }
     }
   };
 
@@ -216,7 +218,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_name"
               value={formData.customer_name}
               onChange={handleChange}
+              placeholder="ABC1 Pharmacy"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
           <div className="flex items-center">
@@ -229,7 +233,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_address"
               value={formData.customer_address}
               onChange={handleChange}
+              placeholder="Kandy"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
           <div className="flex items-center">
@@ -242,7 +248,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_contact_name"
               value={formData.customer_contact_name}
               onChange={handleChange}
+              placeholder="ABC1"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
           <div className="flex items-center">
@@ -255,7 +263,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_nic_no"
               value={formData.customer_nic_no}
               onChange={handleChange}
+              placeholder="20012456v / 2001-1245-6"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
           <div className="flex items-center">
@@ -268,7 +278,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="customer_email"
               value={formData.customer_email}
               onChange={handleChange}
+              placeholder="ABC1@gmail.com"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
           <div className="flex items-center">
@@ -276,12 +288,14 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               Phone Number:
             </label>
             <input
-              type="text" // Changed to text for better control over format
+              type="text"
               id="customer_phone_no"
               name="customer_phone_no"
               value={formData.customer_phone_no}
               onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
+              placeholder="0714568978"
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
         </div>
@@ -293,22 +307,26 @@ const AddCustomersForm = ({ onAddCustomer }) => {
             </label>
             <div className="relative flex items-center w-1/2">
               <input
-                type="number" // Changed to number since backend expects Long
+                type="text"
                 id="customer_group"
                 name="customer_group"
                 value={formData.customer_group}
                 onChange={handleChange}
+                placeholder={isLoadingGroups ? "Loading groups..." : "Select group ID"}
                 className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
+                required
+                disabled={isLoadingGroups}
               />
               <button
-                type="button" // Prevent form submission
+                type="button"
                 onClick={handleSearch}
                 className="absolute text-green-500 cursor-pointer right-2"
                 aria-label="Search customer group"
+                disabled={isLoadingGroups}
               >
                 <FaSearch />
               </button>
-              {showDropdown && (
+              {showDropdown && !isLoadingGroups && (
                 <div className="absolute left-0 z-10 w-full overflow-y-auto bg-white border border-gray-300 rounded-md shadow-md top-10 max-h-40">
                   {customerGroups.length > 0 ? (
                     customerGroups.map((group) => (
@@ -332,12 +350,14 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               BRC No:
             </label>
             <input
-              type="text" // Changed to text to match backend String type
+              type="text"
               id="customer_brc_no"
               name="customer_brc_no"
               value={formData.customer_brc_no}
               onChange={handleChange}
+              placeholder="BRC1"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
           <div className="flex items-center">
@@ -350,6 +370,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="registered_date"
               value={formData.registered_date}
               readOnly
+              placeholder="YYYY-MM-DD"
               className="w-1/2 px-2 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md"
             />
           </div>
@@ -363,7 +384,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="credit_limit"
               value={formData.credit_limit}
               onChange={handleChange}
+              placeholder="10000.00"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
           <div className="flex items-center">
@@ -376,7 +399,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="credit_period_in_days"
               value={formData.credit_period_in_days}
               onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
+              placeholder="30"
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
           <div className="flex items-center">
@@ -389,7 +414,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
               name="outstanding_balance"
               value={formData.outstanding_balance}
               onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
+              placeholder="1000.00"
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
           <div className="flex justify-end gap-2 mt-4">

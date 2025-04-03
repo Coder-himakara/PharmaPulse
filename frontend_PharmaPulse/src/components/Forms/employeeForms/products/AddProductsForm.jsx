@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { addProducts, getAllPurchaseGroups, generateProductRefId } from "../../../../api/EmployeeApiService";
 
 const AddProductsForm = ({ onAddProduct }) => {
   const [formData, setFormData] = useState({
@@ -18,45 +18,26 @@ const AddProductsForm = ({ onAddProduct }) => {
     reorderLimitByPackage: "",
   });
 
+  const [purchaseGroups, setPurchaseGroups] = useState([]);
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [isRefIdGenerated, setIsRefIdGenerated] = useState(false);
-  const [lastRefId, setLastRefId] = useState(null); // Store the last ref ID from backend
 
-  // Fetch the last productRefId from the backend on component mount
+  // Fetch purchase groups on mount
   useEffect(() => {
-    const fetchLastRefId = async () => {
+    const fetchPurchaseGroups = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8090/api/products/last-ref-id", // Hypothetical endpoint
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-            },
-            auth: {
-              username: "employee",
-              password: "employee123",
-            },
-          }
-        );
-        const fetchedRefId = response.data.data || "RefId000"; // Default if no products exist
-        setLastRefId(fetchedRefId);
+        const response = await getAllPurchaseGroups();
+        setPurchaseGroups(response.data.data || []);
       } catch (error) {
-        console.error("Error fetching last ref ID:", error);
-        setLastRefId("RefId000"); // Fallback in case of error
+        console.error("Error fetching purchase groups:", error);
+        setErrorMessage("Failed to load purchase groups.");
       }
     };
-    fetchLastRefId();
+    fetchPurchaseGroups();
   }, []);
-
-  const generateNextRefId = () => {
-    if (!lastRefId) return "RefId001"; // Default if no lastRefId yet
-    const numericPart = parseInt(lastRefId.replace("RefId", ""), 10) || 0;
-    const nextNumber = (numericPart + 1).toString().padStart(3, "0");
-    return `RefId${nextNumber}`;
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,91 +47,82 @@ const AddProductsForm = ({ onAddProduct }) => {
     }));
   };
 
-  const handleGenerateRefId = () => {
+  const handleGenerateRefId = async () => {
     if (!formData.purchaseGroupId || isRefIdGenerated) return;
 
-    const newRefId = generateNextRefId();
-    setFormData((prevData) => ({
-      ...prevData,
-      productRefId: newRefId,
-    }));
-    setIsRefIdGenerated(true);
+    try {
+      const purchaseGroupId = parseInt(formData.purchaseGroupId, 10);
+      if (isNaN(purchaseGroupId)) {
+        setErrorMessage("Please select a valid Purchase Group.");
+        return;
+      }
+
+      const response = await generateProductRefId(purchaseGroupId);
+      const newRefId = response.data; // Assuming response is a plain string; adjust if wrapped
+      setFormData((prevData) => ({
+        ...prevData,
+        productRefId: newRefId,
+      }));
+      setIsRefIdGenerated(true);
+    } catch (error) {
+      setErrorMessage("Failed to generate Product Ref ID.");
+      console.error("Error generating product ref ID:", error);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
 
-    // Validation
-    if (
-      !formData.purchaseGroupId ||
-      !formData.productRefId ||
-      !formData.productName ||
-      !formData.genericName ||
-      !formData.description ||
-      !formData.category ||
-      !formData.packageType ||
-      !formData.unitsPerPack ||
-      !formData.productStatus ||
-      !formData.reorderLimitByPackage
-    ) {
+    const requiredFields = [
+      "purchaseGroupId", "productRefId", "productName", "genericName",
+      "description", "category", "packageType", "unitsPerPack",
+      "productStatus", "reorderLimitByPackage"
+    ];
+    if (requiredFields.some(field => !formData[field].trim())) {
       setErrorMessage("Please fill out all required fields.");
+      setIsLoading(false);
       return;
     }
 
     if (!isRefIdGenerated) {
       setErrorMessage("Please generate a Product Ref Id before submitting.");
+      setIsLoading(false);
       return;
     }
 
-    // Convert fields to match backend entity types
     const purchaseGroupId = parseInt(formData.purchaseGroupId, 10);
-    const unitsPerPack = formData.unitsPerPack; // String
     const reorderLimit = parseInt(formData.reorderLimitByPackage, 10);
 
     if (isNaN(purchaseGroupId) || isNaN(reorderLimit)) {
       setErrorMessage("Please ensure numeric fields contain valid numbers.");
+      setIsLoading(false);
       return;
     }
 
     const requestData = {
-      purchaseGroupId, // Long
-      productRefId: formData.productRefId, // String
-      productName: formData.productName, // String
-      genericName: formData.genericName, // String
-      description: formData.description, // String
-      category: formData.category, // Enum (String)
-      packageType: formData.packageType, // Enum (String)
-      unitsPerPack, // String
-      productStatus: formData.productStatus.toUpperCase(), // Enum (String, uppercase)
-      reorderLimitByPackage: reorderLimit, // Integer
+      purchaseGroupId,
+      productRefId: formData.productRefId,
+      productName: formData.productName,
+      genericName: formData.genericName,
+      description: formData.description,
+      category: formData.category.toUpperCase(),
+      packageType: formData.packageType.toUpperCase(),
+      unitsPerPack: formData.unitsPerPack,
+      productStatus: formData.productStatus.toUpperCase(),
+      reorderLimitByPackage: reorderLimit,
     };
 
-    setErrorMessage("");
     try {
-      console.log("Sending requestData:", JSON.stringify(requestData, null, 2));
-      const response = await axios.post(
-        "http://localhost:8090/api/products/add",
-        requestData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          },
-          auth: {
-            username: "employee",
-            password: "employee123",
-          },
-        }
-      );
+      const response = await addProducts(requestData);
+      const savedProduct = response.data.data || response.data;
 
-      const savedProduct = response.data.data;
       setSuccessMessage("Product added successfully!");
       if (onAddProduct) {
         onAddProduct(savedProduct);
       }
-
-      // Update lastRefId with the newly saved product's refId
-      setLastRefId(savedProduct.productRefId);
 
       setTimeout(() => {
         setFormData({
@@ -167,22 +139,18 @@ const AddProductsForm = ({ onAddProduct }) => {
         });
         setSuccessMessage("");
         setIsRefIdGenerated(false);
+        navigate("/employee-dashboard/products-info");
       }, 2000);
     } catch (error) {
-      const errorMsg = error.response?.data?.message || "An unexpected error occurred. Check the console for details.";
-      setErrorMessage(errorMsg);
-      console.error("Error Details:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        headers: error.response?.headers,
-        request: error.request,
-      });
+      setErrorMessage(error.response?.data?.message || "Failed to add product.");
+      console.error("Error adding product:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
-    navigate("/employee-dashboard");
+    navigate("/employee-dashboard/products-info");
   };
 
   return (
@@ -213,12 +181,14 @@ const AddProductsForm = ({ onAddProduct }) => {
               value={formData.purchaseGroupId}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             >
               <option value="">Select a Purchase Group</option>
-              <option value="1">Group 1</option>
-              <option value="2">Group 2</option>
-              <option value="3">Group 3</option>
-              {/* Replace with dynamic data from backend */}
+              {purchaseGroups.map(group => (
+                <option key={group.purchaseGroupId} value={group.purchaseGroupId}>
+                  {group.purchaseGroupName} (ID: {group.purchaseGroupId})
+                </option>
+              ))}
             </select>
           </div>
 
@@ -232,7 +202,9 @@ const AddProductsForm = ({ onAddProduct }) => {
               name="productName"
               value={formData.productName}
               onChange={handleChange}
+              placeholder="Penadol"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
@@ -246,7 +218,9 @@ const AddProductsForm = ({ onAddProduct }) => {
               name="genericName"
               value={formData.genericName}
               onChange={handleChange}
+              placeholder="Acetaminophen"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
@@ -261,6 +235,7 @@ const AddProductsForm = ({ onAddProduct }) => {
               value={formData.description}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
@@ -274,6 +249,7 @@ const AddProductsForm = ({ onAddProduct }) => {
               value={formData.category}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             >
               <option value="">Choose a category</option>
               <option value="MEDICINE">Medicine</option>
@@ -322,6 +298,7 @@ const AddProductsForm = ({ onAddProduct }) => {
               value={formData.packageType}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             >
               <option value="">Choose a package type</option>
               <option value="VIAL">Vial</option>
@@ -342,7 +319,9 @@ const AddProductsForm = ({ onAddProduct }) => {
               name="unitsPerPack"
               value={formData.unitsPerPack}
               onChange={handleChange}
+              placeholder="10x1 or 10T"
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
@@ -356,6 +335,7 @@ const AddProductsForm = ({ onAddProduct }) => {
               value={formData.productStatus}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             >
               <option value="">Choose a status</option>
               <option value="ACTIVE">Active</option>
@@ -366,7 +346,7 @@ const AddProductsForm = ({ onAddProduct }) => {
 
           <div className="flex items-center">
             <label htmlFor="reorderLimitByPackage" className="text-[16px] text-gray-800 w-1/2 text-left">
-              Reorder Limit By Package:
+              Reorder Limit:
             </label>
             <input
               type="number"
@@ -374,16 +354,19 @@ const AddProductsForm = ({ onAddProduct }) => {
               name="reorderLimitByPackage"
               value={formData.reorderLimitByPackage}
               onChange={handleChange}
-              className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
+              placeholder="100"
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             />
           </div>
 
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="submit"
-              className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+              disabled={isLoading}
+              className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] disabled:opacity-50"
             >
-              Add
+              {isLoading ? "Adding..." : "Add"}
             </button>
             <button
               type="button"
@@ -400,7 +383,11 @@ const AddProductsForm = ({ onAddProduct }) => {
 };
 
 AddProductsForm.propTypes = {
-  onAddProduct: PropTypes.func.isRequired,
+  onAddProduct: PropTypes.func,
+};
+
+AddProductsForm.defaultProps = {
+  onAddProduct: () => {},
 };
 
 export default AddProductsForm;

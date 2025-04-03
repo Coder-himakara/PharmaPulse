@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { getAllPurchaseGroups } from '../../../../../api/EmployeeApiService'; 
 
 const PurchaseGroupInfoTable = ({ refreshTrigger }) => {
   const [search, setSearch] = useState("");
@@ -16,20 +16,9 @@ const PurchaseGroupInfoTable = ({ refreshTrigger }) => {
     const fetchPurchaseGroups = async () => {
       try {
         console.log("Fetching purchase groups...");
-        const response = await axios.get(
-          "http://localhost:8090/api/purchase-groups/all",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            auth: {
-              username: "admin",
-              password: "admin123",
-            },
-          }
-        );
+        const response = await getAllPurchaseGroups();
         console.log("Response:", response.data);
-        setPurchaseGroups(response.data.data || []);
+        setPurchaseGroups(response.data.data || response.data || []);
         setErrorMessage("");
         setLoading(false);
       } catch (error) {

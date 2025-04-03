@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { updateCustomerGroups } from '../../../../../api/EmployeeApiService';
 
 const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   const { state } = useLocation();
@@ -19,11 +19,9 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    console.log("Location state:", state);
-    console.log("Received customerGroup:", customerGroup);
     if (!customerGroup) {
       setErrorMessage("No customer group data provided for editing.");
-      navigate("/customer-group-info");
+      navigate("/employee-dashboard/customer-group-info");
       return;
     }
     setFormData({
@@ -43,8 +41,6 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log("Form data before submission:", formData);
 
     if (
       !formData.customerGroupName.trim() ||
@@ -69,21 +65,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
     };
 
     try {
-      const url = `http://localhost:8090/api/customer-groups/update/${id}`;
-      console.log("Sending PUT request to:", url);
-      console.log("Request payload:", requestData);
-
-      const response = await axios.put(url, requestData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        auth: {
-          username: "admin",
-          password: "admin123",
-        },
-      });
-
-      console.log("Response:", response.data);
+      const response = await updateCustomerGroups(id, requestData);
       setErrorMessage("");
       setSuccessMessage("Customer Group updated successfully!");
 
@@ -92,32 +74,19 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
       }
 
       setTimeout(() => {
-        console.log("Navigating back...");
         setSuccessMessage("");
-        navigate("/customer-group-info");
+        navigate("/employee-dashboard/customer-group-info");
       }, 2000);
     } catch (error) {
       const errorMsg = error.response?.data?.message || error.message || "Failed to update customer group";
       setErrorMessage(errorMsg);
-      console.error("Error details:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-      });
+      console.error("Error updating customer group:", error);
     }
   };
 
   const handleCancel = () => {
     navigate("/employee-dashboard/customer-group-info");
   };
-
-  if (!customerGroup) {
-    return (
-      <div className="p-5 text-center text-red-600">
-        {errorMessage || "No customer group data provided"}
-      </div>
-    );
-  }
 
   const id = customerGroup.customerGroupId;
   if (!id) {
@@ -209,7 +178,7 @@ const EditCustomerGroupForm = ({ onUpdateCustomerGroup }) => {
 };
 
 EditCustomerGroupForm.propTypes = {
-  onUpdateCustomerGroup: PropTypes.func.isRequired,
+  onUpdateCustomerGroup: PropTypes.func,
 };
 
 export default EditCustomerGroupForm;

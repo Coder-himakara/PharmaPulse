@@ -200,7 +200,8 @@ const EmployeeNavbar = () => {
           {
             label: "Receipt Generate",
             items: [
-              { label: "Customer Receipt", command: () => navigate("/employee-dashboard/receipt-generate") },
+              { label: "Customer Receipt", command: () => navigate("/employee-dashboard/customer-receipt-generate") },
+              { label: "Supplier Receipt", command: () => navigate("/employee-dashboard/supplier-receipt-generate") },
             ],
           },
         ],
@@ -212,10 +213,11 @@ const EmployeeNavbar = () => {
       items: [
         [
           {
-            label: "Outstanding Report",
+            label: "Report Genarate",
             items: [
-              { label: "Monthly Report", command: () => navigate("/employee-dashboard/monthly-report-generate") },
               { label: "Stock Balance Report", command: () => navigate("/employee-dashboard/stock-balance-report-generate") },
+              { label: "Outstanding Report", command: () => navigate("/employee-dashboard/monthly-report-generate") },
+             
             ],
           },
         ],

@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import { updatePurchaseGroups } from '../../../../../api/EmployeeApiService';
 
 const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   const { state } = useLocation();
   const purchaseGroup = state?.purchaseGroup;
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     purchaseGroupName: '',
     purchaseGroupAddress: '',
@@ -22,15 +23,16 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   useEffect(() => {
     if (!purchaseGroup) {
       setErrorMessage('No purchase group data provided for editing.');
-      navigate('/purchase-group-info');
+      navigate('/employee-dashboard/purchase-group-info');
       return;
     }
-    console.log('Purchase Group Data:', purchaseGroup); // Debug initial data
     setFormData({
       purchaseGroupName: purchaseGroup.purchaseGroupName || '',
       purchaseGroupAddress: purchaseGroup.purchaseGroupAddress || '',
       purchaseGroupContactName: purchaseGroup.purchaseGroupContactName || '',
-      purchaseGroupPhoneNo: purchaseGroup.purchaseGroupPhoneNo || '',
+      purchaseGroupPhoneNo: purchaseGroup.purchaseGroupPhoneNo
+        ? String(purchaseGroup.purchaseGroupPhoneNo)
+        : '',
       purchaseGroupFaxNo: purchaseGroup.purchaseGroupFaxNo || '',
       purchaseGroupEmail: purchaseGroup.purchaseGroupEmail || '',
     });
@@ -43,13 +45,30 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted with data:', formData); // Debug form submission
     setIsLoading(true);
-    setErrorMessage(''); // Clear previous errors
-    setSuccessMessage(''); // Clear previous success
+    setErrorMessage('');
+    setSuccessMessage('');
 
-    if (Object.values(formData).some((val) => !val.trim())) {
+    // Validation
+    const requiredFields = [
+      'purchaseGroupName',
+      'purchaseGroupAddress',
+      'purchaseGroupContactName',
+      'purchaseGroupPhoneNo',
+      'purchaseGroupFaxNo',
+      'purchaseGroupEmail',
+    ];
+    if (requiredFields.some((field) => !formData[field].trim())) {
       setErrorMessage('Please fill out all required fields.');
+      setIsLoading(false);
+      return;
+    }
+
+    // Phone number validation
+    if (!/^0[0-9]{9}$/.test(formData.purchaseGroupPhoneNo)) {
+      setErrorMessage(
+        'Phone number must start with 0 and contain exactly 10 digits.',
+      );
       setIsLoading(false);
       return;
     }
@@ -61,47 +80,44 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
       return;
     }
 
+    // Prepare request data with proper types
+    const requestData = {
+      purchaseGroupName: formData.purchaseGroupName,
+      purchaseGroupAddress: formData.purchaseGroupAddress,
+      purchaseGroupContactName: formData.purchaseGroupContactName,
+      purchaseGroupPhoneNo: parseInt(formData.purchaseGroupPhoneNo, 10),
+      purchaseGroupFaxNo: formData.purchaseGroupFaxNo,
+      purchaseGroupEmail: formData.purchaseGroupEmail,
+    };
+
     try {
-      const url = `http://localhost:8090/api/purchase-groups/update/${id}`;
-      console.log('Sending PUT request to:', url); // Debug API call
-      console.log('Request payload:', formData);
+      const response = await updatePurchaseGroups(id, requestData);
 
-      const response = await axios.put(url, formData, {
-        headers: { 'Content-Type': 'application/json' },
-        auth: { username: 'admin', password: 'admin123' },
-      });
-
-      console.log('API Response:', response.data); // Debug response
       setSuccessMessage('Purchase Group updated successfully!');
-      onUpdatePurchaseGroup(response.data.data || response.data);
+      if (onUpdatePurchaseGroup) {
+        onUpdatePurchaseGroup(response.data.data || response.data);
+      }
       setTimeout(() => {
-        console.log('Navigating to /purchase-group-info'); // Debug navigation
-        navigate('/purchase-group-info');
+        navigate('/employee-dashboard/purchase-group-info');
       }, 2000);
     } catch (error) {
-      const errorMsg =
-        error.response?.data?.message ||
-        error.message ||
-        'Failed to update purchase group';
-      setErrorMessage(errorMsg);
-      console.error('Error during update:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-      });
+      setErrorMessage(
+        error.response?.data?.message || 'Failed to update purchase group',
+      );
+      console.error('Error updating purchase group:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
-    navigate('/purchase-group-info');
+    navigate('/employee-dashboard/purchase-group-info');
   };
 
-  if (!purchaseGroup) {
+  if (!purchaseGroup || !purchaseGroup.purchaseGroupId) {
     return (
       <div className='p-5 text-center text-red-600'>
-        {errorMessage || 'No purchase group data available'}
+        {errorMessage || 'Invalid purchase group data'}
       </div>
     );
   }
@@ -138,8 +154,9 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
           id='purchaseGroupName'
           name='purchaseGroupName'
           value={formData.purchaseGroupName}
-          className='w-2/3 px-2 py-2 text-sm bg-gray-100 border border-gray-300 rounded-md'
-          readOnly
+          onChange={handleChange}
+          className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
+          required
         />
       </div>
 
@@ -254,7 +271,11 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
 };
 
 EditPurchaseGroupForm.propTypes = {
-  onUpdatePurchaseGroup: PropTypes.func.isRequired,
+  onUpdatePurchaseGroup: PropTypes.func,
+};
+
+EditPurchaseGroupForm.defaultProps = {
+  onUpdatePurchaseGroup: () => {},
 };
 
 export default EditPurchaseGroupForm;

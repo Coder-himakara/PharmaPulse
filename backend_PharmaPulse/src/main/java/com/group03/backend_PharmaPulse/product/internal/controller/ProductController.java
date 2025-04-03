@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/products")
-// Removed class-level @PreAuthorize("hasRole('EMPLOYEE')")
 @PreAuthorize("hasAnyRole('EMPLOYEE','SALES_REP')")
 public class ProductController {
     private final ProductService productService;

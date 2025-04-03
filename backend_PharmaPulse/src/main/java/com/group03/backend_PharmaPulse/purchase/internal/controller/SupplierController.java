@@ -6,13 +6,13 @@ import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/suppliers")
-@CrossOrigin(origins = "http://localhost:3123") // Adjust to your frontend port
 public class SupplierController {
     private final SupplierService supplierService;
     public SupplierController(SupplierService supplierService) {
@@ -21,6 +21,7 @@ public class SupplierController {
 
     // This method is used to retrieve all suppliers
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getAllSuppliers() {
         List<SupplierDTO> supplierDTOS  = supplierService.getAllSuppliers();
         return new ResponseEntity<>(
@@ -30,6 +31,7 @@ public class SupplierController {
     }
     // This method is used to retrieve a supplier by its id
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getSuppliersById(@PathVariable Long id) {
         SupplierDTO selectedSupplier = supplierService.getSupplierById(id);
         return new ResponseEntity<>(
@@ -39,6 +41,7 @@ public class SupplierController {
     }
     // This method is used to add a purchase group
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('employee:create')")
     public ResponseEntity<StandardResponse> addSuppliers(@Valid
                                                              @RequestBody SupplierDTO supplierDTO) {
         SupplierDTO savedSupplier=supplierService.addSupplier(supplierDTO);
@@ -48,6 +51,7 @@ public class SupplierController {
         );
     }
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAuthority('employee:update')")
     public ResponseEntity<StandardResponse> updateSuppliers(@Valid @PathVariable Long id,
                                                                  @RequestBody SupplierDTO supplierDTO) {
         SupplierDTO updatedSupplier=supplierService.updateSupplier(id,supplierDTO);
