@@ -113,4 +113,24 @@ public class TruckServiceIMPL implements TruckService {
                 .orElseThrow(() -> new NotFoundException("Truck not found"));
         return truckMapper.toResponseDTO(truck);
     }
+
+    @Override
+    public TruckDTO updateTruck(Long truckId, TruckDTO truckDTO) {
+        Truck existingTruck = truckRepository.findById(truckId)
+                .orElseThrow(() -> new NotFoundException("Truck not found"));
+
+        // Check if the registration number is already in use by another truck
+        if (!existingTruck.getRegistrationNumber().equalsIgnoreCase(truckDTO.getRegistrationNumber()) &&
+                truckRepository.existsByRegistrationNumberIgnoreCase(truckDTO.getRegistrationNumber())) {
+            throw new IllegalArgumentException("Truck with registration number " +
+                    truckDTO.getRegistrationNumber() + " already exists");
+        }
+        Truck updatedTruck = truckMapper.toEntity(truckDTO);
+        updatedTruck.setId(truckId); // Ensure the ID is set to the existing entity's ID
+        // Preserve the current capacity from the existing truck
+        updatedTruck.setCurrentCapacity(existingTruck.getCurrentCapacity());
+
+        Truck savedTruck = truckRepository.save(updatedTruck);
+        return truckMapper.toDTO(savedTruck);
+    }
 }

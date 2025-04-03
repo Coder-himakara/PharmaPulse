@@ -53,4 +53,13 @@ public class TruckController {
                 HttpStatus.OK
         );
     }
+
+    @PutMapping("/update/{truckId}")
+    public ResponseEntity<StandardResponse> updateTruck(@PathVariable Long truckId, @RequestBody TruckDTO truckDTO) {
+        TruckDTO updatedTruck = truckService.updateTruck(truckId, truckDTO);
+        return new ResponseEntity<>(
+                new StandardResponse(201, "Success", updatedTruck),
+                HttpStatus.CREATED
+        );
+    }
 }

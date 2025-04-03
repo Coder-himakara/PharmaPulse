@@ -16,6 +16,7 @@ import java.util.List;
 @PreAuthorize("hasRole('EMPLOYEE')")
 public class PurchaseGroupController {
     private final PurchaseGroupService purchaseGroupService;
+
     public PurchaseGroupController(PurchaseGroupService purchaseGroupService) {
         this.purchaseGroupService = purchaseGroupService;
     }
