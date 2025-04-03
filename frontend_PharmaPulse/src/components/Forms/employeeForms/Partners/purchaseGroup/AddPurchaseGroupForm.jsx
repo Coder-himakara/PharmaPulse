@@ -180,7 +180,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
           name='purchaseGroupPhoneNo'
           value={formData.purchaseGroupPhoneNo}
           onChange={handleChange}
-          placeholder='071-2468978'
+          placeholder='0712468978'
           className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
           required
         />

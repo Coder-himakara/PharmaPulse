@@ -111,10 +111,6 @@ const AddCustomersForm = ({ onAddCustomer }) => {
       return;
     }
 
-    if (!/^\d+$/.test(formData.customer_phone_no)) {
-      setErrorMessage("Phone number must be numeric.");
-      return;
-    }
 
     const requestData = {
       customer_name: formData.customer_name,
@@ -123,7 +119,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
       customer_nic_no: formData.customer_nic_no,
       customer_brc_no: formData.customer_brc_no,
       customer_email: formData.customer_email,
-      customer_phone_no: parseInt(formData.customer_phone_no, 10),
+      customer_phone_no:formData.customer_phone_no,
       customer_group: parseInt(formData.customer_group, 10),
       registered_date: formData.registered_date,
       credit_limit: parseFloat(formData.credit_limit),

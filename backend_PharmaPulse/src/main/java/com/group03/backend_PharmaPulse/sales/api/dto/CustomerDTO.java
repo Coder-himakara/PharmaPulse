@@ -35,7 +35,7 @@ public class CustomerDTO {
     private String customer_email;
 
     @NotNull(message = "Phone Number is required")
-    private Integer customer_phone_no;
+    private String customer_phone_no;
 
     @NotNull(message = "Please select a customer group")
     private Long customer_group;

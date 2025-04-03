@@ -106,12 +106,6 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       return;
     }
 
-    if (!/^0[0-9]{9}$/.test(formData.customer_phone_no)) {
-      setErrorMessage("Phone number must start with 0 and contain exactly 10 digits.");
-      setIsLoading(false);
-      return;
-    }
-
     const phoneNo = parseInt(formData.customer_phone_no, 10);
     const group = parseInt(formData.customer_group, 10);
     const creditLimit = parseFloat(formData.credit_limit);
