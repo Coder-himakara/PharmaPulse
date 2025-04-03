@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/suppliers")
+@PreAuthorize("hasRole('EMPLOYEE')")
 public class SupplierController {
     private final SupplierService supplierService;
     public SupplierController(SupplierService supplierService) {
