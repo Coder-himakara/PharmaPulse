@@ -2,14 +2,12 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { getAllInventoryLocations } from '../../../../../api/StockTransferApiService';
 
 const StockTransferForm = () => {
-  const locations = [
-    { id: 'main-stock', name: 'Main Stock' },
-    { id: 'truck-1', name: 'Truck 1' },
-    { id: 'truck-2', name: 'Truck 2' },
-    { id: 'truck-3', name: 'Truck 3' },
-  ];
+  // Replace hardcoded locations with state
+  const [locations, setLocations] = useState([]);
+  const [isLoadingLocations, setIsLoadingLocations] = useState(false);
 
   const products = [
     {
@@ -49,9 +47,60 @@ const StockTransferForm = () => {
   const [batchRows, setBatchRows] = useState([]);
   const [proceedItems, setProceedItems] = useState([]);
 
+  // Fetch inventory locations from API
+  // Fetch inventory locations from API
+  useEffect(() => {
+    const fetchLocations = async () => {
+      setIsLoadingLocations(true);
+      try {
+        const response = await getAllInventoryLocations();
+
+        // Check for the correct response structure
+        if (response && response.data && response.data.data) {
+          // Response follows { code, message, data: [...locations] } structure
+          const locationData = response.data.data.map(location => ({
+            id: location.locationId,
+            name: location.locationName,
+            type: location.locationType,
+            capacity: {
+              total: location.totalCapacity,
+              available: location.availableCapacity
+            }
+          }));
+          setLocations(locationData);
+        } else {
+          console.error('Invalid location data format:', response);
+          setLocations([]);
+          toast.error('Failed to load inventory locations', {
+            toastId: 'location-error'
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching inventory locations:', error);
+        setLocations([]);
+        toast.error('Failed to load inventory locations', {
+          toastId: 'location-error'
+        });
+      } finally {
+        setIsLoadingLocations(false);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    
+    // If user tries to select a disabled option (same as other dropdown), ignore the change
+    if ((name === 'fromLocation' && value === formData.toLocation) || 
+        (name === 'toLocation' && value === formData.fromLocation)) {
+      // Don't update state - this prevents selection of disabled options
+      return;
+    }
+    
+    // Normal case - update the field
+    setFormData(prev => ({
       ...prev,
       [name]: value,
     }));
@@ -225,12 +274,21 @@ const StockTransferForm = () => {
               onChange={handleInputChange}
               className='w-full p-2 border rounded'
               required
+              disabled={isLoadingLocations}
             >
               <option value=''>Select Source Location</option>
               {locations.map((location) => (
-                <option key={location.id} value={location.id}>{location.name}</option>
+                <option
+                  key={location.id}
+                  value={location.id}
+                  disabled={location.id === formData.toLocation}
+                  className={location.id === formData.toLocation ? 'text-gray-400' : ''}
+                >
+                  {location.name}
+                </option>
               ))}
             </select>
+            {isLoadingLocations && <p className="text-xs text-gray-500 mt-1">Loading locations...</p>}
           </div>
           <div>
             <label className='block mb-1 text-sm font-medium text-gray-700'>To</label>
@@ -240,12 +298,21 @@ const StockTransferForm = () => {
               onChange={handleInputChange}
               className='w-full p-2 border rounded'
               required
+              disabled={isLoadingLocations}
             >
               <option value=''>Select Target Location</option>
               {locations.map((location) => (
-                <option key={location.id} value={location.id}>{location.name}</option>
+                <option
+                  key={location.id}
+                  value={location.id}
+                  disabled={location.id === formData.fromLocation}
+                  className={location.id === formData.fromLocation ? 'text-gray-400' : ''}
+                >
+                  {location.name}
+                </option>
               ))}
             </select>
+            {isLoadingLocations && <p className="text-xs text-gray-500 mt-1">Loading locations...</p>}
           </div>
         </div>
 
@@ -404,8 +471,8 @@ const StockTransferForm = () => {
             onClick={handleProceed}
             disabled={proceedItems.length === 0}
             className={`px-5 py-2 text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 ${proceedItems.length === 0
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-[#2a4d69] hover:bg-[#00796b]'
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-[#2a4d69] hover:bg-[#00796b]'
               }`}
           >
             Process Transfer {proceedItems.length > 0 && `(${proceedItems.length} ${proceedItems.length === 1 ? 'item' : 'items'})`}

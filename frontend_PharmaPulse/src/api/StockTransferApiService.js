@@ -1,7 +1,7 @@
 import apiClient from './ApiClient';
 
 export const getAllInventoryLocations = (formData) =>
-  apiClient.get('/inventory-location//all', formData, {
+  apiClient.get('/inventory-location/all', formData, {
     headers: { 'Content-Type': 'application/json' },
   });
 
