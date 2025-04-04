@@ -75,12 +75,12 @@ public class StockMovementServiceImpl implements StockMovementService {
     @Transactional
     public void saveStockMovement(StockMovementDTO stockMovementDTO) {
         StockMovement stockMovement = stockMovementMapper.toEntity(stockMovementDTO);
-        stockMovementRepo.save(stockMovement);
+        StockMovement savedStockMovement = stockMovementRepo.save(stockMovement);
 
-        if (stockMovementRepo.existsById(stockMovement.getId())) {
+        if (stockMovementRepo.existsById(savedStockMovement.getId())) {
             List<StockMovementLineDTO> stockMovementLines = stockMovementDTO.getLineList();
             for (StockMovementLineDTO lineItem : stockMovementLines) {
-                lineItem.setStockMovement(stockMovement.getId());
+                lineItem.setStockMovement(savedStockMovement.getId());
             }
             if (!stockMovementLines.isEmpty()) {
                 // Add the Stock Movement Lines to the database
