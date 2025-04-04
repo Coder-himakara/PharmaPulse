@@ -9,4 +9,5 @@ public interface InventoryLocationService {
     InventoryLocationResponse addInventoryLocation(InventoryLocationDTO inventoryLocationDTO);
     InventoryLocationResponse getInventoryLocationById(Long id);
     List<InventoryLocationResponse> getAllInventoryLocations();
+    InventoryLocationResponse getInventoryLocationByName(String locationName);
 }

@@ -42,6 +42,14 @@ public class InventoryLocationServiceImpl implements InventoryLocationService {
     }
 
     @Override
+    public InventoryLocationResponse getInventoryLocationByName(String locationName) {
+        return inventoryLocationRepo.findByLocationName(locationName)
+                .map(inventoryLocationMapper::toResponseDTO)
+                .orElseThrow(() -> new NotFoundException("Inventory Location not found for name: " + locationName));
+    }
+
+
+    @Override
     public List<InventoryLocationResponse> getAllInventoryLocations() {
        List<InventoryLocation> inventoryLocations = inventoryLocationRepo.findAll();
        if (!inventoryLocations.isEmpty()) {

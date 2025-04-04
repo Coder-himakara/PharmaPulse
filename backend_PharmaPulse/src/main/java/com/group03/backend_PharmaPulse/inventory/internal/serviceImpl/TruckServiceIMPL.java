@@ -8,6 +8,7 @@ import com.group03.backend_PharmaPulse.inventory.api.enumeration.LocationType;
 import com.group03.backend_PharmaPulse.inventory.internal.entity.Truck;
 import com.group03.backend_PharmaPulse.inventory.internal.mapper.TruckMapper;
 import com.group03.backend_PharmaPulse.inventory.internal.repository.TruckRepo;
+import com.group03.backend_PharmaPulse.inventory.internal.repository.WarehouseInventoryRepo;
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -144,5 +145,16 @@ public class TruckServiceIMPL implements TruckService {
                 oldRegistrationNumber, newRegistrationNumber, truckDTO.getMaxCapacity());
 
         return truckMapper.toDTO(savedTruck);
+    }
+
+    @Service
+    public static class StockTransferServiceImpl {
+        private final TruckRepo truckRepo;
+        private final WarehouseInventoryRepo warehouseInventoryRepo;
+
+        public StockTransferServiceImpl(TruckRepo truckRepo, WarehouseInventoryRepo warehouseInventoryRepo) {
+            this.truckRepo = truckRepo;
+            this.warehouseInventoryRepo = warehouseInventoryRepo;
+        }
     }
 }

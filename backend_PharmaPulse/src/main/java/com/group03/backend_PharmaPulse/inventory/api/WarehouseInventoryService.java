@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface WarehouseInventoryService {
     List<WarehouseInventoryDTO> getAllWarehouseInventories();
+    WarehouseInventoryDTO addOrUpdateWarehouseInventory(WarehouseInventoryDTO warehouseInventoryDTO);
+    WarehouseInventoryDTO getWarehouseInventoryByBatchAndLocation(Long batchNumber, Long locationId);
 }
