@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 const StockTransferForm = () => {
   const locations = [
@@ -15,27 +16,34 @@ const StockTransferForm = () => {
       id: 'PRD001',
       name: 'Product 1',
       batches: [
-        { batchId: 'BATCH001', itemName: 'Item A', unitPrice: 50.0, availableStock: 100, unit: 'pcs' },
-        { batchId: 'BATCH002', itemName: 'Item B', unitPrice: 60.0, availableStock: 50, unit: 'pcs' },
+        { batchId: 'BATCH001', id: 1, itemName: 'Item A', unitPrice: 50.0, availableStock: 100, unit: 'pcs' },
+        { batchId: 'BATCH002', id: 2, itemName: 'Item B', unitPrice: 60.0, availableStock: 50, unit: 'pcs' },
       ],
     },
     {
       id: 'PRD002',
       name: 'Product 2',
       batches: [
-        { batchId: 'BATCH003', itemName: 'Item C', unitPrice: 70.0, availableStock: 80, unit: 'pcs' },
-        { batchId: 'BATCH004', itemName: 'Item D', unitPrice: 80.0, availableStock: 30, unit: 'pcs' },
+        { batchId: 'BATCH003', id: 3, itemName: 'Item C', unitPrice: 70.0, availableStock: 80, unit: 'pcs' },
+        { batchId: 'BATCH004', id: 4, itemName: 'Item D', unitPrice: 80.0, availableStock: 30, unit: 'pcs' },
       ],
     },
   ];
 
+  // Generate a unique reference ID (like "ST-123")
+  function generateReferenceId() {
+    const randomNum = Math.floor(Math.random() * 1000);
+    return `ST-${randomNum}`;
+  }
+
+  // Initialize form with current timestamp
   const [formData, setFormData] = useState({
     fromLocation: '',
     toLocation: '',
-    date: '',
+    timestamp: new Date().toISOString().split('T')[0],
     productName: '',
     productType: '',
-    reference: '',
+    referenceId: generateReferenceId(),
   });
 
   const [batchRows, setBatchRows] = useState([]);
@@ -53,13 +61,15 @@ const StockTransferForm = () => {
     const newRows = [...batchRows];
 
     if (field === 'quantityPerTransfer') {
-      const numericValue = value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
-      let finalValue = numericValue === '' ? 0 : Number(numericValue);
+      const numericValue = value === '' ? 0 : parseInt(value, 10);
+      let finalValue = isNaN(numericValue) ? 0 : numericValue;
 
       const availableStock = Number(newRows[index].availableStock) || 0;
       if (finalValue > availableStock) {
         finalValue = availableStock;
-        alert('Quantity cannot exceed available stock!');
+        toast.warning('Quantity cannot exceed available stock!', {
+          toastId: "quantity-warning"
+        });
       }
 
       newRows[index] = {
@@ -78,19 +88,16 @@ const StockTransferForm = () => {
   };
 
   useEffect(() => {
-
-    if (formData.productName && formData.productType && formData.fromLocation && formData.toLocation) {
-
+    if (formData.productName && formData.fromLocation && formData.toLocation) {
       const selectedProduct = products.find((p) => p.name === formData.productName);
       if (selectedProduct) {
         const updatedBatches = selectedProduct.batches.map((batch) => ({
           batchId: batch.batchId,
+          id: batch.id, // Keep track of the numeric batch ID
           itemName: batch.itemName,
           unitPrice: batch.unitPrice,
           availableStock: Number(batch.availableStock) || 0,
-
-          quantityPerTransfer: 0, 
-
+          quantityPerTransfer: 0,
           balanceStock: Number(batch.availableStock) || 0,
           remarks: '',
           unit: batch.unit,
@@ -102,38 +109,99 @@ const StockTransferForm = () => {
     } else {
       setBatchRows([]);
     }
-
-  }, [formData.productName, formData.productType, formData.fromLocation, formData.toLocation]);
-
+  }, [formData.productName, formData.fromLocation, formData.toLocation]);
 
   const addToProceed = (index) => {
     const rowToAdd = batchRows[index];
-    if (rowToAdd.quantityPerTransfer > 0) {
-      setProceedItems((prev) => [...prev, rowToAdd]);
-      const newRows = [...batchRows];
-      newRows[index] = {
-        ...newRows[index],
-        quantityPerTransfer: 0,
-        balanceStock: newRows[index].availableStock,
-        remarks: '',
-      };
-      setBatchRows(newRows);
-      alert('Item added to proceed successfully!');
-    } else {
-      alert('Please enter a quantity greater than 0 before adding to proceed.');
+
+    if (rowToAdd.quantityPerTransfer <= 0) {
+      toast.error('Please enter a quantity greater than 0 before adding to transfer.', {
+        toastId: "quantity-error"
+      });
+      return;
     }
+
+    // Create an item with all required data for the transfer API
+    const itemToAdd = {
+      ...rowToAdd,
+      sourceLocation: formData.fromLocation,
+      targetLocation: formData.toLocation
+    };
+
+    // Add to proceedItems array
+    setProceedItems((prev) => [...prev, itemToAdd]);
+
+    // Reset the row for potential additional transfers from same batch
+    const newRows = [...batchRows];
+    newRows[index] = {
+      ...newRows[index],
+      quantityPerTransfer: 0,
+      balanceStock: newRows[index].availableStock,
+      remarks: ''
+    };
+    setBatchRows(newRows);
+
+    toast.success(`${itemToAdd.itemName} added to transfer list`, {
+      toastId: "item-added"
+    });
+  };
+
+  const handleRemoveItem = (index) => {
+    const newItems = [...proceedItems];
+    newItems.splice(index, 1);
+    setProceedItems(newItems);
+    toast.info('Item removed from transfer list', {
+      toastId: "item-removed"
+    });
   };
 
   const handleProceed = () => {
-    const batchIds = proceedItems.map((item) => item.batchId).join(', ');
-    console.log('Proceeding with batch IDs:', batchIds);
-    alert(`Proceeding with the following batch IDs: ${batchIds}`);
+    if (proceedItems.length === 0) {
+      toast.error('No items added to transfer.', {
+        toastId: "no-items-error"
+      });
+      return;
+    }
+
+    // Format data according to the required backend JSON structure
+    const transferData = {
+      referenceId: formData.referenceId,
+      timestamp: new Date().toISOString(),
+      lineList: proceedItems.map(item => ({
+        batch: item.id, // Use the numeric batch ID
+        quantity: item.quantityPerTransfer,
+        sourceLocation: getLocationName(item.sourceLocation),
+        targetLocation: getLocationName(item.targetLocation)
+      }))
+    };
+
+    console.log('Transfer data:', transferData);
+    toast.success('Stock transfer processed successfully!', {
+      toastId: "transfer-success"
+    });
+
+    // Reset form after successful submission
     setProceedItems([]);
+    setFormData({
+      fromLocation: '',
+      toLocation: '',
+      timestamp: new Date().toISOString().split('T')[0],
+      productName: '',
+      productType: '',
+      referenceId: generateReferenceId(),
+    });
+    setBatchRows([]);
+  };
+
+  // Helper function to get the location name from ID
+  const getLocationName = (locationId) => {
+    const location = locations.find(loc => loc.id === locationId);
+    return location ? location.name : locationId;
   };
 
   return (
     <div className='container p-6 mx-auto bg-gray-100 rounded-lg'>
-      <form className='p-5 bg-white rounded-lg shadow-md'>
+      <form className='p-5 bg-white rounded-lg shadow-md' onSubmit={(e) => e.preventDefault()}>
         <h2 className='text-center bg-[#1a5353] text-white p-3 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg'>
           Stock Transfer
         </h2>
@@ -143,8 +211,8 @@ const StockTransferForm = () => {
             <label className='block mb-1 text-sm font-medium text-gray-700'>Date</label>
             <input
               type='date'
-              name='date'
-              value={formData.date}
+              name='timestamp'
+              value={formData.timestamp}
               onChange={handleInputChange}
               className='w-full p-2 border rounded'
             />
@@ -156,8 +224,9 @@ const StockTransferForm = () => {
               value={formData.fromLocation}
               onChange={handleInputChange}
               className='w-full p-2 border rounded'
+              required
             >
-              <option value=''>Select Location</option>
+              <option value=''>Select Source Location</option>
               {locations.map((location) => (
                 <option key={location.id} value={location.id}>{location.name}</option>
               ))}
@@ -170,8 +239,9 @@ const StockTransferForm = () => {
               value={formData.toLocation}
               onChange={handleInputChange}
               className='w-full p-2 border rounded'
+              required
             >
-              <option value=''>Select Location</option>
+              <option value=''>Select Target Location</option>
               {locations.map((location) => (
                 <option key={location.id} value={location.id}>{location.name}</option>
               ))}
@@ -187,6 +257,7 @@ const StockTransferForm = () => {
               value={formData.productName}
               onChange={handleInputChange}
               className='w-full p-2 border rounded'
+              required
             >
               <option value=''>Select Product</option>
               {products.map((product) => (
@@ -211,25 +282,27 @@ const StockTransferForm = () => {
             <label className='block mb-1 text-sm font-medium text-gray-700'>Reference</label>
             <input
               type='text'
-              name='reference'
-              value={formData.reference}
+              name='referenceId'
+              value={formData.referenceId}
               onChange={handleInputChange}
               className='w-full p-2 border rounded'
-              placeholder='Enter reference (e.g., REF123)'
+              placeholder='Enter reference (e.g., ST-123)'
             />
           </div>
         </div>
 
+        {/* Batch Selection Table */}
         <div className='mb-4 overflow-x-auto'>
+          <h3 className="mb-2 text-sm font-semibold">Available Batches</h3>
           <table className='min-w-full bg-gray-200'>
             <thead>
               <tr className='bg-gray-300'>
-                <th className='px-4 py-2'>Batch Id</th>
+                <th className='px-4 py-2'>Batch ID</th>
                 <th className='px-4 py-2'>Item Name</th>
                 <th className='px-4 py-2'>Unit Price</th>
                 <th className='px-4 py-2'>Available Stock</th>
-                <th className='px-4 py-2'>Quantity Per Transfer</th>
-                <th className='px-4 py-2'>Balance Stock</th>
+                <th className='px-4 py-2'>Transfer Quantity</th>
+                <th className='px-4 py-2'>Balance After Transfer</th>
                 <th className='px-4 py-2'>Remarks</th>
                 <th className='px-4 py-2'>Action</th>
               </tr>
@@ -244,15 +317,11 @@ const StockTransferForm = () => {
                   <td className='px-4 py-2'>
                     <input
                       type='number'
-
-                      value={row.quantityPerTransfer ?? ''} 
-
+                      value={row.quantityPerTransfer || ''}
                       onChange={(e) => handleBatchChange(index, 'quantityPerTransfer', e.target.value)}
                       className='w-full p-1 border rounded'
                       min='0'
                       max={row.availableStock}
-                      step='1'
-                      pattern="[0-9]*"
                     />
                   </td>
                   <td className='px-4 py-2'>
@@ -261,6 +330,8 @@ const StockTransferForm = () => {
                   <td className='px-4 py-2'>
                     <input
                       type='text'
+                      value={row.remarks || ''}
+                      onChange={(e) => handleBatchChange(index, 'remarks', e.target.value)}
                       className='w-full p-1 border rounded'
                     />
                   </td>
@@ -268,24 +339,76 @@ const StockTransferForm = () => {
                     <button
                       type='button'
                       onClick={() => addToProceed(index)}
-                      className='text-green-500 hover:text-green-700'
+                      className='px-2 py-1 font-medium text-green-600 bg-green-100 rounded hover:bg-green-200'
                     >
                       Add
                     </button>
                   </td>
                 </tr>
               ))}
+              {batchRows.length === 0 && (
+                <tr>
+                  <td colSpan="8" className="px-4 py-3 text-center text-gray-500">
+                    Select a product and locations to view available batches
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
+
+        {/* Items to Transfer Summary */}
+        {proceedItems.length > 0 && (
+          <div className='mb-4'>
+            <h3 className="mb-2 text-sm font-semibold">Items to Transfer</h3>
+            <table className='min-w-full bg-blue-50'>
+              <thead>
+                <tr className='bg-blue-100'>
+                  <th className='px-4 py-2'>Batch ID</th>
+                  <th className='px-4 py-2'>Item Name</th>
+                  <th className='px-4 py-2'>From</th>
+                  <th className='px-4 py-2'>To</th>
+                  <th className='px-4 py-2'>Quantity</th>
+                  <th className='px-4 py-2'>Remarks</th>
+                  <th className='px-4 py-2'>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {proceedItems.map((item, index) => (
+                  <tr key={`${item.batchId}-${index}`} className='bg-white'>
+                    <td className='px-4 py-2'>{item.batchId}</td>
+                    <td className='px-4 py-2'>{item.itemName}</td>
+                    <td className='px-4 py-2'>{getLocationName(item.sourceLocation)}</td>
+                    <td className='px-4 py-2'>{getLocationName(item.targetLocation)}</td>
+                    <td className='px-4 py-2'>{item.quantityPerTransfer}</td>
+                    <td className='px-4 py-2'>{item.remarks || '-'}</td>
+                    <td className='px-4 py-2'>
+                      <button
+                        type='button'
+                        onClick={() => handleRemoveItem(index)}
+                        className='px-2 py-1 font-medium text-red-600 bg-red-100 rounded hover:bg-red-200'
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         <div className='flex justify-end gap-2 mt-4'>
           <button
             type='button'
             onClick={handleProceed}
-            className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
+            disabled={proceedItems.length === 0}
+            className={`px-5 py-2 text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 ${proceedItems.length === 0
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-[#2a4d69] hover:bg-[#00796b]'
+              }`}
           >
-            Proceed
+            Process Transfer {proceedItems.length > 0 && `(${proceedItems.length} ${proceedItems.length === 1 ? 'item' : 'items'})`}
           </button>
         </div>
       </form>
