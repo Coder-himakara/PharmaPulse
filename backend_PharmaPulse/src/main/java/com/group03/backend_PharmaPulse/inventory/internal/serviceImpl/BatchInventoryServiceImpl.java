@@ -3,6 +3,7 @@ package com.group03.backend_PharmaPulse.inventory.internal.serviceImpl;
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.BatchInventoryDetailsDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.ExpiryCountDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.StockCountDTO;
 import com.group03.backend_PharmaPulse.inventory.internal.entity.BatchInventory;
@@ -72,6 +73,56 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
             return batchInventoryMapper.toDTOsList(batchInventories);
         }else{
             throw new NotFoundException("No Batch Inventories found");
+        }
+    }
+
+    @Override
+    public List<BatchInventoryDetailsDTO> getBatchInventoriesDetails() {
+        try {
+            List<BatchInventory> batchInventories = batchInventoryRepo.findAll();
+            if (batchInventories.isEmpty()) {
+                throw new NotFoundException("No batch inventories found");
+            }
+            // Create the details list
+            List<BatchInventoryDetailsDTO> detailsList = new ArrayList<>();
+
+            for (BatchInventory batch : batchInventories) {
+                // Get product data for each batch
+                ProductDTO product = null;
+                try {
+                    product = productService.getProductById(batch.getProductId());
+                } catch (Exception e) {
+                    logger.warn("Failed to fetch product details for batch ID {}: {}",
+                            batch.getBatchId(), e.getMessage());
+                    // Continue with available batch data even if product fetch fails
+                }
+                BatchInventoryDetailsDTO detailsDTO = BatchInventoryDetailsDTO.builder()
+                        .batchId(batch.getBatchId())
+                        .productName(product != null ? product.getProductName() : "Unknown Product")
+                        .genericName(product != null ? product.getGenericName() : "Unknown")
+                        .purchaseInvoiceNo(batch.getPurchaseInvoiceNo())
+                        .manufactureDate(batch.getManufactureDate())
+                        .expiryDate(batch.getExpiryDate())
+                        .purchasedUnitQuantity(batch.getPurchasedUnitQuantity())
+                        .freeQuantity(batch.getFreeQuantity())
+                        .availableUnitQuantity(batch.getAvailableUnitQuantity())
+                        .wholesalePrice(batch.getWholesalePrice())
+                        .retailPrice(batch.getRetailPrice())
+                        .discount(batch.getDiscount())
+                        .batchStatus(batch.getBatchStatus())
+                        .dateReceived(batch.getDateReceived())
+                        .build();
+
+                detailsList.add(detailsDTO);
+                // Check and update batch status if needed
+                checkAndUpdateBatchStatus(batch);
+            }
+            return detailsList;
+        } catch (NotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error("Error fetching batch inventory details: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to retrieve batch inventory details", e);
         }
     }
 

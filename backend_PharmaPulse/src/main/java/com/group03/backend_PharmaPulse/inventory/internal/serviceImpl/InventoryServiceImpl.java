@@ -51,13 +51,11 @@ public class InventoryServiceImpl implements InventoryService {
             BatchInventory batchInventory = batchInventoryMapper.toEntity(
                     batchInventoryService.getBatchInventoryById(inventory.getBatch()));
 
-            // Create and populate the combined DTO
             InventoryDetailsDTO detailsDTO = InventoryDetailsDTO.builder()
                     .inventoryId(inventory.getInventoryId())
                     .locationId(inventory.getLocation())
                     .batchId(inventory.getBatch())
                     .quantity(inventory.getQuantity())
-                    // Data from BatchInventory
                     .productId(batchInventory.getProductId())
                     .wholesalePrice(batchInventory.getWholesalePrice())
                     .batchStatus(batchInventory.getBatchStatus())

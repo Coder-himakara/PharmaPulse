@@ -4,6 +4,7 @@ import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.BatchInventoryDetailsDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.ExpiryCountDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.StockCountDTO;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
@@ -30,8 +31,8 @@ public class BatchInventoryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<StandardResponse> getAllBatchInventories() {
-        List<BatchInventoryDTO> batchInventoryDTOS  = batchInventoryService.getAllBatchInventories();
+    public ResponseEntity<StandardResponse> getBatchInventoryDetails() {
+        List<BatchInventoryDetailsDTO> batchInventoryDTOS  = batchInventoryService.getBatchInventoriesDetails();
         return new ResponseEntity<>(
                 new StandardResponse(200,"Success",batchInventoryDTOS),
                 HttpStatus.OK
