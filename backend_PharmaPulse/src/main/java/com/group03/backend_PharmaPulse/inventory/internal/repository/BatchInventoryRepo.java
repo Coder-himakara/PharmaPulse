@@ -34,4 +34,5 @@ public interface BatchInventoryRepo extends JpaRepository<BatchInventory, Long> 
 
     List<BatchInventory> findByExpiryDateBeforeAndBatchStatusNot(LocalDate date, BatchStatus status);
 
+    List<BatchInventory> findByBatchStatus(BatchStatus batchStatus);
 }

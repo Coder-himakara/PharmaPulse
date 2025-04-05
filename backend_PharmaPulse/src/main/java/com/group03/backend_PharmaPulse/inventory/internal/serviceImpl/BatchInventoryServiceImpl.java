@@ -289,6 +289,56 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
 
         return finalAlerts;
     }
+
+
+    @Override
+    public List<ExpiryAlertDTO> getExpiredBatches() {
+        try {
+            List<BatchInventory> expiredBatches = batchInventoryRepo.findByBatchStatus(BatchStatus.EXPIRED);
+            if (expiredBatches.isEmpty()) {
+                logger.info("No expired batches found");
+                return Collections.emptyList();
+            }
+            // Group expired batches by product ID
+            Map<Long, List<BatchInventory>> batchesByProduct = expiredBatches.stream()
+                    .collect(Collectors.groupingBy(BatchInventory::getProductId));
+
+            List<ExpiryAlertDTO> expiredBatchAlerts = new ArrayList<>();
+            // For each product, create an ExpiryAlertDTO
+            for (Map.Entry<Long, List<BatchInventory>> entry : batchesByProduct.entrySet()) {
+                Long productId = entry.getKey();
+                List<BatchInventory> productBatches = entry.getValue();
+                ProductDTO product = null;
+                try {
+                    product = productService.getProductById(productId);
+                } catch (Exception e) {
+                    logger.warn("Failed to fetch product details for product ID {}: {}",
+                            productId, e.getMessage());
+                }
+                // Find earliest expiry date among batches
+                LocalDate earliestExpiryDate = productBatches.stream()
+                        .map(BatchInventory::getExpiryDate)
+                        .min(LocalDate::compareTo)
+                        .orElse(null);
+
+                ExpiryAlertDTO alert = ExpiryAlertDTO.builder()
+                        .productId(productId)
+                        .productName(product != null ? product.getProductName() : "Unknown Product")
+                        .batches(batchInventoryMapper.toDTOsList(productBatches))
+                        .alertMessage("Product expired")
+                        .earliestExpiryDate(earliestExpiryDate)
+                        .build();
+
+                expiredBatchAlerts.add(alert);
+            }
+            expiredBatchAlerts.sort(Comparator.comparing(ExpiryAlertDTO::getEarliestExpiryDate));
+            return expiredBatchAlerts;
+        } catch (Exception e) {
+            logger.error("Error fetching expired batches: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to retrieve expired batches", e);
+        }
+    }
+
     /**
      * Returns a summary of expiry alerts for batches nearing expiry.
      * Counts the number of alerts for each timeframe: 1 week, 1 month, 3 months, and 6 months before expiry.
@@ -487,6 +537,7 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
 
     //Deduct inventory for a product by reducing the available quantity in batches
     @Override
+    @Transactional
     public void deductInventory(Long productId, Integer quantity) {
         // Retrieve batches for the product (sorted by expiry date)
         List<BatchInventory> batches = batchInventoryRepo.findByProductId(productId)
@@ -505,6 +556,11 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
             } else {
                 batch.setAvailableUnitQuantity(0);
                 remaining -= available;
+            }
+            // Check if available quantity is zero and update status if needed
+            if (batch.getAvailableUnitQuantity() == 0) {
+                batch.setBatchStatus(BatchStatus.SOLD);
+                logger.info("Batch {} status updated to SOLD as it's out of stock", batch.getBatchId());
             }
             batchInventoryRepo.save(batch);
         }

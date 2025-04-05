@@ -46,15 +46,15 @@ public class InventoryController {
         return inventoryReservationService.getAvailableQuantityByProductId(productId);
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasAuthority('employee:read')")
-    public ResponseEntity<StandardResponse> getAllInventories() {
-        List<InventoryResponseDTO> inventories = inventoryService.getAllInventories();
-        return new ResponseEntity<>(
-                new StandardResponse(200,"Success",inventories),
-                HttpStatus.OK
-        );
-    }
+//    @GetMapping("/all")
+//    @PreAuthorize("hasAuthority('employee:read')")
+//    public ResponseEntity<StandardResponse> getAllInventories() {
+//        List<InventoryResponseDTO> inventories = inventoryService.getAllInventories();
+//        return new ResponseEntity<>(
+//                new StandardResponse(200,"Success",inventories),
+//                HttpStatus.OK
+//        );
+//    }
     @GetMapping("/details")
     @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getInventoryDetails() {

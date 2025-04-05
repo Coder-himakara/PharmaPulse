@@ -59,6 +59,15 @@ public class BatchInventoryController {
         );
     }
 
+    @GetMapping("/expired-batches")
+    public ResponseEntity<StandardResponse> getExpiredBatches() {
+        List<ExpiryAlertDTO> expiredBatches = batchInventoryService.getExpiredBatches();
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Success", expiredBatches),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("/reorder-alerts")
     public ResponseEntity<StandardResponse> getReorderAlerts() {
         List<ReorderAlertDTO> reorderAlerts = batchInventoryService.checkReorderAlerts();
@@ -66,6 +75,13 @@ public class BatchInventoryController {
                 new StandardResponse(200, "Success", reorderAlerts),
                 HttpStatus.OK
         );
+    }
+
+    // WebSocket endpoint
+    @MessageMapping("/expiry-counts")
+    @SendTo("/topic/expiry-counts")
+    public ExpiryCountDTO getExpiryCountsWs() {
+        return batchInventoryService.getExpiryCounts();
     }
 
     @GetMapping("/expiry-counts")
@@ -77,13 +93,6 @@ public class BatchInventoryController {
                 HttpStatus.OK
         );
     }
-
-   // WebSocket endpoint
-   @MessageMapping("/expiry-counts")
-   @SendTo("/topic/expiry-counts")
-   public ExpiryCountDTO getExpiryCountsWs() {
-       return batchInventoryService.getExpiryCounts();
-   }
 
    @MessageMapping("/stock-counts")
    @SendTo("/topic/stock-counts")

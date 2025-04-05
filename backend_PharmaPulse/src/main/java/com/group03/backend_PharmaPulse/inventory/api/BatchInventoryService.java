@@ -31,4 +31,5 @@ public interface BatchInventoryService {
     List<BatchInventoryDTO> getBatchesByProductIdSorted(Long productId);
     ExpiryCountDTO getExpiryCounts();
     StockCountDTO stockAvailability();
+    List<ExpiryAlertDTO> getExpiredBatches();
 }

@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import { getAllInventoryLocations, getInventoryDetails, submitStockTransfer } from '../../../../../api/StockTransferApiService';
+import { getAllInventoryLocations, getInventoryDetails, submitStockTransfer } from '../../../../../api/InventoryApiService';
 import { getAllProducts } from '../../../../../api/EmployeeApiService';
 
 const StockTransferForm = () => {
