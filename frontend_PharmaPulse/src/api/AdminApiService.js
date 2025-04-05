@@ -12,21 +12,16 @@ export const getUserDetails = () =>
     headers: { 'Content-Type': 'application/json' },
   });
 
-
 export const updateUserDetails = async (userId, formData) => {
   try {
-    const response = await  apiClient.put(
-      `/users/update/${userId}`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    );
+    const response = await apiClient.put(`/users/update/${userId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response;
   } catch (error) {
-    console.error("Error updating user:", error);
+    console.error('Error updating user:', error);
     throw error;
   }
 };

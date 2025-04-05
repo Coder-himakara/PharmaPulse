@@ -5,7 +5,7 @@ import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { updateUserDetails } from "../../../../api/AdminApiService";
 
-const EditUsersForm = ({ onUpdateUser }) => {
+const EditUsersForm = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { userId } = useParams();

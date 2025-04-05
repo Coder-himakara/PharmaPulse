@@ -11,7 +11,7 @@ const ViewUserDetails = () => {
 
   // Format date array [yyyy, mm, dd] to string "YYYY-MM-DD"
   const formatDate = (dateArray) => {
-    if (!dateArray) return "Not available";
+    if (!dateArray) return 'Not available';
 
     // If it's already a formatted string, return it
     if (typeof dateArray === 'string') return dateArray;
@@ -22,12 +22,12 @@ const ViewUserDetails = () => {
       return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     }
 
-    return "Invalid date format";
+    return 'Invalid date format';
   };
 
   // Format role to be more readable
   const formatRole = (role) => {
-    if (!role) return "Not specified";
+    if (!role) return 'Not specified';
 
     // If already formatted, return as is
     if (role.includes(' ')) return role;
@@ -35,7 +35,7 @@ const ViewUserDetails = () => {
     // Convert SNAKE_CASE to Title Case
     return role
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   };
 
@@ -71,7 +71,7 @@ const ViewUserDetails = () => {
                 ? URL.createObjectURL(user.profilePicture)
                 : 'https://via.placeholder.com/80'
             }
-            alt={user.username || "User"}
+            alt={user.username || 'User'}
             className='w-24 h-24 rounded-full'
           />
         </div>
@@ -84,40 +84,54 @@ const ViewUserDetails = () => {
             <span className='w-2/3'>{user.userId}</span>
           </li>
           <li className='flex'>
-            <span className='w-1/3 font-semibold text-[#1a5353]'>Username:</span>
-            <span className='w-2/3'>{user.username || "Not set"}</span>
+            <span className='w-1/3 font-semibold text-[#1a5353]'>
+              Username:
+            </span>
+            <span className='w-2/3'>{user.username || 'Not set'}</span>
           </li>
           <li className='flex'>
             <span className='w-1/3 font-semibold text-[#1a5353]'>Email:</span>
-            <span className='w-2/3'>{user.email || "Not provided"}</span>
+            <span className='w-2/3'>{user.email || 'Not provided'}</span>
           </li>
           <li className='flex'>
             <span className='w-1/3 font-semibold text-[#1a5353]'>Contact:</span>
-            <span className='w-2/3'>{user.contactNumber || "Not provided"}</span>
+            <span className='w-2/3'>
+              {user.contactNumber || 'Not provided'}
+            </span>
           </li>
           <li className='flex'>
-            <span className='w-1/3 font-semibold text-[#1a5353]'>NIC Number:</span>
-            <span className='w-2/3'>{user.nicNumber || "Not provided"}</span>
+            <span className='w-1/3 font-semibold text-[#1a5353]'>
+              NIC Number:
+            </span>
+            <span className='w-2/3'>{user.nicNumber || 'Not provided'}</span>
           </li>
           <li className='flex'>
             <span className='w-1/3 font-semibold text-[#1a5353]'>Address:</span>
-            <span className='w-2/3'>{user.address || "Not provided"}</span>
+            <span className='w-2/3'>{user.address || 'Not provided'}</span>
           </li>
           <li className='flex'>
             <span className='w-1/3 font-semibold text-[#1a5353]'>Role:</span>
             <span className='w-2/3'>{formatRole(user.role)}</span>
           </li>
           <li className='flex'>
-            <span className='w-1/3 font-semibold text-[#1a5353]'>Date Joined:</span>
+            <span className='w-1/3 font-semibold text-[#1a5353]'>
+              Date Joined:
+            </span>
             <span className='w-2/3'>{formatDate(user.dateOfJoined)}</span>
           </li>
           <li className='flex'>
             <span className='w-1/3 font-semibold text-[#1a5353]'>Status:</span>
-            <span className={`w-2/3 px-2 py-1 text-sm rounded-full inline-block text-center
-              ${user.status === "ACTIVE" ? "bg-green-100 text-green-800" :
-                user.status === "INACTIVE" ? "bg-red-100 text-red-800" :
-                  "bg-gray-100 text-gray-800"}`}>
-              {user.status || "Unknown"}
+            <span
+              className={`w-2/3 px-2 py-1 text-sm rounded-full inline-block text-center
+              ${
+                user.status === 'ACTIVE'
+                  ? 'bg-green-100 text-green-800'
+                  : user.status === 'INACTIVE'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-gray-100 text-gray-800'
+              }`}
+            >
+              {user.status || 'Unknown'}
             </span>
           </li>
         </ul>
@@ -133,7 +147,11 @@ const ViewUserDetails = () => {
 
         <button
           className='px-4 py-2 text-white bg-[#4c85a6] rounded-md hover:bg-[#15375c]'
-          onClick={() => navigate(`/admin-dashboard/edit-user/${user.userId}`, { state: { user } })}
+          onClick={() =>
+            navigate(`/admin-dashboard/edit-user/${user.userId}`, {
+              state: { user },
+            })
+          }
         >
           Edit User
         </button>
