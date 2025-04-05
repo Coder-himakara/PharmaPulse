@@ -11,7 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockMovementDTO {
-
     private String referenceId; // Link to purchase/sale/transfer ID
     private LocalDateTime timestamp;
     private List<StockMovementLineDTO> lineList;

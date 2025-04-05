@@ -3,6 +3,7 @@ package com.group03.backend_PharmaPulse.inventory.internal.controller;
 
 import com.group03.backend_PharmaPulse.inventory.api.InventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ProductAvailabilityDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.InventoryDetailsDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.InventoryResponseDTO;
 import com.group03.backend_PharmaPulse.inventory.internal.serviceImpl.InventoryReservationServiceImpl;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
@@ -54,5 +55,13 @@ public class InventoryController {
                 HttpStatus.OK
         );
     }
-
+    @GetMapping("/details")
+    @PreAuthorize("hasAuthority('employee:read')")
+    public ResponseEntity<StandardResponse> getInventoryDetails() {
+        List<InventoryDetailsDTO> inventoryDetails = inventoryService.getInventoryDetails();
+        return new ResponseEntity<>(
+                new StandardResponse(200,"Success",inventoryDetails),
+                HttpStatus.OK
+        );
+    }
 }

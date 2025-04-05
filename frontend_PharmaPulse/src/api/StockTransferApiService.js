@@ -5,7 +5,12 @@ export const getAllInventoryLocations = (formData) =>
     headers: { 'Content-Type': 'application/json' },
   });
 
-export const getAllInventories = (formData) =>
-  apiClient.get('/inventory/all', formData, {
+export const getInventoryDetails = (formData) =>
+  apiClient.get('/inventory/details', formData, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+export const submitStockTransfer = (formData) =>
+  apiClient.post('/stock-transfer/process', formData, {
     headers: { 'Content-Type': 'application/json' },
   });
