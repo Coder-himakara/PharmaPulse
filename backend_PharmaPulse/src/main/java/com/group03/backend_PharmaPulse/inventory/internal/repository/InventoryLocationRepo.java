@@ -10,8 +10,8 @@ import java.util.Optional;
 @Repository
 @EnableJpaRepositories
 public interface InventoryLocationRepo extends JpaRepository<InventoryLocation, Long> {
-    boolean existsByLocationName(String locationName);
 
+    boolean existsByLocationName(String locationName);
     // Add method to find InventoryLocation by locationName
     Optional<InventoryLocation> findByLocationName(String locationName);
 }

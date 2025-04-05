@@ -50,4 +50,7 @@ public class BatchInventory {
 
     @OneToMany(mappedBy ="batch",fetch =FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Inventory> inventoryRecords;
+
+    @OneToMany(mappedBy = "batch", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<StockMovementLine> stockMovementLines;
 }

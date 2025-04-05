@@ -3,12 +3,14 @@ package com.group03.backend_PharmaPulse.inventory.api;
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.BatchInventoryDetailsDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.ExpiryCountDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.StockCountDTO;
 import java.util.List;
 
 public interface BatchInventoryService {
     List<BatchInventoryDTO> getAllBatchInventories();
+    List<BatchInventoryDetailsDTO> getBatchInventoriesDetails();
     BatchInventoryDTO getBatchInventoryById(Long id);
 
     /**
@@ -29,4 +31,5 @@ public interface BatchInventoryService {
     List<BatchInventoryDTO> getBatchesByProductIdSorted(Long productId);
     ExpiryCountDTO getExpiryCounts();
     StockCountDTO stockAvailability();
+    List<ExpiryAlertDTO> getExpiredBatches();
 }

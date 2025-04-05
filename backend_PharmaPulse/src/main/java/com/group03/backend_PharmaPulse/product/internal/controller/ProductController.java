@@ -43,7 +43,8 @@ public class ProductController {
 
     @PostMapping("/add")
     // This endpoint remains restricted to EMPLOYEE (or adjust if needed)
-    @PreAuthorize("hasAuthority('employee:create')")    public ResponseEntity<StandardResponse> addProducts(@Valid @RequestBody ProductDTO productDTO) {
+    @PreAuthorize("hasAuthority('employee:create')")
+    public ResponseEntity<StandardResponse> addProducts(@Valid @RequestBody ProductDTO productDTO) {
         ProductDTO savedProduct = productService.addProduct(productDTO);
         return new ResponseEntity<>(
                 new StandardResponse(201,"Success",savedProduct),

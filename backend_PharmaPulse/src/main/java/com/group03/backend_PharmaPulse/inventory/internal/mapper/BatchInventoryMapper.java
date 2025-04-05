@@ -13,10 +13,12 @@ public interface BatchInventoryMapper {
     @Mapping(target = "batchId", ignore = true)  // Still ignore in toEntity if auto-generated
     @Mapping(target = "purchaseInvoice", ignore = true)
     @Mapping(target = "inventoryRecords", ignore = true)
+    @Mapping(target = "stockMovementLines", ignore = true)
     BatchInventory toEntity(BatchInventoryDTO batchInventoryDTO);
     //new
     @Mapping(target = "purchaseInvoice", ignore = true)
     @Mapping(target = "inventoryRecords",ignore = true)
+    @Mapping(target = "stockMovementLines", ignore = true)
     void updateBatchFromDto(BatchInventoryDTO dto, @MappingTarget BatchInventory entity);
 
     @Mapping(target = "batchId", source = "batchId")  // Explicitly map batchId in toDTO

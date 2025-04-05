@@ -12,6 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface WarehouseInventoryMapper {
+
     @Mapping(target = "inventoryId",ignore = true)
     @Mapping(target = "location" ,source = "location", qualifiedByName = "mapInventoryLocation")
     @Mapping(target = "batch",source = "batch", qualifiedByName = "mapBatchInventory")

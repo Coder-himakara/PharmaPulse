@@ -14,5 +14,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @PrimaryKeyJoinColumn(name = "inventory_id")
 public class TruckInventory extends Inventory{
-
+    private String registrationNumber;
 }
