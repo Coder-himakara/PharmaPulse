@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,4 +55,34 @@ public class UsersController {
         );
     }
 
+    @PreAuthorize("hasAuthority('admin:read')")
+    @GetMapping("/details")
+    public ResponseEntity<StandardResponse> getUserDetails() {
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Success", usersService.getUserDetails()),
+                HttpStatus.OK
+        );
+    }
+
+    @PreAuthorize("hasAuthority('admin:update')")
+    @PutMapping(value = "/update/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<StandardResponse> updateUser(
+            @PathVariable Long id,
+            @ModelAttribute UsersDTO usersDTO,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+
+        try {
+            UsersDTO updatedUser = usersService.updateUser(id, usersDTO, imageFile);
+            return new ResponseEntity<>(
+                    new StandardResponse(200, "Success", updatedUser),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            logger.error("Error updating user: ", e);
+            return new ResponseEntity<>(
+                    new StandardResponse(400, "Error: " + e.getMessage(), null),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
 }
