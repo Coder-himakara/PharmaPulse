@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prettier/prettier */
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
@@ -6,7 +5,7 @@ import { getAllInventoryLocations, getInventoryDetails, submitStockTransfer } fr
 import { getAllProducts } from '../../../../../api/EmployeeApiService';
 
 const StockTransferForm = () => {
-  // States for locations, products, and inventories
+
   const [locations, setLocations] = useState([]);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -15,6 +14,9 @@ const StockTransferForm = () => {
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const [isLoadingInventories, setIsLoadingInventories] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isFormVisible] = useState(true);
+
 
   // Initialize form with current timestamp
   const [formData, setFormData] = useState({
@@ -57,6 +59,17 @@ const StockTransferForm = () => {
     const product = products.find(p => p.id.toString() === productId.toString());
     return product ? product.name : "";
   }, [products]);
+
+  // Helper function to get inventory statistics - memoized for performance
+  const getInventoryStats = useCallback(() => {
+    if (!inventoryDetails || inventoryDetails.length === 0) return null;
+
+    return {
+      totalItems: inventoryDetails.length,
+      totalValue: inventoryDetails.reduce((sum, item) =>
+        sum + ((item.wholesalePrice || 0) * (item.quantity || 0)), 0)
+    };
+  }, [inventoryDetails]);
 
   // Fetch inventory locations from API
   useEffect(() => {
@@ -172,6 +185,7 @@ const StockTransferForm = () => {
           }
 
           setInventoryDetails(filteredInventories);
+          console.log(`Loaded ${filteredInventories.length} inventory items`);
 
           // Transform inventory data to batch rows format
           if (filteredInventories.length > 0) {
@@ -386,16 +400,13 @@ const StockTransferForm = () => {
     });
   };
 
-  // Create a unique key for the form component to force complete re-render
-  const [formKey, setFormKey] = useState(Date.now());
-
   const resetForm = () => {
-    // Force a complete re-render of the component by changing the key
-    setFormKey(Date.now());
+    // Clear all dynamic states
     setProceedItems([]);
     setBatchRows([]);
     setInventoryDetails([]);
 
+    // Reset formData to initial values
     setFormData({
       fromLocation: '',
       toLocation: '',
@@ -403,34 +414,29 @@ const StockTransferForm = () => {
       productId: '',
       productName: '',
       productSearch: '',
-      referenceId: generateReferenceId(),
+      referenceId: generateReferenceId(), // Generates new ID
     });
+
+    // Optionally re-fetch locations/products if needed (see below)
   };
 
   const handleProceed = async () => {
     if (proceedItems.length === 0) {
-      toast.error('No items added to transfer.', {
-        toastId: "no-items-error"
-      });
+      toast.error('No items added to transfer.', { toastId: "no-items-error" });
       return;
     }
-
     setIsSubmitting(true);
 
     try {
-      // Find the location objects based on IDs
       const sourceLocationObj = locations.find(loc => loc.id.toString() === formData.fromLocation.toString());
       const targetLocationObj = locations.find(loc => loc.id.toString() === formData.toLocation.toString());
 
       if (!sourceLocationObj || !targetLocationObj) {
-        toast.error('Invalid location selections', {
-          toastId: "invalid-location-error"
-        });
+        toast.error('Invalid location selections', { toastId: "invalid-location-error" });
         setIsSubmitting(false);
         return;
       }
 
-      // Format data according to the required backend JSON structure
       const transferData = {
         referenceId: formData.referenceId,
         timestamp: new Date().toISOString(),
@@ -443,29 +449,23 @@ const StockTransferForm = () => {
       };
 
       console.log('Transfer data to be sent:', transferData);
-
-      // Submit the transfer data to backend
       const response = await submitStockTransfer(transferData);
 
-      // Check if the request was successful - look for code 200 or success property
       if (response?.data?.code === 200 || response?.data?.success === true) {
         toast.success('Stock transfer processed successfully!', {
-          toastId: "transfer-success"
+          toastId: "transfer-success",
+          autoClose: 1500,
+          onClose: () => {
+            resetForm(); // This will remount the component
+          }
         });
-
-        resetForm();
-
       } else {
         const errorMessage = response?.data?.message || 'Failed to process stock transfer. Please try again.';
-        toast.error(errorMessage, {
-          toastId: "transfer-error"
-        });
+        toast.error(errorMessage, { toastId: "transfer-error" });
       }
     } catch (error) {
       console.error('Error submitting stock transfer:', error);
-      // Extract the specific error message if available
       let errorMessage = 'Unknown error occurred';
-
       if (error.response?.data?.data) {
         errorMessage = error.response.data.data;
       } else if (error.response?.data?.message) {
@@ -473,299 +473,308 @@ const StockTransferForm = () => {
       } else if (error.message) {
         errorMessage = error.message;
       }
-
-      toast.error(`Failed to process stock transfer: ${errorMessage}`, {
-        toastId: "transfer-error"
-      });
+      toast.error(`Failed to process stock transfer: ${errorMessage}`, { toastId: "transfer-error" });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className='container p-6 mx-auto bg-gray-100 rounded-lg' key={formKey}>
-      <form className='p-5 bg-white rounded-lg shadow-md' onSubmit={(e) => e.preventDefault()}>
-        <h2 className='text-center bg-[#1a5353] text-white p-3 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg'>
-          Stock Transfer
-        </h2>
+    <div className='container p-6 mx-auto bg-gray-100 rounded-lg'>
+      {isFormVisible ? (
+        <form className='p-5 bg-white rounded-lg shadow-md' onSubmit={(e) => e.preventDefault()}>
+          <h2 className='text-center bg-[#1a5353] text-white p-3 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg'>
+            Stock Transfer
+          </h2>
 
-        <div className='grid grid-cols-3 gap-2 mb-4'>
-          <div>
-            <label className='block mb-1 text-sm font-medium text-gray-700'>Date</label>
-            <input
-              type='date'
-              name='timestamp'
-              value={formData.timestamp}
-              onChange={handleInputChange}
-              className='w-full p-2 border rounded'
-            />
+          <div className='grid grid-cols-3 gap-2 mb-4'>
+            <div>
+              <label className='block mb-1 text-sm font-medium text-gray-700'>Date</label>
+              <input
+                type='date'
+                name='timestamp'
+                value={formData.timestamp}
+                onChange={handleInputChange}
+                className='w-full p-2 border rounded'
+              />
+            </div>
+            <div>
+              <label className='block mb-1 text-sm font-medium text-gray-700'>From</label>
+              <select
+                name='fromLocation'
+                value={formData.fromLocation}
+                onChange={handleInputChange}
+                className='w-full p-2 border rounded'
+                required
+                disabled={isLoadingLocations}
+              >
+                <option value=''>Select Source Location</option>
+                {locations.map((location) => (
+                  <option
+                    key={location.id}
+                    value={location.id}
+                    disabled={location.id === formData.toLocation}
+                    className={location.id === formData.toLocation ? 'text-gray-400' : ''}
+                  >
+                    {location.name}
+                  </option>
+                ))}
+              </select>
+              {isLoadingLocations && <p className="text-xs text-gray-500 mt-1">Loading locations...</p>}
+            </div>
+            <div>
+              <label className='block mb-1 text-sm font-medium text-gray-700'>To</label>
+              <select
+                name='toLocation'
+                value={formData.toLocation}
+                onChange={handleInputChange}
+                className='w-full p-2 border rounded'
+                required
+                disabled={isLoadingLocations}
+              >
+                <option value=''>Select Target Location</option>
+                {locations.map((location) => (
+                  <option
+                    key={location.id}
+                    value={location.id}
+                    disabled={location.id === formData.fromLocation}
+                    className={location.id === formData.fromLocation ? 'text-gray-400' : ''}
+                  >
+                    {location.name}
+                  </option>
+                ))}
+              </select>
+              {isLoadingLocations && <p className="text-xs text-gray-500 mt-1">Loading locations...</p>}
+            </div>
           </div>
-          <div>
-            <label className='block mb-1 text-sm font-medium text-gray-700'>From</label>
-            <select
-              name='fromLocation'
-              value={formData.fromLocation}
-              onChange={handleInputChange}
-              className='w-full p-2 border rounded'
-              required
-              disabled={isLoadingLocations}
-            >
-              <option value=''>Select Source Location</option>
-              {locations.map((location) => (
-                <option
-                  key={location.id}
-                  value={location.id}
-                  disabled={location.id === formData.toLocation}
-                  className={location.id === formData.toLocation ? 'text-gray-400' : ''}
-                >
-                  {location.name}
-                </option>
-              ))}
-            </select>
-            {isLoadingLocations && <p className="text-xs text-gray-500 mt-1">Loading locations...</p>}
-          </div>
-          <div>
-            <label className='block mb-1 text-sm font-medium text-gray-700'>To</label>
-            <select
-              name='toLocation'
-              value={formData.toLocation}
-              onChange={handleInputChange}
-              className='w-full p-2 border rounded'
-              required
-              disabled={isLoadingLocations}
-            >
-              <option value=''>Select Target Location</option>
-              {locations.map((location) => (
-                <option
-                  key={location.id}
-                  value={location.id}
-                  disabled={location.id === formData.fromLocation}
-                  className={location.id === formData.fromLocation ? 'text-gray-400' : ''}
-                >
-                  {location.name}
-                </option>
-              ))}
-            </select>
-            {isLoadingLocations && <p className="text-xs text-gray-500 mt-1">Loading locations...</p>}
-          </div>
-        </div>
 
-        <div className='grid grid-cols-2 gap-4 mb-4'>
-          <div className="relative">
-            <label className='block mb-1 text-sm font-medium text-gray-700'>
-              Product (Optional - For Filtering)
-            </label>
-            <input
-              type='text'
-              name='productSearch'
-              value={formData.productSearch}
-              onChange={handleInputChange}
-              className='w-full p-2 border rounded'
-              placeholder='Search for product to filter...'
-              autoComplete="off"
-              disabled={!formData.fromLocation || isLoadingProducts}
-            />
-            {formData.productSearch && (
-              <div className="absolute z-10 w-full mt-1 bg-white border rounded shadow-lg max-h-48 overflow-y-auto">
-                {filteredProducts.length > 0 ? (
-                  filteredProducts.map(product => (
-                    <div
-                      key={product.id}
-                      onClick={() => selectProduct(product)}
-                      className="p-2 cursor-pointer hover:bg-gray-100"
-                    >
-                      {product.name}
-                    </div>
-                  ))
-                ) : (
-                  <div className="p-2 text-gray-500">No products found</div>
-                )}
-              </div>
-            )}
-            {formData.productName && (
-              <div className="mt-2 p-1 bg-blue-50 border border-blue-100 rounded flex justify-between items-center">
-                <span className="text-sm">{formData.productName}</span>
-                <button
-                  type="button"
-                  onClick={clearSelectedProduct}
-                  className="text-xs text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-            )}
-            {(isLoadingProducts && !formData.productName) && <p className="text-xs text-gray-500 mt-1">Loading products...</p>}
-            {!formData.fromLocation && <p className="text-xs text-gray-500 mt-1">Select a source location first</p>}
-          </div>
-          <div>
-            <label className='block mb-1 text-sm font-medium text-gray-700'>Reference</label>
-            <input
-              type='text'
-              name='referenceId'
-              value={formData.referenceId}
-              onChange={handleInputChange}
-              className='w-full p-2 border rounded'
-              placeholder='Enter reference (e.g., ST-123)'
-            />
-          </div>
-        </div>
-
-        {/* Batch Selection Table */}
-        <div className='mb-4 overflow-x-auto'>
-          <h3 className="mb-2 text-sm font-semibold">
-            {formData.fromLocation
-              ? `Available Batches at ${getLocationName(formData.fromLocation)}${formData.productName ? ` filtered by ${formData.productName}` : ''}`
-              : 'Available Batches'}
-          </h3>
-          <table className='min-w-full bg-gray-200'>
-            <thead>
-              <tr className='bg-gray-300'>
-                <th className='px-4 py-2'>Batch ID</th>
-                <th className='px-4 py-2'>Product</th>
-                <th className='px-4 py-2'>Expiry Date</th>
-                <th className='px-4 py-2'>Unit Price</th>
-                <th className='px-4 py-2'>Available Stock</th>
-                <th className='px-4 py-2'>Transfer Quantity</th>
-                <th className='px-4 py-2'>Balance After Transfer</th>
-                <th className='px-4 py-2'>Status</th>
-                <th className='px-4 py-2'>Remarks</th>
-                <th className='px-4 py-2'>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {isLoadingInventories ? (
-                <tr>
-                  <td colSpan="10" className="px-4 py-3 text-center text-gray-500">
-                    Loading inventory details...
-                  </td>
-                </tr>
-              ) : (
-                <>
-                  {batchRows.map((row, index) => (
-                    <tr key={row.inventoryId} className='bg-white'>
-                      <td className='px-4 py-2'>{row.batchId}</td>
-                      <td className='px-4 py-2'>{row.productName}</td>
-                      <td className='px-4 py-2'>{row.expiryDate}</td>
-                      <td className='px-4 py-2'>{typeof row.unitPrice === 'number' ? row.unitPrice.toFixed(2) : '0.00'}</td>
-                      <td className='px-4 py-2'>{row.availableStock}</td>
-                      <td className='px-4 py-2'>
-                        <input
-                          type='number'
-                          value={row.quantityPerTransfer || ''}
-                          onChange={(e) => handleBatchChange(index, 'quantityPerTransfer', e.target.value)}
-                          className='w-full p-1 border rounded'
-                          min='0'
-                          max={row.availableStock}
-                          disabled={row.status !== 'AVAILABLE'}
-                        />
-                      </td>
-                      <td className='px-4 py-2'>
-                        {Number(row.availableStock) - Number(row.quantityPerTransfer || 0)}
-                      </td>
-                      <td className='px-4 py-2'>
-                        <span className={`px-2 py-1 text-xs rounded-full ${row.status === 'AVAILABLE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
-                          {row.status}
-                        </span>
-                      </td>
-                      <td className='px-4 py-2'>
-                        <input
-                          type='text'
-                          value={row.remarks || ''}
-                          onChange={(e) => handleBatchChange(index, 'remarks', e.target.value)}
-                          className='w-full p-1 border rounded'
-                        />
-                      </td>
-                      <td className='px-4 py-2'>
-                        <button
-                          type='button'
-                          onClick={() => addToProceed(index)}
-                          className={`px-2 py-1 font-medium rounded 
-                            ${!formData.toLocation || row.quantityPerTransfer <= 0 || row.status !== 'AVAILABLE'
-                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : 'text-green-600 bg-green-100 hover:bg-green-200'}`}
-                          disabled={!formData.toLocation || row.quantityPerTransfer <= 0 || row.status !== 'AVAILABLE'}
-                        >
-                          Add
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {batchRows.length === 0 && !isLoadingInventories && (
-                    <tr>
-                      <td colSpan="10" className="px-4 py-3 text-center text-gray-500">
-                        {!formData.fromLocation ? (
-                          "Select a source location to view available batches"
-                        ) : (
-                          `No batches found${formData.productName ? ` for ${formData.productName}` : ''} at ${getLocationName(formData.fromLocation)}`
-                        )}
-                      </td>
-                    </tr>
+          <div className='grid grid-cols-2 gap-4 mb-4'>
+            <div className="relative">
+              <label className='block mb-1 text-sm font-medium text-gray-700'>
+                Product (Optional - For Filtering)
+              </label>
+              <input
+                type='text'
+                name='productSearch'
+                value={formData.productSearch}
+                onChange={handleInputChange}
+                className='w-full p-2 border rounded'
+                placeholder='Search for product to filter...'
+                autoComplete="off"
+                disabled={!formData.fromLocation || isLoadingProducts}
+              />
+              {formData.productSearch && (
+                <div className="absolute z-10 w-full mt-1 bg-white border rounded shadow-lg max-h-48 overflow-y-auto">
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.map(product => (
+                      <div
+                        key={product.id}
+                        onClick={() => selectProduct(product)}
+                        className="p-2 cursor-pointer hover:bg-gray-100"
+                      >
+                        {product.name}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-2 text-gray-500">No products found</div>
                   )}
-                </>
+                </div>
               )}
-            </tbody>
-          </table>
-        </div>
+              {formData.productName && (
+                <div className="mt-2 p-1 bg-blue-50 border border-blue-100 rounded flex justify-between items-center">
+                  <span className="text-sm">{formData.productName}</span>
+                  <button
+                    type="button"
+                    onClick={clearSelectedProduct}
+                    className="text-xs text-gray-500 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+              {(isLoadingProducts && !formData.productName) && <p className="text-xs text-gray-500 mt-1">Loading products...</p>}
+              {!formData.fromLocation && <p className="text-xs text-gray-500 mt-1">Select a source location first</p>}
+            </div>
+            <div>
+              <label className='block mb-1 text-sm font-medium text-gray-700'>Reference</label>
+              <input
+                type='text'
+                name='referenceId'
+                value={formData.referenceId}
+                onChange={handleInputChange}
+                className='w-full p-2 border rounded'
+                placeholder='Enter reference (e.g., ST-123)'
+              />
+            </div>
+          </div>
 
-        {/* Items to Transfer Summary */}
-        {proceedItems.length > 0 && (
-          <div className='mb-4'>
-            <h3 className="mb-2 text-sm font-semibold">Items to Transfer</h3>
-            <table className='min-w-full bg-blue-50'>
+          {/* Batch Selection Table */}
+          <div className='mb-4 overflow-x-auto'>
+            <h3 className="mb-2 text-sm font-semibold">
+              {formData.fromLocation
+                ? `Available Batches at ${getLocationName(formData.fromLocation)}${formData.productName ? ` filtered by ${formData.productName}` : ''}`
+                : 'Available Batches'}
+            </h3>
+            {formData.fromLocation && inventoryDetails.length > 0 && (
+              <div className="text-xs text-gray-600 mb-2">
+                {getInventoryStats()?.totalItems || 0} items |
+                Total Value: Rs.{getInventoryStats()?.totalValue?.toFixed(2) || '0.00'}
+              </div>
+            )}
+            <table className='min-w-full bg-gray-200'>
               <thead>
-                <tr className='bg-blue-100'>
+                <tr className='bg-gray-300'>
                   <th className='px-4 py-2'>Batch ID</th>
                   <th className='px-4 py-2'>Product</th>
                   <th className='px-4 py-2'>Expiry Date</th>
-                  <th className='px-4 py-2'>From</th>
-                  <th className='px-4 py-2'>To</th>
-                  <th className='px-4 py-2'>Quantity</th>
+                  <th className='px-4 py-2'>Unit Price</th>
+                  <th className='px-4 py-2'>Available Stock</th>
+                  <th className='px-4 py-2'>Transfer Quantity</th>
+                  <th className='px-4 py-2'>Balance After Transfer</th>
+                  <th className='px-4 py-2'>Status</th>
                   <th className='px-4 py-2'>Remarks</th>
                   <th className='px-4 py-2'>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {proceedItems.map((item, index) => (
-                  <tr key={`${item.batchId}-${index}`} className='bg-white'>
-                    <td className='px-4 py-2'>{item.batchId}</td>
-                    <td className='px-4 py-2'>{item.productName}</td>
-                    <td className='px-4 py-2'>{item.expiryDate}</td>
-                    <td className='px-4 py-2'>{getLocationName(item.sourceLocation)}</td>
-                    <td className='px-4 py-2'>{getLocationName(item.targetLocation)}</td>
-                    <td className='px-4 py-2'>{item.quantityPerTransfer}</td>
-                    <td className='px-4 py-2'>{item.remarks || '-'}</td>
-                    <td className='px-4 py-2'>
-                      <button
-                        type='button'
-                        onClick={() => handleRemoveItem(index)}
-                        className='px-2 py-1 font-medium text-red-600 bg-red-100 rounded hover:bg-red-200'
-                        disabled={isSubmitting}
-                      >
-                        Remove
-                      </button>
+                {isLoadingInventories ? (
+                  <tr>
+                    <td colSpan="10" className="px-4 py-3 text-center text-gray-500">
+                      Loading inventory details...
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  <>
+                    {batchRows.map((row, index) => (
+                      <tr key={row.inventoryId} className='bg-white'>
+                        <td className='px-4 py-2'>{row.batchId}</td>
+                        <td className='px-4 py-2'>{row.productName}</td>
+                        <td className='px-4 py-2'>{row.expiryDate}</td>
+                        <td className='px-4 py-2'>{typeof row.unitPrice === 'number' ? row.unitPrice.toFixed(2) : '0.00'}</td>
+                        <td className='px-4 py-2'>{row.availableStock}</td>
+                        <td className='px-4 py-2'>
+                          <input
+                            type='number'
+                            value={row.quantityPerTransfer || ''}
+                            onChange={(e) => handleBatchChange(index, 'quantityPerTransfer', e.target.value)}
+                            className='w-full p-1 border rounded'
+                            min='0'
+                            max={row.availableStock}
+                            disabled={row.status !== 'AVAILABLE'}
+                          />
+                        </td>
+                        <td className='px-4 py-2'>
+                          {Number(row.availableStock) - Number(row.quantityPerTransfer || 0)}
+                        </td>
+                        <td className='px-4 py-2'>
+                          <span className={`px-2 py-1 text-xs rounded-full ${row.status === 'AVAILABLE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
+                            {row.status}
+                          </span>
+                        </td>
+                        <td className='px-4 py-2'>
+                          <input
+                            type='text'
+                            value={row.remarks || ''}
+                            onChange={(e) => handleBatchChange(index, 'remarks', e.target.value)}
+                            className='w-full p-1 border rounded'
+                          />
+                        </td>
+                        <td className='px-4 py-2'>
+                          <button
+                            type='button'
+                            onClick={() => addToProceed(index)}
+                            className={`px-2 py-1 font-medium rounded 
+                          ${!formData.toLocation || row.quantityPerTransfer <= 0 || row.status !== 'AVAILABLE'
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : 'text-green-600 bg-green-100 hover:bg-green-200'}`}
+                            disabled={!formData.toLocation || row.quantityPerTransfer <= 0 || row.status !== 'AVAILABLE'}
+                          >
+                            Add
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {batchRows.length === 0 && !isLoadingInventories && (
+                      <tr>
+                        <td colSpan="10" className="px-4 py-3 text-center text-gray-500">
+                          {!formData.fromLocation ? (
+                            "Select a source location to view available batches"
+                          ) : (
+                            `No batches found${formData.productName ? ` for ${formData.productName}` : ''} at ${getLocationName(formData.fromLocation)}`
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )}
               </tbody>
             </table>
           </div>
-        )}
 
-        <div className='flex justify-end gap-2 mt-4'>
-          <button
-            type='button'
-            onClick={handleProceed}
-            disabled={proceedItems.length === 0 || isSubmitting}
-            className={`px-5 py-2 text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 ${proceedItems.length === 0 || isSubmitting
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-[#2a4d69] hover:bg-[#00796b]'
-              }`}
-          >
-            {isSubmitting ? 'Processing...' : `Process Transfer ${proceedItems.length > 0 ? `(${proceedItems.length} ${proceedItems.length === 1 ? 'item' : 'items'})` : ''}`}
-          </button>
+          {/* Items to Transfer Summary */}
+          {proceedItems.length > 0 && (
+            <div className='mb-4'>
+              <h3 className="mb-2 text-sm font-semibold">Items to Transfer</h3>
+              <table className='min-w-full bg-blue-50'>
+                <thead>
+                  <tr className='bg-blue-100'>
+                    <th className='px-4 py-2'>Batch ID</th>
+                    <th className='px-4 py-2'>Product</th>
+                    <th className='px-4 py-2'>Expiry Date</th>
+                    <th className='px-4 py-2'>From</th>
+                    <th className='px-4 py-2'>To</th>
+                    <th className='px-4 py-2'>Quantity</th>
+                    <th className='px-4 py-2'>Remarks</th>
+                    <th className='px-4 py-2'>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {proceedItems.map((item, index) => (
+                    <tr key={`${item.batchId}-${index}`} className='bg-white'>
+                      <td className='px-4 py-2'>{item.batchId}</td>
+                      <td className='px-4 py-2'>{item.productName}</td>
+                      <td className='px-4 py-2'>{item.expiryDate}</td>
+                      <td className='px-4 py-2'>{getLocationName(item.sourceLocation)}</td>
+                      <td className='px-4 py-2'>{getLocationName(item.targetLocation)}</td>
+                      <td className='px-4 py-2'>{item.quantityPerTransfer}</td>
+                      <td className='px-4 py-2'>{item.remarks || '-'}</td>
+                      <td className='px-4 py-2'>
+                        <button
+                          type='button'
+                          onClick={() => handleRemoveItem(index)}
+                          className='px-2 py-1 font-medium text-red-600 bg-red-100 rounded hover:bg-red-200'
+                          disabled={isSubmitting}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <div className='flex justify-end gap-2 mt-4'>
+            <button
+              type='button'
+              onClick={handleProceed}
+              disabled={proceedItems.length === 0 || isSubmitting}
+              className={`px-5 py-2 text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 ${proceedItems.length === 0 || isSubmitting
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-[#2a4d69] hover:bg-[#00796b]'
+                }`}
+            >
+              {isSubmitting ? 'Processing...' : `Process Transfer ${proceedItems.length > 0 ? `(${proceedItems.length} ${proceedItems.length === 1 ? 'item' : 'items'})` : ''}`}
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="p-5 text-center">
+          <span className="text-gray-500">Resetting form...</span>
         </div>
-      </form>
+      )}
     </div>
   );
 };
