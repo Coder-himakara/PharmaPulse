@@ -162,7 +162,7 @@ const RetailPriceHistory = () => {
               Current Price
             </h3>
             <p className='text-4xl font-bold text-[#2a9d8f] mt-2'>
-              ${priceData[0].wholesalePrice.toFixed(2)}
+              Rs.{priceData[0].wholesalePrice.toFixed(2)}
               <span className='text-sm text-[#5e5757] ml-2'>
                 (Effective from {formatDate(priceData[0].effectiveDate)})
               </span>
