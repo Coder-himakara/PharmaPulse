@@ -32,8 +32,8 @@ const Footer = () => {
     <footer
       className={`${
         isDarkMode
-          ? "bg-neutral-600 text-neutral-200"
-          : "bg-neutral-100 text-neutral-600"
+          ? "bg-neutral-600 text-neutral-500"
+          : "bg-neutral-300 text-neutral-600"
       } w-full box-border transition-opacity duration-300 z-50 ${
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
@@ -43,7 +43,7 @@ const Footer = () => {
           className={`max-w-10xl mx-auto flex flex-wrap items-center justify-center gap-8 p-6 rounded-lg shadow-md ${
             isDarkMode
               ? "bg-neutral-700 border border-neutral-500"
-              : "bg-white border border-neutral-200"
+              : "bg-slate-300 border border-neutral-200"
           }`}
         >
           {/* Logo and Title (Emphasized) */}
@@ -53,7 +53,7 @@ const Footer = () => {
               alt="PharmaPulse Logo"
               className="h-8 mr-3 sm:h-10 md:h-12"
             />
-            <span className="text-2xl font-bold tracking-wide uppercase sm:text-3xl md:text-4xl whitespace-nowrap text-neutral-800 dark:text-neutral-100">
+            <span className="font-bold tracking-wide uppercase text-1xl sm:text-2xl md:text-2xl whitespace-nowrap text-neutral-800 dark:text-neutral-100">
               PharmaPulse
             </span>
           </div>
@@ -67,7 +67,7 @@ const Footer = () => {
               Developed by:
             </span>
             <a
-              href="https://teampharmapulse.example.com" // Replace with actual URL or remove
+              
               className={`font-bold text-base sm:text-lg md:text-xl uppercase ${
                 isDarkMode
                   ? "text-green-300 hover:text-green-200"
