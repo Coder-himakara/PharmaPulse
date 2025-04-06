@@ -10,6 +10,20 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     return date.toISOString().split("T")[0]; // "YYYY-MM-DD" for LocalDate
   };
 
+  const validatePhoneNumber = (phone) => {
+    // Sri Lankan phone number format (with or without country code)
+    const phoneRegex = /^(?:\+94|0)?[0-9]{9,10}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateNIC = (nic) => {
+    // Old NIC format: 9 digits + V/X
+    const oldNICRegex = /^[0-9]{9}[vVxX]$/;
+    // New NIC format: 12 digits
+    const newNICRegex = /^[0-9]{12}$/;
+    return oldNICRegex.test(nic) || newNICRegex.test(nic);
+  };
+
   const [formData, setFormData] = useState({
     customer_name: "",
     customer_address: "",
@@ -32,6 +46,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoadingGroups, setIsLoadingGroups] = useState(false);
   const [showPopup, setShowPopup] = useState(false); // New state for popup visibility
+  const [isLoading, setIsLoading] = useState(false); // New state for submit button loading
 
   // Fetch customer groups with authentication check
   useEffect(() => {
@@ -84,6 +99,8 @@ const AddCustomersForm = ({ onAddCustomer }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
 
     const requiredFields = {
       customer_name: "Customer Name",
@@ -100,8 +117,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     };
 
     for (const [key, label] of Object.entries(requiredFields)) {
-      if (!formData[key] || formData[key].trim() === "") {
+      if (!formData[key] || (typeof formData[key] === 'string' && formData[key].trim() === "")) {
         setErrorMessage(`${label} is required.`);
+        setIsLoading(false);
         return;
       }
     }
@@ -109,6 +127,19 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.customer_email)) {
       setErrorMessage("Please enter a valid email address.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!validatePhoneNumber(formData.customer_phone_no)) {
+      setErrorMessage("Please enter a valid phone number.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!validateNIC(formData.customer_nic_no)) {
+      setErrorMessage("Please enter a valid NIC number.");
+      setIsLoading(false);
       return;
     }
 
@@ -128,13 +159,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     };
 
     if (
-      isNaN(requestData.customer_phone_no) ||
       isNaN(requestData.customer_group) ||
       isNaN(requestData.credit_limit) ||
       isNaN(requestData.credit_period_in_days) ||
       isNaN(requestData.outstanding_balance)
     ) {
       setErrorMessage("Please ensure all numeric fields are valid.");
+      setIsLoading(false);
       return;
     }
 
@@ -181,6 +212,8 @@ const AddCustomersForm = ({ onAddCustomer }) => {
       if (error.response?.status === 401 || error.response?.status === 403) {
         navigate("/login");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -286,7 +319,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 name="customer_nic_no"
                 value={formData.customer_nic_no}
                 onChange={handleChange}
-                placeholder="20012456v / 2001-1245-6"
+                placeholder="123456789V or 200012345678"
                 className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
                 required
               />
@@ -318,6 +351,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 onChange={handleChange}
                 placeholder="0714568978"
                 className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                maxLength="12"
                 required
               />
             </div>
@@ -378,7 +412,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 name="customer_brc_no"
                 value={formData.customer_brc_no}
                 onChange={handleChange}
-                placeholder="BRC1"
+                placeholder="PV12345"
                 className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
                 required
               />
@@ -445,9 +479,10 @@ const AddCustomersForm = ({ onAddCustomer }) => {
             <div className="flex justify-end gap-2 mt-4">
               <button
                 type="submit"
-                className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+                disabled={isLoading}
+                className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] disabled:opacity-50"
               >
-                Add
+                {isLoading ? "Adding..." : "Add"}
               </button>
               <button
                 type="button"

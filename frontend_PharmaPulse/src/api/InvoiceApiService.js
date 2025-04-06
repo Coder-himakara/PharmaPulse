@@ -4,11 +4,11 @@ import apiClient from './ApiClient';
 // Enhanced error handling with more specific error messages
 export const getAllPurchaseInvoices = async () => {
   try {
-    console.log("Calling API endpoint: /purchase-invoices/all");
+    console.log('Calling API endpoint: /purchase-invoices/all');
     const response = await apiClient.get('/purchase-invoices/all', {
       headers: { 'Content-Type': 'application/json' },
     });
-    console.log("Raw response from getAllPurchaseInvoices:", response);
+    console.log('Raw response from getAllPurchaseInvoices:', response);
     return response;
   } catch (error) {
     console.error('Error fetching purchase invoices:', error);
@@ -16,7 +16,7 @@ export const getAllPurchaseInvoices = async () => {
     const userError = {
       message: 'Failed to fetch purchase invoices',
       details: error.response?.data?.details || error.message,
-      status: error.response?.status || 500
+      status: error.response?.status || 500,
     };
     throw userError;
   }
@@ -29,7 +29,10 @@ export const getPurchaseInvoiceById = async (invoiceId) => {
     const response = await apiClient.get(`/purchase-invoices/${invoiceId}`, {
       headers: { 'Content-Type': 'application/json' },
     });
-    console.log(`Raw response from getPurchaseInvoiceById(${invoiceId}):`, response);
+    console.log(
+      `Raw response from getPurchaseInvoiceById(${invoiceId}):`,
+      response,
+    );
     return response;
   } catch (error) {
     console.error(`Error fetching purchase invoice ${invoiceId}:`, error);

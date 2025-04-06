@@ -7,11 +7,7 @@ const EmployeeDashboard = () => {
     <div>
       <Navbar />
 
-      <DashboardCard
-        content={<EmpRoutes />}
-        
-      />
-    
+      <DashboardCard content={<EmpRoutes />} />
     </div>
   );
 };

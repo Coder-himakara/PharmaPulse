@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { useNavigate, useLocation } from "react-router-dom";
-import { updatePurchaseGroups } from "../../../../../api/EmployeeApiService";
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { updatePurchaseGroups } from '../../../../../api/EmployeeApiService';
 
 const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   const { state } = useLocation();
@@ -9,33 +9,33 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    purchaseGroupName: "",
-    purchaseGroupAddress: "",
-    purchaseGroupContactName: "",
-    purchaseGroupPhoneNo: "",
-    purchaseGroupFaxNo: "",
-    purchaseGroupEmail: "",
+    purchaseGroupName: '',
+    purchaseGroupAddress: '',
+    purchaseGroupContactName: '',
+    purchaseGroupPhoneNo: '',
+    purchaseGroupFaxNo: '',
+    purchaseGroupEmail: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (!purchaseGroup || !purchaseGroup.purchaseGroupId) {
-      setErrorMessage("No purchase group data provided for editing.");
-      navigate("/employee-dashboard/purchase-group-info");
+      setErrorMessage('No purchase group data provided for editing.');
+      navigate('/employee-dashboard/purchase-group-info');
       return;
     }
     setFormData({
-      purchaseGroupName: purchaseGroup.purchaseGroupName || "",
-      purchaseGroupAddress: purchaseGroup.purchaseGroupAddress || "",
-      purchaseGroupContactName: purchaseGroup.purchaseGroupContactName || "",
+      purchaseGroupName: purchaseGroup.purchaseGroupName || '',
+      purchaseGroupAddress: purchaseGroup.purchaseGroupAddress || '',
+      purchaseGroupContactName: purchaseGroup.purchaseGroupContactName || '',
       purchaseGroupPhoneNo: purchaseGroup.purchaseGroupPhoneNo
         ? String(purchaseGroup.purchaseGroupPhoneNo)
-        : "",
-      purchaseGroupFaxNo: purchaseGroup.purchaseGroupFaxNo || "",
-      purchaseGroupEmail: purchaseGroup.purchaseGroupEmail || "",
+        : '',
+      purchaseGroupFaxNo: purchaseGroup.purchaseGroupFaxNo || '',
+      purchaseGroupEmail: purchaseGroup.purchaseGroupEmail || '',
     });
   }, [purchaseGroup, navigate]);
 
@@ -47,27 +47,29 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrorMessage("");
-    setSuccessMessage("");
+    setErrorMessage('');
+    setSuccessMessage('');
 
     // Validation
     const requiredFields = [
-      "purchaseGroupName",
-      "purchaseGroupAddress",
-      "purchaseGroupContactName",
-      "purchaseGroupPhoneNo",
-      "purchaseGroupFaxNo",
-      "purchaseGroupEmail",
+      'purchaseGroupName',
+      'purchaseGroupAddress',
+      'purchaseGroupContactName',
+      'purchaseGroupPhoneNo',
+      'purchaseGroupFaxNo',
+      'purchaseGroupEmail',
     ];
     if (requiredFields.some((field) => !formData[field].trim())) {
-      setErrorMessage("Please fill out all required fields.");
+      setErrorMessage('Please fill out all required fields.');
       setIsLoading(false);
       return;
     }
 
     // Phone number validation (10 digits starting with 0)
     if (!/^0[0-9]{9}$/.test(formData.purchaseGroupPhoneNo)) {
-      setErrorMessage("Phone number must start with 0 and contain exactly 10 digits.");
+      setErrorMessage(
+        'Phone number must start with 0 and contain exactly 10 digits.',
+      );
       setIsLoading(false);
       return;
     }
@@ -75,21 +77,21 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.purchaseGroupEmail)) {
-      setErrorMessage("Please enter a valid email address.");
+      setErrorMessage('Please enter a valid email address.');
       setIsLoading(false);
       return;
     }
 
     // Fax number validation (basic format, e.g., 10 digits)
     if (!/^[0-9]{10}$/.test(formData.purchaseGroupFaxNo)) {
-      setErrorMessage("Fax number must contain exactly 10 digits.");
+      setErrorMessage('Fax number must contain exactly 10 digits.');
       setIsLoading(false);
       return;
     }
 
     const id = purchaseGroup.purchaseGroupId;
     if (!id) {
-      setErrorMessage("Purchase group ID is missing.");
+      setErrorMessage('Purchase group ID is missing.');
       setIsLoading(false);
       return;
     }
@@ -105,7 +107,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
 
     try {
       const response = await updatePurchaseGroups(id, requestData);
-      setSuccessMessage("Purchase Group updated successfully!");
+      setSuccessMessage('Purchase Group updated successfully!');
       setShowPopup(true);
 
       if (onUpdatePurchaseGroup) {
@@ -114,183 +116,183 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
 
       setTimeout(() => {
         setShowPopup(false);
-        navigate("/employee-dashboard/purchase-group-info");
+        navigate('/employee-dashboard/purchase-group-info');
       }, 2000);
     } catch (error) {
       setErrorMessage(
-        error.response?.data?.message || "Failed to update purchase group"
+        error.response?.data?.message || 'Failed to update purchase group',
       );
-      console.error("Error updating purchase group:", error);
+      console.error('Error updating purchase group:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
-    navigate("/employee-dashboard/purchase-group-info");
+    navigate('/employee-dashboard/purchase-group-info');
   };
 
   const handlePopupContinue = () => {
     setShowPopup(false);
-    navigate("/employee-dashboard/purchase-group-info");
+    navigate('/employee-dashboard/purchase-group-info');
   };
 
   if (!purchaseGroup?.purchaseGroupId) {
     return (
-      <div className="p-5 text-center text-red-600">
-        {errorMessage || "Invalid purchase group data"}
+      <div className='p-5 text-center text-red-600'>
+        {errorMessage || 'Invalid purchase group data'}
       </div>
     );
   }
 
   return (
-    <div className="relative">
+    <div className='relative'>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md border border-gray-300"
+        className='flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md border border-gray-300'
       >
-        <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
+        <h2 className='text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg'>
           Edit Purchase Group
         </h2>
 
         {errorMessage && (
-          <p className="text-[#991919] text-sm font-bold mb-4 text-center">
+          <p className='text-[#991919] text-sm font-bold mb-4 text-center'>
             {errorMessage}
           </p>
         )}
         {successMessage && !showPopup && (
-          <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">
+          <p className='text-[#3c5f3c] text-sm font-bold mb-4 text-center'>
             {successMessage}
           </p>
         )}
 
-        <div className="flex items-center mb-4">
+        <div className='flex items-center mb-4'>
           <label
-            htmlFor="purchaseGroupName"
-            className="text-[16px] text-gray-800 w-1/3 text-left"
+            htmlFor='purchaseGroupName'
+            className='text-[16px] text-gray-800 w-1/3 text-left'
           >
             Name:
           </label>
           <input
-            type="text"
-            id="purchaseGroupName"
-            name="purchaseGroupName"
+            type='text'
+            id='purchaseGroupName'
+            name='purchaseGroupName'
             value={formData.purchaseGroupName}
             onChange={handleChange}
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
             required
             maxLength={50}
           />
         </div>
 
-        <div className="flex items-center mb-4">
+        <div className='flex items-center mb-4'>
           <label
-            htmlFor="purchaseGroupAddress"
-            className="text-[16px] text-gray-800 w-1/3 text-left"
+            htmlFor='purchaseGroupAddress'
+            className='text-[16px] text-gray-800 w-1/3 text-left'
           >
             Address:
           </label>
           <input
-            type="text"
-            id="purchaseGroupAddress"
-            name="purchaseGroupAddress"
+            type='text'
+            id='purchaseGroupAddress'
+            name='purchaseGroupAddress'
             value={formData.purchaseGroupAddress}
             onChange={handleChange}
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
             required
             maxLength={100}
           />
         </div>
 
-        <div className="flex items-center mb-4">
+        <div className='flex items-center mb-4'>
           <label
-            htmlFor="purchaseGroupContactName"
-            className="text-[16px] text-gray-800 w-1/3 text-left"
+            htmlFor='purchaseGroupContactName'
+            className='text-[16px] text-gray-800 w-1/3 text-left'
           >
             Contact Name:
           </label>
           <input
-            type="text"
-            id="purchaseGroupContactName"
-            name="purchaseGroupContactName"
+            type='text'
+            id='purchaseGroupContactName'
+            name='purchaseGroupContactName'
             value={formData.purchaseGroupContactName}
             onChange={handleChange}
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
             required
             maxLength={50}
           />
         </div>
 
-        <div className="flex items-center mb-4">
+        <div className='flex items-center mb-4'>
           <label
-            htmlFor="purchaseGroupPhoneNo"
-            className="text-[16px] text-gray-800 w-1/3 text-left"
+            htmlFor='purchaseGroupPhoneNo'
+            className='text-[16px] text-gray-800 w-1/3 text-left'
           >
             Phone Number:
           </label>
           <input
-            type="tel"
-            id="purchaseGroupPhoneNo"
-            name="purchaseGroupPhoneNo"
+            type='tel'
+            id='purchaseGroupPhoneNo'
+            name='purchaseGroupPhoneNo'
             value={formData.purchaseGroupPhoneNo}
             onChange={handleChange}
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
             required
             maxLength={10}
           />
         </div>
 
-        <div className="flex items-center mb-4">
+        <div className='flex items-center mb-4'>
           <label
-            htmlFor="purchaseGroupFaxNo"
-            className="text-[16px] text-gray-800 w-1/3 text-left"
+            htmlFor='purchaseGroupFaxNo'
+            className='text-[16px] text-gray-800 w-1/3 text-left'
           >
             Fax Number:
           </label>
           <input
-            type="text"
-            id="purchaseGroupFaxNo"
-            name="purchaseGroupFaxNo"
+            type='text'
+            id='purchaseGroupFaxNo'
+            name='purchaseGroupFaxNo'
             value={formData.purchaseGroupFaxNo}
             onChange={handleChange}
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
             required
             maxLength={10}
           />
         </div>
 
-        <div className="flex items-center mb-4">
+        <div className='flex items-center mb-4'>
           <label
-            htmlFor="purchaseGroupEmail"
-            className="text-[16px] text-gray-800 w-1/3 text-left"
+            htmlFor='purchaseGroupEmail'
+            className='text-[16px] text-gray-800 w-1/3 text-left'
           >
             Email:
           </label>
           <input
-            type="email"
-            id="purchaseGroupEmail"
-            name="purchaseGroupEmail"
+            type='email'
+            id='purchaseGroupEmail'
+            name='purchaseGroupEmail'
             value={formData.purchaseGroupEmail}
             onChange={handleChange}
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
             required
             maxLength={50}
           />
         </div>
 
-        <div className="flex justify-center gap-2">
+        <div className='flex justify-center gap-2'>
           <button
-            type="submit"
+            type='submit'
             disabled={isLoading}
-            className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] disabled:opacity-50"
+            className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] disabled:opacity-50'
           >
-            {isLoading ? "Updating..." : "Update"}
+            {isLoading ? 'Updating...' : 'Update'}
           </button>
           <button
-            type="button"
+            type='button'
             onClick={handleCancel}
             disabled={isLoading}
-            className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] disabled:opacity-50"
+            className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] disabled:opacity-50'
           >
             Cancel
           </button>
@@ -299,38 +301,38 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
 
       {/* Success Popup Modal */}
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="relative p-6 text-center bg-white rounded-lg shadow-lg w-80">
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+          <div className='relative p-6 text-center bg-white rounded-lg shadow-lg w-80'>
             {/* Orange Checkmark Circle */}
-            <div className="absolute transform -translate-x-1/2 -top-8 left-1/2">
-              <div className="p-4 bg-orange-500 rounded-full">
+            <div className='absolute transform -translate-x-1/2 -top-8 left-1/2'>
+              <div className='p-4 bg-orange-500 rounded-full'>
                 <svg
-                  className="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+                  className='w-8 h-8 text-white'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                  xmlns='http://www.w3.org/2000/svg'
                 >
                   <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth='2'
+                    d='M5 13l4 4L19 7'
                   />
                 </svg>
               </div>
             </div>
 
             {/* Success Message */}
-            <h3 className="mt-8 text-xl font-bold text-gray-800">SUCCESS</h3>
-            <p className="mt-2 text-sm text-gray-600">
+            <h3 className='mt-8 text-xl font-bold text-gray-800'>SUCCESS</h3>
+            <p className='mt-2 text-sm text-gray-600'>
               Purchase Group updated successfully!
             </p>
 
             {/* Continue Button */}
             <button
               onClick={handlePopupContinue}
-              className="px-6 py-2 mt-4 text-white transition-all duration-300 bg-orange-500 rounded-md hover:bg-orange-600"
+              className='px-6 py-2 mt-4 text-white transition-all duration-300 bg-orange-500 rounded-md hover:bg-orange-600'
             >
               CONTINUE
             </button>

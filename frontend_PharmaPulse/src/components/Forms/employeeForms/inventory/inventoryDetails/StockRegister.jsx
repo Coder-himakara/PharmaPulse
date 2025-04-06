@@ -3,6 +3,29 @@ import { useState, useEffect } from "react";
 import { getAllBatchInventories } from '../../../../../api/InventoryApiService'; // Adjust the import path based on your project structure
 
 const StockRegister = () => {
+  // Add a date formatting function
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      // Check if dateString is an array (like [2023, 5, 15])
+      if (Array.isArray(dateString)) {
+        // Convert array to ISO date string: YYYY-MM-DD
+        const [year, month, day] = dateString;
+        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+      }
+      
+      // If it's already a string, try to format it
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "Invalid Date";
+      
+      // Return formatted date: YYYY-MM-DD
+      return date.toISOString().split('T')[0];
+    } catch (err) {
+      console.error("Error formatting date:", err);
+      return "Error";
+    }
+  };
+
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,8 +40,9 @@ const StockRegister = () => {
         const batchData = response.data.data; // Assuming the data is nested under 'data' in StandardResponse
         setBatches(batchData.map(batch => ({
           batchId: batch.batchId,
-          productName: `Product ${batch.productId}`, // Replace with actual product name if available
-          expiryDate: batch.expiryDate,
+          productName: batch.productName || (batch.productId ? `Product ${batch.productId}` : 'Unknown Product'),
+          expiryDate: batch.expiryDate, // Keep original format for processing
+          formattedExpiryDate: formatDate(batch.expiryDate), // Add formatted version
           availableUnitQuantity: batch.availableUnitQuantity,
           wholesalePrice: batch.wholesalePrice,
           batchStatus: batch.batchStatus,
@@ -87,7 +111,7 @@ const StockRegister = () => {
                   >
                     <td className="p-3 text-[#5e5757] text-sm">{batch.batchId}</td>
                     <td className="p-3 text-[#5e5757] text-sm">{batch.productName}</td>
-                    <td className="p-3 text-[#5e5757] text-sm">{batch.expiryDate}</td>
+                    <td className="p-3 text-[#5e5757] text-sm">{batch.formattedExpiryDate}</td>
                     <td className="p-3 text-[#5e5757] text-sm">{batch.availableUnitQuantity}</td>
                     <td className="p-3 text-[#5e5757] text-sm">
                      Rs.{Number(batch.wholesalePrice).toFixed(2)}

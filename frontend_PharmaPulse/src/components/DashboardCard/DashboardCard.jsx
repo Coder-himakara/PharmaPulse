@@ -9,9 +9,8 @@ const DashboardCard = ({ content }) => {
         Welcome to PharmaPulse!
       </h1>
       {/* Content Section */}
-      <div className='flex-grow mb-8 '>{content}</div>   
+      <div className='flex-grow mb-8 '>{content}</div>
       <Footer />
-    
     </div>
   );
 };

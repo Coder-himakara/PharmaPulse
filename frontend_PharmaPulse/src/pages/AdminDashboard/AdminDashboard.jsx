@@ -4,13 +4,10 @@ import AdminRoutes from '../../routes/AdminRoutes';
 
 const AdminDashboard = () => {
   return (
-    <div >
+    <div>
       <Navbar />
 
-      <DashboardCard
-        content={<AdminRoutes />}
-      />
-  
+      <DashboardCard content={<AdminRoutes />} />
     </div>
   );
 };
