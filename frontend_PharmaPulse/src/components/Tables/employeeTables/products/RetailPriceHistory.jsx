@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import apiClient from '../../../../api/ApiClient';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
+import { X } from 'lucide-react'; // Lucide icon for "Close"
 Chart.register(...registerables);
 
-// Date formatting helper (handles array and ISO string)
+// Helper to format date
 const formatDate = (dateVal) => {
   if (Array.isArray(dateVal)) {
     const [year, month, day, hours = 0, minutes = 0] = dateVal;
@@ -15,7 +16,6 @@ const formatDate = (dateVal) => {
 };
 
 const RetailPriceHistory = () => {
-  // Store full list of products and selected product id
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,7 +25,7 @@ const RetailPriceHistory = () => {
   const [error, setError] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // Fetch list of products on mount
+  // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -33,20 +33,20 @@ const RetailPriceHistory = () => {
         setProducts(response.data.data);
         setFilteredProducts(response.data.data);
       } catch (err) {
-        console.error(err); // <-- add this line
+        console.error('Error fetching products:', err);
         setError('Failed to fetch products list');
       }
     };
     fetchProducts();
   }, []);
 
-  // Filter products based on searchTerm; if empty, show all products
+  // Filter products for autocomplete
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setFilteredProducts(products);
     } else {
       const filtered = products.filter((product) =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase()),
+        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredProducts(filtered);
     }
@@ -55,18 +55,16 @@ const RetailPriceHistory = () => {
   const fetchPriceHistory = async () => {
     try {
       setLoading(true);
-      // API call uses the product id of the selected product
       const response = await apiClient.get(
-        `/products/wholesale-prices/${selectedProductId}`,
+        `/products/wholesale-prices/${selectedProductId}`
       );
-      // Sort data descending so the most recent price is at index 0
       const sortedData = response.data.data.sort(
-        (a, b) => new Date(b.effectiveDate) - new Date(a.effectiveDate),
+        (a, b) => new Date(b.effectiveDate) - new Date(a.effectiveDate)
       );
       setPriceData(sortedData);
       setError('');
     } catch (err) {
-      console.error(err); // <-- add this line
+      console.error('Error fetching price history:', err);
       setError('Failed to fetch price history');
       setPriceData([]);
     } finally {
@@ -77,12 +75,17 @@ const RetailPriceHistory = () => {
   const handleSelectProduct = (productId, productName) => {
     setSelectedProductId(productId);
     setSearchTerm(productName);
-    setShowSuggestions(false); // Hide suggestions after selection
+    setShowSuggestions(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedProductId) fetchPriceHistory();
+  };
+
+  const handleClose = () => {
+    // Custom close behavior (e.g., hide component, navigate away)
+    window.history.back(); // or navigate to another page
   };
 
   const chartData = {
@@ -100,6 +103,16 @@ const RetailPriceHistory = () => {
 
   return (
     <div className='bg-[#e6eef3] rounded-lg shadow-lg p-6 relative'>
+
+      {/* Close Icon */}
+      <button
+        onClick={handleClose}
+        className='absolute top-4 right-4 text-[#5e5757] hover:text-[#1a5353] transition'
+        title='Close'
+      >
+        <X size={24} />
+      </button>
+
       <h2 className='text-2xl font-bold text-[#1a5353] mb-4'>
         Retail Price History
       </h2>
@@ -111,13 +124,12 @@ const RetailPriceHistory = () => {
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
-            setSelectedProductId(''); // Clear previously selected id on new search
+            setSelectedProductId('');
           }}
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
           className='w-full px-4 py-2 border border-[#bfb6b6] rounded-md focus:outline-none'
         />
-        {/* Suggestion dropdown shows all filtered products */}
         {showSuggestions && filteredProducts.length > 0 && (
           <ul className='absolute z-10 w-full bg-white border border-[#bfb6b6] rounded-md mt-1 max-h-60 overflow-y-auto'>
             {filteredProducts.map((product) => (
@@ -145,7 +157,6 @@ const RetailPriceHistory = () => {
 
       {priceData.length > 0 && (
         <>
-          {/* Current Price Card */}
           <div className='bg-white rounded-lg shadow-md p-4 mb-6'>
             <h3 className='text-xl font-semibold text-[#1a5353]'>
               Current Price
@@ -159,18 +170,20 @@ const RetailPriceHistory = () => {
           </div>
 
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-            {/* Price History Table */}
-            <div className='bg-white rounded-lg shadow-md overflow-hidden'>
+            <div className='bg-white rounded-lg shadow-md flex flex-col'>
               <div className='bg-[#1a5353] text-white px-4 py-2'>
                 Price History Table
               </div>
-              <div className='p-4 max-h-[400px] overflow-y-auto'>
+              <div
+                className='p-4 overflow-y-auto'
+                style={{ maxHeight: '400px' }}
+              >
                 <table className='w-full text-sm'>
                   <thead className='bg-[#ffb24d] text-[#5e5757]'>
                     <tr>
                       <th className='p-2'>Effective Date</th>
                       <th className='p-2'>End Date</th>
-                      <th className='p-2'>Price</th>
+                      <th className='p-2'>Price (Rs)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -179,14 +192,12 @@ const RetailPriceHistory = () => {
                         key={item.priceId}
                         className={`border-t border-[#bfb6b6] ${index === 0 ? 'bg-[#c6dceb]' : 'bg-white'}`}
                       >
-                        <td className='p-2'>
-                          {formatDate(item.effectiveDate)}
-                        </td>
+                        <td className='p-2'>{formatDate(item.effectiveDate)}</td>
                         <td className='p-2'>
                           {item.endDate ? formatDate(item.endDate) : 'Present'}
                         </td>
                         <td className='p-2'>
-                          ${item.wholesalePrice.toFixed(2)}
+                          {item.wholesalePrice.toFixed(2)}
                         </td>
                       </tr>
                     ))}
@@ -195,41 +206,43 @@ const RetailPriceHistory = () => {
               </div>
             </div>
 
-            {/* Price Chart */}
-            <div className='bg-white rounded-lg shadow-md'>
+            <div className='bg-white rounded-lg shadow-md flex flex-col'>
               <div className='bg-[#1a5353] text-white px-4 py-2'>
                 Price Trend Chart
               </div>
-              <div className='p-4'>
-                <Line
-                  data={chartData}
-                  options={{
-                    responsive: true,
-                    scales: {
-                      y: {
-                        title: {
-                          display: true,
-                          text: 'Price (USD)',
-                          color: '#5e5757',
+              <div className='p-4 overflow-x-auto' style={{ maxHeight: '400px' }}>
+                <div style={{ minWidth: '600px' }}>
+                  <Line
+                    data={chartData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      scales: {
+                        y: {
+                          title: {
+                            display: true,
+                            text: 'Price (Rs)',
+                            color: '#5e5757',
+                          },
+                          ticks: { color: '#5e5757' },
+                          grid: { color: '#e6eef3' },
                         },
-                        ticks: { color: '#5e5757' },
-                        grid: { color: '#e6eef3' },
-                      },
-                      x: {
-                        title: {
-                          display: true,
-                          text: 'Date',
-                          color: '#5e5757',
+                        x: {
+                          title: {
+                            display: true,
+                            text: 'Date',
+                            color: '#5e5757',
+                          },
+                          ticks: { color: '#5e5757' },
+                          grid: { color: '#e6eef3' },
                         },
-                        ticks: { color: '#5e5757' },
-                        grid: { color: '#e6eef3' },
                       },
-                    },
-                    plugins: {
-                      legend: { labels: { color: '#5e5757' } },
-                    },
-                  }}
-                />
+                      plugins: {
+                        legend: { labels: { color: '#5e5757' } },
+                      },
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
