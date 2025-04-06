@@ -55,7 +55,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       navigate("/employee-dashboard/customers-info");
       return;
     }
-    setCustomerId(customer.customer_id || customer.id || "");
+    setCustomerId(customer.customer_id|| "");
     setFormData({
       customer_name: customer.customer_name || "",
       customer_address: customer.customer_address || "",
@@ -63,7 +63,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       customer_nic_no: customer.customer_nic_no || "",
       customer_brc_no: customer.customer_brc_no || "",
       customer_email: customer.customer_email || "",
-      customer_phone_no: customer.customer_phone_no ? String(customer.customer_phone_no) : "",
+      customer_phone_no: customer.customer_phone_no || "",
       customer_group: customer.customer_group?.customerGroupId?.toString() || customer.customer_group || "",
       registered_date: customer.registered_date ? formatDate(new Date(customer.registered_date)) : formatDate(new Date()),
       credit_limit: customer.credit_limit ? String(customer.credit_limit) : "",
@@ -112,7 +112,7 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     const creditPeriod = parseInt(formData.credit_period_in_days, 10);
     const balance = parseFloat(formData.outstanding_balance);
 
-    if (isNaN(phoneNo) || isNaN(group) || isNaN(creditLimit) || isNaN(creditPeriod) || isNaN(balance)) {
+    if (isNaN(group) || isNaN(creditLimit) || isNaN(creditPeriod) || isNaN(balance)) {
       setErrorMessage("Please ensure all numeric fields contain valid numbers.");
       setIsLoading(false);
       return;

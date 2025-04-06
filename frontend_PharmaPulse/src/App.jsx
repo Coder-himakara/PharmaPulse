@@ -13,6 +13,7 @@ import SalesRepDashboard from "./pages/SalesRepDashboard/SalesRepDashboard";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import UnauthorizedPage from "./pages/ErrorPage/UnauthorizedPage";
 import ProtectedRoute from "./security/ProtectedRoute";
+
 // Toast Notifications
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,33 +23,46 @@ function App() {
     <AuthProvider>
       <ThemeProvider>
         <Router>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/unauthorized" element={<UnauthorizedPage />} />
+          <div className="flex flex-col min-h-screen">
+            {/* Content Wrapper with Bottom Padding */}
+            <div className="flex-grow pb-20">
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-            {/* Protected Routes */}
-            <Route path="/admin-dashboard/*" element={
-              <ProtectedRoute allowedRoles={['ADMIN']}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
+                {/* Protected Routes */}
+                <Route
+                  path="/admin-dashboard/*"
+                  element={
+                    <ProtectedRoute allowedRoles={['ADMIN']}>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/employee-dashboard/*"
+                  element={
+                    <ProtectedRoute allowedRoles={['EMPLOYEE']}>
+                      <EmployeeDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/sales-dashboard/*"
+                  element={
+                    <ProtectedRoute allowedRoles={['SALES_REP']}>
+                      <SalesRepDashboard />
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/employee-dashboard/*" element={
-              <ProtectedRoute allowedRoles={['EMPLOYEE']}>
-                <EmployeeDashboard />
-              </ProtectedRoute>
-            } />
-
-            <Route path="/sales-dashboard/*" element={
-              <ProtectedRoute allowedRoles={['SALES_REP']}>
-                <SalesRepDashboard />
-              </ProtectedRoute>
-            } />
-
-            {/* Catch-all route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+                {/* Catch-all route */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </div>
+           
+          </div>
           <ToastContainer
             position="bottom-right"
             autoClose={3000}

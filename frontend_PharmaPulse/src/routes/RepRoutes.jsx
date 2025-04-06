@@ -7,6 +7,8 @@ import SaleInvoiceCreateForm from '../components/Forms/saleRepForms/SaleInvoiceC
 const RepRoutes = () => {
   return (
     <Routes>
+      {/* Default route for /rep-dashboard/ */}
+      <Route path='/' element={<PriceListTable />} />
       <Route path='price-list-view' element={<PriceListTable />} />
       <Route path='order-creation' element={<OrderForm />} />
       <Route path='order-history' element={<OrderHistoryTable />} />

@@ -170,24 +170,20 @@ const EmployeeNavbar = () => {
       items: [
         [
           {
-            label: "Batch Wise",
-            items: [{ label: "Batch Inventory" }],
-          },
-        ],
-        [
-          {
-            label: "Inventory Wise",
-            items: [
-              { label: "Warehouse Inventory" },
-              { label: "Stock Transfer", command: () => navigate("/employee-dashboard/stock-transfer") },
-              { label: "Stock Adjustment" },
+            label: "Inventory Details",
+            items: [{ label: "Stock Register" ,command: () => navigate("/employee-dashboard/stock-register") },
+                    { label: "Expiry Distribution",command: () => navigate("/employee-dashboard/expiry-distribution")  },
+                    { label: "Inventory Location",command: () => navigate("/employee-dashboard/inventory-location")  }
             ],
           },
         ],
         [
           {
-            label: "Product Wise",
-            items: [{ label: "Stock Register" }],
+            label: "Inventory Tasks",
+            items: [
+              { label: "Stock Transfer", command: () => navigate("/employee-dashboard/stock-transfer") },
+              { label: "Stock Adjustment" },
+            ],
           },
         ],
       ],
