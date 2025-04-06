@@ -26,3 +26,5 @@ export const getProductById = (id) =>
   apiClient.get(`/products/${id}`, {
     headers: { 'Content-Type': 'application/json' },
   });
+
+ 

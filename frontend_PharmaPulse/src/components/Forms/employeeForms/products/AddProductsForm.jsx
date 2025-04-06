@@ -227,7 +227,7 @@ const AddProductsForm = ({ onAddProduct }) => {
                 name="productName"
                 value={formData.productName}
                 onChange={handleChange}
-                placeholder="Penadol"
+                placeholder="Panadol"
                 className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
                 required
               />

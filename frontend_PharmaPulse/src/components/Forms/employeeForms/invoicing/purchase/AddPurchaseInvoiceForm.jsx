@@ -158,29 +158,6 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
     }
   };
 
-  // Add this function to your component before handleSubmit
-  const validateCapacity = async () => {
-    try {
-      // Calculate total capacity needed
-      const totalQuantity = invoiceData.lineItemsList.reduce((sum, item) => {
-        return sum + Number(item.quantity) + Number(item.freeQuantity || 0);
-      }, 0);
-      
-      // Check if it exceeds a threshold (1000 based on the error)
-      if (totalQuantity > 1000) {
-        return {
-          valid: false,
-          message: `Insufficient warehouse capacity. Required: ${totalQuantity}, Available: 1000`
-        };
-      }
-      
-      return { valid: true };
-    } catch (error) {
-      console.error("Capacity validation error:", error);
-      return { valid: false, message: "Failed to validate warehouse capacity" };
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -197,14 +174,6 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
 
     if (invoiceData.lineItemsList.length === 0) {
       setErrorMessage("Please add at least one line item.");
-      setIsLoading(false);
-      return;
-    }
-
-    // Capacity validation
-    const capacityValidation = await validateCapacity();
-    if (!capacityValidation.valid) {
-      setErrorMessage(capacityValidation.message);
       setIsLoading(false);
       return;
     }
@@ -347,10 +316,10 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
 
       {/* Header Section */}
       <div className="p-5 mb-6 bg-white border border-gray-200 rounded-md shadow-sm">
-        <h3 className="text-lg font-medium mb-4 text-gray-800">Invoice Details</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <h3 className="mb-4 text-lg font-medium text-gray-800">Invoice Details</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Supplier:</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Supplier:</label>
             <select
               name="supplierId"
               value={invoiceData.supplierId}
@@ -367,7 +336,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Purchase Order Ref:</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Purchase Order Ref:</label>
             <input
               type="text"
               name="purchaseOrderRef"
@@ -378,7 +347,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Invoice No:</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Invoice No:</label>
             <input
               type="text"
               name="invoiceNo"
@@ -389,7 +358,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Invoice Date:</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Invoice Date:</label>
             <input
               type="date"
               name="invoiceDate"
@@ -400,7 +369,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status:</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Status:</label>
             <select
               name="invoiceStatus"
               value={invoiceData.invoiceStatus}
@@ -416,7 +385,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Payment Type:</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Payment Type:</label>
             <select
               name="paymentType"
               value={invoiceData.paymentType}
@@ -435,16 +404,16 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
 
       {/* Line Item Input Section - Improved */}
       <div className="p-5 mb-6 bg-white border border-gray-200 rounded-md shadow-sm">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-medium text-gray-800">Add Line Item</h3>
           <div className="text-xs text-gray-500">* Required fields</div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           {/* Left Column - Core Product Info */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block mb-1 text-sm font-medium text-gray-700">
                 Product: <span className="text-red-500">*</span>
               </label>
               <select
@@ -464,7 +433,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
                   Quantity: <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -477,7 +446,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
                   Free Quantity:
                 </label>
                 <input
@@ -493,7 +462,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
                   Unit Price: <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -507,7 +476,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
                   Retail Price:
                 </label>
                 <input
@@ -527,7 +496,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
                   Manufacture Date: <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -539,9 +508,9 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block mb-1 text-sm font-medium text-gray-700">
                   Expiry Date:
-                  <span className="text-xs text-gray-500 ml-1">(if applicable)</span>
+                  <span className="ml-1 text-xs text-gray-500">(if applicable)</span>
                 </label>
                 <input
                   type="date"
@@ -554,7 +523,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block mb-1 text-sm font-medium text-gray-700">
                 Discount Amount:
               </label>
               <input
@@ -578,7 +547,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
                 onClick={addLineItemToTable}
                 className="w-full px-4 py-2 bg-[#4c85a6] text-white rounded-md text-sm font-medium hover:bg-[#15375c] transition-colors flex items-center justify-center"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
                 </svg>
                 Add Product
@@ -590,9 +559,9 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
 
       {/* Line Items Table */}
       <div className="mb-6">
-        <h3 className="text-lg font-medium mb-4 text-gray-800">Line Items</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-800">Line Items</h3>
         {invoiceData.lineItemsList.length === 0 ? (
-          <p className="text-sm text-gray-600 italic">No line items added yet.</p>
+          <p className="text-sm italic text-gray-600">No line items added yet.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border border-collapse border-gray-300">
@@ -646,17 +615,17 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
 
       {/* Summary Section - Improved */}
       <div className="p-5 mb-6 bg-white border border-gray-200 rounded-md shadow-sm">
-        <h3 className="text-lg font-medium mb-4 text-gray-800">Invoice Summary</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gray-50 p-4 rounded-md">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Total Amount:</label>
+        <h3 className="mb-4 text-lg font-medium text-gray-800">Invoice Summary</h3>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="p-4 rounded-md bg-gray-50">
+            <label className="block mb-2 text-sm font-medium text-gray-700">Total Amount:</label>
             <div className="text-xl font-semibold text-gray-800">
               Rs. {invoiceData.totalAmount.toFixed(2)}
             </div>
           </div>
-          <div className="bg-gray-50 p-4 rounded-md">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Discount:</label>
-            <div className="flex items-center space-x-2 mb-2">
+          <div className="p-4 rounded-md bg-gray-50">
+            <label className="block mb-2 text-sm font-medium text-gray-700">Discount:</label>
+            <div className="flex items-center mb-2 space-x-2">
               <div className="text-xl font-semibold text-gray-800">
                 Rs. {(totalDiscount + (parseFloat(invoiceData.discountAmount) || 0)).toFixed(2)}
               </div>
@@ -675,8 +644,8 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
               placeholder="Additional Invoice Discount"
             />
           </div>
-          <div className="bg-gray-50 p-4 rounded-md">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Net Payable Amount:</label>
+          <div className="p-4 rounded-md bg-gray-50">
+            <label className="block mb-2 text-sm font-medium text-gray-700">Net Payable Amount:</label>
             <div className="text-xl font-semibold text-green-600">
               Rs. {invoiceData.netAmount.toFixed(2)}
             </div>
@@ -700,7 +669,7 @@ const AddPurchaseInvoiceForm = ({ onAddPurchaseInvoice }) => {
         >
           {isLoading ? (
             <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 mr-2 -ml-1 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>

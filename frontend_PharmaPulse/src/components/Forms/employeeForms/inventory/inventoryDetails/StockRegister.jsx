@@ -1,39 +1,38 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from "react";
+import { getAllBatchInventories } from '../../../../../api/InventoryApiService'; // Adjust the import path based on your project structure
 
 const StockRegister = () => {
   const [batches, setBatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Adjust as needed
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    // Mock data (expanded for testing pagination)
-    const mockBatches = Array.from({ length: 25 }, (_, i) => ({
-      batchId: 101 + i,
-      productName: `Product ${i + 1} (Generic: Gen${i + 1})`,
-      expiryDate: `202${5 + (i % 5)}-${String((i % 12) + 1).padStart(2, "0")}-30`,
-      availableUnitQuantity: 50 + i * 10,
-      wholesalePrice: 10 + i * 2.5,
-      batchStatus: i % 3 === 0 ? "AVAILABLE" : i % 3 === 1 ? "NEAR_EXPIRY" : "EXPIRED",
-    }));
-
-    const fetchMockData = async () => {
+    const fetchBatches = async () => {
       try {
         setLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
-        setBatches(mockBatches);
+        const response = await getAllBatchInventories(); // Call the API
+        const batchData = response.data.data; // Assuming the data is nested under 'data' in StandardResponse
+        setBatches(batchData.map(batch => ({
+          batchId: batch.batchId,
+          productName: `Product ${batch.productId}`, // Replace with actual product name if available
+          expiryDate: batch.expiryDate,
+          availableUnitQuantity: batch.availableUnitQuantity,
+          wholesalePrice: batch.wholesalePrice,
+          batchStatus: batch.batchStatus,
+        })));
         setError(null);
       } catch (err) {
-        setError("Failed to load stock data");
+        setError("Failed to load stock data from the server");
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchMockData();
+    fetchBatches();
   }, []);
 
   // Pagination logic
@@ -91,7 +90,7 @@ const StockRegister = () => {
                     <td className="p-3 text-[#5e5757] text-sm">{batch.expiryDate}</td>
                     <td className="p-3 text-[#5e5757] text-sm">{batch.availableUnitQuantity}</td>
                     <td className="p-3 text-[#5e5757] text-sm">
-                      ${Number(batch.wholesalePrice).toFixed(2)}
+                     Rs.{Number(batch.wholesalePrice).toFixed(2)}
                     </td>
                     <td className="p-3">
                       <span

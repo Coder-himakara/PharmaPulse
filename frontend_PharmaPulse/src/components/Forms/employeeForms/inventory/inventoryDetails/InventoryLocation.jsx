@@ -213,7 +213,7 @@ const InventoryLocation = () => {
                       {formatExpiryDate(item.expiryDate)}
                     </td>
                     <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                      {item.wholesalePrice ? `$${item.wholesalePrice.toFixed(2)}` : 'N/A'}
+                      {item.wholesalePrice ? `Rs.${item.wholesalePrice.toFixed(2)}` : 'N/A'}
                     </td>
                     <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                       {item.quantity || 'N/A'}
