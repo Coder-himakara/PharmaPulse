@@ -6,12 +6,14 @@ import com.group03.backend_PharmaPulse.inventory.api.dto.response.InventoryLocat
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/inventory-location")
+@PreAuthorize("hasRole('EMPLOYEE')")
 public class InventoryLocationController {
     private final InventoryLocationService inventoryLocationService;
 
@@ -19,6 +21,7 @@ public class InventoryLocationController {
         this.inventoryLocationService = inventoryLocationService;
     }
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getAllInventoryLocations() {
         List<InventoryLocationResponse> inventoryLocationResponseList  = inventoryLocationService
                 .getAllInventoryLocations();
@@ -28,6 +31,7 @@ public class InventoryLocationController {
         );
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getInventoryLocationById(@PathVariable Long id) {
         InventoryLocationResponse selectedInventoryLocation = inventoryLocationService.getInventoryLocationById(id);
         return new ResponseEntity<>(
@@ -36,6 +40,7 @@ public class InventoryLocationController {
         );
     }
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('employee:create')")
     public ResponseEntity<StandardResponse> addInventoryLocation(@RequestBody InventoryLocationDTO
                                                                              inventoryLocationDTO) {
         InventoryLocationResponse savedInventoryLocation = inventoryLocationService.

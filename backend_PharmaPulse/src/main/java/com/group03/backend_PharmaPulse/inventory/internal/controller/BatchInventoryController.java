@@ -4,6 +4,7 @@ import com.group03.backend_PharmaPulse.inventory.api.BatchInventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.dto.BatchInventoryDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ExpiryAlertDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ReorderAlertDTO;
+import com.group03.backend_PharmaPulse.inventory.api.dto.response.BatchInventoryDetailsDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.ExpiryCountDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.StockCountDTO;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
@@ -30,8 +31,8 @@ public class BatchInventoryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<StandardResponse> getAllBatchInventories() {
-        List<BatchInventoryDTO> batchInventoryDTOS  = batchInventoryService.getAllBatchInventories();
+    public ResponseEntity<StandardResponse> getBatchInventoryDetails() {
+        List<BatchInventoryDetailsDTO> batchInventoryDTOS  = batchInventoryService.getBatchInventoriesDetails();
         return new ResponseEntity<>(
                 new StandardResponse(200,"Success",batchInventoryDTOS),
                 HttpStatus.OK
@@ -58,6 +59,15 @@ public class BatchInventoryController {
         );
     }
 
+    @GetMapping("/expired-batches")
+    public ResponseEntity<StandardResponse> getExpiredBatches() {
+        List<ExpiryAlertDTO> expiredBatches = batchInventoryService.getExpiredBatches();
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Success", expiredBatches),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("/reorder-alerts")
     public ResponseEntity<StandardResponse> getReorderAlerts() {
         List<ReorderAlertDTO> reorderAlerts = batchInventoryService.checkReorderAlerts();
@@ -65,6 +75,13 @@ public class BatchInventoryController {
                 new StandardResponse(200, "Success", reorderAlerts),
                 HttpStatus.OK
         );
+    }
+
+    // WebSocket endpoint
+    @MessageMapping("/expiry-counts")
+    @SendTo("/topic/expiry-counts")
+    public ExpiryCountDTO getExpiryCountsWs() {
+        return batchInventoryService.getExpiryCounts();
     }
 
     @GetMapping("/expiry-counts")
@@ -76,13 +93,6 @@ public class BatchInventoryController {
                 HttpStatus.OK
         );
     }
-
-   // WebSocket endpoint
-   @MessageMapping("/expiry-counts")
-   @SendTo("/topic/expiry-counts")
-   public ExpiryCountDTO getExpiryCountsWs() {
-       return batchInventoryService.getExpiryCounts();
-   }
 
    @MessageMapping("/stock-counts")
    @SendTo("/topic/stock-counts")

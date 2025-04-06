@@ -1,11 +1,11 @@
 package com.group03.backend_PharmaPulse.inventory.internal.repository;
 
 import com.group03.backend_PharmaPulse.inventory.api.dto.WarehouseInventoryDTO;
-import com.group03.backend_PharmaPulse.inventory.internal.entity.InventoryLocation;
 import com.group03.backend_PharmaPulse.inventory.internal.entity.WarehouseInventory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +20,12 @@ public interface WarehouseInventoryRepo extends JpaRepository<WarehouseInventory
             "wi.inventoryId, wi.location.locationId, wi.batch.batchId, wi.quantity, wi.warehouseLocation) " +
             "FROM WarehouseInventory wi")
     List<WarehouseInventoryDTO> findAllWarehouseInventoryDetails();
+
+
+    @Query("SELECT wi FROM WarehouseInventory wi WHERE wi.batch.batchId = :batchId AND " +
+            "wi.location.locationId = :locationId")
+    Optional<WarehouseInventory> findByBatchIdAndLocationId(@Param("batchId") Long batchId,
+                                                            @Param("locationId") Long locationId);
+
+
 }

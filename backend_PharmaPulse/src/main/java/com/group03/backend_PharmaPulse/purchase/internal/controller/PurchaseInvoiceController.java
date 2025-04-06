@@ -6,13 +6,14 @@ import com.group03.backend_PharmaPulse.purchase.api.dto.response.PurchaseInvoice
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/purchase-invoices")
-@CrossOrigin(origins = "http://localhost:3123")
+@PreAuthorize("hasRole('EMPLOYEE')")
 public class PurchaseInvoiceController {
     private final PurchaseInvoiceService purchaseInvoiceService;
 
@@ -20,6 +21,7 @@ public class PurchaseInvoiceController {
         this.purchaseInvoiceService = purchaseInvoiceService;
     }
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getAllPurchaseInvoices() {
         List<PurchaseInvoiceDTO> purchaseInvoiceDTOS  = purchaseInvoiceService.getAllPurchaseInvoices();
         return new ResponseEntity<>(
@@ -28,6 +30,7 @@ public class PurchaseInvoiceController {
         );
     }
     @GetMapping("/{invoiceId}")
+    @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getPurchaseInvoicesById(@PathVariable Long invoiceId) {
         PurchaseInvoiceResponse selectedPurchaseInvoice = purchaseInvoiceService.getPurchaseInvoicesById(invoiceId);
         return new ResponseEntity<>(
@@ -36,6 +39,7 @@ public class PurchaseInvoiceController {
         );
     }
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('employee:create')")
     public ResponseEntity<StandardResponse> addPurchaseInvoice(@RequestBody PurchaseInvoiceDTO purchaseInvoiceDTO) {
         PurchaseInvoiceDTO addedPurchaseInvoice = purchaseInvoiceService.addPurchaseInvoice(purchaseInvoiceDTO);
         return new ResponseEntity<>(

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 @EnableJpaRepositories
 public interface TruckRepo extends JpaRepository<Truck,Long> {
+    boolean existsByRegistrationNumberIgnoreCase(String registrationNumber);
 }
