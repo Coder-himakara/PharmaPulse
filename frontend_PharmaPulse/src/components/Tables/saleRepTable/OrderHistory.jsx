@@ -54,6 +54,21 @@ const OrderHistory = () => {
     }
   };
 
+  const handleRemoveOrder = async (order) => {
+    const confirmMessage = `Are you sure you want to remove order with ID: ${order.orderId}?`;
+    if (window.confirm(confirmMessage)) {
+      try {
+        // Assuming the API endpoint is /orders/{id} as per backend mapping
+        await apiClient.delete(`/orders/${order.orderId}`);
+        // Remove the deleted order from the state
+        setOrders(orders.filter((o) => o.orderId !== order.orderId));
+      } catch (err) {
+        console.error("Error removing order:", err);
+        setError("Failed to remove order. Please try again later.");
+      }
+    }
+  };
+
   const handleClose = () => {
     navigate("/dashboard");
   };
@@ -114,6 +129,9 @@ const OrderHistory = () => {
               <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
                 Status
               </th>
+              <th className="border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -141,20 +159,41 @@ const OrderHistory = () => {
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                     {order.status}
                   </td>
+                  <td className="border border-[#bfb6b6] p-2 text-center text-sm">
+                    <button
+                      className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent row expand
+                        handleRemoveOrder(order);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </td>
                 </tr>
                 {expandedRows.includes(order.orderNumber) && (
                   <tr>
-                    <td colSpan="6" className="p-4 bg-[#f1f1f1]">
+                    <td colSpan="7" className="p-4 bg-[#f1f1f1]">
                       <h3 className="text-xl font-bold mb-2">Order Items</h3>
                       {order.orderItems && order.orderItems.length > 0 ? (
                         <table className="w-full border-collapse">
                           <thead>
                             <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
-                              <th className="border border-gray-400 p-2">Product Name</th>
-                              <th className="border border-gray-400 p-2">Quantity</th>
-                              <th className="border border-gray-400 p-2">Unit Price(Rs)</th>
-                              <th className="border border-gray-400 p-2">Discount(Rs)</th>
-                              <th className="border border-gray-400 p-2">Line Total(Rs)</th>
+                              <th className="border border-gray-400 p-2">
+                                Product Name
+                              </th>
+                              <th className="border border-gray-400 p-2">
+                                Quantity
+                              </th>
+                              <th className="border border-gray-400 p-2">
+                                Unit Price(Rs)
+                              </th>
+                              <th className="border border-gray-400 p-2">
+                                Discount(Rs)
+                              </th>
+                              <th className="border border-gray-400 p-2">
+                                Line Total(Rs)
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
