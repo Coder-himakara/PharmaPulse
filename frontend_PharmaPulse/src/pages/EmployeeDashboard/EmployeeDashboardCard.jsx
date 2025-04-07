@@ -648,24 +648,6 @@ const EmployeeDashboardCard = ({ content, className }) => {
                     <Area type="monotone" dataKey="outOfStock" stackId="1" stroke="#f87171" fill="#f87171" />
                   </AreaChart>
                 </ResponsiveContainer>
-
-
-              </div>
-
-              {/* Stock Trend Over Time */}
-              <div className="mt-6">
-                <h3 className="mb-3 text-sm font-semibold text-gray-700">Stock Trend - Last 6 Months</h3>
-                <ResponsiveContainer width="100%" height={180}>
-                  <AreaChart data={stockTrend} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                    <YAxis tick={{ fontSize: 12 }} />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="available" stackId="1" stroke="#4ade80" fill="#4ade80" />
-                    <Area type="monotone" dataKey="lowStock" stackId="1" stroke="#fb923c" fill="#fb923c" />
-                    <Area type="monotone" dataKey="outOfStock" stackId="1" stroke="#f87171" fill="#f87171" />
-                  </AreaChart>
-                </ResponsiveContainer>
               </div>
 
               {/* Low Stock Items List */}
