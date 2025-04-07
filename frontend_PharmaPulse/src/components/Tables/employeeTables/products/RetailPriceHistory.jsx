@@ -46,7 +46,7 @@ const RetailPriceHistory = () => {
       setFilteredProducts(products);
     } else {
       const filtered = products.filter((product) =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+        product.productName.toLowerCase().includes(searchTerm.toLowerCase()),
       );
       setFilteredProducts(filtered);
     }
@@ -56,10 +56,10 @@ const RetailPriceHistory = () => {
     try {
       setLoading(true);
       const response = await apiClient.get(
-        `/products/wholesale-prices/${selectedProductId}`
+        `/products/wholesale-prices/${selectedProductId}`,
       );
       const sortedData = response.data.data.sort(
-        (a, b) => new Date(b.effectiveDate) - new Date(a.effectiveDate)
+        (a, b) => new Date(b.effectiveDate) - new Date(a.effectiveDate),
       );
       setPriceData(sortedData);
       setError('');
@@ -103,7 +103,6 @@ const RetailPriceHistory = () => {
 
   return (
     <div className='bg-[#e6eef3] rounded-lg shadow-lg p-6 relative'>
-
       {/* Close Icon */}
       <button
         onClick={handleClose}
@@ -192,7 +191,9 @@ const RetailPriceHistory = () => {
                         key={item.priceId}
                         className={`border-t border-[#bfb6b6] ${index === 0 ? 'bg-[#c6dceb]' : 'bg-white'}`}
                       >
-                        <td className='p-2'>{formatDate(item.effectiveDate)}</td>
+                        <td className='p-2'>
+                          {formatDate(item.effectiveDate)}
+                        </td>
                         <td className='p-2'>
                           {item.endDate ? formatDate(item.endDate) : 'Present'}
                         </td>
@@ -210,7 +211,10 @@ const RetailPriceHistory = () => {
               <div className='bg-[#1a5353] text-white px-4 py-2'>
                 Price Trend Chart
               </div>
-              <div className='p-4 overflow-x-auto' style={{ maxHeight: '400px' }}>
+              <div
+                className='p-4 overflow-x-auto'
+                style={{ maxHeight: '400px' }}
+              >
                 <div style={{ minWidth: '600px' }}>
                   <Line
                     data={chartData}

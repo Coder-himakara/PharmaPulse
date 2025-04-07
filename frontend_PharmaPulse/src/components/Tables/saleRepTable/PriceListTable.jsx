@@ -50,15 +50,15 @@ const PriceListTable = () => {
     const term = search.toLowerCase();
     setFilteredPriceList(
       priceList.filter((e) =>
-        String(e.productName).toLowerCase().startsWith(term)
-      )
+        String(e.productName).toLowerCase().startsWith(term),
+      ),
     );
   }, [search, priceList]);
 
   // 4) Build a lookup map: id → name
   const groupNameById = purchaseGroups.reduce(
     (acc, g) => ({ ...acc, [g.purchaseGroupId]: g.purchaseGroupName }),
-    {}
+    {},
   );
 
   const handleClose = () => navigate('/dashboard');
@@ -74,11 +74,10 @@ const PriceListTable = () => {
   };
 
   if (loading) return <p className='text-center p-4'>Loading price list...</p>;
-  if (error)   return <p className='text-red-500 text-center p-4'>{error}</p>;
+  if (error) return <p className='text-red-500 text-center p-4'>{error}</p>;
 
   return (
     <div className='bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative'>
-
       {/* Header */}
       <div className='bg-[#1a5353] text-white px-4 py-3 rounded-t-lg relative'>
         <h1 className='text-2xl'>Price List Management</h1>
