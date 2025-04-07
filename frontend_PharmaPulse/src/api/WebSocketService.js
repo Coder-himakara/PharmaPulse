@@ -127,10 +127,12 @@ export const webSocketConnections = {
 
   connectDashboardCounts: (token, onDashboardCountsReceived) => {
     return createWebSocketConnection(token, [
-      { topic: '/topic/employee/dashboard/counts', callback: onDashboardCountsReceived },
+      {
+        topic: '/topic/employee/dashboard/counts',
+        callback: onDashboardCountsReceived,
+      },
     ]);
   },
-
 
   // Add more pre-configured connections as needed
 };
