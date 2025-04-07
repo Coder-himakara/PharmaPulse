@@ -37,7 +37,8 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
                                    BatchInventoryService batchInventoryService,
                                    InventoryReservationService inventoryReservationService,
                                    OrderRepository orderRepository,
-                                   SalesInvoiceItemMapper salesInvoiceItemMapper, ProductServiceImpl productServiceImpl) {
+                                   SalesInvoiceItemMapper salesInvoiceItemMapper,
+                                   ProductServiceImpl productServiceImpl) {
         this.salesInvoiceRepository = salesInvoiceRepository;
         this.salesInvoiceMapper = salesInvoiceMapper;
         this.batchInventoryService = batchInventoryService;
@@ -63,21 +64,18 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
             return salesInvoiceMapper.toDTO(existingInvoice.get());
         }
 
-
-
         // ***** Set Customer Details from Order into SalesInvoiceDTO *****
         salesInvoiceDTO.setCustomerId(order.getCustomerId());
         salesInvoiceDTO.setCustomerName(order.getCustomerName());
 
         // Set basic invoice metadata
-        //salesInvoiceDTO.setInvoiceNo("INV-" + UUID.randomUUID().toString());
-        // 1) Build the prefix: e.g. "1234-PP-"
+        // Build the prefix: e.g. "1234-PP-"
         String prefix = order.getCustomerId() + "-PP-";
 
-        // 2) Query the DB for existing invoice numbers that start with prefix
+        // Query the DB for existing invoice numbers that start with prefix
         List<String> existingNumbers = salesInvoiceRepository.findInvoiceNumbersByPrefix(prefix);
 
-        // 3) If none exist, we start at 1; otherwise parse the last number
+        // If none exist, we start at 1; otherwise parse the last number
         int nextNumber = 1;
         if (!existingNumbers.isEmpty()) {
             // e.g. "1234-PP-10" -> parse "10"
@@ -95,12 +93,9 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
             }
         }
 
-        // 4) Build the new invoice number
+        // Build the new invoice number
         String invoiceNum = prefix + nextNumber;
         salesInvoiceDTO.setInvoiceNo(invoiceNum);
-
-
-
 
         salesInvoiceDTO.setInvoiceDate(LocalDateTime.now());
 
@@ -152,7 +147,7 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
         salesInvoice.setInvoiceItems(invoiceItems);
         // Link SalesInvoice to the Order
         salesInvoice.setOrderId(order.getOrderId());
-        // ***** Set customer details into the SalesInvoice entity *****
+        // Set customer details into the SalesInvoice entity
         salesInvoice.setCustomerId(order.getCustomerId());
         salesInvoice.setCustomerName(order.getCustomerName());
 
@@ -164,6 +159,10 @@ public class SalesInvoiceServiceImpl implements SalesInvoiceService {
             batchInventoryService.deductInventory(item.getProductId(), item.getQuantity());
             inventoryReservationService.finalizeReservation(item.getProductId(), item.getQuantity(), order.getOrderId());
         });
+
+        // --- NEW: Update Order status from "PENDING" to "INVOICED" ---
+        order.setStatus("INVOICED");
+        orderRepository.save(order);
 
         return salesInvoiceMapper.toDTO(savedInvoice);
     }

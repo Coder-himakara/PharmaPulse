@@ -1,11 +1,18 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { updateUserDetails } from "../../../../api/AdminApiService";
 
-const EditUsersForm = ({ onUpdateUser }) => {
+const EditUsersForm = () => {
   const { state } = useLocation();
-  const user = state?.user;
+  const navigate = useNavigate();
+  const { userId } = useParams();
+
+  // Get user from navigation state or original data if it exists
+  const userData = state?.user;
+  const user = userData?.originalData || userData;
 
   const [formData, setFormData] = useState({
     userId: "",
@@ -23,12 +30,24 @@ const EditUsersForm = ({ onUpdateUser }) => {
     status: "",
   });
 
-  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Format date array [yyyy, mm, dd] to string "YYYY-MM-DD" for date input fields
+  const formatDateForInput = (dateArray) => {
+    if (!dateArray) return "";
+    if (typeof dateArray === "string") return dateArray;
+    if (Array.isArray(dateArray)) {
+      const [year, month, day] = dateArray;
+      return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+    return "";
+  };
+
   useEffect(() => {
     if (user) {
+      console.log("User data received:", user);
       setFormData({
         userId: user.userId || "",
         username: user.username || "",
@@ -39,9 +58,9 @@ const EditUsersForm = ({ onUpdateUser }) => {
         role: user.role || "",
         password: "",
         confirmPassword: "",
-        dateOfJoined: user.dateOfJoined || "",
-        lastLoginDate: user.lastLoginDate || "",
-        profilePicture: user.profilePicture || null,
+        dateOfJoined: formatDateForInput(user.dateOfJoined) || "",
+        lastLoginDate: formatDateForInput(user.lastLoginDate) || "",
+        profilePicture: null, // Reset profile picture on load
         status: user.status || "",
       });
     }
@@ -62,41 +81,85 @@ const EditUsersForm = ({ onUpdateUser }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMessage("");
 
+    console.log("Form data before submission:", formData);
+
+    // Basic validation for required fields
     if (!formData.email || !formData.contactNumber || !formData.role) {
       setErrorMessage("Please fill out all required fields.");
+      setIsSubmitting(false);
       return;
     }
-
     if (!/^0[0-9]{9}$/.test(formData.contactNumber)) {
-      setErrorMessage(
-        "Contact number must start with 0 and contain exactly 10 digits."
-      );
-      return false;
+      setErrorMessage("Contact number must start with 0 and contain exactly 10 digits.");
+      setIsSubmitting(false);
+      return;
     }
-
-    if (
-      formData.password &&
-      formData.confirmPassword &&
-      formData.password !== formData.confirmPassword
-    ) {
+    if (formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword) {
       setErrorMessage("Passwords do not match.");
+      setIsSubmitting(false);
       return;
     }
 
-    setErrorMessage("");
-    if (onUpdateUser) {
-      onUpdateUser(formData);
+    try {
+      // Create FormData object
+      const formDataObj = new FormData();
+
+      // Append all fields - matching the UsersDTO property names exactly
+      formDataObj.append("username", formData.username);
+      formDataObj.append("nicNumber", formData.nicNumber || "");
+      formDataObj.append("email", formData.email);
+      formDataObj.append("contactNumber", formData.contactNumber);
+      formDataObj.append("address", formData.address || "");
+      formDataObj.append("role", formData.role);
+      formDataObj.append("status", formData.status || "");
+
+      // Handle date as string - Spring will convert to LocalDate
+      if (formData.dateOfJoined) {
+        formDataObj.append("dateOfJoined", formData.dateOfJoined);
+      }
+
+      // Only include password if provided
+      if (formData.password && formData.password.trim() !== "") {
+        formDataObj.append("password", formData.password);
+      }
+
+      // Handle image file - must match controller parameter name
+      if (formData.profilePicture instanceof File) {
+        formDataObj.append("imageFile", formData.profilePicture);
+      }
+
+      console.log("Sending form data to backend...");
+
+      // Get user ID from params or form data
+      const userIdToUpdate = userId || formData.userId;
+
+      // Call API to update user
+      const response = await updateUserDetails(userIdToUpdate, formDataObj);
+
+      console.log("Backend response:", response);
+
+      if (!response || !response.data || response.data.code !== 200) {
+        throw new Error(response?.data?.message || "Failed to update user");
+      }
+
+      setSuccessMessage("User updated successfully!");
+      toast.success("User updated successfully!");
+      setTimeout(() => {
+        setSuccessMessage("");
+        navigate("/admin-dashboard/users-info");
+      }, 2000);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      setErrorMessage(error.message || "Failed to update user. Please try again.");
+      toast.error(error.message || "Failed to update user. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setSuccessMessage("User updated successfully!");
-
-    setTimeout(() => {
-      setSuccessMessage("");
-      navigate("/users-info");
-    }, 2000);
   };
 
   const handleCancel = () => {
@@ -109,7 +172,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
       className="max-w-4xl mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md border border-gray-300"
     >
       <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-20px] mb-5 text-lg">
-        Edit User
+        Edit User: {formData.username}
       </h2>
 
       {errorMessage && (
@@ -123,80 +186,139 @@ const EditUsersForm = ({ onUpdateUser }) => {
         </p>
       )}
 
-      {/* Form Grid Layout mimicking the invoice structure */}
+      {/* Form Grid Layout */}
       <div className="grid grid-cols-2 gap-4">
         {/* Left Column */}
         <div className="space-y-4">
-          {[
-            { label: "User ID", name: "userId", type: "text" },
-            { label: "Username", name: "username", type: "text" },
-            { label: "NIC Number", name: "nicNumber", type: "text" },
-            { label: "Email", name: "email", type: "email" },
-            { label: "Contact Number", name: "contactNumber", type: "number" },
-            { label: "Address", name: "address", type: "text" },
-            { label: "Status", name: "status", type: "select" }, 
-          ].map(({ label, name, type }) => (
-            <div key={name} className="flex items-center">
-              <label
-                htmlFor={name}
-                className="text-[16px] text-gray-800 w-1/2 text-left"
-              >
-                {label}:
-              </label>
-              {type === "select" ? (
-                <select
-                  id={name}
-                  name={name}
-                  value={formData[name]}
-                  onChange={handleChange}
-                  className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
-                >
-                  <option value="">Choose a status</option>
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                  <option value="Locked">Locked</option>
-                  <option value="Suspended">Suspended</option>
-                </select>
-              ) : (
-                <input
-                  type={type}
-                  id={name}
-                  name={name}
-                  value={formData[name]}
-                  onChange={handleChange}
-                  className={`w-1/2 px-2 py-2 text-sm border border-${
-                    name === "contactNumber" ? "red-300" : "gray-300"
-                  } rounded-md`}
-                />
-              )}
-            </div>
-          ))}
+          <div className="flex items-center">
+            <label htmlFor="userId" className="text-[16px] text-gray-800 w-1/2 text-left">
+              User ID:
+            </label>
+            <input
+              type="text"
+              id="userId"
+              name="userId"
+              value={formData.userId}
+              readOnly
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md bg-gray-100"
+            />
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="username" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Username:
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="nicNumber" className="text-[16px] text-gray-800 w-1/2 text-left">
+              NIC Number:
+            </label>
+            <input
+              type="text"
+              id="nicNumber"
+              name="nicNumber"
+              value={formData.nicNumber}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="email" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Email:
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="contactNumber" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Contact Number:
+            </label>
+            <input
+              type="text"
+              id="contactNumber"
+              name="contactNumber"
+              value={formData.contactNumber}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="address" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Address:
+            </label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="status" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Status:
+            </label>
+            <select
+              id="status"
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            >
+              <option value="">Choose a status</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
+              <option value="LOCKED">Locked</option>
+              <option value="SUSPENDED">Suspended</option>
+            </select>
+          </div>
         </div>
 
-        {/* Right Column with Buttons at the Bottom */}
+        {/* Right Column */}
         <div className="space-y-4">
-          {[
-            { label: "Date of Joined", name: "dateOfJoined", type: "date" },
-            { label: "Last Login Date", name: "lastLoginDate", type: "date" },
-          ].map(({ label, name, type }) => (
-            <div key={name} className="flex items-center">
-              <label
-                htmlFor={name}
-                className="text-[16px] text-gray-800 w-1/2 text-left"
-              >
-                {label}:
-              </label>
-              <input
-                type={type}
-                id={name}
-                name={name}
-                value={formData[name]}
-                onChange={handleChange}
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
-              />
-            </div>
-          ))}
-
+          <div className="flex items-center">
+            <label htmlFor="dateOfJoined" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Date of Joined:
+            </label>
+            <input
+              type="date"
+              id="dateOfJoined"
+              name="dateOfJoined"
+              value={formData.dateOfJoined}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="flex items-center">
+            <label htmlFor="lastLoginDate" className="text-[16px] text-gray-800 w-1/2 text-left">
+              Last Login Date:
+            </label>
+            <input
+              type="date"
+              id="lastLoginDate"
+              name="lastLoginDate"
+              value={formData.lastLoginDate}
+              onChange={handleChange}
+              className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              readOnly
+            />
+          </div>
           <div className="flex items-center">
             <label htmlFor="role" className="text-[16px] text-gray-800 w-1/2 text-left">
               Role:
@@ -207,18 +329,16 @@ const EditUsersForm = ({ onUpdateUser }) => {
               value={formData.role}
               onChange={handleChange}
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+              required
             >
               <option value="">Choose a role</option>
-              <option value="Employee">Employee</option>
-              <option value="Sales Representative">Sales Representative</option>
+              <option value="ADMIN">Admin</option>
+              <option value="EMPLOYEE">Employee</option>
+              <option value="SALES_REP">Sales Representative</option>
             </select>
           </div>
-
           <div className="flex items-center">
-            <label
-              htmlFor="profilePicture"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="profilePicture" className="text-[16px] text-gray-800 w-1/2 text-left">
               Profile Picture:
             </label>
             <input
@@ -229,7 +349,6 @@ const EditUsersForm = ({ onUpdateUser }) => {
               className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
             />
           </div>
-
           <div className="flex items-center">
             <label htmlFor="password" className="text-[16px] text-gray-800 w-1/2 text-left">
               Password:
@@ -244,12 +363,8 @@ const EditUsersForm = ({ onUpdateUser }) => {
               placeholder="Leave blank to keep existing password"
             />
           </div>
-
           <div className="flex items-center">
-            <label
-              htmlFor="confirmPassword"
-              className="text-[16px] text-gray-800 w-1/2 text-left"
-            >
+            <label htmlFor="confirmPassword" className="text-[16px] text-gray-800 w-1/2 text-left">
               Confirm Password:
             </label>
             <input
@@ -262,18 +377,19 @@ const EditUsersForm = ({ onUpdateUser }) => {
               placeholder="Leave blank to keep existing password"
             />
           </div>
-
           {/* Buttons at Bottom-Right */}
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="submit"
-              className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+              disabled={isSubmitting}
+              className={`px-5 py-2 ${isSubmitting ? "bg-gray-400" : "bg-[#2a4d69] hover:bg-[#00796b]"} text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300`}
             >
-              Update
+              {isSubmitting ? "Updating..." : "Update"}
             </button>
             <button
               type="button"
               onClick={handleCancel}
+              disabled={isSubmitting}
               className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
             >
               Cancel
@@ -286,7 +402,7 @@ const EditUsersForm = ({ onUpdateUser }) => {
 };
 
 EditUsersForm.propTypes = {
-  onUpdateUser: PropTypes.func.isRequired,
+  onUpdateUser: PropTypes.func,
 };
 
 export default EditUsersForm;

@@ -4,6 +4,7 @@ import com.group03.backend_PharmaPulse.user.api.UsersService;
 import com.group03.backend_PharmaPulse.user.api.dto.UserLoginDTO;
 import com.group03.backend_PharmaPulse.user.api.dto.UsersDTO;
 import com.group03.backend_PharmaPulse.user.api.dto.response.LoginSuccessResponse;
+import com.group03.backend_PharmaPulse.user.api.dto.response.UserDetailsDTO;
 import com.group03.backend_PharmaPulse.user.internal.entity.RefreshToken;
 import com.group03.backend_PharmaPulse.user.internal.entity.Users;
 import com.group03.backend_PharmaPulse.user.internal.mapper.UsersMapper;
@@ -22,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -52,26 +55,7 @@ public class UsersServiceImpl implements UsersService {
         }
         usersDTO.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
         // Handle image processing with defensive checks
-        try {
-            if (imageFile != null && !imageFile.isEmpty() && imageFile.getSize() > 0) {
-                usersDTO.setImageName(imageFile.getOriginalFilename());
-                usersDTO.setImageType(imageFile.getContentType());
-                usersDTO.setImageData(imageFile.getBytes());
-            } else {
-                // Set image fields to null when no image is provided
-                usersDTO.setImageName(null);
-                usersDTO.setImageType(null);
-                usersDTO.setImageData(null);
-            }
-        } catch (IOException e) {
-            // Log the error
-            System.err.println("Error processing image file: " + e.getMessage());
-            // Default to null values for image fields
-            usersDTO.setImageName(null);
-            usersDTO.setImageType(null);
-            usersDTO.setImageData(null);
-            throw new IOException("Error in saving image"+e.getMessage());
-        }
+        processUserImage(usersDTO, imageFile);
         Users registeredUser = usersRepo.save(usersMapper.toEntity(usersDTO));
         return usersMapper.toDTO(registeredUser);
     }
@@ -109,5 +93,78 @@ public class UsersServiceImpl implements UsersService {
             return loginResultMap;
         }
         return null;
+    }
+
+    @Override
+    public List<UserDetailsDTO> getUserDetails(){
+        try {
+            List<Users> users = usersRepo.findAll();
+            if(users.isEmpty()){
+                throw new RuntimeException("No users found");
+            }
+            List<UserDetailsDTO> userDetailsDTOList = new ArrayList<>();
+            for (Users user : users) {
+                userDetailsDTOList.add(usersMapper.toDetailsDTO(user));
+            }
+            return userDetailsDTOList;
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching user details: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public UsersDTO updateUser(Long id, UsersDTO usersDTO, MultipartFile imageFile) throws IOException {
+        // First fetch the existing user
+        Users existingUser = usersRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+
+        // Update the fields from the DTO
+        existingUser.setUsername(usersDTO.getUsername());
+        existingUser.setNicNumber(usersDTO.getNicNumber());
+        existingUser.setEmail(usersDTO.getEmail());
+        existingUser.setContactNumber(usersDTO.getContactNumber());
+        existingUser.setAddress(usersDTO.getAddress());
+        existingUser.setRole(usersDTO.getRole());
+        existingUser.setStatus(usersDTO.getStatus());
+        existingUser.setDateOfJoined(usersDTO.getDateOfJoined());
+
+        // Handle password
+        if (usersDTO.getPassword() != null && !usersDTO.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(usersDTO.getPassword()));
+        }
+
+        // Process image if provided
+        if (imageFile != null && !imageFile.isEmpty()) {
+            existingUser.setImageName(imageFile.getOriginalFilename());
+            existingUser.setImageType(imageFile.getContentType());
+            existingUser.setImageData(imageFile.getBytes());
+        }
+
+        // Save the updated user
+        Users updatedUser = usersRepo.save(existingUser);
+        return usersMapper.toDTO(updatedUser);
+    }
+
+    private void processUserImage(UsersDTO usersDTO, MultipartFile imageFile) throws IOException {
+        try {
+            if (imageFile != null && !imageFile.isEmpty() && imageFile.getSize() > 0) {
+                usersDTO.setImageName(imageFile.getOriginalFilename());
+                usersDTO.setImageType(imageFile.getContentType());
+                usersDTO.setImageData(imageFile.getBytes());
+            } else {
+                clearImageFields(usersDTO);
+            }
+        } catch (IOException e) {
+            // Log the error
+            System.err.println("Error processing image file: " + e.getMessage());
+            // Default to null values for image fields
+            clearImageFields(usersDTO);
+            throw new IOException("Error in saving image: " + e.getMessage());
+        }
+    }
+    private void clearImageFields(UsersDTO usersDTO) {
+        usersDTO.setImageName(null);
+        usersDTO.setImageType(null);
+        usersDTO.setImageData(null);
     }
 }

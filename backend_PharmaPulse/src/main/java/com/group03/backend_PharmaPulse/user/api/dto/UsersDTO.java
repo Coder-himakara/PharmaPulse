@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class UsersDTO {
-    //private Long id;
+    private Long userId;
     private String nicNumber;
     private String email;
     private String address;

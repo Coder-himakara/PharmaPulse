@@ -41,6 +41,18 @@ const OrderForm = () => {
       });
   }, []);
 
+  // Options for react-select for customers
+  const customerOptions = customers.map((customer) => ({
+    value: customer.customer_id,
+    label: customer.customer_name,
+  }));
+
+  // Options for react-select for products
+  const productOptions = products.map((product) => ({
+    value: product.productId,
+    label: product.productName,
+  }));
+
   // Handle changes for the customer dropdown (react-select)
   const handleCustomerChange = (option) => {
     setFormData((prevData) => ({
@@ -65,25 +77,25 @@ const OrderForm = () => {
     });
   };
 
-  // Function to fetch maximum available quantity for a product
-  const handleShowMaxQuantity = (index) => {
+  // Updated function to fetch maximum available quantity using async/await
+  const handleShowMaxQuantity = async (index) => {
     const productId = orderItems[index].productId;
     if (!productId) {
       alert('Please select a product first.');
       return;
     }
-    apiClient
-      .get(`/inventory/available-quantity/${productId}`)
-      .then((response) => {
-        const maxQty = response.data; // assuming the API returns a number
-        const newItems = [...orderItems];
-        newItems[index].maxQuantity = maxQty;
-        setOrderItems(newItems);
-      })
-      .catch((error) => {
-        console.error('Error fetching available quantity:', error);
-        alert('Failed to fetch available quantity.');
-      });
+    try {
+      const response = await apiClient.get(
+        `/inventory/available-quantity/${productId}`,
+      );
+      const maxQty = response.data; // assuming the API returns a number
+      const newItems = [...orderItems];
+      newItems[index].maxQuantity = maxQty;
+      setOrderItems(newItems);
+    } catch (error) {
+      console.error('Error fetching available quantity:', error);
+      alert('Failed to fetch available quantity.');
+    }
   };
 
   // Add a new empty order item
@@ -101,8 +113,8 @@ const OrderForm = () => {
     setOrderItems(newItems);
   };
 
-  // Submit order
-  const handleSubmit = (e) => {
+  // Submit order with auto-fetch for missing max quantities
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate customer selection
@@ -111,7 +123,7 @@ const OrderForm = () => {
       return;
     }
 
-    // Validate each order item
+    // Validate each order item basic input and fetch maxQuantity if not available
     for (let i = 0; i < orderItems.length; i++) {
       const item = orderItems[i];
       if (!item.productId || !item.quantity) {
@@ -122,6 +134,33 @@ const OrderForm = () => {
       }
       if (isNaN(item.quantity) || Number(item.quantity) <= 0) {
         setErrorMessage('Quantity must be a positive number.');
+        return;
+      }
+      // If maxQuantity is not already fetched, fetch it now
+      if (item.maxQuantity === undefined) {
+        try {
+          await handleShowMaxQuantity(i);
+        } catch (error) {
+          console.error('Error fetching available quantity:', error);
+          setErrorMessage('Failed to fetch available quantity.');
+          return;
+        }
+      }
+    }
+
+    // Validate quantity against max available
+    for (let i = 0; i < orderItems.length; i++) {
+      const item = orderItems[i];
+      if (Number(item.quantity) > item.maxQuantity) {
+        // Find product name from productOptions
+        const product = productOptions.find(
+          (option) => option.value === Number(item.productId),
+        );
+        setErrorMessage(
+          `The quantity for product ${
+            product ? product.label : item.productId
+          } exceeds the maximum available quantity of ${item.maxQuantity}.`,
+        );
         return;
       }
     }
@@ -139,43 +178,30 @@ const OrderForm = () => {
     };
 
     // Call API to create the order
-    createOrder(orderData)
-      .then((response) => {
-        console.log('Order created successfully:', response.data);
-        setSuccessMessage('Order created successfully!');
-        // Reset form fields
-        setFormData({ customerId: '' });
-        setOrderItems([
-          { productId: '', quantity: '', discount: '', maxQuantity: undefined },
-        ]);
-        setTimeout(() => {
-          setSuccessMessage('');
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error('Order creation failed:', error);
-        setErrorMessage(
-          error.response?.data?.message ||
-            'Order creation failed. Please try again.',
-        );
-      });
+    try {
+      const response = await createOrder(orderData);
+      console.log('Order created successfully:', response.data);
+      setSuccessMessage('Order created successfully!');
+      // Reset form fields
+      setFormData({ customerId: '' });
+      setOrderItems([
+        { productId: '', quantity: '', discount: '', maxQuantity: undefined },
+      ]);
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000);
+    } catch (error) {
+      console.error('Order creation failed:', error);
+      setErrorMessage(
+        error.response?.data?.message ||
+          'Order creation failed. Please try again.',
+      );
+    }
   };
 
   const handleCancel = () => {
     navigate('/orders');
   };
-
-  // Options for react-select for customers
-  const customerOptions = customers.map((customer) => ({
-    value: customer.customer_id,
-    label: customer.customer_name,
-  }));
-
-  // Options for react-select for products
-  const productOptions = products.map((product) => ({
-    value: product.productId,
-    label: product.productName,
-  }));
 
   return (
     <form

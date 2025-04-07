@@ -3,18 +3,20 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import apiClient from '../../api/ApiClient'; // Adjust the path based on your project structure
 import PropTypes from 'prop-types';
-import {
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
+
+import { 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer, 
+  PieChart, 
+  Pie, 
+  Cell, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
   CartesianGrid,
   AreaChart,
   Area,
@@ -53,8 +55,8 @@ const handleApiError = (error) => {
   }
 };
 
-const EmployeeDashboardCard = ({ content, className }) => {
 
+const EmployeeDashboardCard = ({ content, className }) => {
 
   const { token } = useAuth(); // Get token from context
   const [loading, setLoading] = useState(true);
@@ -124,6 +126,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
 
   // Add this with other state declarations
   const [stockTrendData, setStockTrendData] = useState(stockTrend);
+
 
   // Function to transform API data into the required format with better handling of nested data
   const transformExpiryCounts = (data = {}) => {
@@ -196,19 +199,21 @@ const EmployeeDashboardCard = ({ content, className }) => {
     ];
   };
 
-  
 
-  // Fetch initial data and setup WebSockets
+  // Updated useEffect with better error handling and recovery
   useEffect(() => {
+
     let expiryWsClient = null;
     let stockWsClient = null;
     let dashboardWsClient = null;
 
     const fetchInitialData = async () => {
+
       setLoading(true);
       setError(null);
-
+      
       try {
+
         // Make sure token is valid
         if (!token) {
           setError('Authentication token is missing');
@@ -268,26 +273,23 @@ const EmployeeDashboardCard = ({ content, className }) => {
           });
         }
 
+
       } catch (error) {
-        // Better error handling
-        let errorMessage = 'Failed to load dashboard data';
-
-        if (error.response) {
-          if (error.response.status === 401) {
-            errorMessage = 'Authentication failed. Please log in again.';
-          } else if (error.response.status === 403) {
-            errorMessage = 'You do not have permission to access this data.';
-          }
-          console.error('Server response:', error.response.data);
-        }
-
-        setError(errorMessage);
-        console.error('API Error:', error);
-        toast.error(errorMessage);
+        console.error("API Error:", error);
+        // User-friendly error state
+        setError({
+          title: "Failed to load expiry data",
+          message: "We couldn't load the product expiry information. This could be due to missing expiry dates in the system.",
+          technical: error.response?.data?.details || error.message
+        });
+        
+        // Set fallback data to prevent UI from breaking
+        setExpiryTrend([]); 
       } finally {
         setLoading(false);
       }
     };
+
 
     fetchInitialData();
 
@@ -374,6 +376,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
           .catch(error => console.error('Error disconnecting dashboard WebSocket:', error));
       }
     };
+
   }, [token]);
 
 
@@ -438,6 +441,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
 
       return (
         <div className="p-3 text-white bg-gray-900 rounded-lg shadow-lg">
+
           <p className="font-semibold mb-1" style={{ color: payload[0].color }}>
             {data.name}
           </p>
@@ -470,11 +474,13 @@ const EmployeeDashboardCard = ({ content, className }) => {
         <div className="p-3 text-white bg-gray-900 rounded-lg shadow-lg">
           <p className="font-semibold">{payload[0].payload.name}</p>
           <p>{payload[0].value} units</p>
+
         </div>
       );
     }
     return null;
   };
+
 
   // Custom label placement function
   const renderCustomizedLabel = ({
@@ -498,6 +504,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
         {`${(percent * 100).toFixed(1)}%`}
       </text>
     );
+
   };
 
   return (
@@ -531,10 +538,12 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 </svg>
               </div>
               <div>
+
                 <p className="text-sm font-medium text-gray-500">Total Active Products</p>
                 <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.productCount}</p>
               </div>
             </div>
+
 
             <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
               <div className="p-3 mr-4 bg-green-100 rounded-full">
@@ -544,9 +553,11 @@ const EmployeeDashboardCard = ({ content, className }) => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Suppliers</p>
+
                 <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.supplierCount}</p>
               </div>
             </div>
+
 
             <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
               <div className="p-3 mr-4 bg-purple-100 rounded-full">
@@ -556,9 +567,11 @@ const EmployeeDashboardCard = ({ content, className }) => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Customers</p>
+
                 <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.customerCount}</p>
               </div>
             </div>
+
 
             <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
               <div className="p-3 mr-4 bg-yellow-100 rounded-full">
@@ -568,7 +581,9 @@ const EmployeeDashboardCard = ({ content, className }) => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Recent Transactions</p>
+
                 <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.recentTransactions}</p>
+
               </div>
             </div>
           </div>
@@ -581,6 +596,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 Stock Availability
               </h2>
               <div className="mb-4">
+
                 <p className="text-lg font-bold">{stockSummary.totalStock + (dashboardCounts.expiredStockQuantity || 0)}</p>
                 <p className="text-sm text-gray-600">Total Stock (Including Expired)</p>
               </div>
@@ -632,6 +648,24 @@ const EmployeeDashboardCard = ({ content, className }) => {
                     <Area type="monotone" dataKey="outOfStock" stackId="1" stroke="#f87171" fill="#f87171" />
                   </AreaChart>
                 </ResponsiveContainer>
+
+
+              </div>
+
+              {/* Stock Trend Over Time */}
+              <div className="mt-6">
+                <h3 className="mb-3 text-sm font-semibold text-gray-700">Stock Trend - Last 6 Months</h3>
+                <ResponsiveContainer width="100%" height={180}>
+                  <AreaChart data={stockTrend} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="available" stackId="1" stroke="#4ade80" fill="#4ade80" />
+                    <Area type="monotone" dataKey="lowStock" stackId="1" stroke="#fb923c" fill="#fb923c" />
+                    <Area type="monotone" dataKey="outOfStock" stackId="1" stroke="#f87171" fill="#f87171" />
+                  </AreaChart>
+                </ResponsiveContainer>
               </div>
 
               {/* Low Stock Items List */}
@@ -671,7 +705,9 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 <h3 className="text-sm font-semibold text-gray-700">Distribution by Expiry Category</h3>
               </div>
               {getExpiryDistribution().length > 0 ? (
+
                 <ResponsiveContainer width="100%" height={250}> {/* Increased height */}
+
                   <PieChart>
                     <Pie
                       data={getExpiryDistribution()}
@@ -682,8 +718,10 @@ const EmployeeDashboardCard = ({ content, className }) => {
                       paddingAngle={5}
                       dataKey="value"
                       nameKey="name"
+
                       labelLine={false} // Disable label lines
                       label={({ percent }) => percent > 0.1 ? `${(percent * 100).toFixed(0)}%` : ''} // Only show inside labels for large segments
+
                     >
                       {getExpiryDistribution().map((entry, index) => (
                         <Cell
@@ -711,11 +749,11 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 </div>
               )}
 
-
               {/* Expiry Quantities Bar Chart */}
               <div className="mt-4">
                 <h3 className="mb-2 text-sm font-semibold text-gray-700">Expiry Quantities by Category</h3>
                 <ResponsiveContainer width="100%" height={180}>
+
                   <BarChart
                     data={formatExpiryTrendForChart(counts)}
                     layout="vertical"
@@ -744,6 +782,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 </ResponsiveContainer>
               </div>
 
+
               {/* Critical Expiry Alert */}
               {counts.oneWeekQuantity > 0 && (
                 <div className="p-3 mt-4 text-sm text-red-800 bg-red-100 border border-red-200 rounded-lg">
@@ -756,6 +795,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   <p className="mt-1 ml-7">Review soon-to-expire inventory immediately to minimize losses.</p>
                 </div>
               )}
+
             </div>
           </div>
 
@@ -830,10 +870,12 @@ const EmployeeDashboardCard = ({ content, className }) => {
                     <p className="text-xl font-bold text-red-900">{stockSummary.outOfStock}</p>
                     <span className="ml-2 text-xs text-red-700">
                       products
+
                     </span>
                   </div>
                 </div>
               </div>
+
               <div className="w-full h-1 mt-3 bg-red-200 rounded-full">
                 <div
                   className="h-1 bg-red-500 rounded-full animate-pulse"
@@ -857,15 +899,17 @@ const EmployeeDashboardCard = ({ content, className }) => {
                     <p className="text-xl font-bold text-purple-900">{returnBatches.count}</p>
                     <span className="ml-2 text-xs text-purple-700">
                       batches
+
                     </span>
                   </div>
                 </div>
               </div>
+
               <div className="w-full h-1 mt-3 bg-purple-200 rounded-full">
                 <div className="h-1 bg-purple-500 rounded-full" style={{ width: returnBatches.count > 0 ? '100%' : '0%' }}></div>
+
               </div>
             </div>
-
           </div>
 
           {/* Required content from props */}
