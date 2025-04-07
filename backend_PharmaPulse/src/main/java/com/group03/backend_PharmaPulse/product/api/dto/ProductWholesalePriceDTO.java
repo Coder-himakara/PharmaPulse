@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ProductWholesalePriceDTO {
-    //private Long priceId;
+    private Long priceId;
     private Long product;
     private String createdBy;
     private LocalDateTime effectiveDate;

@@ -40,6 +40,7 @@ import SupplierReceiptForm from "../components/Forms/employeeForms/payments/Supp
 import MonthlyReportForm from "../components/Forms/employeeForms/reports/MonthlyReportForm"
 
 import StockBalanceReportForm from "../components/Forms/employeeForms/reports/StockBalanceReportForm"
+import RetailPriceHistory from "../components/Tables/employeeTables/products/RetailPriceHistory";
 
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
@@ -158,6 +159,10 @@ const EmpRoutes = () => {
         element={<EditProductsForm onUpdateProduct={updateProduct} />}
       />
       <Route path="view-product/:productId" element={<ViewProductDetails />} />
+      <Route
+        path="retail-price-info"
+        element={<RetailPriceHistory products={products} />}
+      />
 
       <Route
         path="add-suppliers"

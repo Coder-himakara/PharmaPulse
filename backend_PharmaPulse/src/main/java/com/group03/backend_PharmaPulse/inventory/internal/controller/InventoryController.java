@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/inventory")
-@PreAuthorize("hasRole('EMPLOYEE')")
+@PreAuthorize("hasAnyRole('EMPLOYEE','SALES_REP')")
 public class InventoryController {
 
     private final InventoryReservationServiceImpl inventoryReservationService;
@@ -34,6 +34,7 @@ public class InventoryController {
      * Endpoint to return available quantities for all products.
      */
     @GetMapping("/all-available")
+    @PreAuthorize("hasAuthority('sales_rep:read')")
     public List<ProductAvailabilityDTO> getAllAvailableQuantities() {
         return inventoryReservationService.getAllProductAvailabilities();
     }
@@ -42,6 +43,7 @@ public class InventoryController {
      * Endpoint to return the available quantity for a specific product by productId.
      */
     @GetMapping("/available-quantity/{productId}")
+    @PreAuthorize("hasAuthority('sales_rep:read')")
     public int getAvailableQuantity(@PathVariable Long productId) {
         return inventoryReservationService.getAvailableQuantityByProductId(productId);
     }
