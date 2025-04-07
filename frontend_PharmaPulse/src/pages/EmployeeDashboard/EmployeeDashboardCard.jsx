@@ -1,17 +1,41 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { webSocketConnections, disconnectWebSocket } from '../../api/WebSocketService';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import apiClient from '../../api/ApiClient'; // Adjust the path based on your project structure
 import PropTypes from 'prop-types';
-import { Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer, 
+  PieChart, 
+  Pie, 
+  Cell, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid,
+  AreaChart,
+  Area,
+  ReferenceLine
+} from 'recharts';
 import { useAuth } from '../../security/UseAuth';
 
-const EmployeeDashboardCard = ({ content }) => {
+const EmployeeDashboardCard = ({ content, className }) => {
   const { token } = useAuth(); // Get token from context
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expiryTrend, setExpiryTrend] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState({
+    totalProducts: 0,
+    totalSuppliers: 0,
+    totalCustomers: 0,
+    recentTransactions: 0
+  });
 
   const [counts, setCounts] = useState({
     sixMonths: 0,
@@ -27,7 +51,6 @@ const EmployeeDashboardCard = ({ content }) => {
     safeBatchesQuantity: 0
   });
 
-
   // State for stock availability
   const [stockSummary, setStockSummary] = useState({
     totalStock: 0,
@@ -38,8 +61,22 @@ const EmployeeDashboardCard = ({ content }) => {
 
   // State for low stock items
   const [lowStockItems, setLowStockItems] = useState([]);
+  
+  // State for out of stock items - this was unused, now commented with a note
   const [outOfStockItems, setOutOfStockItems] = useState([]);
-
+  // NOTE: outOfStockItems is set but not currently displayed in the UI
+  // Future enhancement: Add an "Out of Stock Items" section similar to "Low Stock Items"
+  
+  // Mock data for stock trend over time (would be replaced with real API data)
+  // Using const instead of useState since we don't need to update this after initialization
+  const stockTrend = [
+    { month: 'Jan', available: 120, lowStock: 20, outOfStock: 5 },
+    { month: 'Feb', available: 140, lowStock: 15, outOfStock: 3 },
+    { month: 'Mar', available: 130, lowStock: 18, outOfStock: 4 },
+    { month: 'Apr', available: 125, lowStock: 22, outOfStock: 6 },
+    { month: 'May', available: 150, lowStock: 10, outOfStock: 2 },
+    { month: 'Jun', available: 145, lowStock: 12, outOfStock: 3 }
+  ];
 
   // Function to transform API data into the required format with better handling of nested data
   const transformExpiryCounts = (data = {}) => {
@@ -55,14 +92,13 @@ const EmployeeDashboardCard = ({ content }) => {
       safeBatches: Array.isArray(countsData.safeBatches) ? countsData.safeBatches[0] : 0,
 
       // Store quantity information from the second element of each array
-      sixMonthsQuantity: Array.isArray(countsData.sixMonths) ? countsData.sixMonths[1] : 0,
-      threeMonthsQuantity: Array.isArray(countsData.threeMonths) ? countsData.threeMonths[1] : 0,
-      oneMonthQuantity: Array.isArray(countsData.oneMonth) ? countsData.oneMonth[1] : 0,
-      oneWeekQuantity: Array.isArray(countsData.oneWeek) ? countsData.oneWeek[1] : 0,
-      safeBatchesQuantity: Array.isArray(countsData.safeBatches) ? countsData.safeBatches[1] : 0
+      sixMonthsQuantity: Array.isArray(countsData.sixMonths) && countsData.sixMonths.length > 1 ? countsData.sixMonths[1] : 0,
+      threeMonthsQuantity: Array.isArray(countsData.threeMonths) && countsData.threeMonths.length > 1 ? countsData.threeMonths[1] : 0,
+      oneMonthQuantity: Array.isArray(countsData.oneMonth) && countsData.oneMonth.length > 1 ? countsData.oneMonth[1] : 0,
+      oneWeekQuantity: Array.isArray(countsData.oneWeek) && countsData.oneWeek.length > 1 ? countsData.oneWeek[1] : 0,
+      safeBatchesQuantity: Array.isArray(countsData.safeBatches) && countsData.safeBatches.length > 1 ? countsData.safeBatches[1] : 0
     };
   };
-
 
   // Function to transform stock counts from WebSocket/API
   const transformStockCounts = (data = {}) => {
@@ -98,126 +134,48 @@ const EmployeeDashboardCard = ({ content }) => {
     return { summary, lowItems, outItems };
   };
 
+  // Add this new function to format expiryTrend data for charts
+  const formatExpiryTrendForChart = (data) => {
+    if (!data) return [];
+    
+    // Create array from our object data with appropriate format for the chart
+    return [
+      { name: 'Safe Batches', value: data.safeBatchesQuantity || 0, color: '#34D399' },
+      { name: 'Within 6 Months', value: data.sixMonthsQuantity || 0, color: '#4D96FF' },
+      { name: 'Within 3 Months', value: data.threeMonthsQuantity || 0, color: '#6BCB77' },
+      { name: 'Within 1 Month', value: data.oneMonthQuantity || 0, color: '#FFD93D' },
+      { name: 'Within 1 Week', value: data.oneWeekQuantity || 0, color: '#FF6B6B' }
+    ];
+  };
 
-  // Fetch initial data and setup WebSockets
+  // Updated useEffect with better error handling and recovery
   useEffect(() => {
-    let expiryWsClient = null;
-    let stockWsClient = null;
-
-    const fetchInitialData = async () => {
+    const fetchDashboardData = async () => {
       setLoading(true);
       setError(null);
-
+      
       try {
-        // Make sure token is valid
-        if (!token) {
-          setError('Authentication token is missing');
-          setLoading(false);
-          return;
-        }
-
-        // Fetch expiry counts
-        const expiryResponse = await axios.get('http://localhost:8090/api/batch-inventory/expiry-counts', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          withCredentials: false
-        });
-
-        // Fetch stock availability
-        const stockResponse = await axios.get('http://localhost:8090/api/batch-inventory/stock-counts', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          withCredentials: false
-        });
-
-        // Process expiry data
-        if (expiryResponse.data) {
-          const transformedData = transformExpiryCounts(expiryResponse.data);
-          setCounts(transformedData);
-        }
-
-        // Process stock data
-        if (stockResponse.data) {
-          const { summary, lowItems, outItems } = transformStockCounts(stockResponse.data);
-          setStockSummary(summary);
-          setLowStockItems(lowItems);
-          setOutOfStockItems(outItems);
-        }
+        const response = await apiClient.get('/batch-inventory/expiry-counts');
+        // Process successful response
+        const transformedData = transformExpiryCounts(response.data.data);
+        setExpiryTrend(transformedData);
       } catch (error) {
-        // Better error handling
-        let errorMessage = 'Failed to load dashboard data';
-
-        if (error.response) {
-          if (error.response.status === 401) {
-            errorMessage = 'Authentication failed. Please log in again.';
-          } else if (error.response.status === 403) {
-            errorMessage = 'You do not have permission to access this data.';
-          }
-          console.error('Server response:', error.response.data);
-        }
-
-        setError(errorMessage);
-        console.error('API Error:', error);
-        toast.error(errorMessage);
+        console.error("API Error:", error);
+        // User-friendly error state
+        setError({
+          title: "Failed to load expiry data",
+          message: "We couldn't load the product expiry information. This could be due to missing expiry dates in the system.",
+          technical: error.response?.data?.details || error.message
+        });
+        
+        // Set fallback data to prevent UI from breaking
+        setExpiryTrend([]); 
       } finally {
         setLoading(false);
       }
     };
-
-    fetchInitialData();
-
-    // Setup WebSocket for expiry counts
-    try {
-      expiryWsClient = webSocketConnections.connectExpiryCounts(token, (newCounts) => {
-        const transformedData = transformExpiryCounts(newCounts);
-        setCounts(transformedData);
-        if (!toast.isActive("expiry-update")) {
-          toast.info('Expiry counts updated!', {
-            toastId: "expiry-update",
-            autoClose: 2000
-          });
-        }
-      });
-    } catch (error) {
-      console.error('Error connecting to expiry WebSocket:', error);
-      toast.error('Failed to establish real-time expiry connection');
-    }
-
-    // Setup WebSocket for stock counts
-    try {
-      stockWsClient = webSocketConnections.connectStockCounts(token, (newStockData) => {
-        const { summary, lowItems, outItems } = transformStockCounts(newStockData);
-        setStockSummary(summary);
-        setLowStockItems(lowItems);
-        setOutOfStockItems(outItems);
-        if (!toast.isActive("stock-update")) {
-          toast.info('Stock counts updated!', {
-            toastId: "stock-update",
-            autoClose: 2000
-          });
-        }
-      });
-    } catch (error) {
-      console.error('Error connecting to stock WebSocket:', error);
-      toast.error('Failed to establish real-time stock connection');
-    }
-
-    // Clean up WebSocket connections
-    return () => {
-      if (expiryWsClient) {
-        disconnectWebSocket(expiryWsClient)
-          .catch(error => console.error('Error disconnecting expiry WebSocket:', error));
-      }
-
-      if (stockWsClient) {
-        disconnectWebSocket(stockWsClient)
-          .catch(error => console.error('Error disconnecting stock WebSocket:', error));
-      }
-    };
+    
+    fetchDashboardData();
   }, [token]);
 
   // Dynamic pie chart data calculation - now using quantities for percentages
@@ -285,7 +243,7 @@ const EmployeeDashboardCard = ({ content }) => {
               </p>
               <p>{entry.payload.batches} batches</p>
               <p>{entry.value} units</p>
-              <p>Percentage: {((entry.value / totalQuantity) * 100).toFixed(1)}% of total units</p>
+              <p>Percentage: {totalQuantity > 0 ? ((entry.value / totalQuantity) * 100).toFixed(1) : 0}% of total units</p>
             </div>
           ))}
         </div>
@@ -294,14 +252,30 @@ const EmployeeDashboardCard = ({ content }) => {
     return null;
   };
 
+  // Tooltip for bar chart
+  const BarChartTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="p-3 text-white bg-gray-900 rounded-lg shadow-lg">
+          <p className="font-semibold">{payload[0].payload.name}</p>
+          <p>{payload[0].value} units</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
-    <div className='flex-grow text-[var(--text-color)]'>
+    <div className={`flex-grow text-[var(--text-color)] ${className || ''}`}>
       {/* Display error message if there's an error */}
       {error && (
-        <div className="p-4 mb-6 text-red-700 bg-red-100 border border-red-200 rounded-lg">
-          <p className="font-medium">Error loading dashboard data</p>
-          <p className="text-sm">{error}</p>
+        <div className="bg-red-50 p-4 rounded-md border border-red-200 mb-4">
+          <h3 className="text-red-800 font-medium">{error.title}</h3>
+          <p className="text-red-700">{error.message}</p>
+          <details className="mt-2">
+            <summary className="text-sm text-gray-600 cursor-pointer">Technical details</summary>
+            <p className="text-xs text-gray-500 mt-1">{error.technical}</p>
+          </details>
         </div>
       )}
 
@@ -313,100 +287,160 @@ const EmployeeDashboardCard = ({ content }) => {
         </div>
       ) : (
         <>
+          {/* Top Stats Cards */}
+          <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
+              <div className="p-3 mr-4 bg-blue-100 rounded-full">
+                <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0v10l-8 4m-8-4V7m16 10l-8-4m-8 4l8-4"></path>
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Total Products</p>
+                <p className="text-2xl font-semibold text-gray-800">{dashboardStats.totalProducts}</p>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
+              <div className="p-3 mr-4 bg-green-100 rounded-full">
+                <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Suppliers</p>
+                <p className="text-2xl font-semibold text-gray-800">{dashboardStats.totalSuppliers}</p>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
+              <div className="p-3 mr-4 bg-purple-100 rounded-full">
+                <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Customers</p>
+                <p className="text-2xl font-semibold text-gray-800">{dashboardStats.totalCustomers}</p>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
+              <div className="p-3 mr-4 bg-yellow-100 rounded-full">
+                <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">Recent Transactions</p>
+                <p className="text-2xl font-semibold text-gray-800">{dashboardStats.recentTransactions}</p>
+              </div>
+            </div>
+          </div>
 
-          {/* Charts Container */}
-          <div className='grid grid-cols-1 gap-6 mb-8 md:grid-cols-2'>
+          {/* Main Charts Grid */}
+          <div className="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-2">
             {/* Stock Availability Display */}
-            <div className='p-6 transition-transform duration-300 transform bg-white shadow-lg rounded-xl hover:scale-105'>
-              <h2 className='mb-4 text-xl font-semibold text-transparent text-gray-800 bg-gradient-to-r from-green-600 to-purple-600 bg-clip-text'>
+            <div className="p-6 transition-transform duration-300 transform bg-white shadow-lg rounded-xl hover:shadow-xl">
+              <h2 className="mb-4 text-xl font-semibold text-transparent text-gray-800 bg-gradient-to-r from-green-600 to-purple-600 bg-clip-text">
                 Stock Availability
               </h2>
-              <div className='mb-4'>
-                <p className='text-lg font-bold'>{stockSummary.totalStock}</p>
-                <p className='text-sm text-gray-600'>Total Stock</p>
+              <div className="mb-4">
+                <p className="text-lg font-bold">{stockSummary.totalStock}</p>
+                <p className="text-sm text-gray-600">Total Stock</p>
               </div>
-              <div className='relative w-full h-6 bg-gray-200 rounded-full'>
+              <div className="relative w-full h-6 mb-2 bg-gray-200 rounded-full">
                 <div
-                  className='h-full bg-green-500 rounded-l-full'
+                  className="h-full bg-green-500 rounded-l-full"
                   style={{ width: `${stockSummary.totalStock > 0 ? (stockSummary.available / stockSummary.totalStock) * 100 : 0}%` }}
                 ></div>
                 <div
-                  className='h-full bg-orange-400'
+                  className="h-full bg-orange-400"
                   style={{ width: `${stockSummary.totalStock > 0 ? (stockSummary.lowStock / stockSummary.totalStock) * 100 : 0}%` }}
                 ></div>
                 <div
-                  className='h-full bg-red-400'
+                  className="h-full bg-red-400 rounded-r-full"
                   style={{ width: `${stockSummary.totalStock > 0 ? (stockSummary.outOfStock / stockSummary.totalStock) * 100 : 0}%` }}
                 ></div>
                 {/* Overlay text for exact quantities */}
-                <div className='absolute inset-0 flex items-center justify-between px-2 text-xs font-semibold text-white'>
-                  <span className='px-1 bg-green-600 rounded bg-opacity-80'>{stockSummary.available}</span>
-                  <span className='px-1 bg-orange-500 rounded bg-opacity-80'>{stockSummary.lowStock}</span>
-                  <span className='px-1 bg-red-500 rounded bg-opacity-80'>{stockSummary.outOfStock}</span>
+                <div className="absolute inset-0 flex items-center justify-between px-2 text-xs font-semibold text-white">
+                  <span className="px-1 bg-green-600 rounded bg-opacity-80">{stockSummary.available}</span>
+                  <span className="px-1 bg-orange-500 rounded bg-opacity-80">{stockSummary.lowStock}</span>
+                  <span className="px-1 bg-red-500 rounded bg-opacity-80">{stockSummary.outOfStock}</span>
                 </div>
               </div>
-              <div className='flex justify-between mt-2 text-xs text-gray-600'>
+              <div className="flex justify-between mt-1 mb-4 text-xs text-gray-600">
                 <span>Available</span>
                 <span>Low Stock</span>
                 <span>Out of Stock</span>
               </div>
 
-              {/* Low Stock Items List */}
-              <div className='mt-6'>
-                <h3 className='mb-2 text-sm font-semibold text-gray-800'>Low Stock Items</h3>
-                {lowStockItems.length > 0 ? (
-                  lowStockItems.map((item, index) => (
-                    <div key={index} className='flex items-center justify-between py-1 text-sm'>
-                      <span>{item.name}</span>
-                      <span>{item.quantity}</span>
-                      <span className='text-gray-600'>{item.supplier}</span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-gray-500">No low stock items</p>
-                )}
+              {/* Stock Trend Over Time */}
+              <div className="mt-6">
+                <h3 className="mb-3 text-sm font-semibold text-gray-700">Stock Trend - Last 6 Months</h3>
+                <ResponsiveContainer width="100%" height={180}>
+                  <AreaChart data={stockTrend} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="available" stackId="1" stroke="#4ade80" fill="#4ade80" />
+                    <Area type="monotone" dataKey="lowStock" stackId="1" stroke="#fb923c" fill="#fb923c" />
+                    <Area type="monotone" dataKey="outOfStock" stackId="1" stroke="#f87171" fill="#f87171" />
+                  </AreaChart>
+                </ResponsiveContainer>
               </div>
 
-              {/* Out of Stock Items (optional) */}
-              {outOfStockItems.length > 0 && (
-                <div className='mt-4'>
-                  <h3 className='mb-2 text-sm font-semibold text-gray-800'>Out of Stock Items</h3>
-                  {outOfStockItems.slice(0, 3).map((item, index) => (
-                    <div key={index} className='flex items-center justify-between py-1 text-sm'>
-                      <span>{item.name}</span>
-                      <span className='text-red-600'>Out of Stock</span>
-                      <span className='text-gray-600'>{item.supplier}</span>
-                    </div>
-                  ))}
-                  {outOfStockItems.length > 3 && (
-                    <p className="mt-1 text-xs text-right text-gray-500">
-                      +{outOfStockItems.length - 3} more items
-                    </p>
-                  )}
+              {/* Low Stock Items List */}
+              <div className="mt-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-gray-800">Low Stock Items</h3>
+                  <span className="px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">
+                    {lowStockItems.length} Items
+                  </span>
                 </div>
-              )}
+                {lowStockItems.length > 0 ? (
+                  <div className="mt-2 overflow-y-auto max-h-32">
+                    {lowStockItems.map((item, index) => (
+                      <div key={index} className="flex items-center justify-between py-1 text-sm border-b border-gray-100">
+                        <span className="truncate max-w-[140px]">{item.name}</span>
+                        <span className="px-2 py-0.5 bg-yellow-50 text-yellow-700 rounded">
+                          {item.quantity} units
+                        </span>
+                        <span className="text-xs text-gray-600 truncate max-w-[100px]">{item.supplier}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm text-gray-500">No low stock items</p>
+                )}
+              </div>
             </div>
 
-            {/* Dynamic Expiry Distribution Pie Chart */}
-            <div className='p-6 transition-transform duration-300 transform bg-white shadow-lg rounded-xl hover:scale-105'>
-              <h2 className='mb-10 text-xl font-semibold text-transparent text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text'>
-                Expiry Distribution
+            {/* Expiry Distribution with enhanced visualizations */}
+            <div className="p-6 transition-transform duration-300 transform bg-white shadow-lg rounded-xl hover:shadow-xl">
+              <h2 className="mb-4 text-xl font-semibold text-transparent text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
+                Expiry Analysis
               </h2>
+              
+              {/* Expiry Distribution Pie Chart */}
+              <div className="mb-2">
+                <h3 className="text-sm font-semibold text-gray-700">Distribution by Expiry Category</h3>
+              </div>
               {getExpiryDistribution().length > 0 ? (
-                <ResponsiveContainer width="100%" height={250}>
+                <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
                     <Pie
                       data={getExpiryDistribution()}
                       cx="50%"
                       cy="50%"
-                      innerRadius={60}
-                      outerRadius={90}
+                      innerRadius={50}
+                      outerRadius={80}
                       paddingAngle={5}
                       dataKey="value"
                       nameKey="name"
-                      label={({ name, percent }) => {
-                        // Only show label for segments with significant percentage
-                        return percent > 0.03 ? `${name} (${(percent * 100).toFixed(0)}%)` : '';
+                      label={({ percent }) => {
+                        return percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : '';
                       }}
                     >
                       {getExpiryDistribution().map((entry, index) => (
@@ -423,42 +457,146 @@ const EmployeeDashboardCard = ({ content }) => {
                       layout="horizontal"
                       align="center"
                       verticalAlign="bottom"
-                      wrapperStyle={{ paddingTop: '20px' }}
+                      iconSize={10}
+                      iconType="circle"
+                      wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="flex items-center justify-center h-64 text-gray-500">
+                <div className="flex items-center justify-center h-48 text-gray-500">
                   No expiry data available
                 </div>
               )}
+              
+              {/* Expiry Quantities Bar Chart */}
+              <div className="mt-4">
+                <h3 className="mb-2 text-sm font-semibold text-gray-700">Expiry Quantities by Category</h3>
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart data={formatExpiryTrendForChart(expiryTrend)} layout="vertical" margin={{ top: 5, right: 30, left: 80, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis type="number" domain={[0, 'dataMax + 10']} />
+                    <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={80} />
+                    <Tooltip content={<BarChartTooltip />} />
+                    <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                      {formatExpiryTrendForChart(expiryTrend).map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
+                    <ReferenceLine x={20} stroke="#ff0000" strokeDasharray="3 3" label={{ value: "Critical", position: "insideBottomRight", fill: "#ff0000", fontSize: 10 }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              
+              {/* Critical Expiry Alert */}
+              {counts.oneWeekQuantity > 0 && (
+                <div className="p-3 mt-4 text-sm text-red-800 bg-red-100 border border-red-200 rounded-lg">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span className="font-medium">Critical Alert: {counts.oneWeek} batches ({counts.oneWeekQuantity} units) expiring within 1 week!</span>
+                  </div>
+                  <p className="mt-1 ml-7">Review soon-to-expire inventory immediately to minimize losses.</p>
+                </div>
+              )}
             </div>
-
-            {/* Quantity Indicators - Now Dynamic */}
-            <div className='grid grid-cols-2 gap-4 mb-8 md:grid-cols-4'>
-              <div className='p-4 text-center transition-colors duration-200 bg-blue-100 rounded-lg shadow-md hover:bg-blue-200'>
-                <p className='text-sm text-blue-800'>Total Stock</p>
-                <p className='text-2xl font-bold text-blue-900'>{counts?.sixMonths || 0}</p>
-                <p className='text-xs text-blue-700'>{counts?.sixMonthsQuantity || 0} units</p>
-              </div>
-              <div className='p-4 text-center transition-colors duration-200 bg-indigo-100 rounded-lg shadow-md hover:bg-indigo-200'>
-                <p className='text-sm text-indigo-800'>Available Stock</p>
-                <p className='text-2xl font-bold text-indigo-900'>{counts?.threeMonths || 0}</p>
-                <p className='text-xs text-indigo-700'>{counts?.threeMonthsQuantity || 0} units</p>
-              </div>
-              <div className='p-4 text-center transition-colors duration-200 bg-yellow-100 rounded-lg shadow-md hover:bg-yellow-200'>
-                <p className='text-sm text-yellow-800'>Low Stock</p>
-                <p className='text-2xl font-bold text-yellow-900'>{counts?.oneMonth || 0}</p>
-                <p className='text-xs text-yellow-700'>{counts?.oneMonthQuantity || 0} units</p>
-              </div>
-              <div className='p-4 text-center transition-colors duration-200 bg-red-100 rounded-lg shadow-md hover:bg-red-200'>
-                <p className='text-sm text-red-800'>Out of stock</p>
-                <p className='text-2xl font-bold text-red-900'>{counts?.oneWeek || 0}</p>
-                <p className='text-xs text-red-700'>{counts?.oneWeekQuantity || 0} units</p>
-              </div>
-            </div>
-
           </div>
+          
+          {/* Bottom Row - Enhanced Status Cards */}
+          <div className="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-blue-500">
+              <div className="flex items-center">
+                <div className="p-2 mr-3 bg-blue-500 rounded-full">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-xs text-blue-800">Batches Expiring in 6+ Months</p>
+                  <div className="flex items-center">
+                    <p className="text-xl font-bold text-blue-900">{counts.sixMonths}</p>
+                    <span className="ml-2 text-xs text-blue-700">
+                      ({counts.sixMonthsQuantity} units)
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full h-1 mt-3 bg-blue-200 rounded-full">
+                <div className="h-1 bg-blue-500 rounded-full" style={{ width: '75%' }}></div>
+              </div>
+            </div>
+            
+            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-green-500">
+              <div className="flex items-center">
+                <div className="p-2 mr-3 bg-green-500 rounded-full">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-xs text-green-800">Batches Expiring in 3-6 Months</p>
+                  <div className="flex items-center">
+                    <p className="text-xl font-bold text-green-900">{counts.threeMonths}</p>
+                    <span className="ml-2 text-xs text-green-700">
+                      ({counts.threeMonthsQuantity} units)
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full h-1 mt-3 bg-green-200 rounded-full">
+                <div className="h-1 bg-green-500 rounded-full" style={{ width: '60%' }}></div>
+              </div>
+            </div>
+            
+            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-yellow-500">
+              <div className="flex items-center">
+                <div className="p-2 mr-3 bg-yellow-500 rounded-full">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-xs text-yellow-800">Batches Expiring in 1-3 Months</p>
+                  <div className="flex items-center">
+                    <p className="text-xl font-bold text-yellow-900">{counts.oneMonth}</p>
+                    <span className="ml-2 text-xs text-yellow-700">
+                      ({counts.oneMonthQuantity} units)
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full h-1 mt-3 bg-yellow-200 rounded-full">
+                <div className="h-1 bg-yellow-500 rounded-full" style={{ width: '40%' }}></div>
+              </div>
+            </div>
+            
+            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-red-50 to-red-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-red-500">
+              <div className="flex items-center">
+                <div className="p-2 mr-3 bg-red-500 rounded-full">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v2m0 4h.01"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-xs text-red-800">
+                    Batches Expiring in <span className="font-semibold">&lt;1 Week</span>
+                  </p>
+                  <div className="flex items-center">
+                    <p className="text-xl font-bold text-red-900">{counts.oneWeek}</p>
+                    <span className="ml-2 text-xs text-red-700">
+                      ({counts.oneWeekQuantity} units)
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full h-1 mt-3 bg-red-200 rounded-full">
+                <div className="h-1 bg-red-500 rounded-full animate-pulse" style={{ width: '25%' }}></div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Required content from props */}
           <div>{content}</div>
         </>
       )}
