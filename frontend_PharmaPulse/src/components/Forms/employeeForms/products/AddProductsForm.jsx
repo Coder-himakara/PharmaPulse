@@ -79,9 +79,9 @@ const AddProductsForm = ({ onAddProduct }) => {
 
     const requiredFields = [
       "purchaseGroupId", "productRefId", "productName", "genericName",
-      "description", "category", "packageType", "unitsPerPack",
+      "category", "packageType", "unitsPerPack",
       "productStatus", "reorderLimitByPackage"
-    ];
+    ]; 
     if (requiredFields.some(field => !formData[field].trim())) {
       setErrorMessage("Please fill out all required fields.");
       setIsLoading(false);
@@ -198,7 +198,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <div className="space-y-4">
             <div className="flex items-center">
               <label htmlFor="purchaseGroupId" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Purchase Group:
+                Purchase Group: <span className="text-red-500">*</span>
               </label>
               <select
                 id="purchaseGroupId"
@@ -219,7 +219,7 @@ const AddProductsForm = ({ onAddProduct }) => {
 
             <div className="flex items-center">
               <label htmlFor="productName" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Product Name:
+                Product Name: <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -235,7 +235,7 @@ const AddProductsForm = ({ onAddProduct }) => {
 
             <div className="flex items-center">
               <label htmlFor="genericName" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Generic Name:
+                Generic Name: <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -259,14 +259,14 @@ const AddProductsForm = ({ onAddProduct }) => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
+                placeholder="Brief product description" 
                 className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
-                required
               />
             </div>
 
             <div className="flex items-center">
               <label htmlFor="category" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Category:
+                Category: <span className="text-red-500">*</span>
               </label>
               <select
                 id="category"
@@ -286,7 +286,7 @@ const AddProductsForm = ({ onAddProduct }) => {
           <div className="space-y-4">
             <div className="flex items-center">
               <label htmlFor="productRefId" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Product Ref Id:
+                Product Ref Id: <span className="text-red-500">*</span>
               </label>
               <div className="relative w-1/2">
                 <input
@@ -315,7 +315,7 @@ const AddProductsForm = ({ onAddProduct }) => {
 
             <div className="flex items-center">
               <label htmlFor="packageType" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Package Type:
+                Package Type: <span className="text-red-500">*</span>
               </label>
               <select
                 id="packageType"
@@ -344,7 +344,7 @@ const AddProductsForm = ({ onAddProduct }) => {
                 name="unitsPerPack"
                 value={formData.unitsPerPack}
                 onChange={handleChange}
-                placeholder="10x1 or 10T"
+                placeholder="e.g., 10x1 or 10T"
                 className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
                 required
               />
@@ -379,7 +379,7 @@ const AddProductsForm = ({ onAddProduct }) => {
                 name="reorderLimitByPackage"
                 value={formData.reorderLimitByPackage}
                 onChange={handleChange}
-                placeholder="100"
+                placeholder="Min. quantity for reorder"
                 className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
                 required
               />
