@@ -77,7 +77,7 @@ function LoginPage() {
         backgroundRepeat: 'no-repeat',
         backgroundAttachment: 'fixed', // Note: 'fixed' may not work as expected in some contexts
         backgroundColor: 'black', // Fallback color
-        willChange: 'background-image',
+        position: 'fixed',
       }}
     >
       {/* Login Form Container */}

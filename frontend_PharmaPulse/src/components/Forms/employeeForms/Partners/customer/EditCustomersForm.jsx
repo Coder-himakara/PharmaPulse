@@ -127,11 +127,13 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
   const handleUpdateSuccess = () => {
     console.log("Refreshing data with function:", refreshData);
     
-    // Ensure refreshData is called before proceeding
     if (typeof refreshData === 'function') {
-      // Call the refreshData function to trigger a refresh in the parent component
-      refreshData();
-      console.log("Refresh function called successfully");
+      try {
+        refreshData();
+        console.log("Refresh function called successfully");
+      } catch (error) {
+        console.error("Error calling refresh function:", error);
+      }
     } else {
       console.warn("refreshData is not available or not a function");
     }
@@ -234,7 +236,12 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       const response = await updateCustomers(customerId, requestData);
       
       if (response && response.data) {
-        // Call refreshData first before doing anything else
+        console.log("Update successful, response:", response.data);
+        
+        // First set success state
+        setSuccessMessage("Customer updated successfully!");
+        
+        // Then execute refresh callback
         handleUpdateSuccess();
         
         // Then call onUpdateCustomer if provided
@@ -242,14 +249,16 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
           onUpdateCustomer(response.data.data || response.data);
         }
         
-        setSuccessMessage("Customer updated successfully!");
+        // Then show popup
         setShowPopup(true);
-
-        // Increase timeout to ensure refresh has time to complete
+        
+        // Finally navigate with a delay
         setTimeout(() => {
           setShowPopup(false);
-          navigate("/employee-dashboard/customers-info");
-        }, 2500); // Increased from 2000ms to 2500ms
+          navigate("/employee-dashboard/customers-info", { 
+            state: { refreshNeeded: true, timestamp: new Date().getTime() }
+          });
+        }, 3000); // 3 seconds
       } else {
         throw new Error("Received empty response from server");
       }
@@ -282,7 +291,9 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
 
   const handlePopupContinue = () => {
     setShowPopup(false);
-    navigate("/employee-dashboard/customers-info");
+    navigate("/employee-dashboard/customers-info", { 
+      state: { refreshNeeded: true, timestamp: new Date().getTime() } 
+    });
   };
 
   if (!customer || !customerId) {

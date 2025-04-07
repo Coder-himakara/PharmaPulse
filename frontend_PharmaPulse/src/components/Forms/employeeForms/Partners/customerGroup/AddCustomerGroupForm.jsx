@@ -94,6 +94,10 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
           Add Customer Group
         </h2>
 
+        <p className="mb-4 text-sm text-gray-600">
+          Fields marked with <span className="text-red-500">*</span> are required.
+        </p>
+
         {errorMessage && (
           <p className="text-[#991919] text-sm font-bold mb-4 text-center">
             {errorMessage}
@@ -110,7 +114,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
             htmlFor="customerGroupName"
             className="text-[16px] text-gray-800 w-1/3 text-left"
           >
-            Customer Group Name:
+            Customer Group Name: <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -119,7 +123,8 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
             value={formData.customerGroupName}
             onChange={handleChange}
             placeholder="ABC1 Group"
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
+            required
           />
         </div>
 
@@ -128,7 +133,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
             htmlFor="assignedSalesRep"
             className="text-[16px] text-gray-800 w-1/3 text-left"
           >
-            Assigned Sales Rep:
+            Assigned Sales Rep: <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -137,7 +142,8 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
             value={formData.assignedSalesRep}
             onChange={handleChange}
             placeholder="Hashan"
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
+            required
           />
         </div>
 
@@ -146,7 +152,7 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
             htmlFor="descriptions"
             className="text-[16px] text-gray-800 w-1/3 text-left"
           >
-            Location:
+            Location: <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -155,7 +161,8 @@ const AddCustomerGroupForm = ({ onAddCustomerGroup }) => {
             value={formData.descriptions}
             onChange={handleChange}
             placeholder="Colombo"
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
+            required
           />
         </div>
 

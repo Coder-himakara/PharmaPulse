@@ -74,10 +74,10 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
     // Validation for required fields (per SupplierDTO)
     const requiredFields = {
       supplier_name: "Supplier Name",
-      supplier_address: "Supplier Address",
       supplier_contactNo: "Contact Number",
       supplier_email: "Email",
       purchase_group: "Purchase Group",
+      credit_period: "Credit Period", 
     };
 
     for (const [key, label] of Object.entries(requiredFields)) {
@@ -189,6 +189,10 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           Add Suppliers
         </h2>
 
+        <p className="mb-4 text-sm text-gray-600">
+          Fields marked with <span className="text-red-500">*</span> are required.
+        </p>
+
         {errorMessage && (
           <p className="text-[#991919] text-sm font-bold mb-4 text-center">{errorMessage}</p>
         )}
@@ -198,7 +202,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
 
         <div className="flex items-center justify-between mb-4">
           <label htmlFor="supplier_name" className="text-[16px] text-gray-800 w-2/3 text-left">
-            Supplier Name:
+            Supplier Name: <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -207,7 +211,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
             value={formData.supplier_name}
             onChange={handleChange}
             placeholder="CIC1 Pharmacy"
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
             required
           />
         </div>
@@ -224,13 +228,12 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
             onChange={handleChange}
             placeholder="Kandy"
             className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-            required
           />
         </div>
 
         <div className="flex items-center justify-between mb-4">
           <label htmlFor="supplier_contactNo" className="text-[16px] text-gray-800 w-2/3 text-left">
-            Contact Number:
+            Contact Number: <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -239,14 +242,14 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
             value={formData.supplier_contactNo}
             onChange={handleChange}
             placeholder="0712458978"
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
             required
           />
         </div>
 
         <div className="flex items-center justify-between mb-4">
           <label htmlFor="supplier_email" className="text-[16px] text-gray-800 w-2/3 text-left">
-            Email:
+            Email: <span className="text-red-500">*</span>
           </label>
           <input
             type="email"
@@ -255,14 +258,14 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
             value={formData.supplier_email}
             onChange={handleChange}
             placeholder="CIC@gmail.com"
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
             required
           />
         </div>
 
         <div className="flex items-center justify-between mb-4">
           <label htmlFor="purchase_group" className="text-[16px] text-gray-800 w-2/3 text-left">
-            Purchase Group ID:
+            Purchase Group ID: <span className="text-red-500">*</span>
           </label>
           <div className="relative flex items-center w-2/3">
             <input
@@ -271,7 +274,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
               name="purchase_group"
               value={formData.purchase_group}
               onChange={handleChange}
-              className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
+              className="w-full px-2 py-2 text-sm border border-red-300 rounded-md"
               required
             />
             <button
@@ -304,7 +307,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
 
         <div className="flex items-center justify-between mb-4">
           <label htmlFor="credit_period" className="text-[16px] text-gray-800 w-2/3 text-left">
-            Credit Period (Days):
+            Credit Period (Days): <span className="text-red-500">*</span>
           </label>
           <input
             type="number"
@@ -313,7 +316,8 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
             value={formData.credit_period}
             onChange={handleChange}
             placeholder="7"
-            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
+            required
           />
         </div>
 

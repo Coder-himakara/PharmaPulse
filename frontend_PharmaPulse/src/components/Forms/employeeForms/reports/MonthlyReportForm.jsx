@@ -242,7 +242,7 @@ const ReportForm = ({ onPreview }) => {
         <div className={`p-4 ${colors.sectionBg} ${colors.border} rounded-md`}>
           <h3 className="mb-2 text-sm font-bold">DETAIL REPORT FOR ALL CUSTOMERS</h3>
           <div className="mb-4">
-            <label className="block mb-1 text-sm text-gray-800">Employee:</label>
+            <label className="block mb-1 text-sm text-gray-800">Employee: <span className="text-red-500">*</span></label>
             <select
               name="employee"
               value={formData.employee}
@@ -256,7 +256,7 @@ const ReportForm = ({ onPreview }) => {
             </select>
           </div>
           <div className="mb-4">
-            <label className="block mb-1 text-sm text-gray-800">Date Range:</label>
+            <label className="block mb-1 text-sm text-gray-800">Date Range: <span className="text-red-500">*</span></label>
             <div className="flex gap-2">
               <input
                 type="date"

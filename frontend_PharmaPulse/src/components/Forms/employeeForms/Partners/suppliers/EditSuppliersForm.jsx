@@ -14,9 +14,11 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
     supplier_name: "",
     supplier_address: "",
     supplier_contactNo: "",
+    supplier_email: "",
     purchase_group: "",
     credit_period: "",
     credit_limit: "",
+    outstanding_balance: "",
   });
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -48,9 +50,11 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
       supplier_name: supplier.supplier_name || "",
       supplier_address: supplier.supplier_address || "",
       supplier_contactNo: supplier.supplier_contactNo ? String(supplier.supplier_contactNo) : "",
+      supplier_email: supplier.supplier_email || "",
       purchase_group: supplier.purchase_group?.purchaseGroupId?.toString() || supplier.purchase_group?.toString() || "",
       credit_period: supplier.credit_period ? String(supplier.credit_period) : "",
       credit_limit: supplier.credit_limit ? String(supplier.credit_limit) : "",
+      outstanding_balance: supplier.outstanding_balance ? String(supplier.outstanding_balance) : "",
     });
   }, [supplier, navigate]);
 
@@ -84,9 +88,8 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
       "supplier_name",
       "supplier_address",
       "supplier_contactNo",
+      "supplier_email",
       "purchase_group",
-      "credit_period",
-      "credit_limit",
     ];
     if (requiredFields.some((field) => !formData[field].trim())) {
       setErrorMessage("Please fill out all required fields.");
@@ -101,15 +104,30 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
       return;
     }
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.supplier_email)) {
+      setErrorMessage("Please enter a valid email address.");
+      setIsLoading(false);
+      return;
+    }
+
     const creditLimit = parseFloat(formData.credit_limit);
     const creditPeriod = parseInt(formData.credit_period, 10);
-    if (isNaN(creditLimit) || creditLimit < 0) {
+    const outstandingBalance = parseFloat(formData.outstanding_balance);
+    
+    if (formData.credit_limit && (isNaN(creditLimit) || creditLimit < 0)) {
       setErrorMessage("Credit limit must be a valid non-negative number.");
       setIsLoading(false);
       return;
     }
-    if (isNaN(creditPeriod) || creditPeriod < 0) {
+    if (formData.credit_period && (isNaN(creditPeriod) || creditPeriod < 0)) {
       setErrorMessage("Credit period must be a valid non-negative number.");
+      setIsLoading(false);
+      return;
+    }
+    if (formData.outstanding_balance && (isNaN(outstandingBalance) || outstandingBalance < 0)) {
+      setErrorMessage("Outstanding balance must be a valid non-negative number.");
       setIsLoading(false);
       return;
     }
@@ -128,9 +146,11 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
       supplier_name: formData.supplier_name,
       supplier_address: formData.supplier_address,
       supplier_contactNo: phoneNo,
+      supplier_email: formData.supplier_email,
       purchase_group: purchaseGroup,
-      credit_period: creditPeriod,
-      credit_limit: creditLimit,
+      credit_period: formData.credit_period ? creditPeriod : null,
+      credit_limit: formData.credit_limit ? creditLimit : null,
+      outstanding_balance: formData.outstanding_balance ? outstandingBalance : null,
     };
 
     try {
@@ -202,6 +222,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
             name="supplier_name"
             value={formData.supplier_name}
             onChange={handleChange}
+            placeholder="CIC1 Pharmacy"
             className="w-3/5 px-2 py-2 text-sm border border-gray-300 rounded-md"
             required
             maxLength={50}
@@ -218,6 +239,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
             name="supplier_address"
             value={formData.supplier_address}
             onChange={handleChange}
+            placeholder="Kandy"
             className="w-3/5 px-2 py-2 text-sm border border-gray-300 rounded-md"
             required
             maxLength={100}
@@ -234,9 +256,26 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
             name="supplier_contactNo"
             value={formData.supplier_contactNo}
             onChange={handleChange}
+            placeholder="0712458978"
             className="w-3/5 px-2 py-2 text-sm border border-gray-300 rounded-md"
             required
             maxLength={10}
+          />
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="supplier_email" className="text-[16px] text-gray-800 w-2/5 text-left">
+            Email:
+          </label>
+          <input
+            type="email"
+            id="supplier_email"
+            name="supplier_email"
+            value={formData.supplier_email}
+            onChange={handleChange}
+            placeholder="CIC@gmail.com"
+            className="w-3/5 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            required
           />
         </div>
 
@@ -251,6 +290,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
               name="purchase_group"
               value={formData.purchase_group}
               onChange={handleChange}
+              placeholder="1"
               className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
               required
             />
@@ -292,8 +332,8 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
             name="credit_period"
             value={formData.credit_period}
             onChange={handleChange}
+            placeholder="7"
             className="w-3/5 px-2 py-2 text-sm border border-gray-300 rounded-md"
-            required
             min={0}
           />
         </div>
@@ -308,8 +348,25 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
             name="credit_limit"
             value={formData.credit_limit}
             onChange={handleChange}
+            placeholder="100000.00"
             className="w-3/5 px-2 py-2 text-sm border border-gray-300 rounded-md"
-            required
+            min={0}
+            step="0.01"
+          />
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="outstanding_balance" className="text-[16px] text-gray-800 w-2/5 text-left">
+            Outstanding Balance (Rs.):
+          </label>
+          <input
+            type="number"
+            id="outstanding_balance"
+            name="outstanding_balance"
+            value={formData.outstanding_balance}
+            onChange={handleChange}
+            placeholder="10000.00"
+            className="w-3/5 px-2 py-2 text-sm border border-gray-300 rounded-md"
             min={0}
             step="0.01"
           />

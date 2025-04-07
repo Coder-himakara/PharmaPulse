@@ -251,6 +251,10 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           Add Customers
         </h2>
 
+        <p className="mb-4 text-sm text-gray-600">
+          Fields marked with <span className="text-red-500">*</span> are required.
+        </p>
+
         {errorMessage && (
           <p className="text-[#991919] text-sm font-bold mb-4 text-center">
             {errorMessage}
@@ -266,7 +270,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           <div className="space-y-4">
             <div className="flex items-center">
               <label htmlFor="customer_name" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Customer Name:
+                Customer Name: <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -275,13 +279,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.customer_name}
                 onChange={handleChange}
                 placeholder="ABC1 Pharmacy"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 required
               />
             </div>
             <div className="flex items-center">
               <label htmlFor="customer_address" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Address:
+                Address: <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -290,13 +294,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.customer_address}
                 onChange={handleChange}
                 placeholder="Kandy"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 required
               />
             </div>
             <div className="flex items-center">
               <label htmlFor="customer_contact_name" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Contact Name:
+                Contact Name: <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -305,13 +309,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.customer_contact_name}
                 onChange={handleChange}
                 placeholder="ABC1"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 required
               />
             </div>
             <div className="flex items-center">
               <label htmlFor="customer_nic_no" className="text-[16px] text-gray-800 w-1/2 text-left">
-                NIC:
+                NIC: <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -320,13 +324,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.customer_nic_no}
                 onChange={handleChange}
                 placeholder="123456789V or 200012345678"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 required
               />
             </div>
             <div className="flex items-center">
               <label htmlFor="customer_email" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Email:
+                Email: <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -335,13 +339,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.customer_email}
                 onChange={handleChange}
                 placeholder="ABC1@gmail.com"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 required
               />
             </div>
             <div className="flex items-center">
               <label htmlFor="customer_phone_no" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Phone Number:
+                Phone Number: <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -350,7 +354,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.customer_phone_no}
                 onChange={handleChange}
                 placeholder="0714568978"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 maxLength="12"
                 required
               />
@@ -360,7 +364,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
           <div className="space-y-4">
             <div className="flex items-center">
               <label htmlFor="customer_group" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Customer Group ID:
+                Customer Group ID: <span className="text-red-500">*</span>
               </label>
               <div className="relative flex items-center w-1/2">
                 <input
@@ -370,7 +374,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                   value={formData.customer_group}
                   onChange={handleChange}
                   placeholder={isLoadingGroups ? "Loading groups..." : "Select group ID"}
-                  className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
+                  className="w-full px-2 py-2 text-sm border border-red-300 rounded-md"
                   required
                   disabled={isLoadingGroups}
                 />
@@ -404,7 +408,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
             </div>
             <div className="flex items-center">
               <label htmlFor="customer_brc_no" className="text-[16px] text-gray-800 w-1/2 text-left">
-                BRC No:
+                BRC No: <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -413,7 +417,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.customer_brc_no}
                 onChange={handleChange}
                 placeholder="PV12345"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 required
               />
             </div>
@@ -433,7 +437,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
             </div>
             <div className="flex items-center">
               <label htmlFor="credit_limit" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Credit Limit:
+                Credit Limit: <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -442,13 +446,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.credit_limit}
                 onChange={handleChange}
                 placeholder="10000.00"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 required
               />
             </div>
             <div className="flex items-center">
               <label htmlFor="credit_period_in_days" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Credit Period In Days:
+                Credit Period In Days: <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -457,13 +461,13 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.credit_period_in_days}
                 onChange={handleChange}
                 placeholder="30"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 required
               />
             </div>
             <div className="flex items-center">
               <label htmlFor="outstanding_balance" className="text-[16px] text-gray-800 w-1/2 text-left">
-                Outstanding Balance:
+                Outstanding Balance: <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -472,7 +476,7 @@ const AddCustomersForm = ({ onAddCustomer }) => {
                 value={formData.outstanding_balance}
                 onChange={handleChange}
                 placeholder="1000.00"
-                className="w-1/2 px-2 py-2 text-sm border border-gray-300 rounded-md"
+                className="w-1/2 px-2 py-2 text-sm border border-red-300 rounded-md"
                 required
               />
             </div>

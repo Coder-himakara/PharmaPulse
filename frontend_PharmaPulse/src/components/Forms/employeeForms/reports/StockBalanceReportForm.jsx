@@ -258,7 +258,9 @@ const StockBalanceReportForm = ({ onPreview }) => {
       <div className="p-4 mb-4 bg-white border border-gray-300 rounded-md">
         <h3 className="mb-2 text-sm font-bold text-center">MONTHLY STOCK REPORT</h3>
         <div className="mb-4">
-          <label className="block mb-1 text-sm text-gray-600">A Selected Location:</label>
+          <label className="block mb-1 text-sm text-gray-600">
+            A Selected Location: <span className="text-red-500">*</span>
+          </label>
           <select
             name="location"
             value={formData.location}
