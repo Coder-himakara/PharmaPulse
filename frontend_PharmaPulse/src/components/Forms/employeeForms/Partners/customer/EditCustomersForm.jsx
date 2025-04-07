@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
@@ -48,6 +48,8 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoadingGroups, setIsLoadingGroups] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+
+  const popupTimerRef = useRef(null);
 
   useEffect(() => {
     const fetchCustomerGroups = async () => {
@@ -108,6 +110,14 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     });
   }, [customer, navigate]);
 
+  useEffect(() => {
+    return () => {
+      if (popupTimerRef.current) {
+        clearTimeout(popupTimerRef.current);
+      }
+    };
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -139,13 +149,22 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
     }
   };
 
+  const handleSuccessfulUpdate = (updatedCustomer) => {
+    setShowPopup(true);
+    popupTimerRef.current = setTimeout(() => {
+      setShowPopup(false);
+      navigate('/employee-dashboard/customers-info', {
+        state: { updatedCustomer: updatedCustomer, refreshNeeded: true }
+      });
+    }, 2000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
 
-    // First check all required fields
     const requiredFields = {
       customer_name: "Customer Name",
       customer_address: "Address",
@@ -168,7 +187,6 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       }
     }
 
-    // Validation checks
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.customer_email)) {
       setErrorMessage("Please enter a valid email address.");
@@ -194,7 +212,6 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       return;
     }
 
-    // Make sure to parse numeric values explicitly
     let requestData;
     try {
       requestData = {
@@ -212,7 +229,6 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
         outstanding_balance: parseFloat(formData.outstanding_balance),
       };
 
-      // Verify all required numeric fields are actually numbers
       if (
         isNaN(requestData.customer_group) ||
         isNaN(requestData.credit_limit) ||
@@ -228,42 +244,30 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
       return;
     }
 
-    // Detailed console logging for debugging
     console.log("Customer ID for update:", customerId);
     console.log("Sending update request:", JSON.stringify(requestData, null, 2));
 
     try {
       const response = await updateCustomers(customerId, requestData);
-      
+      const updatedCustomer = response.data.data || response.data;
+
       if (response && response.data) {
         console.log("Update successful, response:", response.data);
         
-        // First set success state
         setSuccessMessage("Customer updated successfully!");
         
-        // Then execute refresh callback
         handleUpdateSuccess();
         
-        // Then call onUpdateCustomer if provided
         if (onUpdateCustomer) {
-          onUpdateCustomer(response.data.data || response.data);
+          onUpdateCustomer(updatedCustomer);
         }
         
-        // Then show popup
-        setShowPopup(true);
-        
-        // Finally navigate with a delay
-        setTimeout(() => {
-          setShowPopup(false);
-          navigate("/employee-dashboard/customers-info", { 
-            state: { refreshNeeded: true, timestamp: new Date().getTime() }
-          });
-        }, 3000); // 3 seconds
+        handleSuccessfulUpdate(updatedCustomer);
       } else {
         throw new Error("Received empty response from server");
       }
     } catch (error) {
-      setIsLoading(false); // Make sure to reset loading state on error
+      setIsLoading(false);
       
       console.error("Error updating customer:", {
         status: error.response?.status,
@@ -290,6 +294,10 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
   };
 
   const handlePopupContinue = () => {
+    if (popupTimerRef.current) {
+      clearTimeout(popupTimerRef.current);
+    }
+    
     setShowPopup(false);
     navigate("/employee-dashboard/customers-info", { 
       state: { refreshNeeded: true, timestamp: new Date().getTime() } 
@@ -623,6 +631,9 @@ const EditCustomersForm = ({ onUpdateCustomer }) => {
             <h3 className="mt-8 text-xl font-bold text-gray-800">SUCCESS</h3>
             <p className="mt-2 text-sm text-gray-600">
               Customer updated successfully!
+            </p>
+            <p className="mt-1 text-xs text-gray-500">
+              Redirecting in 2 seconds...
             </p>
 
             <button

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getAllCustomers } from '../../../../../api/EmployeeApiService';
 
 const CustomersInfoTable = ({ refreshTrigger }) => {
@@ -10,12 +10,22 @@ const CustomersInfoTable = ({ refreshTrigger }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
         setLoading(true);
         console.log('Fetching customers with refreshTrigger:', refreshTrigger);
+
+        // Check if there's updated customer data in location state
+        if (location.state?.updatedCustomer) {
+          console.log(
+            'Found updated customer in location state:',
+            location.state.updatedCustomer,
+          );
+        }
+
         const response = await getAllCustomers();
         console.log('Response Data:', response.data);
         const customerData = response.data.data || response.data || [];
@@ -43,7 +53,7 @@ const CustomersInfoTable = ({ refreshTrigger }) => {
     };
 
     fetchCustomers();
-  }, [refreshTrigger, navigate]);
+  }, [refreshTrigger, navigate, location]);
 
   const filteredCustomers = customers.filter((customer) =>
     customer.customer_name?.toLowerCase().includes(search.toLowerCase()),

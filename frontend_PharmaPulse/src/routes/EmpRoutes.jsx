@@ -42,8 +42,10 @@ import MonthlyReportForm from "../components/Forms/employeeForms/reports/Monthly
 import StockBalanceReportForm from "../components/Forms/employeeForms/reports/StockBalanceReportForm"
 
 import StockRegister from "../components/Forms/employeeForms/inventory/inventoryDetails/StockRegister";
-
 import InventoryLocation from "../components/Forms/employeeForms/inventory/inventoryDetails/InventoryLocation";
+import ExpiryDistribution  from  "../components/Forms/employeeForms/inventory/inventoryDetails/ExpiryDistribution";
+
+
 
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
@@ -270,6 +272,11 @@ const EmpRoutes = () => {
       <Route
         path="inventory-location"
         element={<InventoryLocation/>}
+      />
+
+      <Route
+        path="expiry-distribution"
+        element={<ExpiryDistribution/>}
       />
 
     <Route
