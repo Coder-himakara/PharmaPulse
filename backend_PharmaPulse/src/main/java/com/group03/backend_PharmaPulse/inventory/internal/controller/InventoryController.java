@@ -4,7 +4,6 @@ package com.group03.backend_PharmaPulse.inventory.internal.controller;
 import com.group03.backend_PharmaPulse.inventory.api.InventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ProductAvailabilityDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.InventoryDetailsDTO;
-import com.group03.backend_PharmaPulse.inventory.api.dto.response.InventoryResponseDTO;
 import com.group03.backend_PharmaPulse.inventory.internal.serviceImpl.InventoryReservationServiceImpl;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import org.springframework.http.HttpStatus;

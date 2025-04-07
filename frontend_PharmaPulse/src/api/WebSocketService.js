@@ -119,5 +119,18 @@ export const webSocketConnections = {
     ]);
   },
 
+  connectExpiredStock: (token, onExpiredStockReceived) => {
+    return createWebSocketConnection(token, [
+      { topic: '/topic/expired-batches', callback: onExpiredStockReceived },
+    ]);
+  },
+
+  connectDashboardCounts: (token, onDashboardCountsReceived) => {
+    return createWebSocketConnection(token, [
+      { topic: '/topic/employee/dashboard/counts', callback: onDashboardCountsReceived },
+    ]);
+  },
+
+
   // Add more pre-configured connections as needed
 };
