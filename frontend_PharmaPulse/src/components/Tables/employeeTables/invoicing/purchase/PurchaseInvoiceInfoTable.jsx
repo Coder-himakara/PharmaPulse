@@ -1,74 +1,103 @@
 /* eslint-disable prettier/prettier */
-import { useState } from "react";
-import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAllPurchaseInvoices } from "../../../../../api/InvoiceApiService";
 
-const PurchaseInvoiceInfoTable = ({ purchaseInvoices }) => {
+const PurchaseInvoiceInfoTable = () => {
   const [search, setSearch] = useState("");
-
+  const [purchaseInvoices, setPurchaseInvoices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [debugInfo, setDebugInfo] = useState("");
+  
   const navigate = useNavigate();
 
-  // Combine the existing purchase invoices with the dummy data
-  const allPurchaseInvoices = [
-    ...purchaseInvoices, // Existing purchase invoices from props
-    {
-      purchaseInvoiceId: "PI-001",
-      invoiceNo: "IV-001",
-      supplierId: "S-001",
-      purchaseOrderRef: "PO-001",
-      invoiceDate: "2025-02-23",
-      totalAmount: 2000,
-      discountAmount: 500,
-      netAmount: 1500,
-    },
-    {
-      purchaseInvoiceId: "PI-002",
-      invoiceNo: "IV-002",
-      supplierId: "S-001",
-      purchaseOrderRef: "PO-002",
-      invoiceDate: "2025-02-24",
-      totalAmount: 5000,
-      discountAmount: 500,
-      netAmount: 4500,
-    },
-    {
-      purchaseInvoiceId: "PI-003",
-      invoiceNo: "IV-003",
-      supplierId: "S-005",
-      purchaseOrderRef: "PO-003",
-      invoiceDate: "2025-04-20",
-      totalAmount: 12500,
-      discountAmount: 2000,
-      netAmount: 10500,
-    },
-  ];
+  // Fetch real purchase invoices from the API
+  useEffect(() => {
+    const fetchPurchaseInvoices = async () => {
+      try {
+        setIsLoading(true);
+        console.log("Fetching purchase invoices from API...");
+        
+        const response = await getAllPurchaseInvoices();
+        const rawResponseData = JSON.stringify(response.data, null, 2);
+        setDebugInfo(rawResponseData);
+        console.log("Complete API Response:", response);
+        
+        if (!response || !response.data) {
+          throw new Error("Invalid API response format");
+        }
+        
+        // Handle response based on your backend structure
+        let fetchedInvoices = [];
+        
+        if (Array.isArray(response.data)) {
+          // Direct array in response.data
+          fetchedInvoices = response.data;
+          console.log("Found direct array of invoices:", fetchedInvoices);
+        } else if (response.data.data && Array.isArray(response.data.data)) {
+          // Nested array in response.data.data (standard structure)
+          fetchedInvoices = response.data.data;
+          console.log("Found nested array of invoices:", fetchedInvoices);
+        } else if (response.data.code === 200 && response.data.data) {
+          // StandardResponse with data property (not an array)
+          const dataProperty = response.data.data;
+          
+          if (Array.isArray(dataProperty)) {
+            fetchedInvoices = dataProperty;
+            console.log("Found array in StandardResponse.data:", fetchedInvoices);
+          } else {
+            console.warn("Data property exists but is not an array:", dataProperty);
+            // Try to convert to array if possible
+            if (dataProperty && typeof dataProperty === 'object') {
+              const possibleInvoices = Object.values(dataProperty);
+              if (possibleInvoices.length > 0) {
+                fetchedInvoices = possibleInvoices;
+                console.log("Converted object to array:", fetchedInvoices);
+              }
+            }
+          }
+        } else if (response.data.code === 200 && !response.data.data) {
+          console.warn("API returned success but no invoice data found");
+          // This is a success response but with no data
+          fetchedInvoices = [];
+        } else {
+          console.warn("Unexpected API response structure:", response.data);
+          fetchedInvoices = [];
+        }
+        
+        setPurchaseInvoices(fetchedInvoices);
+      } catch (err) {
+        console.error("Failed to fetch purchase invoices:", err);
+        setError(`Failed to load purchase invoices: ${err.message || "Unknown error"}`);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPurchaseInvoices();
+  }, []);
 
   // Filter the purchase invoices based on the search term
-  const filteredPurchaseInvoices = allPurchaseInvoices.filter((purchaseInvoice) =>
-    purchaseInvoice.invoiceNo.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredPurchaseInvoices = purchaseInvoices.filter((invoice) => {
+    if (!search) return true;
+    
+    // Check if invoiceNo exists before filtering
+    return invoice.invoiceNo && 
+           invoice.invoiceNo.toString().toLowerCase().includes(search.toLowerCase());
+  });
 
   // Close button action
   const handleClose = () => {
     navigate("/employee-dashboard");
   };
 
-  // Edit button action
-  const handleEdit = (purchaseInvoiceId) => {
-    const purchaseInvoice = allPurchaseInvoices.find(
-      (pi) => pi.purchaseInvoiceId === purchaseInvoiceId
-    );
-    navigate(`/employee-dashboard/edit-purchase-invoice/${purchaseInvoiceId}`, {
-      state: { purchaseInvoice },
-    });
-  };
-
-  const handleViewPurchaseInvoice = (purchaseInvoice) => {
+  // View invoice details
+  const handleViewPurchaseInvoice = (invoice) => {
+    console.log("Viewing invoice details:", invoice);
     navigate(
-      `/employee-dashboard/view-purchase-invoice/${purchaseInvoice.purchaseInvoiceId}`,
-      {
-        state: { purchaseInvoice },
-      }
+      `/employee-dashboard/edit-purchase-invoice/${invoice.invoiceId}`,
+      { state: { purchaseInvoice: invoice } }
     );
   };
 
@@ -89,7 +118,7 @@ const PurchaseInvoiceInfoTable = ({ purchaseInvoices }) => {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search Purchase Invoice..."
+            placeholder="Search by Invoice No..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]"
@@ -97,100 +126,118 @@ const PurchaseInvoiceInfoTable = ({ purchaseInvoices }) => {
         </div>
       </div>
 
-      {/* Display message when no search results */}
-      {filteredPurchaseInvoices.length === 0 && search && (
+      {/* Loading indicator */}
+      {isLoading && (
+        <div className="text-center p-4">
+          <p>Loading purchase invoices...</p>
+        </div>
+      )}
+      
+      {/* Error message */}
+      {error && (
+        <div className="text-[#991919] text-sm text-center mt-2 font-bold p-4">
+          {error}
+        </div>
+      )}
+
+      {/* No search results */}
+      {!isLoading && filteredPurchaseInvoices.length === 0 && search && (
         <div className="text-[#991919] text-sm text-center mt-2 font-bold">
           No purchase invoices found matching your search.
         </div>
       )}
 
-      {/* Table displaying purchase invoices */}
-      <div className="p-2 overflow-x-auto">
-        <table className="w-full border border-collapse border-gray-400">
-          <thead>
-            <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
-              {[
-                "Invoice No",
-                "Supplier ID",
-                "Purchase Order Ref",
-                "Invoice Date",
-                "Total Amount (Rs.)",
-                "Discount (Rs.)",
-                "Net Amount (Rs.)",
-                "Action",
-              ].map((header, index) => (
-                <th
-                  key={index}
-                  className="p-2 text-center border border-gray-400"
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
+      {/* No invoices available */}
+      {!isLoading && purchaseInvoices.length === 0 && !search && !error && (
+        <div className="text-gray-600 text-sm text-center mt-2 p-4">
+          <p>No purchase invoices available in the database.</p>
+          <p className="mt-2">Database is returning a success response but no invoice data.</p>
+          <p className="mt-2 text-blue-600">
+            You may need to add purchase invoices through the &quot;Add Invoice&quot; functionality.
+          </p>
+          
+          {/* Debug information - only display in development */}
+          <div className="mt-4 p-3 border border-gray-300 rounded bg-gray-50">
+            <p className="font-medium mb-2">API Response Debug Info:</p>
+            <pre className="text-xs text-left whitespace-pre-wrap overflow-x-auto max-h-36 bg-white p-2 border border-gray-200">
+              {debugInfo}
+            </pre>
+          </div>
+        </div>
+      )}
 
-          <tbody>
-            {filteredPurchaseInvoices.map((purchaseInvoice, index) => (
-              <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
-                <td className="p-2 text-center border border-gray-400">
-                  {purchaseInvoice.invoiceNo}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {purchaseInvoice.supplierId}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {purchaseInvoice.purchaseOrderRef}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {purchaseInvoice.invoiceDate}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {purchaseInvoice.totalAmount}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {purchaseInvoice.discountAmount}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  {purchaseInvoice.netAmount}
-                </td>
-                <td className="p-2 text-center border border-gray-400">
-                  <button
-                    onClick={() =>
-                      handleEdit(purchaseInvoice.purchaseInvoiceId)
-                    }
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
+      {/* Table displaying purchase invoices */}
+      {!isLoading && filteredPurchaseInvoices.length > 0 && (
+        <div className="p-2 overflow-x-auto">
+          <table className="w-full border border-collapse border-gray-400">
+            <thead>
+              <tr className="bg-[#ffb24d] text-[#5e5757] text-sm">
+                {[
+                  "Invoice No",
+                  "Supplier ID",
+                  "Purchase Order Ref",
+                  "Invoice Date",
+                  "Total Amount (Rs.)",
+                  "Discount (Rs.)",
+                  "Net Amount (Rs.)",
+                  "Action",
+                ].map((header, index) => (
+                  <th
+                    key={index}
+                    className="p-2 text-center border border-gray-400"
                   >
-                    Edit
-                  </button>
-                  <button
-                    className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c] mr-2"
-                    onClick={() => handleViewPurchaseInvoice(purchaseInvoice)}
-                  >
-                    View
-                  </button>
-                </td>
+                    {header}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+
+            <tbody>
+              {filteredPurchaseInvoices.map((invoice, index) => (
+                <tr key={index} className="bg-[#c6dceb] hover:bg-[#dce4e9]">
+                  <td className="p-2 text-center border border-gray-400">
+                    {invoice.invoiceNo || "N/A"}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    {invoice.supplierId || "N/A"}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    {invoice.purchaseOrderRef || "N/A"}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    {invoice.invoiceDate ? new Date(invoice.invoiceDate).toLocaleDateString() : "N/A"}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    {typeof invoice.totalAmount === 'number' ? 
+                      invoice.totalAmount.toFixed(2) : 
+                      parseFloat(invoice.totalAmount || 0).toFixed(2)}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    {typeof invoice.discountAmount === 'number' ? 
+                      invoice.discountAmount.toFixed(2) : 
+                      parseFloat(invoice.discountAmount || 0).toFixed(2)}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    {typeof invoice.netAmount === 'number' ? 
+                      invoice.netAmount.toFixed(2) : 
+                      parseFloat(invoice.netAmount || 0).toFixed(2)}
+                  </td>
+                  <td className="p-2 text-center border border-gray-400">
+                    <button
+                      className="bg-[#4c85a6] text-white py-1 px-3 rounded-md cursor-pointer text-sm hover:bg-[#15375c]"
+                      onClick={() => handleViewPurchaseInvoice(invoice)}
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
-};
-
-PurchaseInvoiceInfoTable.propTypes = {
-  purchaseInvoices: PropTypes.arrayOf(
-    PropTypes.shape({
-      purchaseInvoiceId: PropTypes.string.isRequired, // Added to match navigation and dummy data
-      invoiceNo: PropTypes.string.isRequired,
-      supplierId: PropTypes.string.isRequired,
-      purchaseOrderRef: PropTypes.string.isRequired,
-      invoiceDate: PropTypes.string.isRequired,
-      totalAmount: PropTypes.number.isRequired,
-      discountAmount: PropTypes.number.isRequired,
-      netAmount: PropTypes.number.isRequired,
-    })
-  ).isRequired,
 };
 
 export default PurchaseInvoiceInfoTable;

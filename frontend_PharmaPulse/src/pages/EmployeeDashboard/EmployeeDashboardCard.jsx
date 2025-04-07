@@ -3,7 +3,9 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import apiClient from '../../api/ApiClient'; // Adjust the path based on your project structure
 import PropTypes from 'prop-types';
+
 import {
   Tooltip,
   Legend,
@@ -15,6 +17,7 @@ import {
   Bar,
   XAxis,
   YAxis,
+
   CartesianGrid,
   AreaChart,
   Area,
@@ -56,6 +59,8 @@ const handleApiError = (error) => {
 const EmployeeDashboardCard = ({ content, className }) => {
 
 
+
+const EmployeeDashboardCard = ({ content, className }) => {
   const { token } = useAuth(); // Get token from context
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -124,6 +129,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
 
   // Add this with other state declarations
   const [stockTrendData, setStockTrendData] = useState(stockTrend);
+
 
   // Function to transform API data into the required format with better handling of nested data
   const transformExpiryCounts = (data = {}) => {
@@ -196,130 +202,17 @@ const EmployeeDashboardCard = ({ content, className }) => {
     ];
   };
 
-  // // Updated useEffect to fetch all dashboard data
-  // useEffect(() => {
-  //   const fetchAllDashboardData = async () => {
-  //     setLoading(true);
-  //     setError(null);
-
-  //     try {
-  //       // Get dashboard metrics using our enhanced function
-  //       const dashboardMetrics = await getDashboardMetrics();
-  //       setDashboardStats(dashboardMetrics);
-
-  //       // Try-catch blocks for each request to prevent one failure from affecting others
-  //       try {
-  //         const stockSummaryResponse = await getStockSummary();
-  //         if (stockSummaryResponse && stockSummaryResponse.data) {
-  //           const stockData = transformStockCounts(stockSummaryResponse.data);
-
-  //           setStockSummary({
-  //             totalStock: stockData.summary.totalStock || 0,
-  //             available: stockData.summary.available || 0,
-  //             lowStock: stockData.summary.lowStock || 0,
-  //             outOfStock: stockData.summary.outOfStock || 0
-  //           });
-
-  //           setLowStockItems(stockData.lowItems.map(item => ({
-  //             name: item.name || 'Unknown Product',
-  //             quantity: item.quantity || 0,
-  //             supplier: item.supplier || 'Unknown Supplier',
-  //             status: item.status || 'UNKNOWN',
-  //             reorderLimit: item.reorderLimit || 0
-  //           })));
-
-  //           setOutOfStockItems(stockData.outItems.map(item => ({
-  //             name: item.name || 'Unknown Product',
-  //             quantity: item.quantity || 0,
-  //             supplier: item.supplier || 'Unknown Supplier',
-  //             status: item.status || 'UNKNOWN',
-  //             reorderLimit: item.reorderLimit || 0
-  //           })));
-  //         }
-  //       } catch (stockError) {
-  //         console.error("Failed to fetch stock data:", stockError);
-  //         // Set default values for stock data on error
-  //         setStockSummary({
-  //           totalStock: 0,
-  //           available: 0,
-  //           lowStock: 0,
-  //           outOfStock: 0
-  //         });
-  //         setLowStockItems([]);
-  //         setOutOfStockItems([]);
-  //       }
-
-  //       try {
-  //         const expiryCountsResponse = await getExpiryCounts();
-  //         if (expiryCountsResponse && expiryCountsResponse.data) {
-  //           const transformedExpiryData = transformExpiryCounts(expiryCountsResponse.data);
-  //           setExpiryTrend(transformedExpiryData);
-  //           setCounts(transformedExpiryData);
-  //         }
-  //       } catch (expiryError) {
-  //         console.error("Failed to fetch expiry counts:", expiryError);
-  //         // Set default values for expiry data on error
-  //         setExpiryTrend([]);
-  //         setCounts({
-  //           sixMonths: 0,
-  //           threeMonths: 0,
-  //           oneMonth: 0,
-  //           oneWeek: 0,
-  //           safeBatches: 0,
-  //           sixMonthsQuantity: 0,
-  //           threeMonthsQuantity: 0,
-  //           oneMonthQuantity: 0,
-  //           oneWeekQuantity: 0,
-  //           safeBatchesQuantity: 0
-  //         });
-  //       }
-
-  //       try {
-  //         const stockTrendResponse = await getStockTrend();
-  //         if (stockTrendResponse && stockTrendResponse.data && stockTrendResponse.data.data) {
-  //           setStockTrendData(stockTrendResponse.data.data);
-  //         } else {
-  //           // Fall back to mock data if API doesn't return valid data
-  //           setStockTrendData(stockTrend);
-  //         }
-  //       } catch (trendError) {
-  //         console.error("Failed to fetch stock trend:", trendError);
-  //         // Fall back to mock data if API call fails
-  //         setStockTrendData(stockTrend);
-  //       }
-
-  //     } catch (error) {
-  //       console.error("Dashboard Data Fetch Error:", error);
-  //       setError(handleApiError(error));
-  //       // Set fallback data for dashboard metrics
-  //       setDashboardStats({
-  //         totalProducts: 0,
-  //         totalSuppliers: 0,
-  //         totalCustomers: 0,
-  //         recentTransactions: 0
-  //       });
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchAllDashboardData();
-
-  //   return () => {
-  //     // Cleanup function
-  //   };
-  // }, [token]);
-
-  // Fetch initial data and setup WebSockets
+  // Updated useEffect with better error handling and recovery
   useEffect(() => {
     let expiryWsClient = null;
     let stockWsClient = null;
     let dashboardWsClient = null;
 
     const fetchInitialData = async () => {
+
       setLoading(true);
       setError(null);
-
+      
       try {
         // Make sure token is valid
         if (!token) {
@@ -380,27 +273,22 @@ const EmployeeDashboardCard = ({ content, className }) => {
           });
         }
 
+
       } catch (error) {
-        // Better error handling
-        let errorMessage = 'Failed to load dashboard data';
-
-        if (error.response) {
-          if (error.response.status === 401) {
-            errorMessage = 'Authentication failed. Please log in again.';
-          } else if (error.response.status === 403) {
-            errorMessage = 'You do not have permission to access this data.';
-          }
-          console.error('Server response:', error.response.data);
-        }
-
-        setError(errorMessage);
-        console.error('API Error:', error);
-        toast.error(errorMessage);
+        console.error("API Error:", error);
+        // User-friendly error state
+        setError({
+          title: "Failed to load expiry data",
+          message: "We couldn't load the product expiry information. This could be due to missing expiry dates in the system.",
+          technical: error.response?.data?.details || error.message
+        });
+        
+        // Set fallback data to prevent UI from breaking
+        setExpiryTrend([]); 
       } finally {
         setLoading(false);
       }
     };
-
     fetchInitialData();
 
     // Setup WebSocket for expiry counts
@@ -486,6 +374,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
           .catch(error => console.error('Error disconnecting dashboard WebSocket:', error));
       }
     };
+
   }, [token]);
 
 
@@ -582,6 +471,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
         <div className="p-3 text-white bg-gray-900 rounded-lg shadow-lg">
           <p className="font-semibold">{payload[0].payload.name}</p>
           <p>{payload[0].value} units</p>
+
         </div>
       );
     }
@@ -610,6 +500,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
         {`${(percent * 100).toFixed(1)}%`}
       </text>
     );
+
   };
 
   return (
@@ -659,7 +550,6 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.supplierCount}</p>
               </div>
             </div>
-
             <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
               <div className="p-3 mr-4 bg-purple-100 rounded-full">
                 <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -671,7 +561,6 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.customerCount}</p>
               </div>
             </div>
-
             <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
               <div className="p-3 mr-4 bg-yellow-100 rounded-full">
                 <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -746,6 +635,22 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 </ResponsiveContainer>
               </div>
 
+              {/* Stock Trend Over Time */}
+              <div className="mt-6">
+                <h3 className="mb-3 text-sm font-semibold text-gray-700">Stock Trend - Last 6 Months</h3>
+                <ResponsiveContainer width="100%" height={180}>
+                  <AreaChart data={stockTrend} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="available" stackId="1" stroke="#4ade80" fill="#4ade80" />
+                    <Area type="monotone" dataKey="lowStock" stackId="1" stroke="#fb923c" fill="#fb923c" />
+                    <Area type="monotone" dataKey="outOfStock" stackId="1" stroke="#f87171" fill="#f87171" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+
               {/* Low Stock Items List */}
               <div className="mt-6">
                 <div className="flex items-center justify-between">
@@ -777,7 +682,6 @@ const EmployeeDashboardCard = ({ content, className }) => {
               <h2 className="mb-4 text-xl font-semibold text-transparent text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
                 Expiry Analysis
               </h2>
-
               {/* Expiry Distribution Pie Chart */}
               <div className="mb-2">
                 <h3 className="text-sm font-semibold text-gray-700">Distribution by Expiry Category</h3>
@@ -822,8 +726,6 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   No expiry data available
                 </div>
               )}
-
-
               {/* Expiry Quantities Bar Chart */}
               <div className="mt-4">
                 <h3 className="mb-2 text-sm font-semibold text-gray-700">Expiry Quantities by Category</h3>
@@ -946,6 +848,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   </div>
                 </div>
               </div>
+
               <div className="w-full h-1 mt-3 bg-red-200 rounded-full">
                 <div
                   className="h-1 bg-red-500 rounded-full animate-pulse"
@@ -973,13 +876,12 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   </div>
                 </div>
               </div>
+
               <div className="w-full h-1 mt-3 bg-purple-200 rounded-full">
                 <div className="h-1 bg-purple-500 rounded-full" style={{ width: returnBatches.count > 0 ? '100%' : '0%' }}></div>
               </div>
             </div>
-
           </div>
-
           {/* Required content from props */}
           <div>{content}</div>
         </>
