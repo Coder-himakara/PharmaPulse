@@ -301,7 +301,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
 
       {/* Success Popup Modal */}
       {showPopup && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+        <div className='fixed inset-0 justify-center bg-black bg-opacity-50 item s-center z-50flex'>
           <div className='relative p-6 text-center bg-white rounded-lg shadow-lg w-80'>
             {/* Orange Checkmark Circle */}
             <div className='absolute transform -translate-x-1/2 -top-8 left-1/2'>
