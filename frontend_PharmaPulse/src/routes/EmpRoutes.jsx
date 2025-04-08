@@ -32,7 +32,7 @@ import AddPurchaseInvoiceForm from "../components/Forms/employeeForms/invoicing/
 import PurchaseInvoiceInfoTable from "../components/Tables/employeeTables/invoicing/purchase/PurchaseInvoiceInfoTable";
 import EditPurchaseInvoiceForm from "../components/Forms/employeeForms/invoicing/purchase/EditPurchaseInvoiceForm";
 
-import StockTransferForm from "../components/Forms/employeeForms/inventory/inventoryWise/StockTransferForm"; 
+import StockTransferForm from "../components/Forms/employeeForms/inventory/inventoryTask/StockTransferForm"; 
 
 import CustomerReceiptForm from "../components/Forms/employeeForms/payments/CustomerReceiptForm"
 import SupplierReceiptForm from "../components/Forms/employeeForms/payments/SupplierReceiptForm"
@@ -41,6 +41,12 @@ import MonthlyReportForm from "../components/Forms/employeeForms/reports/Monthly
 
 import StockBalanceReportForm from "../components/Forms/employeeForms/reports/StockBalanceReportForm"
 import RetailPriceHistory from "../components/Tables/employeeTables/products/RetailPriceHistory";
+
+import StockRegister from "../components/Forms/employeeForms/inventory/inventoryDetails/StockRegister";
+import InventoryLocation from "../components/Forms/employeeForms/inventory/inventoryDetails/InventoryLocation";
+import ExpiryDistribution  from  "../components/Forms/employeeForms/inventory/inventoryDetails/ExpiryDistribution";
+
+
 
 const EmpRoutes = () => {
   const [products, setProducts] = useState([]);
@@ -257,10 +263,25 @@ const EmpRoutes = () => {
         }
       />
 
- 
+      <Route
+        path="stock-register"
+        element={<StockRegister />}
+      />
+
       <Route
         path="stock-transfer"
         element={<StockTransferForm />}
+      />
+
+      
+      <Route
+        path="inventory-location"
+        element={<InventoryLocation/>}
+      />
+
+      <Route
+        path="expiry-distribution"
+        element={<ExpiryDistribution/>}
       />
 
     <Route

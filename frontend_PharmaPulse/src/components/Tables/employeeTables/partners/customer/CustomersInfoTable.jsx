@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getAllCustomers } from '../../../../../api/EmployeeApiService';
 
 const CustomersInfoTable = ({ refreshTrigger }) => {
@@ -10,30 +10,50 @@ const CustomersInfoTable = ({ refreshTrigger }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        console.log('Fetching customers...');
+        setLoading(true);
+        console.log('Fetching customers with refreshTrigger:', refreshTrigger);
+
+        // Check if there's updated customer data in location state
+        if (location.state?.updatedCustomer) {
+          console.log(
+            'Found updated customer in location state:',
+            location.state.updatedCustomer,
+          );
+        }
+
         const response = await getAllCustomers();
-        console.log('Full Response:', response);
         console.log('Response Data:', response.data);
         const customerData = response.data.data || response.data || [];
         setCustomers(customerData);
         console.log('Set Customers:', customerData);
         setErrorMessage('');
-        setLoading(false);
       } catch (error) {
-        setErrorMessage(
-          error.response?.data?.message || 'Failed to fetch customers',
-        );
-        console.error('Error fetching customers:', error.response || error);
+        console.error('Error fetching customers:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+
+        const errorMsg =
+          error.response?.data?.message ||
+          'Failed to fetch customers. Please try again.';
+        setErrorMessage(errorMsg);
+
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          navigate('/login');
+        }
+      } finally {
         setLoading(false);
       }
     };
 
     fetchCustomers();
-  }, [refreshTrigger]);
+  }, [refreshTrigger, navigate, location]);
 
   const filteredCustomers = customers.filter((customer) =>
     customer.customer_name?.toLowerCase().includes(search.toLowerCase()),
@@ -66,7 +86,9 @@ const CustomersInfoTable = ({ refreshTrigger }) => {
 
   if (loading) {
     return (
-      <div className='p-5 text-center text-gray-800'>Loading customers...</div>
+      <div className='bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative flex items-center justify-center p-10'>
+        <div className='w-16 h-16 border-4 border-[#1a5353] border-t-transparent rounded-full animate-spin'></div>
+      </div>
     );
   }
 
@@ -116,19 +138,22 @@ const CustomersInfoTable = ({ refreshTrigger }) => {
                   Customer Name
                 </th>
                 <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                  Credit Limit (Rs.)
-                </th>
-                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                  Credit Period (Months)
-                </th>
-                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                  Email
+                  Contact Name
                 </th>
                 <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                   Phone Number
                 </th>
                 <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                  Contact Name
+                  Email
+                </th>
+                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                  Credit Limit (Rs.)
+                </th>
+                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                  Outstanding Balance (Rs.)
+                </th>
+                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                  Credit Period (Days)
                 </th>
                 <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
                   Action
@@ -142,19 +167,22 @@ const CustomersInfoTable = ({ refreshTrigger }) => {
                     {customer.customer_name}
                   </td>
                   <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {customer.credit_limit}
-                  </td>
-                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {customer.credit_period_in_days}
-                  </td>
-                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {customer.customer_email}
+                    {customer.customer_contact_name}
                   </td>
                   <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                     {customer.customer_phone_no}
                   </td>
                   <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {customer.customer_contact_name}
+                    {customer.customer_email}
+                  </td>
+                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                    {parseFloat(customer.credit_limit).toFixed(2)}
+                  </td>
+                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                    {parseFloat(customer.outstanding_balance).toFixed(2)}
+                  </td>
+                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
+                    {customer.credit_period_in_days}
                   </td>
                   <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                     <button

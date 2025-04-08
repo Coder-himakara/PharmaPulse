@@ -79,14 +79,14 @@ const AddTruckForm = ({ onAddTruck }) => {
       )}
 
       {[
-        ["Number Plate", "numberPlate", "text"],
-        ["Representative ID", "representativeId", "text"],
-        ["Capacity(t)", "capacity", "number"],
-        ["Date of Added", "dateOfAdded", "date"],
-      ].map(([label, name, type]) => (
+        ["Number Plate", "numberPlate", "text", "ABC-1234"],
+        ["Representative ID", "representativeId", "text", "Enter representative ID"],
+        ["Capacity(t)", "capacity", "number", "Enter capacity in tons"],
+        ["Date of Added", "dateOfAdded", "date", ""],
+      ].map(([label, name, type, placeholder]) => (
         <div key={name} className="flex items-center justify-between mb-4">
           <label htmlFor={name} className="text-[16px] text-gray-800 w-2/3 text-left">
-            {label}:
+            {label}: <span className="text-red-500">*</span>
           </label>
           <input
             type={type}
@@ -94,14 +94,16 @@ const AddTruckForm = ({ onAddTruck }) => {
             name={name}
             value={formData[name]}
             onChange={handleChange}
+            placeholder={placeholder}
             className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+            required
           />
         </div>
       ))}
 
       <div className="flex items-center justify-between mb-4">
         <label htmlFor="status" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Status:
+          Status: <span className="text-red-500">*</span>
         </label>
         <select
           id="status"
@@ -109,8 +111,9 @@ const AddTruckForm = ({ onAddTruck }) => {
           value={formData.status}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          required
         >
-          <option value="">Choose a status</option>
+          <option value="">Select truck status</option>
           <option value="Active">Active</option>
           <option value="Maintenance">Maintenance</option>
           <option value="Inactive">Inactive</option>

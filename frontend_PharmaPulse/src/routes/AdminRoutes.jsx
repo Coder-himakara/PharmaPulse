@@ -65,6 +65,8 @@ const AdminRoutes = () => {
   return (
     <Suspense fallback={<LoadingScreen />}>
       <Routes>
+        {/* Default route for /admin-dashboard/ */}
+        <Route path='/' element={<AddUsersForm onAddUser={addUser} />} />
         <Route
           path='add-users'
           element={<AddUsersForm onAddUser={addUser} />}

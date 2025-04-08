@@ -22,6 +22,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [purchaseGroups, setPurchaseGroups] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // New state for popup visibility
 
   // Fetch purchase groups
   useEffect(() => {
@@ -73,10 +74,10 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
     // Validation for required fields (per SupplierDTO)
     const requiredFields = {
       supplier_name: "Supplier Name",
-      supplier_address: "Supplier Address",
       supplier_contactNo: "Contact Number",
       supplier_email: "Email",
       purchase_group: "Purchase Group",
+      credit_period: "Credit Period", 
     };
 
     for (const [key, label] of Object.entries(requiredFields)) {
@@ -124,6 +125,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
 
       setSuccessMessage("Supplier added successfully!");
       setErrorMessage("");
+      setShowPopup(true); // Show the popup on success
 
       if (onAddSupplier) {
         onAddSupplier(savedSupplier);
@@ -141,6 +143,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
           purchase_group: "",
         });
         setSuccessMessage("");
+        setShowPopup(false); // Hide the popup after 2 seconds
       }, 2000);
     } catch (error) {
       const errorMsg = error.response?.data?.message || "An unexpected error occurred. Check the console for details.";
@@ -160,189 +163,252 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
     navigate("/employee-dashboard");
   };
 
+  const handlePopupContinue = () => {
+    setShowPopup(false); // Close the popup when the "CONTINUE" button is clicked
+    setFormData({
+      supplier_name: "",
+      supplier_address: "",
+      supplier_contactNo: "",
+      supplier_email: "",
+      outstanding_balance: "",
+      credit_limit: "",
+      credit_period: "",
+      purchase_group: "",
+    });
+    setSuccessMessage("");
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
-    >
-      <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
-        Add Suppliers
-      </h2>
+    <div className="relative">
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col max-w-md mx-auto p-5 bg-[#e6eef3] rounded-lg shadow-md"
+      >
+        <h2 className="text-center bg-[#1a5353] text-white p-2 rounded-t-md -mx-5 mt-[-32px] mb-5 text-lg">
+          Add Suppliers
+        </h2>
 
-      {errorMessage && (
-        <p className="text-[#991919] text-sm font-bold mb-4 text-center">{errorMessage}</p>
-      )}
-      {successMessage && (
-        <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">{successMessage}</p>
-      )}
+        <p className="mb-4 text-sm text-gray-600">
+          Fields marked with <span className="text-red-500">*</span> are required.
+        </p>
 
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="supplier_name" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Supplier Name:
-        </label>
-        <input
-          type="text"
-          id="supplier_name"
-          name="supplier_name"
-          value={formData.supplier_name}
-          onChange={handleChange}
-          placeholder="CIC1 Pharmacy"
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-          required
-        />
-      </div>
+        {errorMessage && (
+          <p className="text-[#991919] text-sm font-bold mb-4 text-center">{errorMessage}</p>
+        )}
+        {successMessage && !showPopup && (
+          <p className="text-[#3c5f3c] text-sm font-bold mb-4 text-center">{successMessage}</p>
+        )}
 
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="supplier_address" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Supplier Address:
-        </label>
-        <input
-          type="text"
-          id="supplier_address"
-          name="supplier_address"
-          value={formData.supplier_address}
-          onChange={handleChange}
-          placeholder="Kandy"
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-          required
-        />
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="supplier_contactNo" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Contact Number:
-        </label>
-        <input
-          type="text"
-          id="supplier_contactNo"
-          name="supplier_contactNo"
-          value={formData.supplier_contactNo}
-          onChange={handleChange}
-          placeholder="0712458978"
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-          required
-        />
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="supplier_email" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Email:
-        </label>
-        <input
-          type="email"
-          id="supplier_email"
-          name="supplier_email"
-          value={formData.supplier_email}
-          onChange={handleChange}
-          placeholder="CIC@gmail.com"
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-          required
-        />
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="purchase_group" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Purchase Group ID:
-        </label>
-        <div className="relative flex items-center w-2/3">
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="supplier_name" className="text-[16px] text-gray-800 w-2/3 text-left">
+            Supplier Name: <span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
-            id="purchase_group"
-            name="purchase_group"
-            value={formData.purchase_group}
+            id="supplier_name"
+            name="supplier_name"
+            value={formData.supplier_name}
             onChange={handleChange}
-            className="w-full px-2 py-2 text-sm border border-gray-300 rounded-md"
+            placeholder="CIC1 Pharmacy"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
             required
           />
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="supplier_address" className="text-[16px] text-gray-800 w-2/3 text-left">
+            Supplier Address:
+          </label>
+          <input
+            type="text"
+            id="supplier_address"
+            name="supplier_address"
+            value={formData.supplier_address}
+            onChange={handleChange}
+            placeholder="Kandy"
+            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          />
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="supplier_contactNo" className="text-[16px] text-gray-800 w-2/3 text-left">
+            Contact Number: <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="supplier_contactNo"
+            name="supplier_contactNo"
+            value={formData.supplier_contactNo}
+            onChange={handleChange}
+            placeholder="0712458978"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
+            required
+          />
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="supplier_email" className="text-[16px] text-gray-800 w-2/3 text-left">
+            Email: <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="supplier_email"
+            name="supplier_email"
+            value={formData.supplier_email}
+            onChange={handleChange}
+            placeholder="CIC@gmail.com"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
+            required
+          />
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="purchase_group" className="text-[16px] text-gray-800 w-2/3 text-left">
+            Purchase Group ID: <span className="text-red-500">*</span>
+          </label>
+          <div className="relative flex items-center w-2/3">
+            <input
+              type="text"
+              id="purchase_group"
+              name="purchase_group"
+              value={formData.purchase_group}
+              onChange={handleChange}
+              className="w-full px-2 py-2 text-sm border border-red-300 rounded-md"
+              required
+            />
+            <button
+              type="button"
+              onClick={handleSearch}
+              className="absolute text-green-500 cursor-pointer right-2"
+              aria-label="Search purchase group"
+            >
+              <FaSearch />
+            </button>
+            {showDropdown && (
+              <div className="absolute left-0 z-10 w-full overflow-y-auto bg-white border border-gray-300 rounded-md shadow-md top-10 max-h-40">
+                {purchaseGroups.length > 0 ? (
+                  purchaseGroups.map((group) => (
+                    <div
+                      key={group.purchaseGroupId}
+                      onClick={() => handleSelectPurchaseGroup(group.purchaseGroupId)}
+                      className="px-2 py-1 cursor-pointer hover:bg-gray-100"
+                    >
+                      {group.purchaseGroupName} (ID: {group.purchaseGroupId})
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-2 py-1 text-gray-500">No purchase groups available</div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="credit_period" className="text-[16px] text-gray-800 w-2/3 text-left">
+            Credit Period (Days): <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            id="credit_period"
+            name="credit_period"
+            value={formData.credit_period}
+            onChange={handleChange}
+            placeholder="7"
+            className="w-2/3 px-2 py-2 text-sm border border-red-300 rounded-md"
+            required
+          />
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="credit_limit" className="text-[16px] text-gray-800 w-2/3 text-left">
+            Credit Limit:
+          </label>
+          <input
+            type="number"
+            id="credit_limit"
+            name="credit_limit"
+            value={formData.credit_limit}
+            onChange={handleChange}
+            placeholder="100000.00"
+            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          />
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+          <label htmlFor="outstanding_balance" className="text-[16px] text-gray-800 w-2/3 text-left">
+            Outstanding Balance:
+          </label>
+          <input
+            type="number"
+            id="outstanding_balance"
+            name="outstanding_balance"
+            value={formData.outstanding_balance}
+            onChange={handleChange}
+            placeholder="10000.00"
+            className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
+          />
+        </div>
+
+        <div className="flex justify-center gap-2">
+          <button
+            type="submit"
+            className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+          >
+            Add
+          </button>
           <button
             type="button"
-            onClick={handleSearch}
-            className="absolute text-green-500 cursor-pointer right-2"
-            aria-label="Search purchase group"
+            onClick={handleCancel}
+            className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
           >
-            <FaSearch />
+            Cancel
           </button>
-          {showDropdown && (
-            <div className="absolute left-0 z-10 w-full overflow-y-auto bg-white border border-gray-300 rounded-md shadow-md top-10 max-h-40">
-              {purchaseGroups.length > 0 ? (
-                purchaseGroups.map((group) => (
-                  <div
-                    key={group.purchaseGroupId}
-                    onClick={() => handleSelectPurchaseGroup(group.purchaseGroupId)}
-                    className="px-2 py-1 cursor-pointer hover:bg-gray-100"
-                  >
-                    {group.purchaseGroupName} (ID: {group.purchaseGroupId})
-                  </div>
-                ))
-              ) : (
-                <div className="px-2 py-1 text-gray-500">No purchase groups available</div>
-              )}
-            </div>
-          )}
         </div>
-      </div>
+      </form>
 
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="credit_period" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Credit Period (Days):
-        </label>
-        <input
-          type="number"
-          id="credit_period"
-          name="credit_period"
-          value={formData.credit_period}
-          onChange={handleChange}
-          placeholder="7"
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-      </div>
+      {/* Popup Modal */}
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="relative p-6 text-center bg-white rounded-lg shadow-lg w-80">
+            {/* Green Checkmark Circle */}
+            <div className="absolute transform -translate-x-1/2 -top-8 left-1/2">
+              <div className="p-4 bg-green-500 rounded-full">
+                <svg
+                  className="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+            </div>
 
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="credit_limit" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Credit Limit:
-        </label>
-        <input
-          type="number"
-          id="credit_limit"
-          name="credit_limit"
-          value={formData.credit_limit}
-          onChange={handleChange}
-          placeholder="100000.00"
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-      </div>
+            {/* Success Message */}
+            <h3 className="mt-8 text-xl font-bold text-gray-800">SUCCESS</h3>
+            <p className="mt-2 text-sm text-gray-600">
+              Supplier added successfully!
+            </p>
 
-      <div className="flex items-center justify-between mb-4">
-        <label htmlFor="outstanding_balance" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Outstanding Balance:
-        </label>
-        <input
-          type="number"
-          id="outstanding_balance"
-          name="outstanding_balance"
-          value={formData.outstanding_balance}
-          onChange={handleChange}
-          placeholder="10000.00"
-          className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-        />
-      </div>
-
-      <div className="flex justify-center gap-2">
-        <button
-          type="submit"
-          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
-        >
-          Add
-        </button>
-        <button
-          type="button"
-          onClick={handleCancel}
-          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
+            {/* Continue Button */}
+            <button
+              onClick={handlePopupContinue}
+              className="px-6 py-2 mt-4 text-white transition-all duration-300 bg-green-500 rounded-md hover:bg-green-600"
+            >
+              CONTINUE
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

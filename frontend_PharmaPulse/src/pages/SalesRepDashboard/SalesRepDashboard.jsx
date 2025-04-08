@@ -30,18 +30,16 @@ export default SalesRepDashboard;*/
 
 import Navbar from '../../components/Navbar/SalesRepNavbar';
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
-import Footer from '../../components/Footer/Footer';
 import RepRoutes from '../../routes/RepRoutes';
 
 const SalesRepDashboard = () => {
   return (
-    <div className='bg-gray-100 '>
+    <div >
       <Navbar />
           <DashboardCard
             content={<RepRoutes />}
-            className='bg-white rounded-lg '
           />
-      <Footer  />
+
     </div>
   );
 };
