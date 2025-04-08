@@ -59,20 +59,26 @@ public class BatchInventoryController {
         );
     }
 
-    @GetMapping("/expired-batches")
-    public ResponseEntity<StandardResponse> getExpiredBatches() {
-        List<ExpiryAlertDTO> expiredBatches = batchInventoryService.getExpiredBatches();
-        return new ResponseEntity<>(
-                new StandardResponse(200, "Success", expiredBatches),
-                HttpStatus.OK
-        );
-    }
-
     @GetMapping("/reorder-alerts")
     public ResponseEntity<StandardResponse> getReorderAlerts() {
         List<ReorderAlertDTO> reorderAlerts = batchInventoryService.checkReorderAlerts();
         return new ResponseEntity<>(
                 new StandardResponse(200, "Success", reorderAlerts),
+                HttpStatus.OK
+        );
+    }
+
+    @MessageMapping("/expired-batches")
+    @SendTo("/topic/expired-batches")
+    public  List<ExpiryAlertDTO> getExpiredBatchesWs() {
+        return batchInventoryService.getExpiredBatches();
+    }
+
+    @GetMapping("/expired-batches")
+    public ResponseEntity<StandardResponse> getExpiredBatches() {
+        List<ExpiryAlertDTO> expiredBatches = batchInventoryService.getExpiredBatches();
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Success", expiredBatches),
                 HttpStatus.OK
         );
     }

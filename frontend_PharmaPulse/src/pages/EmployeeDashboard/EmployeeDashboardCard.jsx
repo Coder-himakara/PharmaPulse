@@ -2,11 +2,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
-import { webSocketConnections, disconnectWebSocket } from '../../api/WebSocketService';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import apiClient from '../../api/ApiClient'; // Adjust the path based on your project structure
 import PropTypes from 'prop-types';
+
 import { 
   Tooltip, 
   Legend, 
@@ -24,12 +23,46 @@ import {
   ReferenceLine
 } from 'recharts';
 import { useAuth } from '../../security/UseAuth';
+import { webSocketConnections, disconnectWebSocket } from '../../api/WebSocketService';
+import axios from 'axios';
+
+
+const handleApiError = (error) => {
+  if (error.response?.status === 401) {
+    return {
+      title: "Authentication Error",
+      message: "Your session has expired. Please log in again.",
+      technical: "Unauthorized access"
+    };
+  } else if (error.response) {
+    return {
+      title: `Error ${error.response.status}`,
+      message: error.response.data.message || "An unexpected error occurred",
+      technical: JSON.stringify(error.response.data)
+    };
+  } else if (error.request) {
+    return {
+      title: "Network Error",
+      message: "Could not connect to the server. Please check your internet connection.",
+      technical: "No response received from server"
+    };
+  } else {
+    return {
+      title: "Application Error",
+      message: "An unexpected error occurred while processing your request.",
+      technical: error.message || "Unknown error"
+    };
+  }
+};
+
 
 const EmployeeDashboardCard = ({ content, className }) => {
+
   const { token } = useAuth(); // Get token from context
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expiryTrend, setExpiryTrend] = useState([]);
+
   const [dashboardStats, setDashboardStats] = useState({
     totalProducts: 0,
     totalSuppliers: 0,
@@ -59,14 +92,27 @@ const EmployeeDashboardCard = ({ content, className }) => {
     outOfStock: 0,
   });
 
+  const [dashboardCounts, setDashboardCounts] = useState({
+    productCount: 0,
+    supplierCount: 0,
+    customerCount: 0,
+    expiredStockQuantity: 0,
+    recentTransactions: 0
+  });
+
+  const [returnBatches, setReturnBatches] = useState({
+    count: 0,
+    totalValue: 0
+  });
+
   // State for low stock items
   const [lowStockItems, setLowStockItems] = useState([]);
-  
+
   // State for out of stock items - this was unused, now commented with a note
   const [outOfStockItems, setOutOfStockItems] = useState([]);
   // NOTE: outOfStockItems is set but not currently displayed in the UI
   // Future enhancement: Add an "Out of Stock Items" section similar to "Low Stock Items"
-  
+
   // Mock data for stock trend over time (would be replaced with real API data)
   // Using const instead of useState since we don't need to update this after initialization
   const stockTrend = [
@@ -77,6 +123,10 @@ const EmployeeDashboardCard = ({ content, className }) => {
     { month: 'May', available: 150, lowStock: 10, outOfStock: 2 },
     { month: 'Jun', available: 145, lowStock: 12, outOfStock: 3 }
   ];
+
+  // Add this with other state declarations
+  const [stockTrendData, setStockTrendData] = useState(stockTrend);
+
 
   // Function to transform API data into the required format with better handling of nested data
   const transformExpiryCounts = (data = {}) => {
@@ -135,9 +185,10 @@ const EmployeeDashboardCard = ({ content, className }) => {
   };
 
   // Add this new function to format expiryTrend data for charts
+  // Make sure this function is well-defined
   const formatExpiryTrendForChart = (data) => {
     if (!data) return [];
-    
+
     // Create array from our object data with appropriate format for the chart
     return [
       { name: 'Safe Batches', value: data.safeBatchesQuantity || 0, color: '#34D399' },
@@ -148,17 +199,81 @@ const EmployeeDashboardCard = ({ content, className }) => {
     ];
   };
 
+
   // Updated useEffect with better error handling and recovery
   useEffect(() => {
-    const fetchDashboardData = async () => {
+
+    let expiryWsClient = null;
+    let stockWsClient = null;
+    let dashboardWsClient = null;
+
+    const fetchInitialData = async () => {
+
       setLoading(true);
       setError(null);
       
       try {
-        const response = await apiClient.get('/batch-inventory/expiry-counts');
-        // Process successful response
-        const transformedData = transformExpiryCounts(response.data.data);
-        setExpiryTrend(transformedData);
+
+        // Make sure token is valid
+        if (!token) {
+          setError('Authentication token is missing');
+          setLoading(false);
+          return;
+        }
+
+        // Fetch expiry counts
+        const expiryResponse = await axios.get('http://localhost:8090/api/batch-inventory/expiry-counts', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          withCredentials: false
+        });
+
+        // Fetch stock availability
+        const stockResponse = await axios.get('http://localhost:8090/api/batch-inventory/stock-counts', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          withCredentials: false
+        });
+
+        const dashboardResponse = await axios.get('http://localhost:8090/api/employee/dashboard/counts', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          withCredentials: false
+        });
+
+        // Process expiry data
+        if (expiryResponse.data) {
+          const transformedData = transformExpiryCounts(expiryResponse.data);
+          setCounts(transformedData);
+          setExpiryTrend(transformedData); // Make sure this line is here
+        }
+
+        // Process stock data
+        if (stockResponse.data) {
+          const { summary, lowItems, outItems } = transformStockCounts(stockResponse.data);
+          setStockSummary(summary);
+          setLowStockItems(lowItems);
+          setOutOfStockItems(outItems);
+        }
+
+        if (dashboardResponse.data && dashboardResponse.data.data) {
+          const counts = dashboardResponse.data.data;
+          setDashboardCounts({
+            productCount: counts.productCount || 0,
+            supplierCount: counts.supplierCount || 0,
+            customerCount: counts.customerCount || 0,
+            expiredStockQuantity: counts.expiredStockQuantity || 0,
+            recentTransactions: counts.recentTransactions || 0
+          });
+        }
+
+
       } catch (error) {
         console.error("API Error:", error);
         // User-friendly error state
@@ -174,9 +289,96 @@ const EmployeeDashboardCard = ({ content, className }) => {
         setLoading(false);
       }
     };
-    
-    fetchDashboardData();
+
+
+    fetchInitialData();
+
+    // Setup WebSocket for expiry counts
+    try {
+      expiryWsClient = webSocketConnections.connectExpiryCounts(token, (newCounts) => {
+        console.log("WebSocket received new expiry data:", newCounts);
+        const transformedData = transformExpiryCounts(newCounts);
+        setCounts(transformedData);
+        setExpiryTrend(transformedData); // Make sure we also update expiryTrend here
+        if (!toast.isActive("expiry-update")) {
+          toast.info('Expiry counts updated!', {
+            toastId: "expiry-update",
+            autoClose: 2000
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Error connecting to expiry WebSocket:', error);
+      toast.error('Failed to establish real-time expiry connection');
+    }
+
+    // Setup WebSocket for stock counts
+    try {
+      stockWsClient = webSocketConnections.connectStockCounts(token, (newStockData) => {
+        const { summary, lowItems, outItems } = transformStockCounts(newStockData);
+        setStockSummary(summary);
+        setLowStockItems(lowItems);
+        setOutOfStockItems(outItems);
+        if (!toast.isActive("stock-update")) {
+          toast.info('Stock counts updated!', {
+            toastId: "stock-update",
+            autoClose: 2000
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Error connecting to stock WebSocket:', error);
+      toast.error('Failed to establish real-time stock connection');
+    }
+
+    try {
+      dashboardWsClient = webSocketConnections.connectDashboardCounts(token, (dashboardData) => {
+        console.log("WebSocket received new dashboard counts:", dashboardData);
+
+        // Check if we have valid data
+        if (dashboardData && dashboardData.data) {
+          const counts = dashboardData.data;
+
+          setDashboardCounts(prev => ({
+            productCount: counts.productCount ?? prev.productCount,
+            supplierCount: counts.supplierCount ?? prev.supplierCount,
+            customerCount: counts.customerCount ?? prev.customerCount,
+            recentTransactions: prev.recentTransactions // Maintain existing value
+          }));
+
+          if (!toast.isActive("dashboard-update")) {
+            toast.info('Dashboard counts updated!', {
+              toastId: "dashboard-update",
+              autoClose: 2000
+            });
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error connecting to dashboard WebSocket:', error);
+    }
+
+
+    // Clean up WebSocket connections
+    return () => {
+      if (expiryWsClient) {
+        disconnectWebSocket(expiryWsClient)
+          .catch(error => console.error('Error disconnecting expiry WebSocket:', error));
+      }
+
+      if (stockWsClient) {
+        disconnectWebSocket(stockWsClient)
+          .catch(error => console.error('Error disconnecting stock WebSocket:', error));
+      }
+
+      if (dashboardWsClient) {
+        disconnectWebSocket(dashboardWsClient)
+          .catch(error => console.error('Error disconnecting dashboard WebSocket:', error));
+      }
+    };
+
   }, [token]);
+
 
   // Dynamic pie chart data calculation - now using quantities for percentages
   const getExpiryDistribution = () => {
@@ -234,18 +436,31 @@ const EmployeeDashboardCard = ({ content, className }) => {
         (counts.oneWeekQuantity || 0) +
         (counts.safeBatchesQuantity || 0);
 
+      const data = payload[0].payload;
+      const percent = totalQuantity > 0 ? ((data.value / totalQuantity) * 100).toFixed(1) : 0;
+
       return (
         <div className="p-3 text-white bg-gray-900 rounded-lg shadow-lg">
-          {payload.map((entry, index) => (
-            <div key={index} className="mb-1 last:mb-0">
-              <p className="font-semibold" style={{ color: entry.color }}>
-                {entry.name}
-              </p>
-              <p>{entry.payload.batches} batches</p>
-              <p>{entry.value} units</p>
-              <p>Percentage: {totalQuantity > 0 ? ((entry.value / totalQuantity) * 100).toFixed(1) : 0}% of total units</p>
-            </div>
-          ))}
+
+          <p className="font-semibold mb-1" style={{ color: payload[0].color }}>
+            {data.name}
+          </p>
+          <table className="text-sm">
+            <tbody>
+              <tr>
+                <td className="pr-3 text-gray-300">Batches:</td>
+                <td className="text-right font-medium">{data.batches}</td>
+              </tr>
+              <tr>
+                <td className="pr-3 text-gray-300">Units:</td>
+                <td className="text-right font-medium">{data.value}</td>
+              </tr>
+              <tr>
+                <td className="pr-3 text-gray-300">Percentage:</td>
+                <td className="text-right font-medium">{percent}%</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       );
     }
@@ -259,10 +474,37 @@ const EmployeeDashboardCard = ({ content, className }) => {
         <div className="p-3 text-white bg-gray-900 rounded-lg shadow-lg">
           <p className="font-semibold">{payload[0].payload.name}</p>
           <p>{payload[0].value} units</p>
+
         </div>
       );
     }
     return null;
+  };
+
+
+  // Custom label placement function
+  const renderCustomizedLabel = ({
+    cx, cy, midAngle, innerRadius, outerRadius, percent, index
+  }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius * 1.1;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill={COLORS[index % COLORS.length]}
+        textAnchor={x > cx ? 'start' : 'end'}
+        dominantBaseline="central"
+        fontSize={12}
+        fontWeight="bold"
+      >
+        {`${(percent * 100).toFixed(1)}%`}
+      </text>
+    );
+
   };
 
   return (
@@ -296,11 +538,13 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-500">Total Products</p>
-                <p className="text-2xl font-semibold text-gray-800">{dashboardStats.totalProducts}</p>
+
+                <p className="text-sm font-medium text-gray-500">Total Active Products</p>
+                <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.productCount}</p>
               </div>
             </div>
-            
+
+
             <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
               <div className="p-3 mr-4 bg-green-100 rounded-full">
                 <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -309,10 +553,12 @@ const EmployeeDashboardCard = ({ content, className }) => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Suppliers</p>
-                <p className="text-2xl font-semibold text-gray-800">{dashboardStats.totalSuppliers}</p>
+
+                <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.supplierCount}</p>
               </div>
             </div>
-            
+
+
             <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
               <div className="p-3 mr-4 bg-purple-100 rounded-full">
                 <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -321,10 +567,12 @@ const EmployeeDashboardCard = ({ content, className }) => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Customers</p>
-                <p className="text-2xl font-semibold text-gray-800">{dashboardStats.totalCustomers}</p>
+
+                <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.customerCount}</p>
               </div>
             </div>
-            
+
+
             <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
               <div className="p-3 mr-4 bg-yellow-100 rounded-full">
                 <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -333,7 +581,9 @@ const EmployeeDashboardCard = ({ content, className }) => {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Recent Transactions</p>
-                <p className="text-2xl font-semibold text-gray-800">{dashboardStats.recentTransactions}</p>
+
+                <p className="text-2xl font-semibold text-gray-800">{dashboardCounts.recentTransactions}</p>
+
               </div>
             </div>
           </div>
@@ -346,40 +596,49 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 Stock Availability
               </h2>
               <div className="mb-4">
-                <p className="text-lg font-bold">{stockSummary.totalStock}</p>
-                <p className="text-sm text-gray-600">Total Stock</p>
+
+                <p className="text-lg font-bold">{stockSummary.totalStock + (dashboardCounts.expiredStockQuantity || 0)}</p>
+                <p className="text-sm text-gray-600">Total Stock (Including Expired)</p>
               </div>
-              <div className="relative w-full h-6 mb-2 bg-gray-200 rounded-full">
+
+              {/* New horizontal stacked bar */}
+              <div className="relative flex w-full h-8 mb-2 bg-gray-200 rounded-full">
                 <div
-                  className="h-full bg-green-500 rounded-l-full"
-                  style={{ width: `${stockSummary.totalStock > 0 ? (stockSummary.available / stockSummary.totalStock) * 100 : 0}%` }}
+                  className="h-full bg-blue-500 rounded-l-full"
+                  style={{
+                    width: `${(stockSummary.totalStock + (dashboardCounts.expiredStockQuantity || 0)) > 0
+                      ? (stockSummary.totalStock / (stockSummary.totalStock + (dashboardCounts.expiredStockQuantity || 0)) * 100)
+                      : 0}%`
+                  }}
                 ></div>
                 <div
-                  className="h-full bg-orange-400"
-                  style={{ width: `${stockSummary.totalStock > 0 ? (stockSummary.lowStock / stockSummary.totalStock) * 100 : 0}%` }}
-                ></div>
-                <div
-                  className="h-full bg-red-400 rounded-r-full"
-                  style={{ width: `${stockSummary.totalStock > 0 ? (stockSummary.outOfStock / stockSummary.totalStock) * 100 : 0}%` }}
+                  className="h-full bg-rose-500 rounded-r-full"
+                  style={{
+                    width: `${(stockSummary.totalStock + (dashboardCounts.expiredStockQuantity || 0)) > 0
+                      ? ((dashboardCounts.expiredStockQuantity || 0) / (stockSummary.totalStock + (dashboardCounts.expiredStockQuantity || 0)) * 100)
+                      : 0}%`
+                  }}
                 ></div>
                 {/* Overlay text for exact quantities */}
-                <div className="absolute inset-0 flex items-center justify-between px-2 text-xs font-semibold text-white">
-                  <span className="px-1 bg-green-600 rounded bg-opacity-80">{stockSummary.available}</span>
-                  <span className="px-1 bg-orange-500 rounded bg-opacity-80">{stockSummary.lowStock}</span>
-                  <span className="px-1 bg-red-500 rounded bg-opacity-80">{stockSummary.outOfStock}</span>
+                <div className="absolute inset-0 flex items-center justify-between px-4 text-xs font-semibold text-white">
+                  <span className="px-2 py-1 bg-blue-600 rounded bg-opacity-80">
+                    {stockSummary.totalStock} <span className="hidden sm:inline">valid</span>
+                  </span>
+                  <span className="px-2 py-1 bg-rose-600 rounded bg-opacity-80">
+                    {dashboardCounts.expiredStockQuantity || 0} <span className="hidden sm:inline">expired</span>
+                  </span>
                 </div>
               </div>
-              <div className="flex justify-between mt-1 mb-4 text-xs text-gray-600">
-                <span>Available</span>
-                <span>Low Stock</span>
-                <span>Out of Stock</span>
+              <div className="flex justify-between mt-1 mb-6 text-xs text-gray-600">
+                <span>Valid Stock</span>
+                <span>Expired Stock</span>
               </div>
 
               {/* Stock Trend Over Time */}
               <div className="mt-6">
                 <h3 className="mb-3 text-sm font-semibold text-gray-700">Stock Trend - Last 6 Months</h3>
                 <ResponsiveContainer width="100%" height={180}>
-                  <AreaChart data={stockTrend} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+                  <AreaChart data={stockTrendData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                     <YAxis tick={{ fontSize: 12 }} />
@@ -422,13 +681,15 @@ const EmployeeDashboardCard = ({ content, className }) => {
               <h2 className="mb-4 text-xl font-semibold text-transparent text-gray-800 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
                 Expiry Analysis
               </h2>
-              
+
               {/* Expiry Distribution Pie Chart */}
               <div className="mb-2">
                 <h3 className="text-sm font-semibold text-gray-700">Distribution by Expiry Category</h3>
               </div>
               {getExpiryDistribution().length > 0 ? (
-                <ResponsiveContainer width="100%" height={200}>
+
+                <ResponsiveContainer width="100%" height={250}> {/* Increased height */}
+
                   <PieChart>
                     <Pie
                       data={getExpiryDistribution()}
@@ -439,9 +700,10 @@ const EmployeeDashboardCard = ({ content, className }) => {
                       paddingAngle={5}
                       dataKey="value"
                       nameKey="name"
-                      label={({ percent }) => {
-                        return percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : '';
-                      }}
+
+                      labelLine={false} // Disable label lines
+                      label={({ percent }) => percent > 0.1 ? `${(percent * 100).toFixed(0)}%` : ''} // Only show inside labels for large segments
+
                     >
                       {getExpiryDistribution().map((entry, index) => (
                         <Cell
@@ -468,26 +730,41 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   No expiry data available
                 </div>
               )}
-              
+
               {/* Expiry Quantities Bar Chart */}
               <div className="mt-4">
                 <h3 className="mb-2 text-sm font-semibold text-gray-700">Expiry Quantities by Category</h3>
                 <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={formatExpiryTrendForChart(expiryTrend)} layout="vertical" margin={{ top: 5, right: 30, left: 80, bottom: 5 }}>
+
+                  <BarChart
+                    data={formatExpiryTrendForChart(counts)}
+                    layout="vertical"
+                    margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" domain={[0, 'dataMax + 10']} />
+                    <XAxis
+                      type="number"
+                      domain={[0, dataMax => Math.max(20, dataMax * 1.1)]}
+                      tickFormatter={(value) => value.toLocaleString()}
+                    />
                     <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} width={80} />
                     <Tooltip content={<BarChartTooltip />} />
                     <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                      {formatExpiryTrendForChart(expiryTrend).map((entry, index) => (
+                      {formatExpiryTrendForChart(counts).map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Bar>
-                    <ReferenceLine x={20} stroke="#ff0000" strokeDasharray="3 3" label={{ value: "Critical", position: "insideBottomRight", fill: "#ff0000", fontSize: 10 }} />
+                    <ReferenceLine
+                      x={20}
+                      stroke="#ff0000"
+                      strokeDasharray="3 3"
+                      label={{ value: "Critical", position: "insideBottomRight", fill: "#ff0000", fontSize: 10 }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              
+
+
               {/* Critical Expiry Alert */}
               {counts.oneWeekQuantity > 0 && (
                 <div className="p-3 mt-4 text-sm text-red-800 bg-red-100 border border-red-200 rounded-lg">
@@ -500,33 +777,12 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   <p className="mt-1 ml-7">Review soon-to-expire inventory immediately to minimize losses.</p>
                 </div>
               )}
+
             </div>
           </div>
-          
-          {/* Bottom Row - Enhanced Status Cards */}
+
+          {/* Bottom Row - Stock Status Cards */}
           <div className="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-blue-500">
-              <div className="flex items-center">
-                <div className="p-2 mr-3 bg-blue-500 rounded-full">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-xs text-blue-800">Batches Expiring in 6+ Months</p>
-                  <div className="flex items-center">
-                    <p className="text-xl font-bold text-blue-900">{counts.sixMonths}</p>
-                    <span className="ml-2 text-xs text-blue-700">
-                      ({counts.sixMonthsQuantity} units)
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="w-full h-1 mt-3 bg-blue-200 rounded-full">
-                <div className="h-1 bg-blue-500 rounded-full" style={{ width: '75%' }}></div>
-              </div>
-            </div>
-            
             <div className="p-4 transition-all duration-300 bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-green-500">
               <div className="flex items-center">
                 <div className="p-2 mr-3 bg-green-500 rounded-full">
@@ -535,20 +791,25 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-xs text-green-800">Batches Expiring in 3-6 Months</p>
+                  <p className="text-xs text-green-800">Products Not Near Reorder Limits</p>
                   <div className="flex items-center">
-                    <p className="text-xl font-bold text-green-900">{counts.threeMonths}</p>
+                    <p className="text-xl font-bold text-green-900">{stockSummary.available}</p>
                     <span className="ml-2 text-xs text-green-700">
-                      ({counts.threeMonthsQuantity} units)
+                      products
                     </span>
                   </div>
                 </div>
               </div>
               <div className="w-full h-1 mt-3 bg-green-200 rounded-full">
-                <div className="h-1 bg-green-500 rounded-full" style={{ width: '60%' }}></div>
+                <div
+                  className="h-1 bg-green-500 rounded-full"
+                  style={{
+                    width: `${stockSummary.totalStock > 0 ? (stockSummary.available / stockSummary.totalStock * 100) : 0}%`
+                  }}
+                ></div>
               </div>
             </div>
-            
+
             <div className="p-4 transition-all duration-300 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-yellow-500">
               <div className="flex items-center">
                 <div className="p-2 mr-3 bg-yellow-500 rounded-full">
@@ -557,20 +818,25 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-xs text-yellow-800">Batches Expiring in 1-3 Months</p>
+                  <p className="text-xs text-yellow-800">Products At/Below Reorder Limits</p>
                   <div className="flex items-center">
-                    <p className="text-xl font-bold text-yellow-900">{counts.oneMonth}</p>
+                    <p className="text-xl font-bold text-yellow-900">{stockSummary.lowStock}</p>
                     <span className="ml-2 text-xs text-yellow-700">
-                      ({counts.oneMonthQuantity} units)
+                      products
                     </span>
                   </div>
                 </div>
               </div>
               <div className="w-full h-1 mt-3 bg-yellow-200 rounded-full">
-                <div className="h-1 bg-yellow-500 rounded-full" style={{ width: '40%' }}></div>
+                <div
+                  className="h-1 bg-yellow-500 rounded-full"
+                  style={{
+                    width: `${stockSummary.totalStock > 0 ? (stockSummary.lowStock / stockSummary.totalStock * 100) : 0}%`
+                  }}
+                ></div>
               </div>
             </div>
-            
+
             <div className="p-4 transition-all duration-300 bg-gradient-to-r from-red-50 to-red-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-red-500">
               <div className="flex items-center">
                 <div className="p-2 mr-3 bg-red-500 rounded-full">
@@ -580,22 +846,54 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 </div>
                 <div>
                   <p className="text-xs text-red-800">
-                    Batches Expiring in <span className="font-semibold">&lt;1 Week</span>
+                    Products <span className="font-semibold">Out of Stock</span>
                   </p>
                   <div className="flex items-center">
-                    <p className="text-xl font-bold text-red-900">{counts.oneWeek}</p>
+                    <p className="text-xl font-bold text-red-900">{stockSummary.outOfStock}</p>
                     <span className="ml-2 text-xs text-red-700">
-                      ({counts.oneWeekQuantity} units)
+                      products
+
                     </span>
                   </div>
                 </div>
               </div>
+
               <div className="w-full h-1 mt-3 bg-red-200 rounded-full">
-                <div className="h-1 bg-red-500 rounded-full animate-pulse" style={{ width: '25%' }}></div>
+                <div
+                  className="h-1 bg-red-500 rounded-full animate-pulse"
+                  style={{
+                    width: `${stockSummary.totalStock > 0 ? (stockSummary.outOfStock / stockSummary.totalStock * 100) : 0}%`
+                  }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-purple-500">
+              <div className="flex items-center">
+                <div className="p-2 mr-3 bg-purple-500 rounded-full">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-xs text-purple-800">Batches to Return</p>
+                  <div className="flex items-center">
+                    <p className="text-xl font-bold text-purple-900">{returnBatches.count}</p>
+                    <span className="ml-2 text-xs text-purple-700">
+                      batches
+
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-full h-1 mt-3 bg-purple-200 rounded-full">
+                <div className="h-1 bg-purple-500 rounded-full" style={{ width: returnBatches.count > 0 ? '100%' : '0%' }}></div>
+
               </div>
             </div>
           </div>
-          
+
           {/* Required content from props */}
           <div>{content}</div>
         </>
