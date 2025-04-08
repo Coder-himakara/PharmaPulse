@@ -73,12 +73,16 @@ const TruckInfoTable = () => {
     }
 
     // Fallback to string date comparison
-    const dateA = new Date(Array.isArray(a.dateAdded)
-      ? `${a.dateAdded[0]}-${a.dateAdded[1]}-${a.dateAdded[2]}`
-      : a.dateAdded);
-    const dateB = new Date(Array.isArray(b.dateAdded)
-      ? `${b.dateAdded[0]}-${b.dateAdded[1]}-${b.dateAdded[2]}`
-      : b.dateAdded);
+    const dateA = new Date(
+      Array.isArray(a.dateAdded)
+        ? `${a.dateAdded[0]}-${a.dateAdded[1]}-${a.dateAdded[2]}`
+        : a.dateAdded,
+    );
+    const dateB = new Date(
+      Array.isArray(b.dateAdded)
+        ? `${b.dateAdded[0]}-${b.dateAdded[1]}-${b.dateAdded[2]}`
+        : b.dateAdded,
+    );
 
     return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
   });
@@ -167,7 +171,10 @@ const TruckInfoTable = () => {
                 </thead>
                 <tbody>
                   {sortedTrucks.map((truck) => (
-                    <tr key={truck.id} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
+                    <tr
+                      key={truck.id}
+                      className='bg-[#c6dceb] hover:bg-[#dce4e9]'
+                    >
                       <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                         {truck.registrationNumber}
                       </td>
@@ -185,12 +192,13 @@ const TruckInfoTable = () => {
                       </td>
                       <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
                         <span
-                          className={`px-2 py-1 rounded ${truck.status === 'ACTIVE'
+                          className={`px-2 py-1 rounded ${
+                            truck.status === 'ACTIVE'
                               ? 'bg-green-100 text-green-800'
                               : truck.status === 'MAINTENANCE'
                                 ? 'bg-yellow-100 text-yellow-800'
                                 : 'bg-red-100 text-red-800'
-                            }`}
+                          }`}
                         >
                           {truck.status}
                         </span>

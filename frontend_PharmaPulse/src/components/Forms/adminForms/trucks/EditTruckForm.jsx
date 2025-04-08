@@ -180,10 +180,6 @@ const EditTruckForm = ({ onUpdateTruck }) => {
       console.log("Fetching truck data for ID:", truckId);
       fetchTruckData(truckId);
     }
-    else if (truck && truck.id) {
-      console.log("Using ID from truck state:", truck.id);
-      fetchTruckData(truck.id);
-    }
     else {
       setErrorMessage("No valid truck ID provided. Please select a truck from the list.");
     }

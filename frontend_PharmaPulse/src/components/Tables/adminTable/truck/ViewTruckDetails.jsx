@@ -125,12 +125,13 @@ const ViewTruckDetails = () => {
         <li className='p-2 bg-white rounded-md shadow-sm'>
           <strong>Status:</strong>
           <span
-            className={`float-right px-2 py-1 rounded ${truck.status === 'ACTIVE'
+            className={`float-right px-2 py-1 rounded ${
+              truck.status === 'ACTIVE'
                 ? 'bg-green-100 text-green-800'
                 : truck.status === 'MAINTENANCE'
                   ? 'bg-yellow-100 text-yellow-800'
                   : 'bg-red-100 text-red-800'
-              }`}
+            }`}
           >
             {truck.status || 'N/A'}
           </span>
@@ -146,7 +147,11 @@ const ViewTruckDetails = () => {
         </button>
         <button
           className='px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]'
-          onClick={() => navigate(`/admin-dashboard/edit-truck/${truck.id}`, { state: { truck } })}
+          onClick={() =>
+            navigate(`/admin-dashboard/edit-truck/${truck.id}`, {
+              state: { truck },
+            })
+          }
         >
           Edit Truck
         </button>
