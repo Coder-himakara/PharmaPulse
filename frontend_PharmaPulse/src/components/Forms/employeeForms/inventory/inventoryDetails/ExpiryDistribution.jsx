@@ -13,9 +13,34 @@ const ExpiryDistribution = () => {
     const fetchInventory = async () => {
       try {
         setLoading(true);
-        // Use the correct service method to fetch batch inventories
         const response = await getAllBatchInventories();
-        setInventory(response.data.data || response.data);
+
+        // Debug the API response
+        console.log('API Response:', response);
+        console.log('Data structure:', response.data);
+
+        const data = response.data.data || response.data;
+
+        // Check if data is an array and has items
+        if (!Array.isArray(data) || data.length === 0) {
+          console.warn('No data received or data is not an array:', data);
+          setInventory([]);
+          setError('No inventory data available');
+          return;
+        }
+
+        // Debug first item to understand structure
+        console.log('Sample item:', data[0]);
+
+        const transformedData = data.map((item) => ({
+          ...item,
+          batchNo: item.batchId,
+          stockQuantity: item.availableUnitQuantity,
+          productName: ` ${item.productName}`,
+        }));
+
+        console.log('Transformed data:', transformedData);
+        setInventory(transformedData);
         setError(null);
       } catch (err) {
         console.error('Error fetching inventory data:', err);
@@ -121,10 +146,10 @@ const ExpiryDistribution = () => {
               <thead className='bg-[#ffb24d] text-[#5e5757]'>
                 <tr>
                   <th className='px-4 py-2 text-left border-b'>Product Name</th>
-                  <th className='px-4 py-2 text-left border-b'>Batch No</th>
+                  <th className='px-4 py-2 text-left border-b'>Batch ID</th>
                   <th className='px-4 py-2 text-left border-b'>Expiry Date</th>
                   <th className='px-4 py-2 text-left border-b'>
-                    Stock Quantity
+                    Available Unit Quantity
                   </th>
                   <th className='px-4 py-2 text-left border-b'>Days Expired</th>
                 </tr>
@@ -136,11 +161,13 @@ const ExpiryDistribution = () => {
                     className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
                   >
                     <td className='px-4 py-2 border-b'>{item.productName}</td>
-                    <td className='px-4 py-2 border-b'>{item.batchNo}</td>
+                    <td className='px-4 py-2 border-b'>{item.batchId}</td>
                     <td className='px-4 py-2 border-b'>
                       {new Date(item.expiryDate).toLocaleDateString()}
                     </td>
-                    <td className='px-4 py-2 border-b'>{item.stockQuantity}</td>
+                    <td className='px-4 py-2 border-b'>
+                      {item.availableUnitQuantity}
+                    </td>
                     <td className='px-4 py-2 font-medium text-red-600 border-b'>
                       {Math.abs(getDaysUntilExpiry(item.expiryDate))} days
                     </td>
@@ -203,10 +230,10 @@ const ExpiryDistribution = () => {
               <thead className='bg-[#ffb24d] text-[#5e5757]'>
                 <tr>
                   <th className='px-4 py-2 text-left border-b'>Product Name</th>
-                  <th className='px-4 py-2 text-left border-b'>Batch No</th>
+                  <th className='px-4 py-2 text-left border-b'>Batch ID</th>
                   <th className='px-4 py-2 text-left border-b'>Expiry Date</th>
                   <th className='px-4 py-2 text-left border-b'>
-                    Stock Quantity
+                    Available Unit Quantity
                   </th>
                   <th className='px-4 py-2 text-left border-b'>Status</th>
                 </tr>
@@ -240,12 +267,12 @@ const ExpiryDistribution = () => {
                       className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
                     >
                       <td className='px-4 py-2 border-b'>{item.productName}</td>
-                      <td className='px-4 py-2 border-b'>{item.batchNo}</td>
+                      <td className='px-4 py-2 border-b'>{item.batchId}</td>
                       <td className='px-4 py-2 border-b'>
                         {new Date(item.expiryDate).toLocaleDateString()}
                       </td>
                       <td className='px-4 py-2 border-b'>
-                        {item.stockQuantity}
+                        {item.availableUnitQuantity}
                       </td>
                       <td
                         className={`py-2 px-4 border-b font-medium ${statusClass}`}
