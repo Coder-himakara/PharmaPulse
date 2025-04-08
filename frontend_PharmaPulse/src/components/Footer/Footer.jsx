@@ -73,63 +73,57 @@ const Footer = () => {
     <footer
       className={`
         relative w-full box-border transition-opacity duration-300
-        ${isDarkMode ? "bg-neutral-600 text-neutral-500" : "bg-neutral-300 text-neutral-600"}
+        ${isDarkMode ? "bg-neutral-700" : "bg-slate-300"}
         ${isVisible && !isPopupOpen ? "opacity-100" : "opacity-0 pointer-events-none"}
-        z-10
+        z-10 py-4 md:py-5
       `}
     >
-      <div className="py-6 mx-4 md:py-8 md:mx-6 text-center">
-        <div
-          className={`max-w-10xl mx-auto flex flex-wrap items-center justify-center gap-4 md:gap-8 p-4 md:p-6 rounded-lg shadow-md
-            ${isDarkMode
-              ? "bg-neutral-700 border border-neutral-500"
-              : "bg-slate-300 border border-neutral-200"
+      <div
+        className={`max-w-10xl mx-auto flex flex-wrap items-center justify-center gap-3 md:gap-6 px-4 py-2`}
+      >
+        {/* Logo and Title */}
+        <div className="flex items-center">
+          <img
+            src={logo}
+            alt="PharmaPulse Logo"
+            className="h-6 mr-2 sm:h-7 md:h-8 lg:h-9"
+          />
+          <span className="text-base font-bold tracking-wide uppercase sm:text-lg md:text-xl whitespace-nowrap text-neutral-800 dark:text-neutral-100">
+            PharmaPulse
+          </span>
+        </div>
+
+        {/* Divider */}
+        <div className="w-0.5 h-6 md:h-8 bg-neutral-500 dark:bg-neutral-400 rounded hidden sm:block"></div>
+
+        {/* Developed By */}
+        <div className="flex items-center">
+          <span className="mr-1 text-xs md:mr-2 sm:text-sm md:text-base text-neutral-700 dark:text-neutral-300">
+            Developed by:
+          </span>
+          <a
+            className={`font-semibold text-sm sm:text-base md:text-lg uppercase ${
+              isDarkMode
+                ? "text-green-300 hover:text-green-200"
+                : "text-green-700 hover:text-green-600"
             }`}
-        >
-          {/* Logo and Title */}
-          <div className="flex items-center transition-transform duration-300 hover:scale-105">
-            <img
-              src={logo}
-              alt="PharmaPulse Logo"
-              className="h-7 mr-2 sm:h-8 md:h-10 lg:h-12"
-            />
-            <span className="font-bold tracking-wide uppercase text-base sm:text-lg md:text-xl lg:text-2xl whitespace-nowrap text-neutral-800 dark:text-neutral-100">
-              PharmaPulse
-            </span>
-          </div>
+            aria-label="Visit Team PharmaPulse website"
+          >
+            Team PharmaPulse
+          </a>
+        </div>
 
-          {/* Divider */}
-          <div className="w-0.5 h-8 md:h-10 bg-neutral-500 dark:bg-neutral-400 rounded hidden sm:block"></div>
+        {/* Divider */}
+        <div className="w-0.5 h-6 md:h-8 bg-neutral-500 dark:bg-neutral-400 rounded hidden sm:block"></div>
 
-          {/* Developed By */}
-          <div className="flex items-center transition-colors duration-300">
-            <span className="mr-1 md:mr-2 text-xs sm:text-sm md:text-base text-neutral-500 dark:text-neutral-300">
-              Developed by:
-            </span>
-            <a
-              className={`font-semibold text-sm sm:text-base md:text-lg uppercase ${
-                isDarkMode
-                  ? "text-green-300 hover:text-green-200"
-                  : "text-green-700 hover:text-green-600"
-              }`}
-              aria-label="Visit Team PharmaPulse website"
-            >
-              Team PharmaPulse
-            </a>
-          </div>
-
-          {/* Divider */}
-          <div className="w-0.5 h-8 md:h-10 bg-neutral-500 dark:bg-neutral-400 rounded hidden sm:block"></div>
-
-          {/* Copyright */}
-          <div className="text-xs sm:text-sm md:text-base">
-            <span className="font-semibold text-neutral-800 dark:text-neutral-100">
-              © {new Date().getFullYear()} A & K Agencies PharmaPulse
-            </span>
-            <span className="ml-1 md:ml-2 text-neutral-500 dark:text-neutral-300">
-              All Rights Reserved
-            </span>
-          </div>
+        {/* Copyright */}
+        <div className="text-xs sm:text-sm md:text-base">
+          <span className="font-semibold text-neutral-800 dark:text-neutral-100">
+            © {new Date().getFullYear()} A & K Agencies PharmaPulse
+          </span>
+          <span className="ml-1 md:ml-2 text-neutral-700 dark:text-neutral-300">
+            All Rights Reserved
+          </span>
         </div>
       </div>
     </footer>
