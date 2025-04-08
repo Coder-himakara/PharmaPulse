@@ -45,6 +45,15 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       }
     }
 
+    // Validate phone number format (must start with 0 and be exactly 10 digits)
+    const phoneRegex = /^0\d{9}$/;
+    if (!phoneRegex.test(formData.purchaseGroupPhoneNo)) {
+      setErrorMessage(
+        'Phone number must start with 0 and be exactly 10 digits.',
+      );
+      return;
+    }
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.purchaseGroupEmail)) {
@@ -265,7 +274,7 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
 
       {/* Popup Modal */}
       {showPopup && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
           <div className='relative p-6 text-center bg-white rounded-lg shadow-lg w-80'>
             {/* Green Checkmark Circle */}
             <div className='absolute transform -translate-x-1/2 -top-8 left-1/2'>

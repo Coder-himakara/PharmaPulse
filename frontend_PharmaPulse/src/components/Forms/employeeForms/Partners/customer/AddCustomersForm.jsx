@@ -75,6 +75,21 @@ const AddCustomersForm = ({ onAddCustomer }) => {
     fetchCustomerGroups();
   }, [navigate]);
 
+  useEffect(() => {
+    if (showPopup) {
+      // Prevent scrolling on body when popup is shown
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Re-enable scrolling when popup is closed
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Cleanup function to ensure scrolling is re-enabled
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [showPopup]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -502,8 +517,9 @@ const AddCustomersForm = ({ onAddCustomer }) => {
 
       {/* Popup Modal */}
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="relative p-6 text-center bg-white rounded-lg shadow-lg w-80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" 
+             style={{ overflow: 'hidden' }}>
+          <div className="relative z-50 p-6 text-center bg-white rounded-lg shadow-lg w-80">
             {/* Green Checkmark Circle */}
             <div className="absolute transform -translate-x-1/2 -top-8 left-1/2">
               <div className="p-4 bg-green-500 rounded-full">

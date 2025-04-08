@@ -56,7 +56,6 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
       'purchaseGroupAddress',
       'purchaseGroupContactName',
       'purchaseGroupPhoneNo',
-      'purchaseGroupFaxNo',
       'purchaseGroupEmail',
     ];
     if (requiredFields.some((field) => !formData[field].trim())) {
@@ -66,7 +65,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
     }
 
     // Phone number validation (10 digits starting with 0)
-    if (!/^0[0-9]{9}$/.test(formData.purchaseGroupPhoneNo)) {
+    if (!/^0\d{9}$/.test(formData.purchaseGroupPhoneNo)) {
       setErrorMessage(
         'Phone number must start with 0 and contain exactly 10 digits.',
       );
@@ -82,8 +81,11 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
       return;
     }
 
-    // Fax number validation (basic format, e.g., 10 digits)
-    if (!/^[0-9]{10}$/.test(formData.purchaseGroupFaxNo)) {
+    // Fax number validation (optional or basic format)
+    if (
+      formData.purchaseGroupFaxNo &&
+      !/^\d{10}$/.test(formData.purchaseGroupFaxNo)
+    ) {
       setErrorMessage('Fax number must contain exactly 10 digits.');
       setIsLoading(false);
       return;
@@ -100,8 +102,8 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
       purchaseGroupName: formData.purchaseGroupName,
       purchaseGroupAddress: formData.purchaseGroupAddress,
       purchaseGroupContactName: formData.purchaseGroupContactName,
-      purchaseGroupPhoneNo: parseInt(formData.purchaseGroupPhoneNo, 10),
-      purchaseGroupFaxNo: formData.purchaseGroupFaxNo, // Kept as string since fax might not need parsing
+      purchaseGroupPhoneNo: formData.purchaseGroupPhoneNo, // Keep as string
+      purchaseGroupFaxNo: formData.purchaseGroupFaxNo,
       purchaseGroupEmail: formData.purchaseGroupEmail,
     };
 
@@ -256,7 +258,6 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
             value={formData.purchaseGroupFaxNo}
             onChange={handleChange}
             className='w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md'
-            required
             maxLength={10}
           />
         </div>
@@ -301,11 +302,11 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
 
       {/* Success Popup Modal */}
       {showPopup && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
           <div className='relative p-6 text-center bg-white rounded-lg shadow-lg w-80'>
             {/* Orange Checkmark Circle */}
             <div className='absolute transform -translate-x-1/2 -top-8 left-1/2'>
-              <div className='p-4 bg-orange-500 rounded-full'>
+              <div className='p-4 bg-green-500 rounded-full'>
                 <svg
                   className='w-8 h-8 text-white'
                   fill='none'
@@ -332,7 +333,7 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
             {/* Continue Button */}
             <button
               onClick={handlePopupContinue}
-              className='px-6 py-2 mt-4 text-white transition-all duration-300 bg-orange-500 rounded-md hover:bg-orange-600'
+              className='px-6 py-2 mt-4 text-white transition-all duration-300 bg-green-500 rounded-md hover:bg-green-600'
             >
               CONTINUE
             </button>

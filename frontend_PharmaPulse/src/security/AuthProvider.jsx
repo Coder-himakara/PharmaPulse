@@ -1,4 +1,10 @@
-import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react';
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import AuthContext from './AuthContext';
 
@@ -28,7 +34,7 @@ const AuthProvider = ({ children }) => {
       const currentTime = Date.now();
       return expirationTime - currentTime;
     } catch (error) {
-      console.error("Failed to calculate token expiration:", error);
+      console.error('Failed to calculate token expiration:', error);
       return 0;
     }
   };
@@ -44,9 +50,11 @@ const AuthProvider = ({ children }) => {
 
     const timeUntilExpiration = getTimeUntilExpiration(token);
     // Refresh 1 minute before expiration, or immediately if less than 2 minutes left
-    const refreshTime = Math.max(0, timeUntilExpiration - (60 * 1000));
+    const refreshTime = Math.max(0, timeUntilExpiration - 60 * 1000);
 
-    console.log(`Token expires in ${timeUntilExpiration / 1000} seconds, scheduling refresh in ${refreshTime / 1000} seconds`);
+    console.log(
+      `Token expires in ${timeUntilExpiration / 1000} seconds, scheduling refresh in ${refreshTime / 1000} seconds`,
+    );
 
     if (timeUntilExpiration <= 0) {
       // Token already expired, refresh immediately
@@ -63,13 +71,13 @@ const AuthProvider = ({ children }) => {
 
     try {
       setIsRefreshing(true);
-      console.log("Attempting to refresh token");
+      console.log('Attempting to refresh token');
 
       const { data } = await refreshTokenService();
       const newToken = data.data.newAccessToken;
       const newRole = data.data.role;
 
-      console.log("Token refresh successful");
+      console.log('Token refresh successful');
 
       // Update state and storage
       localStorage.setItem('token', newToken);
@@ -83,9 +91,8 @@ const AuthProvider = ({ children }) => {
 
       // Set up the next refresh
       setupRefreshTimer(newToken);
-
     } catch (error) {
-      console.error("Token refresh failed:", error);
+      console.error('Token refresh failed:', error);
       // On refresh failure, clear auth and log out
       localStorage.removeItem('token');
       localStorage.removeItem('role');
@@ -120,7 +127,7 @@ const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       if (token && role) {
         if (isTokenExpired(token)) {
-          console.log("Stored token is expired, attempting refresh");
+          console.log('Stored token is expired, attempting refresh');
           refreshToken();
         } else {
           // Token still valid - set auth state and schedule refresh
@@ -153,7 +160,10 @@ const AuthProvider = ({ children }) => {
       localStorage.removeItem('role');
       delete apiClient.defaults.headers.common['Authorization'];
 
-      const response = await executeJwtAuthenticationService(username, password);
+      const response = await executeJwtAuthenticationService(
+        username,
+        password,
+      );
       const token = response.data.data.token;
       localStorage.setItem('token', token);
       const role = response.data.data.userInfo.role;
@@ -238,7 +248,7 @@ const AuthProvider = ({ children }) => {
           originalRequest._retry = true;
 
           try {
-            console.log("401 error - attempting token refresh");
+            console.log('401 error - attempting token refresh');
             await refreshToken();
 
             // If refresh was successful, retry with new token
@@ -251,7 +261,7 @@ const AuthProvider = ({ children }) => {
             return Promise.reject(error);
           } catch (refreshError) {
             // Force logout if refresh failed
-            console.error("Refresh failed during 401 handling:", refreshError);
+            console.error('Refresh failed during 401 handling:', refreshError);
             logout();
             return Promise.reject(refreshError);
           }

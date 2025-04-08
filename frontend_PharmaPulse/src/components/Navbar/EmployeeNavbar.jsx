@@ -116,8 +116,8 @@ const EmployeeNavbar = () => {
         ],
         [
           {
-            label: "Product Retail Price",
-            items: [{ label: "Retail Price Info",command: () => navigate("/employee-dashboard/retail-price-info") }],
+            label: "Product Price Info",
+            items: [{ label: "Wholesale Price Info",command: () => navigate("/employee-dashboard/retail-price-info") }],
           },
         ],
       ],

@@ -87,6 +87,13 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       }
     }
 
+    // Phone number validation
+    const phoneRegex = /^0\d{9}$/;
+    if (!phoneRegex.test(formData.supplier_contactNo)) {
+      setErrorMessage("Phone number must start with 0 and be exactly 10 digits.");
+      return;
+    }
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.supplier_email)) {
@@ -98,7 +105,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
     const requestData = {
       supplier_name: formData.supplier_name,
       supplier_address: formData.supplier_address,
-      supplier_contactNo: formData.supplier_contactNo, // String
+      supplier_contactNo: formData.supplier_contactNo, // Keeping as string
       supplier_email: formData.supplier_email,
       outstanding_balance: formData.outstanding_balance ? parseFloat(formData.outstanding_balance) : null, // BigDecimal, nullable
       credit_limit: formData.credit_limit ? parseFloat(formData.credit_limit) : null, // BigDecimal, nullable
@@ -370,7 +377,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
 
       {/* Popup Modal */}
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative p-6 text-center bg-white rounded-lg shadow-lg w-80">
             {/* Green Checkmark Circle */}
             <div className="absolute transform -translate-x-1/2 -top-8 left-1/2">

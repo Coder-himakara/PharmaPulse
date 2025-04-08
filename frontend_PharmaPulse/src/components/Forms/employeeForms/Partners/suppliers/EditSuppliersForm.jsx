@@ -133,11 +133,10 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
     }
 
     const supplierId = supplier.supplier_id;
-    const phoneNo = parseInt(formData.supplier_contactNo, 10);
     const purchaseGroup = parseInt(formData.purchase_group, 10);
 
-    if (isNaN(phoneNo) || isNaN(purchaseGroup)) {
-      setErrorMessage("Please ensure all numeric fields contain valid numbers.");
+    if (isNaN(purchaseGroup)) {
+      setErrorMessage("Please ensure Purchase Group ID contains a valid number.");
       setIsLoading(false);
       return;
     }
@@ -145,7 +144,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
     const requestData = {
       supplier_name: formData.supplier_name,
       supplier_address: formData.supplier_address,
-      supplier_contactNo: phoneNo,
+      supplier_contactNo: formData.supplier_contactNo, // Keep as string to preserve leading zero
       supplier_email: formData.supplier_email,
       purchase_group: purchaseGroup,
       credit_period: formData.credit_period ? creditPeriod : null,
@@ -393,11 +392,11 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
 
       {/* Success Popup Modal */}
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative p-6 text-center bg-white rounded-lg shadow-lg w-80">
             {/* Orange Checkmark Circle */}
             <div className="absolute transform -translate-x-1/2 -top-8 left-1/2">
-              <div className="p-4 bg-orange-500 rounded-full">
+              <div className="p-4 bg-green-500 rounded-full">
                 <svg
                   className="w-8 h-8 text-white"
                   fill="none"
@@ -424,7 +423,7 @@ const EditSuppliersForm = ({ onUpdateSupplier }) => {
             {/* Continue Button */}
             <button
               onClick={handlePopupContinue}
-              className="px-6 py-2 mt-4 text-white transition-all duration-300 bg-orange-500 rounded-md hover:bg-orange-600"
+              className="px-6 py-2 mt-4 text-white transition-all duration-300 bg-green-500 rounded-md hover:bg-green-600"
             >
               CONTINUE
             </button>

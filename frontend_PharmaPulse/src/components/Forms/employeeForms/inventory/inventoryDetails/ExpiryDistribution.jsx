@@ -7,17 +7,40 @@ const ExpiryDistribution = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedTimeframe, setSelectedTimeframe] = useState('all');
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   // Fetch inventory data
   useEffect(() => {
     const fetchInventory = async () => {
       try {
         setLoading(true);
-        // Use the correct service method to fetch batch inventories
         const response = await getAllBatchInventories();
-        setInventory(response.data.data || response.data);
+
+        // Debug the API response
+        console.log('API Response:', response);
+        console.log('Data structure:', response.data);
+
+        const data = response.data.data || response.data;
+
+        // Check if data is an array and has items
+        if (!Array.isArray(data) || data.length === 0) {
+          console.warn('No data received or data is not an array:', data);
+          setInventory([]);
+          setError('No inventory data available');
+          return;
+        }
+
+        // Debug first item to understand structure
+        console.log('Sample item:', data[0]);
+
+        const transformedData = data.map((item) => ({
+          ...item,
+          batchNo: item.batchId,
+          stockQuantity: item.availableUnitQuantity,
+          productName: ` ${item.productName}`,
+        }));
+
+        console.log('Transformed data:', transformedData);
+        setInventory(transformedData);
         setError(null);
       } catch (err) {
         console.error('Error fetching inventory data:', err);
@@ -54,25 +77,6 @@ const ExpiryDistribution = () => {
     [getDaysUntilExpiry],
   );
 
-  // Get month name
-  const getMonthName = (monthIndex) => {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    return months[monthIndex];
-  };
-
   // Filter inventory based on selected timeframe
   const filteredInventory = useMemo(() => {
     if (!inventory.length) return [];
@@ -84,15 +88,6 @@ const ExpiryDistribution = () => {
 
     return inventory.filter((item) => {
       const category = categorizeByExpiry(item);
-
-      // Check if the expiry month matches current selected month
-      const expiryDate = new Date(item.expiryDate);
-      const expiryMonth = expiryDate.getMonth();
-      const expiryYear = expiryDate.getFullYear();
-      const monthMatches =
-        expiryMonth === currentMonth && expiryYear === currentYear;
-
-      if (!monthMatches) return false;
 
       switch (selectedTimeframe) {
         case 'expired':
@@ -109,28 +104,12 @@ const ExpiryDistribution = () => {
           return false;
       }
     });
-  }, [
-    inventory,
-    selectedTimeframe,
-    currentMonth,
-    currentYear,
-    categorizeByExpiry,
-  ]);
+  }, [inventory, selectedTimeframe, categorizeByExpiry]);
 
   // Get expired items for the first table
   const expiredItems = useMemo(() => {
     return inventory.filter((item) => categorizeByExpiry(item) === 'expired');
   }, [inventory, categorizeByExpiry]);
-
-  // Handle month change
-  const handleMonthChange = (e) => {
-    setCurrentMonth(parseInt(e.target.value));
-  };
-
-  // Handle year change
-  const handleYearChange = (e) => {
-    setCurrentYear(parseInt(e.target.value));
-  };
 
   // Handle timeframe filter change
   const handleTimeframeChange = (e) => {
@@ -167,10 +146,10 @@ const ExpiryDistribution = () => {
               <thead className='bg-[#ffb24d] text-[#5e5757]'>
                 <tr>
                   <th className='px-4 py-2 text-left border-b'>Product Name</th>
-                  <th className='px-4 py-2 text-left border-b'>Batch No</th>
+                  <th className='px-4 py-2 text-left border-b'>Batch ID</th>
                   <th className='px-4 py-2 text-left border-b'>Expiry Date</th>
                   <th className='px-4 py-2 text-left border-b'>
-                    Stock Quantity
+                    Available Unit Quantity
                   </th>
                   <th className='px-4 py-2 text-left border-b'>Days Expired</th>
                 </tr>
@@ -182,11 +161,13 @@ const ExpiryDistribution = () => {
                     className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
                   >
                     <td className='px-4 py-2 border-b'>{item.productName}</td>
-                    <td className='px-4 py-2 border-b'>{item.batchNo}</td>
+                    <td className='px-4 py-2 border-b'>{item.batchId}</td>
                     <td className='px-4 py-2 border-b'>
                       {new Date(item.expiryDate).toLocaleDateString()}
                     </td>
-                    <td className='px-4 py-2 border-b'>{item.stockQuantity}</td>
+                    <td className='px-4 py-2 border-b'>
+                      {item.availableUnitQuantity}
+                    </td>
                     <td className='px-4 py-2 font-medium text-red-600 border-b'>
                       {Math.abs(getDaysUntilExpiry(item.expiryDate))} days
                     </td>
@@ -201,60 +182,23 @@ const ExpiryDistribution = () => {
       {/* Filter Controls */}
       <div className='bg-[#e6eef3] p-4 rounded-lg shadow-sm mb-6'>
         <h2 className='text-xl font-semibold mb-4 text-[#1a5353]'>
-          Filter By Expiry Timeline
+          Filter By Expiry Timeline From Today
         </h2>
 
-        <div className='grid grid-cols-1 gap-4 mb-4 md:grid-cols-3'>
-          <div>
-            <label className='block mb-1 text-gray-700'>Month:</label>
-            <select
-              value={currentMonth}
-              onChange={handleMonthChange}
-              className='w-full p-2 border border-gray-300 rounded'
-            >
-              {[...Array(12)].map((_, i) => (
-                <option key={i} value={i}>
-                  {getMonthName(i)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className='block mb-1 text-gray-700'>Year:</label>
-            <select
-              value={currentYear}
-              onChange={handleYearChange}
-              className='w-full p-2 border border-gray-300 rounded'
-            >
-              {[...Array(5)].map((_, i) => {
-                const year = new Date().getFullYear() + i;
-                return (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-
-          <div>
-            <label className='block mb-1 text-gray-700'>
-              Expiry Timeframe:
-            </label>
-            <select
-              value={selectedTimeframe}
-              onChange={handleTimeframeChange}
-              className='w-full p-2 border border-gray-300 rounded'
-            >
-              <option value='all'>All Items</option>
-              <option value='expired'>Expired Items</option>
-              <option value='oneWeek'>Expiring in 1 Week</option>
-              <option value='oneMonth'>Expiring in 1 Month</option>
-              <option value='threeMonths'>Expiring in 3 Months</option>
-              <option value='sixMonths'>Expiring in 6 Months</option>
-            </select>
-          </div>
+        <div className='mb-4'>
+          <label className='block mb-1 text-gray-700'>Expiry Timeframe:</label>
+          <select
+            value={selectedTimeframe}
+            onChange={handleTimeframeChange}
+            className='w-full p-2 border border-gray-300 rounded'
+          >
+            <option value='all'>All Items</option>
+            <option value='expired'>Expired Items</option>
+            <option value='oneWeek'>Expiring in 1 Week</option>
+            <option value='oneMonth'>Expiring in 1 Month</option>
+            <option value='threeMonths'>Expiring in 3 Months</option>
+            <option value='sixMonths'>Expiring in 6 Months</option>
+          </select>
         </div>
       </div>
 
@@ -263,7 +207,17 @@ const ExpiryDistribution = () => {
         <h2 className='text-xl font-semibold mb-4 bg-[#1a5353] text-white p-2 rounded'>
           {selectedTimeframe === 'all'
             ? 'All Inventory Items'
-            : `Items ${selectedTimeframe === 'expired' ? 'Expired' : 'Expiring'} in ${getMonthName(currentMonth)} ${currentYear}`}
+            : `Items ${selectedTimeframe === 'expired' ? 'Expired' : 'Expiring'} ${
+                selectedTimeframe === 'oneWeek'
+                  ? 'Within 1 Week'
+                  : selectedTimeframe === 'oneMonth'
+                    ? 'Within 1 Month'
+                    : selectedTimeframe === 'threeMonths'
+                      ? 'Within 3 Months'
+                      : selectedTimeframe === 'sixMonths'
+                        ? 'Within 6 Months'
+                        : ''
+              }`}
         </h2>
 
         {filteredInventory.length === 0 ? (
@@ -276,10 +230,10 @@ const ExpiryDistribution = () => {
               <thead className='bg-[#ffb24d] text-[#5e5757]'>
                 <tr>
                   <th className='px-4 py-2 text-left border-b'>Product Name</th>
-                  <th className='px-4 py-2 text-left border-b'>Batch No</th>
+                  <th className='px-4 py-2 text-left border-b'>Batch ID</th>
                   <th className='px-4 py-2 text-left border-b'>Expiry Date</th>
                   <th className='px-4 py-2 text-left border-b'>
-                    Stock Quantity
+                    Available Unit Quantity
                   </th>
                   <th className='px-4 py-2 text-left border-b'>Status</th>
                 </tr>
@@ -313,12 +267,12 @@ const ExpiryDistribution = () => {
                       className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
                     >
                       <td className='px-4 py-2 border-b'>{item.productName}</td>
-                      <td className='px-4 py-2 border-b'>{item.batchNo}</td>
+                      <td className='px-4 py-2 border-b'>{item.batchId}</td>
                       <td className='px-4 py-2 border-b'>
                         {new Date(item.expiryDate).toLocaleDateString()}
                       </td>
                       <td className='px-4 py-2 border-b'>
-                        {item.stockQuantity}
+                        {item.availableUnitQuantity}
                       </td>
                       <td
                         className={`py-2 px-4 border-b font-medium ${statusClass}`}
