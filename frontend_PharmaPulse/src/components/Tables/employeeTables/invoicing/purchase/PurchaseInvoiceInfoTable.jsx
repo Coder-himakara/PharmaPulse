@@ -1,15 +1,17 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllPurchaseInvoices } from "../../../../../api/InvoiceApiService";
+import { getAllPurchaseInvoices, getPurchaseInvoiceById } from "../../../../../api/InvoiceApiService";
+import PurchaseInvoiceDetailsModal from "../../../../Modals/PurchaseInvoiceDetailsModal";
+import formatBackendDate from "../../../../../util/FormatDateString";
 
 const PurchaseInvoiceInfoTable = () => {
   const [search, setSearch] = useState("");
   const [purchaseInvoices, setPurchaseInvoices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [debugInfo, setDebugInfo] = useState("");
-  
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+
   const navigate = useNavigate();
 
   // Fetch real purchase invoices from the API
@@ -17,59 +19,27 @@ const PurchaseInvoiceInfoTable = () => {
     const fetchPurchaseInvoices = async () => {
       try {
         setIsLoading(true);
-        console.log("Fetching purchase invoices from API...");
-        
+        setError(null);
+
         const response = await getAllPurchaseInvoices();
-        const rawResponseData = JSON.stringify(response.data, null, 2);
-        setDebugInfo(rawResponseData);
-        console.log("Complete API Response:", response);
-        
-        if (!response || !response.data) {
-          throw new Error("Invalid API response format");
-        }
-        
-        // Handle response based on your backend structure
-        let fetchedInvoices = [];
-        
-        if (Array.isArray(response.data)) {
-          // Direct array in response.data
-          fetchedInvoices = response.data;
-          console.log("Found direct array of invoices:", fetchedInvoices);
-        } else if (response.data.data && Array.isArray(response.data.data)) {
-          // Nested array in response.data.data (standard structure)
-          fetchedInvoices = response.data.data;
-          console.log("Found nested array of invoices:", fetchedInvoices);
-        } else if (response.data.code === 200 && response.data.data) {
-          // StandardResponse with data property (not an array)
-          const dataProperty = response.data.data;
-          
-          if (Array.isArray(dataProperty)) {
-            fetchedInvoices = dataProperty;
-            console.log("Found array in StandardResponse.data:", fetchedInvoices);
+        console.log("API Response:", response); // For debugging
+
+        if (response?.data?.code === 200) {
+          const invoices = response.data.data;
+          if (Array.isArray(invoices) && invoices.length > 0) {
+            setPurchaseInvoices(invoices);
           } else {
-            console.warn("Data property exists but is not an array:", dataProperty);
-            // Try to convert to array if possible
-            if (dataProperty && typeof dataProperty === 'object') {
-              const possibleInvoices = Object.values(dataProperty);
-              if (possibleInvoices.length > 0) {
-                fetchedInvoices = possibleInvoices;
-                console.log("Converted object to array:", fetchedInvoices);
-              }
-            }
+            setPurchaseInvoices([]);
+            console.warn("No purchase invoices found in response");
           }
-        } else if (response.data.code === 200 && !response.data.data) {
-          console.warn("API returned success but no invoice data found");
-          // This is a success response but with no data
-          fetchedInvoices = [];
         } else {
-          console.warn("Unexpected API response structure:", response.data);
-          fetchedInvoices = [];
+          setError("Failed to fetch purchase invoices: Invalid response format");
+          setPurchaseInvoices([]);
         }
-        
-        setPurchaseInvoices(fetchedInvoices);
       } catch (err) {
         console.error("Failed to fetch purchase invoices:", err);
-        setError(`Failed to load purchase invoices: ${err.message || "Unknown error"}`);
+        setError(err.message || "Failed to load purchase invoices");
+        setPurchaseInvoices([]);
       } finally {
         setIsLoading(false);
       }
@@ -81,10 +51,10 @@ const PurchaseInvoiceInfoTable = () => {
   // Filter the purchase invoices based on the search term
   const filteredPurchaseInvoices = purchaseInvoices.filter((invoice) => {
     if (!search) return true;
-    
+
     // Check if invoiceNo exists before filtering
-    return invoice.invoiceNo && 
-           invoice.invoiceNo.toString().toLowerCase().includes(search.toLowerCase());
+    return invoice.invoiceNo &&
+      invoice.invoiceNo.toString().toLowerCase().includes(search.toLowerCase());
   });
 
   // Close button action
@@ -92,13 +62,49 @@ const PurchaseInvoiceInfoTable = () => {
     navigate("/employee-dashboard");
   };
 
-  // View invoice details
-  const handleViewPurchaseInvoice = (invoice) => {
-    console.log("Viewing invoice details:", invoice);
-    navigate(
-      `/employee-dashboard/edit-purchase-invoice/${invoice.invoiceId}`,
-      { state: { purchaseInvoice: invoice } }
-    );
+  // View invoice details - using only invoiceId as intended
+  const handleViewPurchaseInvoice = async (invoice) => {
+    try {
+      // Log the invoice object for debugging
+      console.log("Invoice object received:", invoice);
+
+      // Use only invoiceId - no longer using invoiceNo as a fallback
+      const invoiceId = invoice?.invoiceId;
+
+      if (!invoiceId) {
+        console.error("Missing invoice ID:", invoice);
+        setError("Cannot view details: Invoice ID is missing. This invoice may not have been properly saved with an ID.");
+        return;
+      }
+
+      console.log(`Fetching invoice details for ID: ${invoiceId}`);
+      setIsLoading(true);
+      setError(null); // Clear any previous errors
+
+      try {
+        const response = await getPurchaseInvoiceById(invoiceId);
+
+        if (response && response.data && response.data.code === 200) {
+          console.log("Successfully fetched invoice details:", response.data.data);
+          setSelectedInvoice(response.data.data);
+        } else {
+          console.error("Unexpected API response format:", response);
+          setError(`Failed to load invoice details: Invalid response format`);
+        }
+      } catch (apiError) {
+        console.error("API error:", apiError);
+        if (apiError.status === 404) {
+          setError(`Invoice with ID ${invoiceId} not found.`);
+        } else {
+          setError(`${apiError.message || 'Failed to load invoice details'}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error in view invoice handler:", error);
+      setError(`Failed to process request: ${error.message || "Unknown error"}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -132,7 +138,7 @@ const PurchaseInvoiceInfoTable = () => {
           <p>Loading purchase invoices...</p>
         </div>
       )}
-      
+
       {/* Error message */}
       {error && (
         <div className="text-[#991919] text-sm text-center mt-2 font-bold p-4">
@@ -155,14 +161,6 @@ const PurchaseInvoiceInfoTable = () => {
           <p className="mt-2 text-blue-600">
             You may need to add purchase invoices through the &quot;Add Invoice&quot; functionality.
           </p>
-          
-          {/* Debug information - only display in development */}
-          <div className="mt-4 p-3 border border-gray-300 rounded bg-gray-50">
-            <p className="font-medium mb-2">API Response Debug Info:</p>
-            <pre className="text-xs text-left whitespace-pre-wrap overflow-x-auto max-h-36 bg-white p-2 border border-gray-200">
-              {debugInfo}
-            </pre>
-          </div>
         </div>
       )}
 
@@ -205,21 +203,24 @@ const PurchaseInvoiceInfoTable = () => {
                     {invoice.purchaseOrderRef || "N/A"}
                   </td>
                   <td className="p-2 text-center border border-gray-400">
-                    {invoice.invoiceDate ? new Date(invoice.invoiceDate).toLocaleDateString() : "N/A"}
+                    {invoice.invoiceDate ?
+                      formatBackendDate(invoice.invoiceDate) :
+                      "N/A"
+                    }
                   </td>
                   <td className="p-2 text-center border border-gray-400">
-                    {typeof invoice.totalAmount === 'number' ? 
-                      invoice.totalAmount.toFixed(2) : 
+                    {typeof invoice.totalAmount === 'number' ?
+                      invoice.totalAmount.toFixed(2) :
                       parseFloat(invoice.totalAmount || 0).toFixed(2)}
                   </td>
                   <td className="p-2 text-center border border-gray-400">
-                    {typeof invoice.discountAmount === 'number' ? 
-                      invoice.discountAmount.toFixed(2) : 
+                    {typeof invoice.discountAmount === 'number' ?
+                      invoice.discountAmount.toFixed(2) :
                       parseFloat(invoice.discountAmount || 0).toFixed(2)}
                   </td>
                   <td className="p-2 text-center border border-gray-400">
-                    {typeof invoice.netAmount === 'number' ? 
-                      invoice.netAmount.toFixed(2) : 
+                    {typeof invoice.netAmount === 'number' ?
+                      invoice.netAmount.toFixed(2) :
                       parseFloat(invoice.netAmount || 0).toFixed(2)}
                   </td>
                   <td className="p-2 text-center border border-gray-400">
@@ -235,6 +236,13 @@ const PurchaseInvoiceInfoTable = () => {
             </tbody>
           </table>
         </div>
+      )}
+
+      {selectedInvoice && (
+        <PurchaseInvoiceDetailsModal
+          invoice={selectedInvoice}
+          onClose={() => setSelectedInvoice(null)}
+        />
       )}
     </div>
   );

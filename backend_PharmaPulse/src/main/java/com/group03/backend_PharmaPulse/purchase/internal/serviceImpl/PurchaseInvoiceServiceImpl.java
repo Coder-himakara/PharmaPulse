@@ -37,10 +37,23 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
         this.purchaseLineItemService = purchaseLineItemService;
     }
 
-    @Override
-    public List<PurchaseInvoiceDTO> getAllPurchaseInvoices() {
-        return null;
-    }
+        @Override
+        public List<PurchaseInvoiceResponse> getAllPurchaseInvoices() {
+            try {
+                List<PurchaseInvoice> purchaseInvoices = purchaseInvoiceRepo.findAll();
+                if (purchaseInvoices.isEmpty()) {
+                    throw new NotFoundException("No purchase invoices found");
+                }
+                return purchaseInvoiceMapper.toResponseDTOsList(purchaseInvoices);
+            } catch (NotFoundException e) {
+                throw e; // Rethrow NotFoundException as it's already appropriately handled
+            } catch (Exception e) {
+                // Log the exception with details
+                // logger.error("Error retrieving purchase invoices", e);
+                throw new RuntimeException("Error retrieving purchase invoices: " + e.getMessage());
+            }
+        }
+
 
     @Override
     public PurchaseInvoiceResponse getPurchaseInvoicesById(Long invoiceId) {
