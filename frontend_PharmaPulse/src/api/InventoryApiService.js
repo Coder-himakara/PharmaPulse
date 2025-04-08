@@ -27,4 +27,22 @@ export const getProductById = (id) =>
     headers: { 'Content-Type': 'application/json' },
   });
 
- 
+export const getAllTrucks = () =>
+  apiClient.get('/trucks/all', {
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+export const getTruckById = (truckId) =>
+  apiClient.get(`/trucks/${truckId}`, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+export const addTruck = (formData) =>
+  apiClient.post('/trucks/add', formData, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+export const updateTruck = (truckId, formData) =>
+  apiClient.put(`/trucks/update/${truckId}`, formData, {
+    headers: { 'Content-Type': 'application/json' },
+  });

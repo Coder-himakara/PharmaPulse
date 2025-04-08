@@ -8,7 +8,7 @@ public interface TruckService {
     TruckDTO createTruck(TruckDTO truckDTO);
     List<TruckResponseDTO>  getAllTrucks();
     TruckResponseDTO getTruckById(Long truckId);
-    TruckDTO updateTruck(Long truckId, TruckDTO truckDTO);
+    TruckResponseDTO updateTruck(Long truckId, TruckResponseDTO truckDTO);
     double checkAvailableSpace(Long truckId);
     void updateTruckCapacity(Integer quantity, Long truckId);
 }

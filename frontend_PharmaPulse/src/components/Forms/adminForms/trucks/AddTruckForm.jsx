@@ -2,19 +2,21 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { addTruck } from "../../../../api/InventoryApiService";
 
 const AddTruckForm = ({ onAddTruck }) => {
   const [formData, setFormData] = useState({
-    numberPlate: "",
-    representativeId: "",
-    capacity: "",
-    dateOfAdded: "",
-    status: "",
+    registrationNumber: "",
+    assignedRep: "",
+    maxCapacity: "",
+    dateAdded: new Date().toISOString().split('T')[0],
+    status: "ACTIVE"  // Default value
   });
 
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,36 +26,71 @@ const AddTruckForm = ({ onAddTruck }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // Format date as M/d/yyyy for backend
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (
-      !formData.numberPlate ||
-      !formData.representativeId ||
-      !formData.capacity ||
-      !formData.dateOfAdded ||
+      !formData.registrationNumber ||
+      !formData.assignedRep ||
+      !formData.maxCapacity ||
+      !formData.dateAdded ||
       !formData.status
     ) {
       setErrorMessage("Please fill out all required fields.");
       return;
     }
 
-    setErrorMessage("");
-    setSuccessMessage("Lorry added successfully!");
-    if (onAddTruck) {
-      onAddTruck(formData);
-    }
+    // Format data exactly as backend expects it
+    const truckData = {
+      registrationNumber: formData.registrationNumber,
+      assignedRep: formData.assignedRep,
+      maxCapacity: parseInt(formData.maxCapacity),
+      dateAdded: formatDate(formData.dateAdded),  // Format: M/d/yyyy
+      status: formData.status
+    };
 
-    setTimeout(() => {
-      setFormData({
-        numberPlate: "",
-        representativeId: "",
-        capacity: "",
-        dateOfAdded: "",
-        status: "",
-      });
-      setSuccessMessage("");
-    }, 2000);
+    console.log("Submitting data:", truckData);
+
+    setIsLoading(true);
+    setErrorMessage("");
+
+    try {
+      const response = await addTruck(truckData);
+
+      if (response.status === 201) {
+        setSuccessMessage("Truck added successfully!");
+        if (onAddTruck) {
+          onAddTruck(response.data.data);
+        }
+
+        // Reset form after successful submission
+        setTimeout(() => {
+          setFormData({
+            registrationNumber: "",
+            assignedRep: "",
+            maxCapacity: "",
+            dateAdded: new Date().toISOString().split('T')[0],
+            status: "ACTIVE",
+          });
+          setSuccessMessage("");
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("API call failed:", error);
+      setErrorMessage(
+        error.response?.data?.message ||
+        "Failed to add truck. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -79,31 +116,30 @@ const AddTruckForm = ({ onAddTruck }) => {
       )}
 
       {[
-        ["Number Plate", "numberPlate", "text", "ABC-1234"],
-        ["Representative ID", "representativeId", "text", "Enter representative ID"],
-        ["Capacity(t)", "capacity", "number", "Enter capacity in tons"],
-        ["Date of Added", "dateOfAdded", "date", ""],
+        ["Registration Number", "registrationNumber", "text", "HG-9689"],
+        ["Representative Name", "assignedRep", "text", "Hashan"],
+        ["Maximum Capacity (t)", "maxCapacity", "number", "1200"],
+        ["Date Added", "dateAdded", "date"],
       ].map(([label, name, type, placeholder]) => (
         <div key={name} className="flex items-center justify-between mb-4">
           <label htmlFor={name} className="text-[16px] text-gray-800 w-2/3 text-left">
-            {label}: <span className="text-red-500">*</span>
+            {label}:
           </label>
           <input
             type={type}
             id={name}
             name={name}
             value={formData[name]}
-            onChange={handleChange}
             placeholder={placeholder}
+            onChange={handleChange}
             className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-            required
           />
         </div>
       ))}
 
       <div className="flex items-center justify-between mb-4">
         <label htmlFor="status" className="text-[16px] text-gray-800 w-2/3 text-left">
-          Status: <span className="text-red-500">*</span>
+          Status:
         </label>
         <select
           id="status"
@@ -111,26 +147,27 @@ const AddTruckForm = ({ onAddTruck }) => {
           value={formData.status}
           onChange={handleChange}
           className="w-2/3 px-2 py-2 text-sm border border-gray-300 rounded-md"
-          required
         >
-          <option value="">Select truck status</option>
-          <option value="Active">Active</option>
-          <option value="Maintenance">Maintenance</option>
-          <option value="Inactive">Inactive</option>
+          <option value="">Choose a status</option>
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="MAINTENANCE">MAINTENANCE</option>
+          <option value="INACTIVE">INACTIVE</option>
         </select>
       </div>
 
       <div className="flex justify-center gap-2 mt-5">
         <button
           type="submit"
-          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+          disabled={isLoading}
+          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] disabled:bg-gray-400"
         >
-          Add
+          {isLoading ? "Adding..." : "Add"}
         </button>
         <button
           type="button"
           onClick={handleCancel}
-          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b]"
+          disabled={isLoading}
+          className="px-5 py-2 bg-[#2a4d69] text-white border-none rounded-md text-[16px] cursor-pointer transition-all duration-300 hover:bg-[#00796b] disabled:bg-gray-400"
         >
           Cancel
         </button>
