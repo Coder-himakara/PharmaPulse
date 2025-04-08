@@ -4,7 +4,6 @@ package com.group03.backend_PharmaPulse.inventory.internal.controller;
 import com.group03.backend_PharmaPulse.inventory.api.InventoryService;
 import com.group03.backend_PharmaPulse.inventory.api.dto.ProductAvailabilityDTO;
 import com.group03.backend_PharmaPulse.inventory.api.dto.response.InventoryDetailsDTO;
-import com.group03.backend_PharmaPulse.inventory.api.dto.response.InventoryResponseDTO;
 import com.group03.backend_PharmaPulse.inventory.internal.serviceImpl.InventoryReservationServiceImpl;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/inventory")
-@PreAuthorize("hasRole('EMPLOYEE')")
+@PreAuthorize("hasAnyRole('EMPLOYEE','SALES_REP')")
 public class InventoryController {
 
     private final InventoryReservationServiceImpl inventoryReservationService;
@@ -34,6 +33,7 @@ public class InventoryController {
      * Endpoint to return available quantities for all products.
      */
     @GetMapping("/all-available")
+    @PreAuthorize("hasAuthority('sales_rep:read')")
     public List<ProductAvailabilityDTO> getAllAvailableQuantities() {
         return inventoryReservationService.getAllProductAvailabilities();
     }
@@ -42,6 +42,7 @@ public class InventoryController {
      * Endpoint to return the available quantity for a specific product by productId.
      */
     @GetMapping("/available-quantity/{productId}")
+    @PreAuthorize("hasAuthority('sales_rep:read')")
     public int getAvailableQuantity(@PathVariable Long productId) {
         return inventoryReservationService.getAvailableQuantityByProductId(productId);
     }

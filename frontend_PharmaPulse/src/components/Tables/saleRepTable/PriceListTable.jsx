@@ -6,19 +6,35 @@ import jsPDF from 'jspdf';
 
 const PriceListTable = () => {
   const [priceList, setPriceList] = useState([]);
+  const [purchaseGroups, setPurchaseGroups] = useState([]);
   const [filteredPriceList, setFilteredPriceList] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const pdfRef = useRef(); // Ref for PDF content capture
+  const pdfRef = useRef();
 
+  // 1) Fetch purchase groups
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const resp = await apiClient.get('/purchase-groups/all');
+        // StandardResponse.data is the array
+        setPurchaseGroups(resp.data.data);
+      } catch (err) {
+        console.error('Error fetching purchase groups:', err);
+      }
+    };
+    fetchGroups();
+  }, []);
+
+  // 2) Fetch price list
   useEffect(() => {
     const fetchPriceList = async () => {
       try {
-        const response = await apiClient.get('/price-list');
-        setPriceList(response.data);
-        setFilteredPriceList(response.data);
+        const resp = await apiClient.get('/price-list');
+        setPriceList(resp.data);
+        setFilteredPriceList(resp.data);
       } catch (err) {
         console.error('Error fetching price list:', err);
         setError('Failed to load price list. Please try again later.');
@@ -26,33 +42,33 @@ const PriceListTable = () => {
         setLoading(false);
       }
     };
-
     fetchPriceList();
   }, []);
 
-  // Updated filtering to check that productName starts with the search term.
+  // 3) Filter by productName
   useEffect(() => {
-    const searchTerm = search.toLowerCase();
-    const results = priceList.filter((entry) =>
-      String(entry.productName).toLowerCase().startsWith(searchTerm),
+    const term = search.toLowerCase();
+    setFilteredPriceList(
+      priceList.filter((e) =>
+        String(e.productName).toLowerCase().startsWith(term),
+      ),
     );
-    setFilteredPriceList(results);
   }, [search, priceList]);
 
-  const handleClose = () => {
-    navigate('/dashboard');
-  };
+  // 4) Build a lookup map: id → name
+  const groupNameById = purchaseGroups.reduce(
+    (acc, g) => ({ ...acc, [g.purchaseGroupId]: g.purchaseGroupName }),
+    {},
+  );
+
+  const handleClose = () => navigate('/dashboard');
 
   const generatePDF = async () => {
-    const input = pdfRef.current;
-    const canvas = await html2canvas(input, { scale: 2 });
+    const canvas = await html2canvas(pdfRef.current, { scale: 2 });
     const imgData = canvas.toDataURL('image/png');
-
-    // Create a PDF in landscape mode to better accommodate the wide table.
     const pdf = new jsPDF('l', 'mm', 'a4');
-    const pdfWidth = 297; // A4 landscape width in mm
+    const pdfWidth = 297;
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save(`price-list_${Date.now()}.pdf`);
   };
@@ -62,89 +78,82 @@ const PriceListTable = () => {
 
   return (
     <div className='bg-[#e6eef3] rounded-lg shadow-lg mb-5 pb-5 h-full relative'>
-      <div className='bg-[#1a5353] text-white px-4 py-3 text-left rounded-t-lg m-0 relative'>
-        <h1 className='p-1 m-1 text-2xl'>Price List Management</h1>
+      {/* Header */}
+      <div className='bg-[#1a5353] text-white px-4 py-3 rounded-t-lg relative'>
+        <h1 className='text-2xl'>Price List Management</h1>
         <button
-          className='absolute top-1/2 right-2 transform -translate-y-1/2 bg-none text-white border-none text-2xl cursor-pointer hover:text-[#f1f1f1] mr-4'
           onClick={handleClose}
+          className='absolute top-3 right-4 text-2xl hover:text-[#f1f1f1]'
         >
-          X
+          ×
         </button>
       </div>
 
-      <div className='flex items-center justify-between p-2 m-2'>
+      {/* Toolbar */}
+      <div className='flex items-center justify-between p-4'>
         <h2 className='text-2xl font-bold text-[#1a5353]'>Price List</h2>
-        <div className='relative'>
-          <input
-            type='text'
-            placeholder='Search by Product Name...'
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className='px-3 py-2 border border-[#ccc] rounded-md text-sm w-[400px]'
-          />
-        </div>
+        <input
+          type='text'
+          placeholder='Search by Product Name...'
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className='px-3 py-2 border border-[#ccc] rounded-md text-sm w-[300px]'
+        />
       </div>
 
-      {filteredPriceList.length === 0 && search && (
-        <div className='text-[#991919] text-sm text-center mt-2 font-bold'>
-          No price list entries found matching your search.
-        </div>
-      )}
-
-      {/* Price list table wrapped in a div referenced by pdfRef */}
-      <div ref={pdfRef} className='p-2 m-2'>
+      {/* Table */}
+      <div ref={pdfRef} className='p-4'>
         {filteredPriceList.length === 0 ? (
-          <p className='text-center p-4'>No price list entries found.</p>
+          <p className='text-center text-[#991919] font-bold'>
+            {search
+              ? 'No entries match your search.'
+              : 'No price list entries available.'}
+          </p>
         ) : (
           <table className='w-full border-collapse'>
             <thead>
               <tr>
-                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                  Product ID
-                </th>
-                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                <th className='border p-2 bg-[#ffb24d] text-[#5e5757] text-sm'>
                   Product Ref ID
                 </th>
-                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
-                  Purchase Group ID
+                <th className='border p-2 bg-[#ffb24d] text-[#5e5757] text-sm'>
+                  Purchase Group Name
                 </th>
-                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                <th className='border p-2 bg-[#ffb24d] text-[#5e5757] text-sm'>
                   Product Name
                 </th>
-                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                <th className='border p-2 bg-[#ffb24d] text-[#5e5757] text-sm'>
                   Generic Name
                 </th>
-                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                <th className='border p-2 bg-[#ffb24d] text-[#5e5757] text-sm'>
                   Units per Pack
                 </th>
-                <th className='border border-[#bfb6b6] p-2 text-center bg-[#ffb24d] text-[#5e5757] text-sm'>
+                <th className='border p-2 bg-[#ffb24d] text-[#5e5757] text-sm'>
                   Wholesale Price (Rs)
+                </th>
+                <th className='border p-2 bg-[#ffb24d] text-[#5e5757] text-sm'>
+                  Expiry Date
                 </th>
               </tr>
             </thead>
             <tbody>
-              {filteredPriceList.map((entry, index) => (
-                <tr key={index} className='bg-[#c6dceb] hover:bg-[#dce4e9]'>
-                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {entry.productId}
+              {filteredPriceList.map((entry, idx) => (
+                <tr
+                  key={idx}
+                  className='bg-[#c6dceb] hover:bg-[#dce4e9] text-center text-sm'
+                >
+                  <td className='border p-2'>{entry.productRefId}</td>
+                  <td className='border p-2'>
+                    {groupNameById[entry.purchaseGroupId] || '—'}
                   </td>
-                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {entry.productRefId}
+                  <td className='border p-2'>{entry.productName}</td>
+                  <td className='border p-2'>{entry.genericName}</td>
+                  <td className='border p-2'>{entry.unitsPerPack}</td>
+                  <td className='border p-2'>
+                    {Number(entry.wholesalePrice).toFixed(2)}
                   </td>
-                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {entry.purchaseGroupId}
-                  </td>
-                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {entry.productName}
-                  </td>
-                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {entry.genericName}
-                  </td>
-                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {entry.unitsPerPack}
-                  </td>
-                  <td className='border border-[#bfb6b6] p-2 text-center text-sm'>
-                    {entry.wholesalePrice.toFixed(2)}
+                  <td className='border p-2'>
+                    {new Date(entry.expiryDate).toLocaleDateString()}
                   </td>
                 </tr>
               ))}
@@ -153,10 +162,11 @@ const PriceListTable = () => {
         )}
       </div>
 
-      <div className='flex justify-end p-2 m-2 gap-4'>
+      {/* Actions */}
+      <div className='flex justify-end p-4'>
         <button
           onClick={generatePDF}
-          className='px-5 py-2 bg-[#1a5353] text-white rounded-md hover:bg-[#0d3b3b] transition-colors'
+          className='px-5 py-2 bg-[#1a5353] text-white rounded-md hover:bg-[#0d3b3b]'
         >
           Download PDF
         </button>

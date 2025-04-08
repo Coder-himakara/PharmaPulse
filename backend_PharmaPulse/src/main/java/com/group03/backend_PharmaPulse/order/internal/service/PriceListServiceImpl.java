@@ -57,6 +57,9 @@ public class PriceListServiceImpl implements PriceListService {
                             .genericName(productDTO.getGenericName())
                             .unitsPerPack(productDTO.getUnitsPerPack())
                             .wholesalePrice(batch.getWholesalePrice())
+                            .expiryDate(batch.getExpiryDate())
+
+
                             .build();
                     priceList.add(dto);
                 }

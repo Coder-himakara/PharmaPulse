@@ -2,8 +2,10 @@ package com.group03.backend_PharmaPulse.product.internal.serviceImpl;
 
 import com.group03.backend_PharmaPulse.product.api.ProductWholesalePriceService;
 import com.group03.backend_PharmaPulse.product.api.ProductService;
+import com.group03.backend_PharmaPulse.product.api.dto.ProductWholesalePriceDTO;
 import com.group03.backend_PharmaPulse.product.internal.entity.Product;
 import com.group03.backend_PharmaPulse.product.internal.entity.ProductWholesalePrice;
+import com.group03.backend_PharmaPulse.product.internal.mapper.ProductWholesalePriceMapper;
 import com.group03.backend_PharmaPulse.product.internal.repository.ProductWholesalePriceRepo;
 import com.group03.backend_PharmaPulse.purchase.api.event.PurchaseLineItemEvent;
 import org.slf4j.Logger;
@@ -14,19 +16,22 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductWholesalePriceServiceImpl implements ProductWholesalePriceService {
     private final ProductWholesalePriceRepo wholesalePriceRepo;
     private final ProductService productService;
     private final Logger logger = LoggerFactory.getLogger(ProductWholesalePriceServiceImpl.class);
-
+    private final ProductWholesalePriceMapper productWholesalePriceMapper;
 
     public ProductWholesalePriceServiceImpl(ProductWholesalePriceRepo wholesalePriceRepo,
-                                            ProductService productService) {
+                                            ProductService productService,ProductWholesalePriceMapper productWholesalePriceMapper) {
         this.wholesalePriceRepo = wholesalePriceRepo;
         this.productService = productService;
+        this.productWholesalePriceMapper = productWholesalePriceMapper;
     }
     /**
      * This method checks if the new unit price is different from the most recent wholesale price for the product.
@@ -90,6 +95,15 @@ public class ProductWholesalePriceServiceImpl implements ProductWholesalePriceSe
         Product product = productService.getProductEntityById(productId);
         return wholesalePriceRepo.findTopByProductAndEndDateIsNullOrderByEffectiveDateDesc(product)
                 .map(ProductWholesalePrice::getWholesalePrice);
+    }
+
+
+    // New implementation for price history
+    @Override
+    public List<ProductWholesalePriceDTO> getWholesalePriceHistory(Long productId) {
+        Product product = productService.getProductEntityById(productId);
+        List<ProductWholesalePrice> prices = wholesalePriceRepo.findByProductOrderByEffectiveDateDesc(product);
+        return productWholesalePriceMapper.toDTOsList(prices);
     }
 
 }

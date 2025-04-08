@@ -1,7 +1,9 @@
 package com.group03.backend_PharmaPulse.product.internal.controller;
 
 import com.group03.backend_PharmaPulse.product.api.ProductService;
+import com.group03.backend_PharmaPulse.product.api.ProductWholesalePriceService;
 import com.group03.backend_PharmaPulse.product.api.dto.ProductDTO;
+import com.group03.backend_PharmaPulse.product.api.dto.ProductWholesalePriceDTO;
 import com.group03.backend_PharmaPulse.util.api.dto.StandardResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -16,9 +18,11 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('EMPLOYEE','SALES_REP')")
 public class ProductController {
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
+    private final ProductWholesalePriceService productWholesalePriceService;
+    public ProductController(ProductService productService,ProductWholesalePriceService productWholesalePriceService
+                             ) {
         this.productService = productService;
+        this.productWholesalePriceService = productWholesalePriceService;
     }
 
     @GetMapping("/all")
@@ -63,4 +67,15 @@ public class ProductController {
                 HttpStatus.CREATED
         );
     }
+    // New endpoint for wholesale price history
+    @GetMapping("/wholesale-prices/{id}")
+
+    public ResponseEntity<StandardResponse> getProductWholesalePrices(@PathVariable Long id) {
+        List<ProductWholesalePriceDTO> prices = productWholesalePriceService.getWholesalePriceHistory(id);
+        return new ResponseEntity<>(
+                new StandardResponse(200, "Wholesale price history retrieved", prices),
+                HttpStatus.OK
+        );
+    }
+
 }

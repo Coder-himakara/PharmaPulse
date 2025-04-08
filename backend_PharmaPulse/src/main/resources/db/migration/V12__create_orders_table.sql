@@ -71,7 +71,10 @@ CREATE TABLE price_list (
                             generic_name VARCHAR(255),
                             units_per_pack VARCHAR(255),
                             wholesale_price NUMERIC(19,2),
-                            updated_at TIMESTAMP
+                            updated_at TIMESTAMP,
+
+                            purchase_group_name         VARCHAR(255),
+                            expiry_date             date
 );
 -- Create a sequence for generating unique reservation IDs
 CREATE SEQUENCE reservation_seq START WITH 1 INCREMENT BY 1;

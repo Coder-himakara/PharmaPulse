@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useCallback } from 'react';
+import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AuthContext from './AuthContext';
 
@@ -18,56 +18,91 @@ const AuthProvider = ({ children }) => {
     isAuthenticated: false,
   });
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const refreshTimeoutRef = useRef(null);
 
-  // Initialize auth state from localStorage on mount
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
+  // Calculate time until token expiration (in milliseconds)
+  const getTimeUntilExpiration = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      const expirationTime = decoded.exp * 1000; // Convert to milliseconds
+      const currentTime = Date.now();
+      return expirationTime - currentTime;
+    } catch (error) {
+      console.error("Failed to calculate token expiration:", error);
+      return 0;
+    }
+  };
 
-    const initializeAuth = async () => {
-      if (token && role) {
-        if (isTokenExpired(token)) {
-          try {
-            // Try to refresh the token before logging out
-            setIsRefreshing(true);
-            const { data } = await refreshTokenService();
-            const newToken = data.data.newAccessToken;
-            const newRole = data.data.role;
+  // Function to set up automatic token refresh before expiration
+  const setupRefreshTimer = useCallback((token) => {
+    if (!token) return;
 
-            // Update state and storage
-            localStorage.setItem('token', newToken);
-            localStorage.setItem('role', newRole);
-            setAuthState({
-              token: newToken,
-              role: newRole,
-              isAuthenticated: true,
-            });
-            setIsRefreshing(false);
-          } catch (error) {
-            console.log('Token refresh failed on initialization', error);
-            // Refresh failed, clear storage and go to login
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            setAuthState({ token: null, role: null, isAuthenticated: false });
-            setIsRefreshing(false);
-          }
-        } else {
-          // Token still valid
-          setAuthState({
-            token,
-            role,
-            isAuthenticated: true,
-          });
-        }
-      }
-    };
+    // Clear any existing timeout
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+    }
 
-    initializeAuth();
+    const timeUntilExpiration = getTimeUntilExpiration(token);
+    // Refresh 1 minute before expiration, or immediately if less than 2 minutes left
+    const refreshTime = Math.max(0, timeUntilExpiration - (60 * 1000));
+
+    console.log(`Token expires in ${timeUntilExpiration / 1000} seconds, scheduling refresh in ${refreshTime / 1000} seconds`);
+
+    if (timeUntilExpiration <= 0) {
+      // Token already expired, refresh immediately
+      refreshToken();
+      return;
+    }
+
+    refreshTimeoutRef.current = setTimeout(refreshToken, refreshTime);
   }, []);
 
+  // Function to refresh token
+  const refreshToken = useCallback(async () => {
+    if (isRefreshing) return;
+
+    try {
+      setIsRefreshing(true);
+      console.log("Attempting to refresh token");
+
+      const { data } = await refreshTokenService();
+      const newToken = data.data.newAccessToken;
+      const newRole = data.data.role;
+
+      console.log("Token refresh successful");
+
+      // Update state and storage
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('role', newRole);
+
+      setAuthState({
+        token: newToken,
+        role: newRole,
+        isAuthenticated: true,
+      });
+
+      // Set up the next refresh
+      setupRefreshTimer(newToken);
+
+    } catch (error) {
+      console.error("Token refresh failed:", error);
+      // On refresh failure, clear auth and log out
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+
+      setAuthState({
+        token: null,
+        role: null,
+        isAuthenticated: false,
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [isRefreshing, setupRefreshTimer]);
+
+  // Check if token is expired
   const isTokenExpired = (token) => {
     try {
-      // decode token and check expiration
       const decoded = jwtDecode(token);
       const now = Date.now() / 1000;
       return decoded.exp < now;
@@ -77,6 +112,40 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // Initialize auth state from localStorage on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+
+    const initializeAuth = async () => {
+      if (token && role) {
+        if (isTokenExpired(token)) {
+          console.log("Stored token is expired, attempting refresh");
+          refreshToken();
+        } else {
+          // Token still valid - set auth state and schedule refresh
+          setAuthState({
+            token,
+            role,
+            isAuthenticated: true,
+          });
+
+          // Set up refresh timer for the valid token
+          setupRefreshTimer(token);
+        }
+      }
+    };
+
+    initializeAuth();
+
+    // Cleanup function to clear timeout
+    return () => {
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+      }
+    };
+  }, [refreshToken, setupRefreshTimer]);
+
   const login = async (username, password) => {
     try {
       // Clear existing tokens before new login
@@ -84,21 +153,21 @@ const AuthProvider = ({ children }) => {
       localStorage.removeItem('role');
       delete apiClient.defaults.headers.common['Authorization'];
 
-      const response = await executeJwtAuthenticationService(
-        username,
-        password,
-      );
+      const response = await executeJwtAuthenticationService(username, password);
       const token = response.data.data.token;
       localStorage.setItem('token', token);
       const role = response.data.data.userInfo.role;
       localStorage.setItem('role', role);
-      // If you need to set default axios headers for auth
-      // apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
       setAuthState({
         token,
         role,
         isAuthenticated: true,
       });
+
+      // Set up refresh timer for the new token
+      setupRefreshTimer(token);
+
       return true;
     } catch (error) {
       console.error('Login failed:', error);
@@ -108,8 +177,14 @@ const AuthProvider = ({ children }) => {
 
   const logout = useCallback(async () => {
     try {
+      // Clear refresh timer
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+        refreshTimeoutRef.current = null;
+      }
+
       await logoutUserService(undefined, {
-        withCredentials: true, // Send cookies
+        withCredentials: true,
       });
     } finally {
       localStorage.removeItem('token');
@@ -151,41 +226,34 @@ const AuthProvider = ({ children }) => {
       async (error) => {
         const originalRequest = error.config;
 
-        // Skip handling for login requests
-        if (originalRequest.url.includes('/users/login')) {
+        // Skip handling for login and refresh token requests
+        if (
+          originalRequest.url.includes('/users/login') ||
+          originalRequest.url.includes('/auth/refresh')
+        ) {
           return Promise.reject(error);
         }
 
         if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+
           try {
-            originalRequest._retry = true;
-            setIsRefreshing(true);
+            console.log("401 error - attempting token refresh");
+            await refreshToken();
 
-            const { data } = await refreshTokenService();
-            const newToken = data.data.newAccessToken;
-            const role = data.data.role;
-
-            // Update state and storage
-            localStorage.setItem('token', newToken);
-            localStorage.setItem('role', role);
-            setAuthState({
-              token: newToken,
-              role,
-              isAuthenticated: true,
-            });
-
-            // Retry original request
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            return apiClient(originalRequest);
-          } catch (refreshError) {
-            // Handle refresh token expiration
-            if (refreshError.response?.status === 401) {
-              console.log('Refresh token expired - forcing logout');
-              logout();
+            // If refresh was successful, retry with new token
+            if (authState.token) {
+              originalRequest.headers.Authorization = `Bearer ${authState.token}`;
+              return apiClient(originalRequest);
             }
+
+            // If we got here but don't have a token, refresh failed
+            return Promise.reject(error);
+          } catch (refreshError) {
+            // Force logout if refresh failed
+            console.error("Refresh failed during 401 handling:", refreshError);
+            logout();
             return Promise.reject(refreshError);
-          } finally {
-            setIsRefreshing(false);
           }
         }
 
@@ -194,7 +262,7 @@ const AuthProvider = ({ children }) => {
     );
 
     return () => apiClient.interceptors.response.eject(responseInterceptor);
-  }, [logout]); // Add logout to dependencies
+  }, [authState.token, refreshToken, logout]);
 
   return (
     <AuthContext.Provider

@@ -25,4 +25,8 @@ public interface PurchaseInvoiceMapper{
     @Mapping(target = "invoiceId", source = "invoiceId")
     @Mapping(target = "lineItems", source = "lineItems")
     PurchaseInvoiceResponse toResponseDTO(PurchaseInvoice purchaseInvoice);
+
+    @Mapping(target = "invoiceId", source = "invoiceId")
+    @Mapping(target = "lineItems", source = "lineItems")
+    List<PurchaseInvoiceResponse> toResponseDTOsList(List<PurchaseInvoice> purchaseInvoices);
 }
