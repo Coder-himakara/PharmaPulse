@@ -1,0 +1,148 @@
+{
+  "hash": "94a19eef",
+  "configHash": "0112f6d4",
+  "lockfileHash": "7307052e",
+  "browserHash": "d2498503",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "2908b80a",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "f2c0742b",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "75bc6425",
+      "needsInterop": false
+    },
+    "react-toastify": {
+      "src": "../../node_modules/react-toastify/dist/index.mjs",
+      "file": "react-toastify.js",
+      "fileHash": "06b389b1",
+      "needsInterop": false
+    },
+    "prop-types": {
+      "src": "../../node_modules/prop-types/index.js",
+      "file": "prop-types.js",
+      "fileHash": "de990de6",
+      "needsInterop": true
+    },
+    "jwt-decode": {
+      "src": "../../node_modules/jwt-decode/build/esm/index.js",
+      "file": "jwt-decode.js",
+      "fileHash": "f151c9cc",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "f95fbf4e",
+      "needsInterop": false
+    },
+    "react-icons/fa": {
+      "src": "../../node_modules/react-icons/fa/index.mjs",
+      "file": "react-icons_fa.js",
+      "fileHash": "ce1c559b",
+      "needsInterop": false
+    },
+    "primereact/megamenu": {
+      "src": "../../node_modules/primereact/megamenu/megamenu.esm.js",
+      "file": "primereact_megamenu.js",
+      "fileHash": "105f0cdb",
+      "needsInterop": false
+    },
+    "html2canvas": {
+      "src": "../../node_modules/html2canvas/dist/html2canvas.esm.js",
+      "file": "html2canvas.js",
+      "fileHash": "a58a9c48",
+      "needsInterop": false
+    },
+    "jspdf": {
+      "src": "../../node_modules/jspdf/dist/jspdf.es.min.js",
+      "file": "jspdf.js",
+      "fileHash": "68a43eb9",
+      "needsInterop": false
+    },
+    "react-select": {
+      "src": "../../node_modules/react-select/dist/react-select.esm.js",
+      "file": "react-select.js",
+      "fileHash": "c76f3a9e",
+      "needsInterop": false
+    },
+    "recharts": {
+      "src": "../../node_modules/recharts/es6/index.js",
+      "file": "recharts.js",
+      "fileHash": "94a6fa62",
+      "needsInterop": false
+    },
+    "sockjs-client": {
+      "src": "../../node_modules/sockjs-client/lib/entry.js",
+      "file": "sockjs-client.js",
+      "fileHash": "bfaa4fb5",
+      "needsInterop": true
+    },
+    "@stomp/stompjs": {
+      "src": "../../node_modules/@stomp/stompjs/esm6/index.js",
+      "file": "@stomp_stompjs.js",
+      "fileHash": "5bafade2",
+      "needsInterop": false
+    },
+    "lucide-react": {
+      "src": "../../node_modules/lucide-react/dist/esm/lucide-react.js",
+      "file": "lucide-react.js",
+      "fileHash": "2e14dc12",
+      "needsInterop": false
+    },
+    "date-fns": {
+      "src": "../../node_modules/date-fns/index.js",
+      "file": "date-fns.js",
+      "fileHash": "b8356702",
+      "needsInterop": false
+    },
+    "jspdf-autotable": {
+      "src": "../../node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.mjs",
+      "file": "jspdf-autotable.js",
+      "fileHash": "2d1f7cbf",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "purify.es-RKB47HBX": {
+      "file": "purify__es-RKB47HBX.js"
+    },
+    "index.es-LDCXFDZD": {
+      "file": "index__es-LDCXFDZD.js"
+    },
+    "chunk-XG5IKD4O": {
+      "file": "chunk-XG5IKD4O.js"
+    },
+    "chunk-SITVF2AJ": {
+      "file": "chunk-SITVF2AJ.js"
+    },
+    "chunk-CVYGVYS3": {
+      "file": "chunk-CVYGVYS3.js"
+    },
+    "chunk-UP6LQVYV": {
+      "file": "chunk-UP6LQVYV.js"
+    },
+    "chunk-2KHBIA62": {
+      "file": "chunk-2KHBIA62.js"
+    },
+    "chunk-2WDQDCDP": {
+      "file": "chunk-2WDQDCDP.js"
+    },
+    "chunk-TWJRYSII": {
+      "file": "chunk-TWJRYSII.js"
+    },
+    "chunk-DC5AMYBS": {
+      "file": "chunk-DC5AMYBS.js"
+    }
+  }
+}
