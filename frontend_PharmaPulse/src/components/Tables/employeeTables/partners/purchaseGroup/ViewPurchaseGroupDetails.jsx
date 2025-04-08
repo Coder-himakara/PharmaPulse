@@ -20,13 +20,6 @@ const ViewPurchaseGroupDetails = () => {
     }
   }, [purchaseGroup, navigate]);
 
-  // Format phone number to ensure it starts with 0
-  const formatPhoneNumber = (phone) => {
-    if (!phone) return "N/A";
-    const phoneStr = String(phone);
-    return phoneStr.startsWith('0') ? phoneStr : '0' + phoneStr;
-  };
-
   return (
     <div className="max-w-md p-6 mx-auto mt-10 bg-[#e6eef3] rounded-lg shadow-md">
       <h2 className="mb-4 text-xl font-bold text-center text-[var(--card-text-color)] dark:text-black">
@@ -53,7 +46,7 @@ const ViewPurchaseGroupDetails = () => {
             </li>
             <li>
               <strong>Phone Number:</strong>{" "}
-              {formatPhoneNumber(purchaseGroup.purchaseGroupPhoneNo)}
+              {purchaseGroup.purchaseGroupPhoneNo || "N/A"}
             </li>
             <li>
               <strong>Email:</strong>{" "}

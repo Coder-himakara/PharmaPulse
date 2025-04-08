@@ -140,11 +140,7 @@ const PurchaseGroupInfoTable = ({ refreshTrigger }) => {
                     {purchaseGroup.purchaseGroupContactName || "N/A"}
                   </td>
                   <td className="p-2 text-center border border-gray-400">
-                    {purchaseGroup.purchaseGroupPhoneNo 
-                      ? (String(purchaseGroup.purchaseGroupPhoneNo).startsWith('0') 
-                          ? purchaseGroup.purchaseGroupPhoneNo 
-                          : '0' + purchaseGroup.purchaseGroupPhoneNo)
-                      : "N/A"}
+                    {purchaseGroup.purchaseGroupPhoneNo || "N/A"}
                   </td>
                   <td className="p-2 text-center border border-gray-400">
                     {purchaseGroup.purchaseGroupEmail || "N/A"}

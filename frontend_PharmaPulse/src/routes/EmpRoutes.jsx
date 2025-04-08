@@ -55,13 +55,6 @@ const EmpRoutes = () => {
   const [customerGroups, setCustomerGroups] = useState([]);
   const [purchaseGroups, setPurchaseGroups] = useState([]);
   const [purchaseInvoices, setPurchaseInvoices] = useState([]);
-  
-  const [productRefresh, setProductRefresh] = useState(0);
-  const [supplierRefresh, setSupplierRefresh] = useState(0);
-  const [customerRefresh, setCustomerRefresh] = useState(0);
-  const [customerGroupRefresh, setCustomerGroupRefresh] = useState(0);
-  const [purchaseGroupRefresh, setPurchaseGroupRefresh] = useState(0);
-  const [purchaseInvoiceRefresh, setPurchaseInvoiceRefresh] = useState(0);
 
   const addProduct = (product) => {
     setProducts((prevProducts) => [...prevProducts, product]);
@@ -104,7 +97,6 @@ const EmpRoutes = () => {
           : product
       )
     );
-    setProductRefresh(prev => prev + 1);
   };
 
   const updateSupplier = (updatedSupplier) => {
@@ -115,7 +107,6 @@ const EmpRoutes = () => {
           : supplier
       )
     );
-    setSupplierRefresh(prev => prev + 1);
   };
 
   const updateCustomer = (updatedCustomer) => {
@@ -126,7 +117,6 @@ const EmpRoutes = () => {
           : customer
       )
     );
-    setCustomerRefresh(prev => prev + 1);
   };
 
   const updateCustomerGroup = (updatedCustomerGroup) => {
@@ -137,7 +127,6 @@ const EmpRoutes = () => {
           : customerGroup
       )
     );
-    setCustomerGroupRefresh(prev => prev + 1);
   };
 
   const updatePurchaseGroup = (updatedPurchaseGroup) => {
@@ -148,7 +137,6 @@ const EmpRoutes = () => {
           : purchaseGroup
       )
     );
-    setPurchaseGroupRefresh(prev => prev + 1);
   };
 
   const updatePurchaseInvoice = (updatedPurchaseInvoice) => {
@@ -160,7 +148,6 @@ const EmpRoutes = () => {
           : purchaseInvoice
       )
     );
-    setPurchaseInvoiceRefresh(prev => prev + 1);
   };
 
   return (
@@ -171,7 +158,7 @@ const EmpRoutes = () => {
       />
       <Route
         path="products-info"
-        element={<ProductsInfoTable products={products} refreshTrigger={productRefresh} />}
+        element={<ProductsInfoTable products={products} />}
       />
       <Route
         path="edit-product/:productId"
@@ -189,7 +176,7 @@ const EmpRoutes = () => {
       />
       <Route
         path="suppliers-info"
-        element={<SuppliersInfoTable suppliers={suppliers} refreshTrigger={supplierRefresh} />}
+        element={<SuppliersInfoTable suppliers={suppliers} />}
       />
       <Route
         path="edit-supplier/:supplierId"
@@ -206,7 +193,7 @@ const EmpRoutes = () => {
       />
       <Route
         path="customers-info"
-        element={<CustomersInfoTable customers={customers} refreshTrigger={customerRefresh} />}
+        element={<CustomersInfoTable customers={customers} />}
       />
       <Route
         path="edit-customer/:customerId"
@@ -223,7 +210,7 @@ const EmpRoutes = () => {
       />
       <Route
         path="customer-group-info"
-        element={<CustomerGroupInfoTable customerGroups={customerGroups} refreshTrigger={customerGroupRefresh} />}
+        element={<CustomerGroupInfoTable customerGroups={customerGroups} />}
       />
       <Route
         path="edit-customer-group/:customerGroupId"
@@ -242,7 +229,7 @@ const EmpRoutes = () => {
       />
       <Route
         path="purchase-group-info"
-        element={<PurchaseGroupInfoTable purchaseGroups={purchaseGroups} refreshTrigger={purchaseGroupRefresh} />}
+        element={<PurchaseGroupInfoTable purchaseGroups={purchaseGroups} />}
       />
       <Route
         path="edit-purchase-group/:purchaseGroupId"
@@ -264,7 +251,7 @@ const EmpRoutes = () => {
       <Route
         path="purchase-invoice-info"
         element={
-          <PurchaseInvoiceInfoTable purchaseInvoices={purchaseInvoices} refreshTrigger={purchaseInvoiceRefresh} />
+          <PurchaseInvoiceInfoTable purchaseInvoices={purchaseInvoices} />
         }
       />
       <Route

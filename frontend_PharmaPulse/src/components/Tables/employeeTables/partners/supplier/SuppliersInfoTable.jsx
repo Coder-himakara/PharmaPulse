@@ -35,13 +35,6 @@ const SuppliersInfoTable = ({ refreshTrigger }) => {
     fetchSuppliers();
   }, [refreshTrigger]);
 
-  // Format phone number to ensure it starts with 0
-  const formatPhoneNumber = (phone) => {
-    if (!phone) return "N/A";
-    const phoneStr = String(phone);
-    return phoneStr.startsWith('0') ? phoneStr : '0' + phoneStr;
-  };
-
   const filteredSuppliers = suppliers.filter((supplier) =>
     (supplier.supplier_name || "").toLowerCase().includes(search.toLowerCase())
   );
@@ -152,7 +145,7 @@ const SuppliersInfoTable = ({ refreshTrigger }) => {
                     {supplier.supplier_address || "N/A"}
                   </td>
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
-                    {formatPhoneNumber(supplier.supplier_contactNo)}
+                    {supplier.supplier_contactNo || "N/A"}
                   </td>
                   <td className="border border-[#bfb6b6] p-2 text-center text-sm">
                     {supplier.purchase_group || "N/A"}
