@@ -25,7 +25,7 @@ import {
 import { useAuth } from '../../security/UseAuth';
 import { webSocketConnections, disconnectWebSocket } from '../../api/WebSocketService';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 
 const handleApiError = (error) => {
   if (error.response?.status === 401) {
@@ -54,7 +54,39 @@ const handleApiError = (error) => {
     };
   }
 };
+const COLORS = ['#34D399', '#4D96FF', '#6BCB77', '#FFD93D', '#FF6B6B'];
 
+const ExpiryPieChart = ({ data }) => {
+  const navigate = useNavigate();
+  
+  const handlePieClick = () => {
+    navigate('/employee/expiry-distribution');
+  };
+  
+  return (
+    <div className="cursor-pointer">
+      <h3 className="mb-2 text-center">Expiry Distribution</h3>
+      <PieChart width={300} height={300} onClick={handlePieClick}>
+        <Pie
+          data={data}
+          cx="50%"
+          cy="50%"
+          labelLine={false}
+          outerRadius={80}
+          fill="#8884d8"
+          dataKey="value"
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+        <Legend />
+      </PieChart>
+      <p className="text-sm text-center text-blue-600">Click for detailed view</p>
+    </div>
+  );
+};
 
 const EmployeeDashboardCard = ({ content, className }) => {
 
@@ -442,22 +474,22 @@ const EmployeeDashboardCard = ({ content, className }) => {
       return (
         <div className="p-3 text-white bg-gray-900 rounded-lg shadow-lg">
 
-          <p className="font-semibold mb-1" style={{ color: payload[0].color }}>
+          <p className="mb-1 font-semibold" style={{ color: payload[0].color }}>
             {data.name}
           </p>
           <table className="text-sm">
             <tbody>
               <tr>
                 <td className="pr-3 text-gray-300">Batches:</td>
-                <td className="text-right font-medium">{data.batches}</td>
+                <td className="font-medium text-right">{data.batches}</td>
               </tr>
               <tr>
                 <td className="pr-3 text-gray-300">Units:</td>
-                <td className="text-right font-medium">{data.value}</td>
+                <td className="font-medium text-right">{data.value}</td>
               </tr>
               <tr>
                 <td className="pr-3 text-gray-300">Percentage:</td>
-                <td className="text-right font-medium">{percent}%</td>
+                <td className="font-medium text-right">{percent}%</td>
               </tr>
             </tbody>
           </table>
@@ -511,12 +543,12 @@ const EmployeeDashboardCard = ({ content, className }) => {
     <div className={`flex-grow text-[var(--text-color)] ${className || ''}`}>
       {/* Display error message if there's an error */}
       {error && (
-        <div className="bg-red-50 p-4 rounded-md border border-red-200 mb-4">
-          <h3 className="text-red-800 font-medium">{error.title}</h3>
+        <div className="p-4 mb-4 border border-red-200 rounded-md bg-red-50">
+          <h3 className="font-medium text-red-800">{error.title}</h3>
           <p className="text-red-700">{error.message}</p>
           <details className="mt-2">
             <summary className="text-sm text-gray-600 cursor-pointer">Technical details</summary>
-            <p className="text-xs text-gray-500 mt-1">{error.technical}</p>
+            <p className="mt-1 text-xs text-gray-500">{error.technical}</p>
           </details>
         </div>
       )}
@@ -531,7 +563,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
         <>
           {/* Top Stats Cards */}
           <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
+            <div className="flex items-center p-4 transition-all duration-300 bg-white rounded-lg shadow-md hover:shadow-lg">
               <div className="p-3 mr-4 bg-blue-100 rounded-full">
                 <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0v10l-8 4m-8-4V7m16 10l-8-4m-8 4l8-4"></path>
@@ -545,7 +577,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
             </div>
 
 
-            <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
+            <div className="flex items-center p-4 transition-all duration-300 bg-white rounded-lg shadow-md hover:shadow-lg">
               <div className="p-3 mr-4 bg-green-100 rounded-full">
                 <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -559,7 +591,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
             </div>
 
 
-            <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
+            <div className="flex items-center p-4 transition-all duration-300 bg-white rounded-lg shadow-md hover:shadow-lg">
               <div className="p-3 mr-4 bg-purple-100 rounded-full">
                 <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -573,7 +605,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
             </div>
 
 
-            <div className="p-4 bg-white rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex items-center">
+            <div className="flex items-center p-4 transition-all duration-300 bg-white rounded-lg shadow-md hover:shadow-lg">
               <div className="p-3 mr-4 bg-yellow-100 rounded-full">
                 <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
@@ -612,7 +644,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   }}
                 ></div>
                 <div
-                  className="h-full bg-rose-500 rounded-r-full"
+                  className="h-full rounded-r-full bg-rose-500"
                   style={{
                     width: `${(stockSummary.totalStock + (dashboardCounts.expiredStockQuantity || 0)) > 0
                       ? ((dashboardCounts.expiredStockQuantity || 0) / (stockSummary.totalStock + (dashboardCounts.expiredStockQuantity || 0)) * 100)
@@ -624,7 +656,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
                   <span className="px-2 py-1 bg-blue-600 rounded bg-opacity-80">
                     {stockSummary.totalStock} <span className="hidden sm:inline">valid</span>
                   </span>
-                  <span className="px-2 py-1 bg-rose-600 rounded bg-opacity-80">
+                  <span className="px-2 py-1 rounded bg-rose-600 bg-opacity-80">
                     {dashboardCounts.expiredStockQuantity || 0} <span className="hidden sm:inline">expired</span>
                   </span>
                 </div>
@@ -687,44 +719,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
                 <h3 className="text-sm font-semibold text-gray-700">Distribution by Expiry Category</h3>
               </div>
               {getExpiryDistribution().length > 0 ? (
-
-                <ResponsiveContainer width="100%" height={250}> {/* Increased height */}
-
-                  <PieChart>
-                    <Pie
-                      data={getExpiryDistribution()}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                      nameKey="name"
-
-                      labelLine={false} // Disable label lines
-                      label={({ percent }) => percent > 0.1 ? `${(percent * 100).toFixed(0)}%` : ''} // Only show inside labels for large segments
-
-                    >
-                      {getExpiryDistribution().map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                          stroke="#fff"
-                          strokeWidth={2}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend
-                      layout="horizontal"
-                      align="center"
-                      verticalAlign="bottom"
-                      iconSize={10}
-                      iconType="circle"
-                      wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
+                <ExpiryPieChart data={getExpiryDistribution()} />
               ) : (
                 <div className="flex items-center justify-center h-48 text-gray-500">
                   No expiry data available
@@ -783,7 +778,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
 
           {/* Bottom Row - Stock Status Cards */}
           <div className="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-green-50 to-green-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-green-500">
+            <div className="p-4 transition-all duration-300 border-l-4 border-green-500 rounded-lg shadow-md bg-gradient-to-r from-green-50 to-green-100 hover:shadow-lg">
               <div className="flex items-center">
                 <div className="p-2 mr-3 bg-green-500 rounded-full">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -810,7 +805,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
               </div>
             </div>
 
-            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-yellow-500">
+            <div className="p-4 transition-all duration-300 border-l-4 border-yellow-500 rounded-lg shadow-md bg-gradient-to-r from-yellow-50 to-yellow-100 hover:shadow-lg">
               <div className="flex items-center">
                 <div className="p-2 mr-3 bg-yellow-500 rounded-full">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -837,7 +832,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
               </div>
             </div>
 
-            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-red-50 to-red-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-red-500">
+            <div className="p-4 transition-all duration-300 border-l-4 border-red-500 rounded-lg shadow-md bg-gradient-to-r from-red-50 to-red-100 hover:shadow-lg">
               <div className="flex items-center">
                 <div className="p-2 mr-3 bg-red-500 rounded-full">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -868,7 +863,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
               </div>
             </div>
 
-            <div className="p-4 transition-all duration-300 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg shadow-md hover:shadow-lg border-l-4 border-purple-500">
+            <div className="p-4 transition-all duration-300 border-l-4 border-purple-500 rounded-lg shadow-md bg-gradient-to-r from-purple-50 to-purple-100 hover:shadow-lg">
               <div className="flex items-center">
                 <div className="p-2 mr-3 bg-purple-500 rounded-full">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -7,8 +7,6 @@ const ExpiryDistribution = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedTimeframe, setSelectedTimeframe] = useState('all');
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   // Fetch inventory data
   useEffect(() => {
@@ -54,25 +52,6 @@ const ExpiryDistribution = () => {
     [getDaysUntilExpiry],
   );
 
-  // Get month name
-  const getMonthName = (monthIndex) => {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-    return months[monthIndex];
-  };
-
   // Filter inventory based on selected timeframe
   const filteredInventory = useMemo(() => {
     if (!inventory.length) return [];
@@ -84,15 +63,6 @@ const ExpiryDistribution = () => {
 
     return inventory.filter((item) => {
       const category = categorizeByExpiry(item);
-
-      // Check if the expiry month matches current selected month
-      const expiryDate = new Date(item.expiryDate);
-      const expiryMonth = expiryDate.getMonth();
-      const expiryYear = expiryDate.getFullYear();
-      const monthMatches =
-        expiryMonth === currentMonth && expiryYear === currentYear;
-
-      if (!monthMatches) return false;
 
       switch (selectedTimeframe) {
         case 'expired':
@@ -109,28 +79,12 @@ const ExpiryDistribution = () => {
           return false;
       }
     });
-  }, [
-    inventory,
-    selectedTimeframe,
-    currentMonth,
-    currentYear,
-    categorizeByExpiry,
-  ]);
+  }, [inventory, selectedTimeframe, categorizeByExpiry]);
 
   // Get expired items for the first table
   const expiredItems = useMemo(() => {
     return inventory.filter((item) => categorizeByExpiry(item) === 'expired');
   }, [inventory, categorizeByExpiry]);
-
-  // Handle month change
-  const handleMonthChange = (e) => {
-    setCurrentMonth(parseInt(e.target.value));
-  };
-
-  // Handle year change
-  const handleYearChange = (e) => {
-    setCurrentYear(parseInt(e.target.value));
-  };
 
   // Handle timeframe filter change
   const handleTimeframeChange = (e) => {
@@ -198,63 +152,28 @@ const ExpiryDistribution = () => {
         )}
       </div>
 
-      {/* Filter Controls */}
+      {/* Filter Controls - Only keeping Expiry Timeframe */}
       <div className='bg-[#e6eef3] p-4 rounded-lg shadow-sm mb-6'>
         <h2 className='text-xl font-semibold mb-4 text-[#1a5353]'>
-          Filter By Expiry Timeline
+          Filter By Expiry Timeline From Today
         </h2>
 
-        <div className='grid grid-cols-1 gap-4 mb-4 md:grid-cols-3'>
-          <div>
-            <label className='block mb-1 text-gray-700'>Month:</label>
-            <select
-              value={currentMonth}
-              onChange={handleMonthChange}
-              className='w-full p-2 border border-gray-300 rounded'
-            >
-              {[...Array(12)].map((_, i) => (
-                <option key={i} value={i}>
-                  {getMonthName(i)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className='block mb-1 text-gray-700'>Year:</label>
-            <select
-              value={currentYear}
-              onChange={handleYearChange}
-              className='w-full p-2 border border-gray-300 rounded'
-            >
-              {[...Array(5)].map((_, i) => {
-                const year = new Date().getFullYear() + i;
-                return (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-
-          <div>
-            <label className='block mb-1 text-gray-700'>
-              Expiry Timeframe:
-            </label>
-            <select
-              value={selectedTimeframe}
-              onChange={handleTimeframeChange}
-              className='w-full p-2 border border-gray-300 rounded'
-            >
-              <option value='all'>All Items</option>
-              <option value='expired'>Expired Items</option>
-              <option value='oneWeek'>Expiring in 1 Week</option>
-              <option value='oneMonth'>Expiring in 1 Month</option>
-              <option value='threeMonths'>Expiring in 3 Months</option>
-              <option value='sixMonths'>Expiring in 6 Months</option>
-            </select>
-          </div>
+        <div className='w-full max-w-md mx-auto'>
+          <label className='block mb-1 text-gray-700'>
+            Expiry Timeframe:
+          </label>
+          <select
+            value={selectedTimeframe}
+            onChange={handleTimeframeChange}
+            className='w-full p-2 border border-gray-300 rounded'
+          >
+            <option value='all'>All Items</option>
+            <option value='expired'>Expired Items</option>
+            <option value='oneWeek'>Expiring in 1 Week</option>
+            <option value='oneMonth'>Expiring in 1 Month</option>
+            <option value='threeMonths'>Expiring in 3 Months</option>
+            <option value='sixMonths'>Expiring in 6 Months</option>
+          </select>
         </div>
       </div>
 
@@ -263,7 +182,17 @@ const ExpiryDistribution = () => {
         <h2 className='text-xl font-semibold mb-4 bg-[#1a5353] text-white p-2 rounded'>
           {selectedTimeframe === 'all'
             ? 'All Inventory Items'
-            : `Items ${selectedTimeframe === 'expired' ? 'Expired' : 'Expiring'} in ${getMonthName(currentMonth)} ${currentYear}`}
+            : `Items ${selectedTimeframe === 'expired' ? 'Expired' : 'Expiring'} ${
+                selectedTimeframe === 'oneWeek' 
+                  ? 'in 1 Week' 
+                  : selectedTimeframe === 'oneMonth'
+                    ? 'in 1 Month'
+                    : selectedTimeframe === 'threeMonths'
+                      ? 'in 3 Months'
+                      : selectedTimeframe === 'sixMonths'
+                        ? 'in 6 Months'
+                        : ''
+              }`}
         </h2>
 
         {filteredInventory.length === 0 ? (

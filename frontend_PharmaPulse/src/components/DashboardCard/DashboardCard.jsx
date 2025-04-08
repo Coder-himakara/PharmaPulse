@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import Footer from '../Footer/Footer';
+
 
 const DashboardCard = ({ content }) => {
   return (
@@ -10,7 +10,7 @@ const DashboardCard = ({ content }) => {
       </h1>
       {/* Content Section */}
       <div className='flex-grow mb-8 '>{content}</div>
-      <Footer />
+      
     </div>
   );
 };

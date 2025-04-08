@@ -6,6 +6,13 @@ const ViewSupplierDetails = () => {
   const navigate = useNavigate();
   const supplier = location.state?.supplier;
 
+  // Format phone number to ensure it starts with 0
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return "N/A";
+    const phoneStr = String(phone);
+    return phoneStr.startsWith('0') ? phoneStr : '0' + phoneStr;
+  };
+
   // Redirect if no supplier data is provided
   if (!supplier) {
     return (
@@ -34,7 +41,7 @@ const ViewSupplierDetails = () => {
           <strong>Supplier Address:</strong> {supplier.supplier_address || "N/A"}
         </li>
         <li>
-          <strong>Contact Number:</strong> {supplier.supplier_contactNo || "N/A"}
+          <strong>Contact Number:</strong> {formatPhoneNumber(supplier.supplier_contactNo)}
         </li>
         <li>
           <strong>Email:</strong> {supplier.supplier_email || "N/A"}

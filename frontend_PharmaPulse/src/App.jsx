@@ -13,6 +13,7 @@ import SalesRepDashboard from "./pages/SalesRepDashboard/SalesRepDashboard";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import UnauthorizedPage from "./pages/ErrorPage/UnauthorizedPage";
 import ProtectedRoute from "./security/ProtectedRoute";
+import Footer from "./components/Footer/Footer";
 
 // Toast Notifications
 import { ToastContainer } from 'react-toastify';
@@ -61,6 +62,9 @@ function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>
+            
+            {/* Add Footer component here */}
+            <Footer />
            
           </div>
           <ToastContainer
