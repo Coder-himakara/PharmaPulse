@@ -82,7 +82,10 @@ const EditPurchaseGroupForm = ({ onUpdatePurchaseGroup }) => {
     }
 
     // Fax number validation (optional or basic format)
-    if (formData.purchaseGroupFaxNo && !/^\d{10}$/.test(formData.purchaseGroupFaxNo)) {
+    if (
+      formData.purchaseGroupFaxNo &&
+      !/^\d{10}$/.test(formData.purchaseGroupFaxNo)
+    ) {
       setErrorMessage('Fax number must contain exactly 10 digits.');
       setIsLoading(false);
       return;

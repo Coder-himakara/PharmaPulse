@@ -159,9 +159,7 @@ const ExpiryDistribution = () => {
         </h2>
 
         <div className='mb-4'>
-          <label className='block mb-1 text-gray-700'>
-            Expiry Timeframe:
-          </label>
+          <label className='block mb-1 text-gray-700'>Expiry Timeframe:</label>
           <select
             value={selectedTimeframe}
             onChange={handleTimeframeChange}
@@ -183,10 +181,15 @@ const ExpiryDistribution = () => {
           {selectedTimeframe === 'all'
             ? 'All Inventory Items'
             : `Items ${selectedTimeframe === 'expired' ? 'Expired' : 'Expiring'} ${
-                selectedTimeframe === 'oneWeek' ? 'Within 1 Week' : 
-                selectedTimeframe === 'oneMonth' ? 'Within 1 Month' : 
-                selectedTimeframe === 'threeMonths' ? 'Within 3 Months' : 
-                selectedTimeframe === 'sixMonths' ? 'Within 6 Months' : ''
+                selectedTimeframe === 'oneWeek'
+                  ? 'Within 1 Week'
+                  : selectedTimeframe === 'oneMonth'
+                    ? 'Within 1 Month'
+                    : selectedTimeframe === 'threeMonths'
+                      ? 'Within 3 Months'
+                      : selectedTimeframe === 'sixMonths'
+                        ? 'Within 6 Months'
+                        : ''
               }`}
         </h2>
 

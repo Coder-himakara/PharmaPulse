@@ -38,13 +38,11 @@ export const getPurchaseInvoiceById = async (invoiceId) => {
       },
     });
 
-
     // Handle 404 explicitly
     if (response.status === 404) {
       console.warn(`Invoice with ID ${invoiceId} not found`);
       throw new Error(`Invoice with ID ${invoiceId} not found`);
     }
-
 
     console.log(
       `Raw response from getPurchaseInvoiceById(${invoiceId}):`,
@@ -139,7 +137,6 @@ export const getAllProducts = () =>
     headers: { 'Content-Type': 'application/json' },
   });
 
-
 // Get purchase invoice details including line items
 export const getPurchaseInvoiceDetails = async (invoiceId) => {
   try {
@@ -162,4 +159,3 @@ export const getPurchaseInvoiceDetails = async (invoiceId) => {
     };
   }
 };
-
