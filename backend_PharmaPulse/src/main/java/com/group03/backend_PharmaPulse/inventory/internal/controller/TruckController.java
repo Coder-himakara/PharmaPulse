@@ -55,8 +55,8 @@ public class TruckController {
     }
 
     @PutMapping("/update/{truckId}")
-    public ResponseEntity<StandardResponse> updateTruck(@PathVariable Long truckId, @RequestBody TruckDTO truckDTO) {
-        TruckDTO updatedTruck = truckService.updateTruck(truckId, truckDTO);
+    public ResponseEntity<StandardResponse> updateTruck(@PathVariable Long truckId, @RequestBody TruckResponseDTO truckDTO) {
+        TruckResponseDTO updatedTruck = truckService.updateTruck(truckId, truckDTO);
         return new ResponseEntity<>(
                 new StandardResponse(201, "Success", updatedTruck),
                 HttpStatus.CREATED
