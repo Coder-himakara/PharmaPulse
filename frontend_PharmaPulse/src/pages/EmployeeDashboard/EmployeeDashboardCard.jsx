@@ -222,7 +222,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
         }
 
         // Fetch expiry counts
-        const expiryResponse = await axios.get('http://localhost:8090/api/batch-inventory/expiry-counts', {
+        const expiryResponse = await axios.get(`${process.env.VITE_API_URL}/batch-inventory/expiry-counts`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -231,7 +231,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
         });
 
         // Fetch stock availability
-        const stockResponse = await axios.get('http://localhost:8090/api/batch-inventory/stock-counts', {
+        const stockResponse = await axios.get(`${process.env.VITE_API_URL}/batch-inventory/stock-counts`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -239,7 +239,7 @@ const EmployeeDashboardCard = ({ content, className }) => {
           withCredentials: false
         });
 
-        const dashboardResponse = await axios.get('http://localhost:8090/api/employee/dashboard/counts', {
+        const dashboardResponse = await axios.get(`${process.env.VITE_API_URL}/employee/dashboard/counts`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

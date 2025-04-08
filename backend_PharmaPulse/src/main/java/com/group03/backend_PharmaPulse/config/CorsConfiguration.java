@@ -1,5 +1,6 @@
 package com.group03.backend_PharmaPulse.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -10,6 +11,8 @@ public class CorsConfiguration {
     private static final String[] ALLOWED_METHODS = {
             "GET", "POST", "PUT", "DELETE", "OPTIONS"
     };
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -18,7 +21,7 @@ public class CorsConfiguration {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedMethods(ALLOWED_METHODS)
-                        .allowedOrigins("http://localhost:3123")
+                        .allowedOrigins(frontendUrl)
                         .allowedHeaders("*")
                         .allowCredentials(true)
                         .maxAge(3600);

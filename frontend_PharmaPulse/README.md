@@ -1,8 +1,20 @@
-# React + Vite
+## Environment Configuration
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project uses environment-specific configuration files:
 
-Currently, two official plugins are available:
+- `.env.development` - Template for development environment
+- `.env.production` - Template for production environment
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Local Development
+
+To customize your local environment:
+
+1. Copy `.env.development` to `.env.development.local`
+2. Make your changes in the .local file (this file is ignored by git)
+
+### Production Deployment
+
+For production deployment:
+
+1. Copy `.env.production` to `.env.production.local` for local testing
+2. Update environment variables in your hosting dashboard (Vercel, Netlify, etc.)

@@ -6,8 +6,9 @@ if (typeof global === 'undefined') {
   window.global = window;
 }
 
+
 // WebSocket connection configuration
-const WS_BASE_URL = 'http://localhost:8090/ws';
+const WS_BASE_URL = `${process.env.VITE_WEBSOCKET_URL}`;
 
 /**
  * Creates a WebSocket connection with configurable subscriptions
