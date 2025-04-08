@@ -1,32 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import { ThemeContext } from "../../ThemeContext";
 import logo from "../../assets/Logo.jpg";
 
 const Footer = () => {
   const { isDarkMode } = useContext(ThemeContext);
-  const [isVisible, setIsVisible] = useState(true); // Default to true for short content
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const windowHeight = window.innerHeight;
-
-      // If content is shorter than or equal to the viewport height, always show footer
-      if (documentHeight <= windowHeight) {
-        setIsVisible(true);
-      } else {
-        // For scrollable content, show footer only when scrolled near the bottom
-        setIsVisible(scrollPosition >= documentHeight - 50);
-      }
-    };
-
-    // Check initial state
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll); // Cleanup
-  }, []);
 
   return (
     <footer
@@ -34,61 +12,52 @@ const Footer = () => {
         isDarkMode
           ? "bg-neutral-600 text-neutral-500"
           : "bg-neutral-300 text-neutral-600"
-      } w-full box-border transition-opacity duration-300 z-50 ${
-        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
+      } w-full box-border z-50 fixed bottom-0 left-0 right-0`}
     >
-      <div className="py-8 mx-6 text-center">
+      <div className="py-1 mx-auto text-center">
         <div
-          className={`max-w-10xl mx-auto flex flex-wrap items-center justify-center gap-8 p-6 rounded-lg shadow-md ${
+          className={`max-w-10xl mx-auto flex flex-wrap items-center justify-center gap-2 sm:gap-3 p-1 sm:p-2 ${
             isDarkMode
-              ? "bg-neutral-700 border border-neutral-500"
-              : "bg-slate-300 border border-neutral-200"
+              ? "bg-neutral-700"
+              : "bg-slate-300"
           }`}
         >
-          {/* Logo and Title (Emphasized) */}
-          <div className="flex items-center transition-transform duration-300 hover:scale-105">
+          {/* Logo and Title */}
+          <div className="flex items-center">
             <img
               src={logo}
               alt="PharmaPulse Logo"
-              className="h-8 mr-3 sm:h-10 md:h-12"
+              className="h-4 mr-1 sm:h-5"
             />
-            <span className="font-bold tracking-wide uppercase text-1xl sm:text-2xl md:text-2xl whitespace-nowrap text-neutral-800 dark:text-neutral-100">
+            <span className="text-xs font-bold uppercase whitespace-nowrap text-neutral-800 dark:text-neutral-100">
               PharmaPulse
             </span>
           </div>
 
-          {/* Divider (More Prominent) */}
-          <div className="w-0.5 h-10 bg-neutral-500 dark:bg-neutral-400 rounded"></div>
+          {/* Simple divider */}
+          <span className="hidden mx-1 text-neutral-500 sm:inline">|</span>
 
-          {/* Developed By (Emphasized) */}
-          <div className="flex items-center transition-colors duration-300">
-            <span className="mr-2 text-sm sm:text-base md:text-lg text-neutral-500 dark:text-neutral-300">
+          {/* Developed By */}
+          <div className="flex items-center">
+            <span className="mr-1 text-xs text-neutral-500 dark:text-neutral-300">
               Developed by:
             </span>
-            <a
-              
-              className={`font-bold text-base sm:text-lg md:text-xl uppercase ${
-                isDarkMode
-                  ? "text-green-300 hover:text-green-200"
-                  : "text-green-700 hover:text-green-600"
-              }`}
-              aria-label="Visit Team PharmaPulse website"
-            >
+            <span className={`text-xs font-medium ${
+              isDarkMode
+                ? "text-green-300"
+                : "text-green-700"
+            }`}>
               Team PharmaPulse
-            </a>
+            </span>
           </div>
 
-          {/* Divider (More Prominent) */}
-          <div className="w-0.5 h-10 bg-neutral-500 dark:bg-neutral-400 rounded"></div>
+          {/* Simple divider */}
+          <span className="hidden mx-1 text-neutral-500 sm:inline">|</span>
 
-          {/* Copyright (Emphasized) */}
-          <div className="text-sm sm:text-base md:text-lg">
-            <span className="font-bold text-neutral-800 dark:text-neutral-100">
-              © {new Date().getFullYear()} A & K Agencies PharmaPulse
-            </span>
-            <span className="ml-2 text-neutral-500 dark:text-neutral-300">
-              All Rights Reserved
+          {/* Copyright */}
+          <div className="text-xs">
+            <span className="text-neutral-800 dark:text-neutral-100">
+              © {new Date().getFullYear()} A & K Agencies
             </span>
           </div>
         </div>
