@@ -368,7 +368,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
           <div className="relative p-6 text-center bg-white rounded-lg shadow-lg w-80">
             {/* Orange Checkmark Circle */}
             <div className="absolute transform -translate-x-1/2 -top-8 left-1/2">
-              <div className="p-4 bg-orange-500 rounded-full">
+              <div className="p-4 bg-green-500 rounded-full">
                 <svg
                   className="w-8 h-8 text-white"
                   fill="none"
@@ -395,7 +395,7 @@ const EditProductsForm = ({ onUpdateProduct }) => {
             {/* Continue Button */}
             <button
               onClick={handlePopupContinue}
-              className="px-6 py-2 mt-4 text-white transition-all duration-300 bg-orange-500 rounded-md hover:bg-orange-600"
+              className="px-6 py-2 mt-4 text-white transition-all duration-300 bg-green-500 rounded-md hover:bg-green-600"
             >
               CONTINUE
             </button>

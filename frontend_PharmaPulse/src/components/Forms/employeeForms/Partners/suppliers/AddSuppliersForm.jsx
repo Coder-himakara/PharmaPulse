@@ -87,6 +87,13 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
       }
     }
 
+    // Phone number validation
+    const phoneRegex = /^0\d{9}$/;
+    if (!phoneRegex.test(formData.supplier_contactNo)) {
+      setErrorMessage("Phone number must start with 0 and be exactly 10 digits.");
+      return;
+    }
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.supplier_email)) {
@@ -98,7 +105,7 @@ const AddSuppliersForm = ({ onAddSupplier }) => {
     const requestData = {
       supplier_name: formData.supplier_name,
       supplier_address: formData.supplier_address,
-      supplier_contactNo: formData.supplier_contactNo, // String
+      supplier_contactNo: formData.supplier_contactNo, // Keeping as string
       supplier_email: formData.supplier_email,
       outstanding_balance: formData.outstanding_balance ? parseFloat(formData.outstanding_balance) : null, // BigDecimal, nullable
       credit_limit: formData.credit_limit ? parseFloat(formData.credit_limit) : null, // BigDecimal, nullable

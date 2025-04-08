@@ -45,6 +45,13 @@ const AddPurchaseGroupForm = ({ onAddPurchaseGroup }) => {
       }
     }
 
+    // Validate phone number format (must start with 0 and be exactly 10 digits)
+    const phoneRegex = /^0\d{9}$/;
+    if (!phoneRegex.test(formData.purchaseGroupPhoneNo)) {
+      setErrorMessage('Phone number must start with 0 and be exactly 10 digits.');
+      return;
+    }
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.purchaseGroupEmail)) {
