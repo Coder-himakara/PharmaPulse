@@ -16,5 +16,6 @@ public interface TruckMapper {
 
     TruckDTO toDTO(Truck truck);
     TruckResponseDTO toResponseDTO(Truck truck);
+    Truck toEntityFromResponse(TruckResponseDTO truckResponseDTO);
     List<TruckResponseDTO> toResponseDTOList(List<Truck> trucks);
 }

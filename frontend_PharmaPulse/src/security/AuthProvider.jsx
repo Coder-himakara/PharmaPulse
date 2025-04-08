@@ -1,4 +1,11 @@
-import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react';
+// Complete solution with all dependencies properly handled
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import AuthContext from './AuthContext';
 
@@ -21,55 +28,31 @@ const AuthProvider = ({ children }) => {
   const refreshTimeoutRef = useRef(null);
 
   // Calculate time until token expiration (in milliseconds)
-  const getTimeUntilExpiration = (token) => {
+  const getTimeUntilExpiration = useCallback((token) => {
     try {
       const decoded = jwtDecode(token);
       const expirationTime = decoded.exp * 1000; // Convert to milliseconds
       const currentTime = Date.now();
       return expirationTime - currentTime;
     } catch (error) {
-      console.error("Failed to calculate token expiration:", error);
+      console.error('Failed to calculate token expiration:', error);
       return 0;
     }
-  };
-
-  // Function to set up automatic token refresh before expiration
-  const setupRefreshTimer = useCallback((token) => {
-    if (!token) return;
-
-    // Clear any existing timeout
-    if (refreshTimeoutRef.current) {
-      clearTimeout(refreshTimeoutRef.current);
-    }
-
-    const timeUntilExpiration = getTimeUntilExpiration(token);
-    // Refresh 1 minute before expiration, or immediately if less than 2 minutes left
-    const refreshTime = Math.max(0, timeUntilExpiration - (60 * 1000));
-
-    console.log(`Token expires in ${timeUntilExpiration / 1000} seconds, scheduling refresh in ${refreshTime / 1000} seconds`);
-
-    if (timeUntilExpiration <= 0) {
-      // Token already expired, refresh immediately
-      refreshToken();
-      return;
-    }
-
-    refreshTimeoutRef.current = setTimeout(refreshToken, refreshTime);
   }, []);
 
-  // Function to refresh token
-  const refreshToken = useCallback(async () => {
+  // Memoized refreshTokenFn to prevent circular dependencies
+  const refreshTokenFn = useCallback(async () => {
     if (isRefreshing) return;
 
     try {
       setIsRefreshing(true);
-      console.log("Attempting to refresh token");
+      console.log('Attempting to refresh token');
 
       const { data } = await refreshTokenService();
       const newToken = data.data.newAccessToken;
       const newRole = data.data.role;
 
-      console.log("Token refresh successful");
+      console.log('Token refresh successful');
 
       // Update state and storage
       localStorage.setItem('token', newToken);
@@ -81,11 +64,18 @@ const AuthProvider = ({ children }) => {
         isAuthenticated: true,
       });
 
-      // Set up the next refresh
-      setupRefreshTimer(newToken);
-
+      // Schedule next refresh directly
+      const timeUntilExpiration = getTimeUntilExpiration(newToken);
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+      }
+      const refreshTime = Math.max(0, timeUntilExpiration - 60 * 1000);
+      refreshTimeoutRef.current = setTimeout(
+        () => refreshTokenFn(),
+        refreshTime,
+      );
     } catch (error) {
-      console.error("Token refresh failed:", error);
+      console.error('Token refresh failed:', error);
       // On refresh failure, clear auth and log out
       localStorage.removeItem('token');
       localStorage.removeItem('role');
@@ -98,10 +88,42 @@ const AuthProvider = ({ children }) => {
     } finally {
       setIsRefreshing(false);
     }
-  }, [isRefreshing, setupRefreshTimer]);
+  }, [isRefreshing, getTimeUntilExpiration]);
+
+  // Function to set up automatic token refresh before expiration
+  const setupRefreshTimer = useCallback(
+    (token) => {
+      if (!token) return;
+
+      // Clear any existing timeout
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+      }
+
+      const timeUntilExpiration = getTimeUntilExpiration(token);
+      // Refresh 1 minute before expiration, or immediately if less than 2 minutes left
+      const refreshTime = Math.max(0, timeUntilExpiration - 60 * 1000);
+
+      console.log(
+        `Token expires in ${timeUntilExpiration / 1000} seconds, scheduling refresh in ${refreshTime / 1000} seconds`,
+      );
+
+      if (timeUntilExpiration <= 0) {
+        // Token already expired, refresh immediately
+        refreshTokenFn();
+        return;
+      }
+
+      refreshTimeoutRef.current = setTimeout(
+        () => refreshTokenFn(),
+        refreshTime,
+      );
+    },
+    [getTimeUntilExpiration, refreshTokenFn],
+  );
 
   // Check if token is expired
-  const isTokenExpired = (token) => {
+  const isTokenExpired = useCallback((token) => {
     try {
       const decoded = jwtDecode(token);
       const now = Date.now() / 1000;
@@ -110,7 +132,7 @@ const AuthProvider = ({ children }) => {
       console.error('Token decode failed:', error);
       return true;
     }
-  };
+  }, []);
 
   // Initialize auth state from localStorage on mount
   useEffect(() => {
@@ -120,8 +142,8 @@ const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       if (token && role) {
         if (isTokenExpired(token)) {
-          console.log("Stored token is expired, attempting refresh");
-          refreshToken();
+          console.log('Stored token is expired, attempting refresh');
+          refreshTokenFn();
         } else {
           // Token still valid - set auth state and schedule refresh
           setAuthState({
@@ -144,36 +166,42 @@ const AuthProvider = ({ children }) => {
         clearTimeout(refreshTimeoutRef.current);
       }
     };
-  }, [refreshToken, setupRefreshTimer]);
+  }, [refreshTokenFn, setupRefreshTimer, isTokenExpired]);
 
-  const login = async (username, password) => {
-    try {
-      // Clear existing tokens before new login
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-      delete apiClient.defaults.headers.common['Authorization'];
+  const login = useCallback(
+    async (username, password) => {
+      try {
+        // Clear existing tokens before new login
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        delete apiClient.defaults.headers.common['Authorization'];
 
-      const response = await executeJwtAuthenticationService(username, password);
-      const token = response.data.data.token;
-      localStorage.setItem('token', token);
-      const role = response.data.data.userInfo.role;
-      localStorage.setItem('role', role);
+        const response = await executeJwtAuthenticationService(
+          username,
+          password,
+        );
+        const token = response.data.data.token;
+        localStorage.setItem('token', token);
+        const role = response.data.data.userInfo.role;
+        localStorage.setItem('role', role);
 
-      setAuthState({
-        token,
-        role,
-        isAuthenticated: true,
-      });
+        setAuthState({
+          token,
+          role,
+          isAuthenticated: true,
+        });
 
-      // Set up refresh timer for the new token
-      setupRefreshTimer(token);
+        // Set up refresh timer for the new token
+        setupRefreshTimer(token);
 
-      return true;
-    } catch (error) {
-      console.error('Login failed:', error);
-      return false;
-    }
-  };
+        return true;
+      } catch (error) {
+        console.error('Login failed:', error);
+        return false;
+      }
+    },
+    [setupRefreshTimer],
+  );
 
   const logout = useCallback(async () => {
     try {
@@ -228,8 +256,8 @@ const AuthProvider = ({ children }) => {
 
         // Skip handling for login and refresh token requests
         if (
-          originalRequest.url.includes('/users/login') ||
-          originalRequest.url.includes('/auth/refresh')
+          originalRequest.url?.includes('/users/login') ||
+          originalRequest.url?.includes('/auth/refresh')
         ) {
           return Promise.reject(error);
         }
@@ -238,8 +266,8 @@ const AuthProvider = ({ children }) => {
           originalRequest._retry = true;
 
           try {
-            console.log("401 error - attempting token refresh");
-            await refreshToken();
+            console.log('401 error - attempting token refresh');
+            await refreshTokenFn();
 
             // If refresh was successful, retry with new token
             if (authState.token) {
@@ -251,7 +279,7 @@ const AuthProvider = ({ children }) => {
             return Promise.reject(error);
           } catch (refreshError) {
             // Force logout if refresh failed
-            console.error("Refresh failed during 401 handling:", refreshError);
+            console.error('Refresh failed during 401 handling:', refreshError);
             logout();
             return Promise.reject(refreshError);
           }
@@ -262,7 +290,7 @@ const AuthProvider = ({ children }) => {
     );
 
     return () => apiClient.interceptors.response.eject(responseInterceptor);
-  }, [authState.token, refreshToken, logout]);
+  }, [authState.token, refreshTokenFn, logout]);
 
   return (
     <AuthContext.Provider

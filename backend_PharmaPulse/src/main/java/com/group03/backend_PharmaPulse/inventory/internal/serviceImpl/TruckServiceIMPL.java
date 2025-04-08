@@ -117,7 +117,7 @@ public class TruckServiceIMPL implements TruckService {
 
     @Override
     @Transactional
-    public TruckDTO updateTruck(Long truckId, TruckDTO truckDTO) {
+    public TruckResponseDTO updateTruck(Long truckId, TruckResponseDTO truckDTO) {
         Truck existingTruck = truckRepository.findById(truckId)
                 .orElseThrow(() -> new NotFoundException("Truck not found"));
 
@@ -132,7 +132,7 @@ public class TruckServiceIMPL implements TruckService {
         }
 
         // Update truck entity
-        Truck updatedTruck = truckMapper.toEntity(truckDTO);
+        Truck updatedTruck = truckMapper.toEntityFromResponse(truckDTO);
         updatedTruck.setId(truckId);
         // Check if the new max capacity is less than the current capacity
         if (updatedTruck.getMaxCapacity() < existingTruck.getCurrentCapacity()) {
@@ -144,7 +144,7 @@ public class TruckServiceIMPL implements TruckService {
         inventoryLocationServiceImpl.updateTruckLocation(
                 oldRegistrationNumber, newRegistrationNumber, truckDTO.getMaxCapacity());
 
-        return truckMapper.toDTO(savedTruck);
+        return truckMapper.toResponseDTO(savedTruck);
     }
 
     @Service

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TruckDTO {
+
     private String registrationNumber;
     private Integer maxCapacity;
 
