@@ -23,9 +23,9 @@ public class PurchaseInvoiceController {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getAllPurchaseInvoices() {
-        List<PurchaseInvoiceDTO> purchaseInvoiceDTOS  = purchaseInvoiceService.getAllPurchaseInvoices();
+        List<PurchaseInvoiceResponse> purchaseInvoiceResponses  = purchaseInvoiceService.getAllPurchaseInvoices();
         return new ResponseEntity<>(
-                new StandardResponse(200,"Success",purchaseInvoiceDTOS),
+                new StandardResponse(200,"Success",purchaseInvoiceResponses),
                 HttpStatus.OK
         );
     }

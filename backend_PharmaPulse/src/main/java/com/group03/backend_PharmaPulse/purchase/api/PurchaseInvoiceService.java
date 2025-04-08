@@ -6,7 +6,7 @@ import com.group03.backend_PharmaPulse.purchase.api.dto.response.PurchaseInvoice
 import java.util.List;
 
 public interface PurchaseInvoiceService {
-    List<PurchaseInvoiceDTO> getAllPurchaseInvoices();
+    List<PurchaseInvoiceResponse> getAllPurchaseInvoices();
     PurchaseInvoiceResponse getPurchaseInvoicesById(Long invoiceId);
     PurchaseInvoiceDTO addPurchaseInvoice(PurchaseInvoiceDTO purchaseInvoiceDTO);
 }
