@@ -19,6 +19,7 @@ import { jwtDecode } from 'jwt-decode';
 import apiClient from '../api/ApiClient';
 
 const AuthProvider = ({ children }) => {
+  
   const [authState, setAuthState] = useState({
     token: null,
     role: null,
