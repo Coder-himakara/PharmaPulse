@@ -26,6 +26,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -315,7 +316,7 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
                     logger.warn("Failed to fetch product details for product ID {}: {}",
                             productId, e.getMessage());
                 }
-                // Find earliest expiry date among batches
+                // Find the earliest expiry date among batches
                 LocalDate earliestExpiryDate = productBatches.stream()
                         .map(BatchInventory::getExpiryDate)
                         .min(LocalDate::compareTo)
@@ -426,10 +427,16 @@ public class BatchInventoryServiceImpl implements BatchInventoryService {
         }
     }
     //Method to check for expired batches on application startup
-    @PostConstruct
+//    @PostConstruct
+//    @Transactional
+//    public void checkExpiredBatchesOnStartup() {
+//        logger.info("Checking for expired batches on application startup");
+//    }
+
+    @EventListener(ApplicationReadyEvent.class)
     @Transactional
-    public void checkExpiredBatchesOnStartup() {
-        logger.info("Checking for expired batches on application startup");
+    public void onApplicationReady() {
+        logger.info("Checking for expired batches after application startup");
         updateExpiredBatches();
     }
 

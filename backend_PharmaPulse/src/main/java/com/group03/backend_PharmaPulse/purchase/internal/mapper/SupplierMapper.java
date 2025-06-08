@@ -18,10 +18,8 @@ public interface SupplierMapper {
     @Mapping(target = "supplier_id" ,ignore = true)
     Supplier toEntity(SupplierDTO supplierDTO);
 
-    // Map a list of Supplier entities to a list of SupplierDTOs
     List<SupplierDTO> toDTOsList(List<Supplier> suppliers);
 
-    // Map a list of SupplierDTOs to a list of Supplier entities
     List<Supplier> toEntitiesList(List<SupplierDTO> supplierDTOs);
 
     // Custom method to map int to PurchaseGroup

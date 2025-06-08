@@ -3,7 +3,6 @@ package com.group03.backend_PharmaPulse.purchase.internal.serviceImpl;
 
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseLineItemDTO;
 import com.group03.backend_PharmaPulse.purchase.api.dto.response.PurchaseInvoiceResponse;
-import com.group03.backend_PharmaPulse.shared.InvoiceReference;
 import com.group03.backend_PharmaPulse.util.api.exception.NotFoundException;
 
 import com.group03.backend_PharmaPulse.purchase.api.dto.PurchaseInvoiceDTO;
@@ -96,18 +95,4 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
         return purchaseInvoiceMapper.toDTO(purchaseInvoice);
     }
 
-    //fetch and map PurchaseInvoice entities to the InvoiceReference interface
-    public InvoiceReference toView(PurchaseInvoice purchaseInvoice){
-        return new InvoiceReference() {
-            @Override
-            public Long getInvoiceId() {
-                return purchaseInvoice.getInvoiceId();
-            }
-
-            @Override
-            public String getInvoiceNo() {
-                return purchaseInvoice.getInvoiceNo();
-            }
-        };
-    }
 }

@@ -25,19 +25,12 @@ public class PurchaseLineItemServiceImpl implements PurchaseLineItemService {
         this.eventPublisher=eventPublisher;
     }
 
-    @Override
-    public PurchaseLineItemDTO addPurchaseLineItem(PurchaseLineItemDTO purchaseLineItemDTO) {
-        PurchaseLineItem savedPurchaseLineItem = purchaseLineItemRepo.save(purchaseLineItemMapper.
-                toEntity(purchaseLineItemDTO));
-        return purchaseLineItemMapper.toDTO(savedPurchaseLineItem);
-    }
     // Add a list of line items when adding purchase invoice to the database
     @Override
-    public List<PurchaseLineItem> addPurchaseLineItems(List<PurchaseLineItem> purchaseLineItems) {
+    public void addPurchaseLineItems(List<PurchaseLineItem> purchaseLineItems) {
         List<PurchaseLineItem> savedItems =purchaseLineItemRepo.saveAll(purchaseLineItems);
         List<PurchaseLineItemDTO> savedDTOs =purchaseLineItemMapper.toDTOsList(savedItems);
         //Publish the event
         eventPublisher.publishEvent(new PurchaseLineItemEvent(this,savedDTOs));
-        return savedItems;
     }
 }

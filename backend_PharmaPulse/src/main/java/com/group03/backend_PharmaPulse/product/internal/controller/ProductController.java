@@ -69,7 +69,6 @@ public class ProductController {
     }
     // New endpoint for wholesale price history
     @GetMapping("/wholesale-prices/{id}")
-
     public ResponseEntity<StandardResponse> getProductWholesalePrices(@PathVariable Long id) {
         List<ProductWholesalePriceDTO> prices = productWholesalePriceService.getWholesalePriceHistory(id);
         return new ResponseEntity<>(

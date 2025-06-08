@@ -20,7 +20,6 @@ public class SupplierController {
         this.supplierService = supplierService;
     }
 
-    // This method is used to retrieve all suppliers
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getAllSuppliers() {
@@ -30,7 +29,7 @@ public class SupplierController {
                 HttpStatus.OK
         );
     }
-    // This method is used to retrieve a supplier by its id
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('employee:read')")
     public ResponseEntity<StandardResponse> getSuppliersById(@PathVariable Long id) {
@@ -40,7 +39,7 @@ public class SupplierController {
                 HttpStatus.OK
         );
     }
-    // This method is used to add a purchase group
+
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('employee:create')")
     public ResponseEntity<StandardResponse> addSuppliers(@Valid
